@@ -1,0 +1,30 @@
+*******************************
+* The LAAS-CNRS dialog module *
+*******************************
+
+(c) LAAS-CNRS 2010
+
+This module reads on stdin user input in natural language, parse it, call 
+resolution routines when ambiguous concepts are used, and finally generate RDF 
+statements that are an interpretation of the input.
+
+It includes as well a verbalization module that conversely turns RDF statements
+into a sentence in natural language.
+
+dialog fits into the so-called CHRIS architecture @ LAAS. More details on the 
+LAAS internal Wiki:
+https://intranet.laas.fr/intranet/robots/wiki/ChrisArchitecture
+
+I/ INSTALLATION
+---------------
+
+Run:
+> python setup.py install
+
+II/ USAGE
+---------
+
+The main module is in dialog.py
+
+Run it with:
+> ./dialog.py
