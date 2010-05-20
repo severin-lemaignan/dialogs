@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import sys
 import os
 import getopt
@@ -25,8 +27,7 @@ LAAS internal Wiki:
 https://intranet.laas.fr/intranet/robots/wiki/ChrisArchitecture
 """
 
-if __name__ == '__main__':
-
+def main():
 	try:
 		optlist, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
 	except getopt.GetoptError, err:
@@ -53,3 +54,6 @@ if __name__ == '__main__':
 	except KeyboardInterrupt:
 		print "Leaving now."
 		sys.exit()
+
+if __name__ == '__main__':
+	main()
