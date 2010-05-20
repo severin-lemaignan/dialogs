@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import logging
 import unittest
 
 from dialog import Dialog
@@ -23,4 +24,6 @@ class TestDialog(unittest.TestCase):
 		self.assertEqual(res, expected_result)
 
 if __name__ == '__main__':
+	logging.basicConfig(level=logging.DEBUG,
+					format="%(message)s")
 	unittest.main()

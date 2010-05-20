@@ -4,15 +4,20 @@
 import sys
 import os
 import getopt
+import logging
 from threading import Thread
 
 from parsing.parser import Parser
 from interpretation.content_analysis import ContentAnalyser
 from verbalization.verbalization import Verbalizer
 
+VERSION = "0.1"
+
 class Dialog(Thread):
 	def __init__(self):
 		Thread.__init__(self)
+		
+		self._logger = logging.getLogger('dialog')
 		
 		self._parser = Parser()
 		self._content_analyser = ContentAnalyser()
@@ -24,7 +29,8 @@ class Dialog(Thread):
 
 	
 	def process(self, nl_input):
-		print nl_input
+		self._logger.debug("Processing NL sentence \"" + nl_input + "\"")
+		return nl_input
 
 
 def usage():
@@ -34,6 +40,8 @@ Usage:
 dialog.py [OPTIONS]
   -h, --help			Displays this message and exits
   -t, --test			Runs unit-tests
+  -d, --debug			Sets verbosity to debug
+  -s, --silent			The module won't output anything
 
 This module reads on stdin user input in natural language, parse it, call 
 resolution routines when ambiguous concepts are used, and finally generate RDF 
@@ -53,14 +61,18 @@ def unit_tests():
 	print("> ./dialog_test.py")
 
 def main():
+	
+	logging.basicConfig(level=logging.INFO,
+						format="%(message)s")
+
 	try:
-		optlist, args = getopt.getopt(sys.argv[1:], 'ht', ['help', 'test'])
+		optlist, args = getopt.getopt(sys.argv[1:], 'htds', ['help', 'test', 'debug', 'silent'])
 	except getopt.GetoptError, err:
 		# print help information and exit:
 		print str(err) # will print something like "option -a not recognized"
 		usage()
 		sys.exit(2)
-
+	
 	for o, a in optlist:
 		if o in ("-h", "--help"):
 			usage()
@@ -68,12 +80,18 @@ def main():
 		elif o in ("-t", "--test"):
 			unit_tests()
 			sys.exit(0)
+		elif o in ("-d", "--debug"):
+			logging.basicConfig(level=logging.DEBUG)
+		elif o in ("-s", "--silent"):
+			logging.basicConfig(level=logging.CRITICAL)
 		else:
 			print "Unhandled option " + o
 			usage()
 			sys.exit(2)
 
-	print("Welcome in the dialog module!\nPress Ctrl+C to exit")
+	logging.info("**** DIALOG module ****")
+	logging.info("v." + VERSION + "\n")
+	
 	dialog = Dialog()
 	
 	dialog.start()
@@ -81,7 +99,7 @@ def main():
 	try:
 		dialog.join()
 	except KeyboardInterrupt:
-		print "Leaving now."
+		logging.info("Leaving now.")
 		dialog.exit()
 	
 	sys.exit()
