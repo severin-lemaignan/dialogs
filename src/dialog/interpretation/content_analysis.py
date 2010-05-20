@@ -5,7 +5,7 @@
 
 """
 
-class ContentAnalysis:
+class ContentAnalyser:
 	pass
 
 def unit_tests():
