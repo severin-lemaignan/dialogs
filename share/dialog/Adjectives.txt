@@ -1,0 +1,15 @@
+big
+black
+blue
+green
+happy
+last
+next
+new
+old
+open
+poor
+red
+same
+small
+yellow 
