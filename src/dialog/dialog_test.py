@@ -19,7 +19,7 @@ class TestDialog(unittest.TestCase):
 		stmt = "The cow eats an apple"
 		expected_result = ['cow eats apple']
 		
-		res = self.dialog.process(stmt)
+		res = self.dialog.handle_incoming_input(stmt)
 		
 		self.assertEqual(res, expected_result)
 
