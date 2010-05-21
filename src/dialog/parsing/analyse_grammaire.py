@@ -7,7 +7,7 @@ import recherche_mot
 import analyse_verbe
 import recuperer_phrase
 import analyse_adjectif
-from dialog.sentence import Sentence
+from sentence import Sentence, Verbal_Group, Nominal_Group, Indirect_Complement
 
 list_preposition = [
     'in',

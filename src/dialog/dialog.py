@@ -45,8 +45,6 @@ class Dialog(Thread):
 		
 		sentence = self._parser.parse(nl_input)
 		
-		self._logger.debug("Parsing output:\n" + str(sentence))
-		
 		return sentence
 
 

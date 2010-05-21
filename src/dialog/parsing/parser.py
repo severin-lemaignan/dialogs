@@ -5,6 +5,8 @@
 
 """
 
+import logging
+
 import analyse_phrase
 
 class Parser:
@@ -12,7 +14,11 @@ class Parser:
         pass
     
     def parse(self, nl_input):
-        return analyse_phrase.analyse_phr(nl_input)
+        sentence = analyse_phrase.analyse_phr(nl_input)
+        
+        logging.debug("Parsing output:\n" + str(sentence))
+        
+        return sentence
         
 
 def unit_tests():

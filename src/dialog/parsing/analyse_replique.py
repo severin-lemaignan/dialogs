@@ -9,7 +9,7 @@ comme pour les virgules qui peuvent etre des and entre des groupes nominaux ou a
 la fonction principale du paquetage, analyse toutes les phrases d'une replique
 """
 
-from dialog.resources_manager import ResourcePool
+from resources_manager import ResourcePool
 import analyse_phrase
 import recherche_mot
 

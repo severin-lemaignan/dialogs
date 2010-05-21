@@ -7,7 +7,7 @@ de grammaires definies dans les livres ou bien en faisant des recherches
 dans une liste qui contient les adjectifs irreguliers
 """
 
-from dialog.resources_manager import ResourcePool
+from resources_manager import ResourcePool
 
 list_adjectif = ResourcePool().adjectives
 
