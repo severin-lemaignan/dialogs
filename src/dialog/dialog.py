@@ -58,11 +58,12 @@ class Dialog(Thread):
 			
 			try:
 				input = self._nl_input_queue.get(block = False)
-				self._logger.debug("Got NL input \"" + input + "\"")
+				self._logger.info("0/ Got NL input \"" + input + "\"")
 			
 				try:
 					self._process(input)
 				except UnsufficientInputError as uie:
+					self._logger.info("2bis/ Missing content! Going back to human")
 					self._sentence_output_queue.put(uie.value)
 			except Empty:
 				pass
@@ -84,18 +85,21 @@ class Dialog(Thread):
 		self._logger.debug("Processing NL sentence \"" + nl_input + "\"")
 		
 		#Parsing
+		self._logger.info("1/ Parsing...")
 		self.sentences = self._parser.parse(nl_input)
 		self.active_sentence = self.sentences[0]
 		
 		#Resolution
+		self._logger.info("2/ Resolution...")
 		self.active_sentence = self._resolver.references_resolution(self.active_sentence,
 																	self.current_speaker, 
 																	self.current_object)
 		self.active_sentence = self._resolver.noun_phrases_resolution(self.active_sentence)
 		self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
 		
-		
-		return self.active_sentence
+		#Content analysis
+		self._logger.info("3/ Content analysis...")
+		self._content_analyser.analyse(self.active_sentence)
 
 
 def usage():

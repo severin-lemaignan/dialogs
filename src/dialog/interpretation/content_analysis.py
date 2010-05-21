@@ -6,11 +6,12 @@
 """
 
 class ContentAnalyser:
-	pass
+    def analyse(self, sentence):
+        pass
 
 def unit_tests():
-	"""This function tests the main features of the class ContentAnalysis"""
-	print("This is a test...")
+    """This function tests the main features of the class ContentAnalysis"""
+    print("This is a test...")
 
 if __name__ == '__main__':
-	unit_tests()
+    unit_tests()
