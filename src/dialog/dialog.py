@@ -9,6 +9,7 @@ from threading import Thread
 
 from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser
+from interpretation.resolution import Resolver
 from interpretation.content_analysis import ContentAnalyser
 from verbalization.verbalization import Verbalizer
 
@@ -22,6 +23,7 @@ class Dialog(Thread):
 		
 		self._speaker = SpeakerIdentifier()
 		self._parser = Parser()
+		self._resolver = Resolver()
 		self._content_analyser = ContentAnalyser()
 		self._verbalizer = Verbalizer()
 		
@@ -43,7 +45,14 @@ class Dialog(Thread):
 	def _process(self, nl_input):
 		self._logger.debug("Processing NL sentence \"" + nl_input + "\"")
 		
+		#Parsing
 		sentence = self._parser.parse(nl_input)
+		
+		#Resolution
+		sentence = self._resolver.references_resolution(sentence, self.current_speaker, self.current_object)
+		sentence = self._resolver.noun_phrases_resolution(sentence)
+		sentence = self._resolver.verbal_phrases_resolution(sentence)
+		
 		
 		return sentence
 
