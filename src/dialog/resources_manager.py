@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import os.path
 
 #This value is overridden in dialog.py. Only useful to test parser.py alone.
-DATA_DIR = '../share/dialog'
+DATA_DIR = 'share/dialog'
 
 def singleton(cls):
     instances = {}

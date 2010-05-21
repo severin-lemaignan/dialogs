@@ -7,7 +7,7 @@ import getopt
 import logging
 from threading import Thread
 
-from speak_identification import SpeakerIdentifier
+from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser
 from interpretation.content_analysis import ContentAnalyser
 from verbalization.verbalization import Verbalizer
@@ -43,9 +43,11 @@ class Dialog(Thread):
 	def _process(self, nl_input):
 		self._logger.debug("Processing NL sentence \"" + nl_input + "\"")
 		
-		self._parser.parse(nl_input)
+		sentence = self._parser.parse(nl_input)
 		
-		return nl_input
+		self._logger.debug("Parsing output:\n" + str(sentence))
+		
+		return sentence
 
 
 def usage():

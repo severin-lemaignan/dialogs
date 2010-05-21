@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #SVN:rev202
 
-from resources_manager import ResourcePool
+from dialog.resources_manager import ResourcePool
 
 list_aux=[('do',1), ('does',1), ('can',1), ('are',1), ('is',1),('am',1),
           ('did',2), ('was',2), ('were',2), ('have',3), ('has',3), ('had',4),

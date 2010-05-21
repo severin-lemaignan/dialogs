@@ -10,7 +10,7 @@ contenant les information necessaire pour interroger le serveur
 v.0.2: 21:frt_wd from ResourcePool
 """
 
-from resources_manager import ResourcePool
+from dialog.resources_manager import ResourcePool
 
 import analyse_grammaire
 import recuperer_phrase
