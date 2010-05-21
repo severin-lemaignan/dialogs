@@ -3,6 +3,8 @@
 
 import logging
 
+from dialog_exceptions import UnsufficientInputError
+
 class Resolver:
     """Implements the concept resolution mechanisms.
     Three operations may be conducted:
@@ -21,6 +23,7 @@ class Resolver:
         
     def noun_phrases_resolution(self, sentence):
         logging.debug("Noun phrases resolution not yet implemented")
+        raise UnsufficientInputError("What apple are you talking of?")
         return sentence
     
     def verbal_phrases_resolution(self, sentence):

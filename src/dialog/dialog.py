@@ -6,6 +6,9 @@ import os
 import getopt
 import logging
 from threading import Thread
+from Queue import Queue, Empty
+
+from dialog_exceptions import UnsufficientInputError
 
 from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser
@@ -19,6 +22,7 @@ class Dialog(Thread):
 	def __init__(self):
 		Thread.__init__(self)
 		
+		self.go_on = True
 		self._logger = logging.getLogger('dialog')
 		
 		self._speaker = SpeakerIdentifier()
@@ -27,34 +31,71 @@ class Dialog(Thread):
 		self._content_analyser = ContentAnalyser()
 		self._verbalizer = Verbalizer()
 		
-		self.sentences = []
-		self.active_sentences = None
+		self._nl_input_queue = Queue()
+		self._sentence_output_queue = Queue()
 		
+		#true when the Dialog module is within an interaction with a speaker
+		self.in_interaction = False
+		
+		#the current set of sentences that dialog is dealing with
+		self.sentences = []
+		
+		#the current sentence being worked on. Specifically, if active_sentence
+		#is set, the parser will _complete_ this sentence instead of creating a
+		#new one.
+		self.active_sentence = None
+		
+		#the object currently discussed. Used to resolve anaphors (like 'this 
+		# one').
 		self.current_object = None
+		
+		#the ID of the speaker we are talking with. used to resolve references
+		#like 'me', 'you', etc.
 		self.current_speaker = None
 	
 	def run(self):
-		while True:
-			pass
+		while self.go_on:
+			
+			try:
+				input = self._nl_input_queue.get(block = False)
+				self._logger.debug("Got NL input \"" + input + "\"")
+			
+				try:
+					self._process(input)
+				except UnsufficientInputError as uie:
+					self._sentence_output_queue.put(uie.value)
+			except Empty:
+				pass
+			
+			try:
+				output = self._sentence_output_queue.get(block = False)
+				self._logger.debug("Got output to verbalize")
+				self._verbalizer.verbalize(output)
+			except Empty:
+				pass
+			
 
 	
-	def handle_incoming_input(self, input):
+	def input(self, input):
 		self.current_speaker = self._speaker.get_current_speaker_id()
-		self._process(input)
+		self._nl_input_queue.put(input)
 	
 	def _process(self, nl_input):
 		self._logger.debug("Processing NL sentence \"" + nl_input + "\"")
 		
 		#Parsing
-		sentence = self._parser.parse(nl_input)
+		self.sentences = self._parser.parse(nl_input)
+		self.active_sentence = self.sentences[0]
 		
 		#Resolution
-		sentence = self._resolver.references_resolution(sentence, self.current_speaker, self.current_object)
-		sentence = self._resolver.noun_phrases_resolution(sentence)
-		sentence = self._resolver.verbal_phrases_resolution(sentence)
+		self.active_sentence = self._resolver.references_resolution(self.active_sentence,
+																	self.current_speaker, 
+																	self.current_object)
+		self.active_sentence = self._resolver.noun_phrases_resolution(self.active_sentence)
+		self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
 		
 		
-		return sentence
+		return self.active_sentence
 
 
 def usage():
@@ -121,11 +162,13 @@ def main():
 	dialog.start()
 	
 	try:
-		dialog.join()
+		while True:
+			pass
 	except KeyboardInterrupt:
 		logging.info("Leaving now.")
-		dialog.exit()
+		dialog.go_on = False
 	
+	dialog.join()
 	sys.exit()
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@ class Parser:
         
         logging.debug("Parsing output:\n" + str(sentence))
         
-        return sentence
+        return [sentence]
         
 
 def unit_tests():

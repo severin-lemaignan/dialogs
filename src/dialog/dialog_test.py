@@ -13,15 +13,19 @@ class TestDialog(unittest.TestCase):
 	
 	def setUp(self):
 		self.dialog = Dialog()
+		self.dialog.start()
 
 	def test_statement(self):
 
 		stmt = "The cow eats an apple"
 		expected_result = ['cow eats apple']
 		
-		res = self.dialog.handle_incoming_input(stmt)
+		#self.dialog._process(stmt)
+		self.dialog.input(stmt)
 		
-		self.assertEqual(res, expected_result)
+		self.dialog.join()
+		#self.assertEqual(res, expected_result)
+		
 
 if __name__ == '__main__':
 	logging.basicConfig(level=logging.DEBUG,
