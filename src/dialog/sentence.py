@@ -4,13 +4,12 @@
 #SVN:rev202 + PythonTidy + rewrite 'toString' methods using Python __str__ + test cases
 
 class Sentence:
-
     """
-  A sentence is formed from:
-  sn : a nominal structure typed into a Nominal_group
-  sv : a verbal structure typed into a Verbal_Group
-  aim : is used for retrieveing the aim of a question
-  """
+    A sentence is formed from:
+    sn : a nominal structure typed into a Nominal_group
+    sv : a verbal structure typed into a Verbal_Group
+    aim : is used for retrieveing the aim of a question
+    """
 
     def __init__(
         self,
@@ -38,15 +37,14 @@ class Sentence:
 
 
 class Nominal_Group:
-
     """
-  Nominal group class declaration
-  det : determinant
-  noun: a simple noun
-  adj: a list of adjectives describing the noun
-  noun_cmpl: a list of noun complements
-  relative : is a relative sentence typed into Sentence
-  """
+    Nominal group class declaration
+    det : determinant
+    noun: a simple noun
+    adj: a list of adjectives describing the noun
+    noun_cmpl: a list of noun complements
+    relative : is a relative sentence typed into Sentence
+    """
 
     def __init__(
         self,
@@ -78,12 +76,11 @@ class Nominal_Group:
         return res
 
 class Indirect_Complement:
-
     """
-  Indirect complement class declaration
-  gn : nominal group
-  prep : preposition
-  """
+    Indirect complement class declaration
+    gn : nominal group
+    prep : preposition
+    """
 
     def __init__(self, prep, nominal_group):
         self.prep = prep
@@ -101,17 +98,16 @@ class Indirect_Complement:
 
 
 class Verbal_Group:
-
     """
-  Verbal_group class declaration
-  vrb_main: the main verb of a sentence
-  vrb_sec : an accompanying verb of the main verb
-  vrb_tense: the main verb tense
-  d_obj : the  direct object referred by the main verb
-  i_cmpl : the indirect object referred by the main verb or an adverbial formed from a nominal group
-  vrb_adv : an adverb describing the verb
-  advrb : an adverb used as an adverbial of the whole sentence
-  """
+    Verbal_group class declaration
+    vrb_main: the main verb of a sentence
+    vrb_sec : an accompanying verb of the main verb
+    vrb_tense: the main verb tense
+    d_obj : the  direct object referred by the main verb
+    i_cmpl : the indirect object referred by the main verb or an adverbial formed from a nominal group
+    vrb_adv : an adverb describing the verb
+    advrb : an adverb used as an adverbial of the whole sentence
+    """
 
     def __init__(
         self,
