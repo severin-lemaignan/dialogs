@@ -7,6 +7,7 @@ import getopt
 import logging
 from threading import Thread
 from Queue import Queue, Empty
+from collections import deque
 
 from dialog_exceptions import UnsufficientInputError
 
@@ -38,7 +39,7 @@ class Dialog(Thread):
 		self.in_interaction = False
 		
 		#the current set of sentences that dialog is dealing with
-		self.sentences = []
+		self.sentences = deque()
 		
 		#the current sentence being worked on. Specifically, if active_sentence
 		#is set, the parser will _complete_ this sentence instead of creating a
@@ -82,24 +83,30 @@ class Dialog(Thread):
 		self._nl_input_queue.put(input)
 	
 	def _process(self, nl_input):
-		self._logger.debug("Processing NL sentence \"" + nl_input + "\"")
-		
+
 		#Parsing
 		self._logger.info("1/ Parsing...")
-		self.sentences = self._parser.parse(nl_input)
-		self.active_sentence = self.sentences[0]
+		self.sentences.appendleft(self._parser.parse(nl_input, self.active_sentence))
 		
-		#Resolution
-		self._logger.info("2/ Resolution...")
-		self.active_sentence = self._resolver.references_resolution(self.active_sentence,
-																	self.current_speaker, 
-																	self.current_object)
-		self.active_sentence = self._resolver.noun_phrases_resolution(self.active_sentence)
-		self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
-		
-		#Content analysis
-		self._logger.info("3/ Content analysis...")
-		self._content_analyser.analyse(self.active_sentence)
+		for s in range(len(self.sentences)): #sentences is a deque. Cannot do a simple [:] to iterate over a copy
+			self.active_sentence = self.sentences.popleft()
+			self._logger.debug("Processing NL sentence \"" + str(self.active_sentence) + "\"")
+			
+			#Resolution
+			self._logger.info("2/ Resolution...")
+			self.active_sentence = self._resolver.references_resolution(self.active_sentence,
+																		self.current_speaker, 
+																		self.current_object)
+			self.active_sentence = self._resolver.noun_phrases_resolution(self.active_sentence)
+			self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
+			
+			#Content analysis
+			self._logger.info("3/ Content analysis...")
+			self._content_analyser.analyse(self.active_sentence)
+			
+		#Finalizing the processing
+		self.active_sentence = None
+		self._logger.info("NL sentence \"" + nl_input + "\" processed!")
 
 
 def usage():

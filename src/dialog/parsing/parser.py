@@ -13,7 +13,7 @@ class Parser:
     def __init__(self):
         pass
     
-    def parse(self, nl_input):
+    def parse(self, nl_input, active_sentence = None):
         sentence = analyse_phrase.analyse_phr(nl_input)
         
         logging.debug("Parsing output:\n" + str(sentence))

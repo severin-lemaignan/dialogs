@@ -23,6 +23,7 @@ class TestDialog(unittest.TestCase):
 		#self.dialog._process(stmt)
 		self.dialog.input(stmt)
 		
+		
 		self.dialog.join()
 		#self.assertEqual(res, expected_result)
 		
