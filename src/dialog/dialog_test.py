@@ -17,7 +17,7 @@ class TestDialog(unittest.TestCase):
 
     def test_statement(self):
 
-        stmt = "The cow eats an apple"
+        stmt = "the cow eats an apple"
         expected_result = ['cow eats apple']
         
         #self.dialog._process(stmt)
