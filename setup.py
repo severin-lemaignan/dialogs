@@ -10,5 +10,9 @@ setup(name='Dialog',
       author_email='openrobots@laas.fr',
       url='http://softs.laas.fr/openrobots',
       package_dir = {'': 'src'},
-      packages=['dialog', 'dialog.interpretation', 'dialog.parsing', 'dialog.verbalization']
+      packages=['dialog', 'dialog.interpretation', 'dialog.parsing', 'dialog.verbalization'],
+      data_files=[('share/dialog', ['share/dialog/adjectives',
+                                    'share/dialog/sentence_starts',
+                                    'share/dialog/irregular_verbs',
+                                    'share/dialog/preposition_verbs'])]
       )
