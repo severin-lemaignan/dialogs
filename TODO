@@ -1,0 +1,16 @@
+
+Dialog TODO list for release 1.0
+================================
+
+[DONE] - input/output module to chat with the robot
+[DONE] - parsing module for English natural language (NL)
+- verbalizing module to reconstruct a NL sentence
+- glue-ing chat module with parser + verbalizer
+- resolution of personal references + anaphors
+[DONE] - resolution noun phrases (= identification of concepts)
+[PARTIALLY DONE] - resolution action verbs
+- content analysis (is the sentence a question? a statement?...)
+- statement builder (convert a parsed sentence into RDF statements)
+- question handler (for question, try to answer them with ORO)
+[DONE] - glue-ing parsing + resolution + analysis + handling
+- input/output module for supervision
