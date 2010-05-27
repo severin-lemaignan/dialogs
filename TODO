@@ -4,7 +4,7 @@ Dialog TODO list for release 1.0
 
 [DONE] - input/output module to chat with the robot
 [DONE] - parsing module for English natural language (NL)
-- verbalizing module to reconstruct a NL sentence
+[PARTIALLY DONE]- verbalizing module to reconstruct a NL sentence
 - glue-ing chat module with parser + verbalizer
 - resolution of personal references + anaphors
 [DONE] - resolution noun phrases (= identification of concepts)
