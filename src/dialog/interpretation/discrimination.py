@@ -11,7 +11,7 @@ import logging
 
 from pyoro import Oro
 from pyoro import OroServerError
-#from dialog_exceptions import UnsufficientInputError
+from dialog_exceptions import UnsufficientInputError
 
 #LOG_FILENAME = 'logging_example.out'
 #logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
@@ -178,7 +178,7 @@ class Discrimination():
                 raise UnsufficientInputError([descriptor, self.get_values_for_descriptor(agent, descriptor, objL)])
                 #return [descriptor, self.get_values_for_descriptor(agent, descriptor, objL)]
             else:
-                raise("Additional info required")
+                raise UnsufficientInputError("Additional info required")
                 #return "Additional info required"
 
     # -- ADD_DESCRIPTOR -----------------------------------------------------------#
