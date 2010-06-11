@@ -24,8 +24,8 @@ class Sentence:
         self.sv = sv
 
     def __str__(self):
-        res = self.data_type + '\n' + \
-                self.aim + '\n'
+        res =   "Type: " + self.data_type + '\n' + \
+                "Aim: " + self.aim + '\n'
         
         if self.sn:
             for s in self.sn:

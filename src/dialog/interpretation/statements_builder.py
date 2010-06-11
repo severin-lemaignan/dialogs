@@ -1,12 +1,32 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import re
+import random
+
 """This module implements ...
 
 """
 
 class StatementBuilder:
+    
+    def __init__(self):
+        self._statements = []
 
+    """
+    The following function collects information that has never been said to the robot and return a list of it
+    LearnMore object
+    """
+    def learnMore(self, noun, flags):
+        """oro = Oro(self.host, self.port)
+        toLearn = oro.lookup(noun)
+        oro.close()"""
+        toLearn = []
+
+        if toLearn == [] and noun.lower() != 'thing' :
+            flags[6] += [noun]
+            flags[5] = 'UNKNOWN'
+            
     """
     generate a string of k characters of the range [a-zA-Z0-9]
     """
@@ -33,17 +53,19 @@ class StatementBuilder:
         return generatedId
 
 
-    def processOrderSentence(self, aSentence, idSender, file, flags):
+    def processOrderSentence(self, aSentence, idSender, flags):
         #The sentence is in the imperative form. A subject might not be declared.
         #process sentence.sv
-        if aSentence.sv != None:
-            self.processVerbalGroup(aSentence.sv, 'myself', '', idSender, file, flags)
+        if aSentence.sv:
+            self.processVerbalGroup(aSentence.sv, 'myself', '', idSender, flags)
+        
+        return self._statements
             
-    def processSentence(self, aSentence, idSender, file, flags):
+    def processSentence(self, aSentence, idSender, flags):
         #process sentence.sn
         subjId = self.generateId(2, flags) + '_SBJ'
         if aSentence.sn != []:
-            self.processNominalGroup(aSentence.sn, subjId, idSender, file, flags)
+            self.processNominalGroup(aSentence.sn, subjId, idSender, flags)
         #Done because of case III.4.4 in buildObjectInteractionFromObjectInteraction
         else:
             if flags[0] == 'query':
@@ -51,35 +73,35 @@ class StatementBuilder:
                 flags[4] = 'NO_SN'
 
         #process sentence.sv
-        if aSentence.sv != None:
-            self.processVerbalGroup(aSentence.sv, subjId, '', idSender, file, flags)
+        if aSentence.sv:
+            self.processVerbalGroup(aSentence.sv, subjId, '', idSender, flags)
 
 
-    def processNominalGroup(self, nominalGroups, mainId, idSender, file, flags):
+    def processNominalGroup(self, nominalGroups, mainId, idSender, flags):
         for nominalGroup in nominalGroups:
             
             #case 1: the  noun phrase is a proper name or a person pronoun
             if nominalGroup.det == []:
                 #case 1.1: the phrase noun is 'I' or me
                 if nominalGroup.noun != [] and re.findall(r'^I$|^i$|^me$|^Me$', nominalGroup.noun[0]) != []:
-                    file.write("\n" + mainId + " owl:sameAs " + idSender)
+                    self._statements.append(mainId + " owl:sameAs " + idSender)
                    
                 #case 1.2: the phrase noun is 'you'
                 elif nominalGroup.noun != [] and re.findall(r'^You$|^you$', nominalGroup.noun[0])  != []:
-                    file.write("\n" + mainId + " owl:sameAs " + "myself")
+                    self._statements.append(mainId + " owl:sameAs " + "myself")
                     
                     
                 #case 1.3: the phrase noun is a proper name, the 3 index of the flag is updated to LABEL
                 else:
                     if nominalGroup.noun != []:
-                        file.write("\n" + mainId + " rdfs:label \"" + nominalGroup.noun[0] + "\"")
+                        self._statements.append(mainId + " rdfs:label \"" + nominalGroup.noun[0] + "\"")
                         flags[3] = 'LABEL'
             #case 2: the  noun phrase is a common name. That is, there is a determinant
             #in case 2, we can therefore have adjectives and noun complements
             else:
                 #learmore
                 self.learnMore(nominalGroup.noun[0].capitalize(), flags)
-                file.write("\n" + mainId + " rdf:type " + nominalGroup.noun[0].capitalize())
+                self._statements.append(mainId + " rdf:type " + nominalGroup.noun[0].capitalize())
                 #case 2.1: the determinant is 'this', that is, the talker sees the subject and the subject is next to him
                 if re.findall(r'^this$|^This$', nominalGroup.det[0]) != []:
                     file.write("\n"+ idSender + " sees " + mainId + "\n" + idSender + " isNextTo " + mainId)
@@ -104,12 +126,12 @@ class StatementBuilder:
                     #we vonlontary choose noun_cmpl_Id of a size bigger than mainId, inorder to make sure they would not be the same
                     #And we suffix it with _NCMPL
                     noun_cmpl_Id = self.generateId(len(mainId)+1, flags) + '_NCMPL'
-                    self.processNominalGroup(nominalGroup.noun_cmpl, noun_cmpl_Id, idSender, file, flags)
+                    self.processNominalGroup(nominalGroup.noun_cmpl, noun_cmpl_Id, idSender, flags)
                     file.write("\n"+ noun_cmpl_Id + " has"+nominalGroup.noun[0].capitalize() + " " + mainId)
 
             #process adjectives
             if nominalGroup.adj != []:
-                self.processAdjectives(nominalGroup.adj, mainId, file, flags)
+                self.processAdjectives(nominalGroup.adj, mainId, flags)
 
             #relatives
             #case 1: the subject of the sentence is subject of the relative clause.
@@ -121,31 +143,31 @@ class StatementBuilder:
                 #case 1:
                 if nominalGroup.relative.sn == []:
                     if nominalGroup.relative.sv != None:
-                        self.processVerbalGroup(nominalGroup.relative.sv, mainId, '', idSender, file, flags)
+                        self.processVerbalGroup(nominalGroup.relative.sv, mainId, '', idSender, flags)
                         
                 #case 2:
                 else:
                     #process sentence.sn
                     subjId = self.generateId(2, flags) + '_SBJ'
-                    self.processNominalGroup(nominalGroup.relative.sn, subjId, idSender, file, flags)
+                    self.processNominalGroup(nominalGroup.relative.sn, subjId, idSender, flags)
                     #process sentence.sv
-                    if nominalGroup.relative.sv != None:
-                        self.processVerbalGroup(nominalGroup.relative.sv, subjId, mainId, idSender, file, flags)
+                    if nominalGroup.relative.sv:
+                        self.processVerbalGroup(nominalGroup.relative.sv, subjId, mainId, idSender, flags)
 
 
 
 
-    def processAdjectives(self, adjectives, mainId, file, flags):
+    def processAdjectives(self, adjectives, mainId, flags):
         #For any adjectives, we add it in the ontology with the objectProperty 'hasFeature'
         for adj in adjectives:
             #learmore
             self.learnMore(adj, flags)
-            file.write("\n" + mainId + " hasFeature " + adj)
+            self._statements.append(mainId + " hasFeature " + adj)
     
 
        
 
-    def processVerbalGroup(self, verbalGroup, mainId, relativeId, idSender, file, flags):
+    def processVerbalGroup(self, verbalGroup, mainId, relativeId, idSender, flags):
 
         desires_group = ['want', 'desire', 'would+like']
 
@@ -159,11 +181,11 @@ class StatementBuilder:
             #case 1: the verb is an action verb
             if re.findall(r'^be$|^Be$', verbalGroup.vrb_main[0]) == []:
                 if verbalGroup.vrb_main[0] in desires_group:
-                    file.write("\n" + mainId + " desires " + sitId)
-                    file.write("\n" + sitId + " rdf:type StaticSituation")
+                    self._statements.append(mainId + " desires " + sitId)
+                    self._statements.append(sitId + " rdf:type StaticSituation")
                 else:
-                    file.write("\n" + mainId + " performs " + sitId)
-                    file.write("\n" + sitId + " rdf:type " + verbalGroup.vrb_main[0].capitalize())
+                    self._statements.append(mainId + " performs " + sitId)
+                    self._statements.append(sitId + " rdf:type " + verbalGroup.vrb_main[0].capitalize())
                              
                
             #case 2: the verb is "to be" ,we update "flags" in case of a query
@@ -173,7 +195,7 @@ class StatementBuilder:
                 flags[2] = "TOBE"
         #we process the following, only for query
         if flags[0] == 'query':
-            self.flagsToQueryExtension(mainId, sitId, file, flags)
+            self.flagsToQueryExtension(mainId, sitId, flags)
 
         #direct object processing
         if verbalGroup.d_obj != []:
@@ -186,11 +208,11 @@ class StatementBuilder:
 
             #if a verb is an action verb, then we are dealing with a situation involving some objects
             if re.findall(r'^be$|^Be$', verbalGroup.vrb_main[0]) == []:
-                file.write("\n" + sitId + " involves "+ objId)
-                self.processNominalGroup(verbalGroup.d_obj,objId, idSender, file, flags)
+                self._statements.append(sitId + " involves "+ objId)
+                self.processNominalGroup(verbalGroup.d_obj,objId, idSender, flags)
             #otherwise , we are dealing with a state verb
             else:
-                self.processNominalGroup(verbalGroup.d_obj, mainId, idSender, file, flags)
+                self.processNominalGroup(verbalGroup.d_obj, mainId, idSender, flags)
                 
         #indirect complement and adverbials processing
         if verbalGroup.i_cmpl != []:
@@ -200,21 +222,21 @@ class StatementBuilder:
                 #case 1: the i_cmpl is refering to a person or a thing. The preposition is either to|towards|into or ''
                 if i_cmpl.prep == [] or re.findall(r'to|To', i_cmpl.prep[0]) != []:
                     if i_cmpl.nominal_group != []:
-                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id, idSender, file, flags)
+                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id, idSender, flags)
                         if flags[0] == 'order':
-                             file.write("\n" + i_cmpl_Id + " desires "+ sitId)
+                             self._statements.append(i_cmpl_Id + " desires "+ sitId)
                         else:
-                            file.write("\n" + sitId + " isTo "+i_cmpl_Id)
+                            self._statements.append(sitId + " isTo "+i_cmpl_Id)
 
                 else:
                     if i_cmpl.nominal_group != []:
-                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id, idSender, file, flags)
-                        file.write("\n" + sitId + " is"+i_cmpl.prep[0].capitalize()+" "+i_cmpl_Id)
+                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id, idSender, flags)
+                        self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize()+" "+i_cmpl_Id)
                         
         #adverbs processing
         if verbalGroup.advrb != []:
             for advrb in verbalGroup.advrb:
-                self.processAdverb(advrb, sitId, file, flags)
+                self.processAdverb(advrb, sitId, flags)
 
         """
         #secondary verb processing. E.g in "I want you to take a bottle". 'take' is the secondary verb
@@ -223,12 +245,12 @@ class StatementBuilder:
         """
 
 
-    def processAdverb(self, advrb, mainId, file, flags):
+    def processAdverb(self, advrb, mainId, flags):
         file.write('\n')
 
 
 
-    def flagsToQueryExtension(self, subjectId, objectId, file, flags):
+    def flagsToQueryExtension(self, subjectId, objectId, flags):
 
         id = objectId
         aims = {

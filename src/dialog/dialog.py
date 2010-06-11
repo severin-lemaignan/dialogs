@@ -88,11 +88,11 @@ class Dialog(Thread):
     def _process(self, nl_input):
         #Parsing
         self._logger.info("1/ Parsing...")
-        self.sentences.appendleft(self._parser.parse(nl_input.split(), self.active_sentence))
+        self.sentences.appendleft(self._parser.parse(nl_input.split(), self.active_sentence)[0])
         
         for s in range(len(self.sentences)): #sentences is a deque. Cannot do a simple [:] to iterate over a copy
             self.active_sentence = self.sentences.popleft()
-            self._logger.debug("Processing NL sentence \"" + str(self.active_sentence) + "\"")
+            self._logger.debug("Processing NL sentence")
             
             #Resolution
             self._logger.info("2/ Resolution...")
