@@ -58,7 +58,7 @@ class Dialog(Thread):
         while self.go_on:
             
             try:
-                input = self._nl_input_queue.get(block = False)
+                input = self._nl_input_queue.get(block = False).strip()
                 self._logger.info("0/ Got NL input \"" + input + "\"")
             
                 try:
@@ -76,7 +76,10 @@ class Dialog(Thread):
             except Empty:
                 pass
             
-
+    def stop(self):
+        while(not self._nl_input_queue.empty()):
+            pass
+        self.go_on = False
 
     def input(self, input):
         self.current_speaker = self._speaker.get_current_speaker_id()
@@ -137,9 +140,8 @@ def unit_tests():
 
 def main():
 
-    logging.basicConfig(level=logging.INFO,
-                        format="%(message)s")
-
+    debug_level = logging.INFO
+    
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'htds', ['help', 'test', 'debug', 'silent'])
     except getopt.GetoptError, err:
@@ -156,14 +158,15 @@ def main():
             unit_tests()
             sys.exit(0)
         elif o in ("-d", "--debug"):
-            logging.basicConfig(level=logging.DEBUG)
+            debug_level = logging.DEBUG
         elif o in ("-s", "--silent"):
-            logging.basicConfig(level=logging.CRITICAL)
+            debug_level = logging.CRITICAL
         else:
             print "Unhandled option " + o
             usage()
             sys.exit(2)
 
+    logging.basicConfig(level=debug_level, format="%(message)s")
     logging.info("**** DIALOG module ****")
     logging.info("v." + VERSION + "\n")
 
@@ -172,11 +175,13 @@ def main():
     dialog.start()
 
     try:
-        while True:
-            pass
+        data = sys.stdin.readline()
+        dialog.input(data)
+        
+        dialog.stop()
     except KeyboardInterrupt:
         logging.info("Leaving now.")
-        dialog.go_on = False
+        dialog.stop()
 
     dialog.join()
     sys.exit()
