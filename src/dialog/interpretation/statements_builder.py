@@ -1,8 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import logging
 import re
 import random
+from resources_manager import ResourcePool
 
 """This module implements ...
 
@@ -11,26 +13,29 @@ import random
 class StatementBuilder:
     
     def __init__(self):
+        self._sentence = None
+        self._current_speaker = None
+        self._flags = []
         self._statements = []
 
     """
     The following function collects information that has never been said to the robot and return a list of it
     LearnMore object
     """
-    def learnMore(self, noun, flags):
+    def learnMore(self, noun):
         """oro = Oro(self.host, self.port)
         toLearn = oro.lookup(noun)
         oro.close()"""
         toLearn = []
 
         if toLearn == [] and noun.lower() != 'thing' :
-            flags[6] += [noun]
-            flags[5] = 'UNKNOWN'
+            self._flags[6] += [noun]
+            self._flags[5] = 'UNKNOWN'
             
     """
     generate a string of k characters of the range [a-zA-Z0-9]
     """
-    def generateId(self, k, flags):
+    def generateId(self, k):
         sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         sample = random.sample(sequence, k)
         #concatenation
@@ -38,14 +43,15 @@ class StatementBuilder:
         for i in sample:
             generatedId += i
 
-        if flags[0] == "inform":
+        #TODO: NOT A GOOD IDEA TO CHECK THAT EVERY ID IS UNIQUE THIS WAY!
+        if self._flags[0] == "inform":
             #verify the identifier doesn't exist in the server yet
             oro = Oro(self.host, self.port)
             if oro.lookup(generatedId) != []:
-                generatedId = self.generateId(k, flags)
+                generatedId = self.generateId(k)
             oro.close()
 
-        elif flags[0] == 'query':
+        elif self._flags[0] == 'query':
             generatedId = '?' + generatedId
         else:
             pass
@@ -56,35 +62,45 @@ class StatementBuilder:
     def processOrderSentence(self, aSentence, idSender, flags):
         #The sentence is in the imperative form. A subject might not be declared.
         #process sentence.sv
+        
+        self._sentence = aSentence
+        self._current_speaker = idSender
+        self._flags = flags
+        
         if aSentence.sv:
-            self.processVerbalGroup(aSentence.sv, 'myself', '', idSender, flags)
+            self.processVerbalGroup('myself', '')
         
         return self._statements
             
     def processSentence(self, aSentence, idSender, flags):
         #process sentence.sn
-        subjId = self.generateId(2, flags) + '_SBJ'
+        
+        self._sentence = aSentence
+        self._current_speaker = idSender
+        self._flags = flags
+        
+        subjId = self.generateId(2, self._flags) + '_SBJ'
         if aSentence.sn != []:
-            self.processNominalGroup(aSentence.sn, subjId, idSender, flags)
+            self.processNominalGroup(aSentence.sn, subjId)
         #Done because of case III.4.4 in buildObjectInteractionFromObjectInteraction
         else:
-            if flags[0] == 'query':
+            if self._flags[0] == 'query':
                 subjId = '?any'
-                flags[4] = 'NO_SN'
+                self._flags[4] = 'NO_SN'
 
         #process sentence.sv
         if aSentence.sv:
-            self.processVerbalGroup(aSentence.sv, subjId, '', idSender, flags)
+            self.processVerbalGroup(aSentence.sv, subjId, '')
 
 
-    def processNominalGroup(self, nominalGroups, mainId, idSender, flags):
+    def processNominalGroup(self, nominalGroups, mainId):
         for nominalGroup in nominalGroups:
             
             #case 1: the  noun phrase is a proper name or a person pronoun
             if nominalGroup.det == []:
                 #case 1.1: the phrase noun is 'I' or me
                 if nominalGroup.noun != [] and re.findall(r'^I$|^i$|^me$|^Me$', nominalGroup.noun[0]) != []:
-                    self._statements.append(mainId + " owl:sameAs " + idSender)
+                    self._statements.append(mainId + " owl:sameAs " + self._current_speaker)
                    
                 #case 1.2: the phrase noun is 'you'
                 elif nominalGroup.noun != [] and re.findall(r'^You$|^you$', nominalGroup.noun[0])  != []:
@@ -95,29 +111,29 @@ class StatementBuilder:
                 else:
                     if nominalGroup.noun != []:
                         self._statements.append(mainId + " rdfs:label \"" + nominalGroup.noun[0] + "\"")
-                        flags[3] = 'LABEL'
+                        self._flags[3] = 'LABEL'
             #case 2: the  noun phrase is a common name. That is, there is a determinant
             #in case 2, we can therefore have adjectives and noun complements
             else:
                 #learmore
-                self.learnMore(nominalGroup.noun[0].capitalize(), flags)
+                self.learnMore(nominalGroup.noun[0].capitalize())
                 self._statements.append(mainId + " rdf:type " + nominalGroup.noun[0].capitalize())
                 #case 2.1: the determinant is 'this', that is, the talker sees the subject and the subject is next to him
                 if re.findall(r'^this$|^This$', nominalGroup.det[0]) != []:
-                    file.write("\n"+ idSender + " sees " + mainId + "\n" + idSender + " isNextTo " + mainId)
+                    file.write("\n"+ self._current_speaker + " sees " + mainId + "\n" + self._current_speaker + " isNextTo " + mainId)
 
                 #case 2.2: the determinant is 'that'; that is the subject is far from the talker but can still see it
                 if re.findall(r'^that$|^That$', nominalGroup.det[0]) != []:
-                    file.write("\n"+ idSender + " sees " + mainId + "\n" + idSender + " isFarFrom " + mainId)
+                    file.write("\n"+ self._current_speaker + " sees " + mainId + "\n" + self._current_speaker + " isFarFrom " + mainId)
 
                 #case 2.3: the determinant is a possessive adjective such as my, your
                 if re.findall(r'^my$|^My$', nominalGroup.det[0]) != []:
-                    situationId = self.generateId(len(mainId)+1, flags) + "_SIT"
-                    file.write("\n"+ idSender + " has" +nominalGroup.noun[0].capitalize()+" "+ situationId)
+                    situationId = self.generateId(len(mainId)+1) + "_SIT"
+                    file.write("\n"+ self._current_speaker + " has" +nominalGroup.noun[0].capitalize()+" "+ situationId)
                     file.write("\n"+ situationId +" rdf:type StaticSituation" + "\n" + situationId +" involves "+ mainId)
 
                 if re.findall(r'^your$|^Your$', nominalGroup.det[0]) != []:
-                    situationId = self.generateId(len(mainId)+1, flags) + "_SIT"
+                    situationId = self.generateId(len(mainId)+1) + "_SIT"
                     file.write("\n"+ "myself" + " has" +nominalGroup.noun[0].capitalize()+" "+ situationId)
                     file.write("\n"+ situationId +" rdf:type StaticSituation" + "\n" + situationId +" involves "+ mainId)
 
@@ -125,13 +141,13 @@ class StatementBuilder:
                 if nominalGroup.noun_cmpl != []:
                     #we vonlontary choose noun_cmpl_Id of a size bigger than mainId, inorder to make sure they would not be the same
                     #And we suffix it with _NCMPL
-                    noun_cmpl_Id = self.generateId(len(mainId)+1, flags) + '_NCMPL'
-                    self.processNominalGroup(nominalGroup.noun_cmpl, noun_cmpl_Id, idSender, flags)
+                    noun_cmpl_Id = self.generateId(len(mainId)+1) + '_NCMPL'
+                    self.processNominalGroup(nominalGroup.noun_cmpl, noun_cmpl_Id)
                     file.write("\n"+ noun_cmpl_Id + " has"+nominalGroup.noun[0].capitalize() + " " + mainId)
 
             #process adjectives
             if nominalGroup.adj != []:
-                self.processAdjectives(nominalGroup.adj, mainId, flags)
+                self.processAdjectives(nominalGroup.adj, mainId)
 
             #relatives
             #case 1: the subject of the sentence is subject of the relative clause.
@@ -143,44 +159,50 @@ class StatementBuilder:
                 #case 1:
                 if nominalGroup.relative.sn == []:
                     if nominalGroup.relative.sv != None:
-                        self.processVerbalGroup(nominalGroup.relative.sv, mainId, '', idSender, flags)
+                        self.processVerbalGroup(nominalGroup.relative.sv, mainId, '')
                         
                 #case 2:
                 else:
                     #process sentence.sn
                     subjId = self.generateId(2, flags) + '_SBJ'
-                    self.processNominalGroup(nominalGroup.relative.sn, subjId, idSender, flags)
+                    self.processNominalGroup(nominalGroup.relative.sn, subjId)
                     #process sentence.sv
                     if nominalGroup.relative.sv:
-                        self.processVerbalGroup(nominalGroup.relative.sv, subjId, mainId, idSender, flags)
+                        self.processVerbalGroup(nominalGroup.relative.sv, subjId, mainId)
 
 
 
 
-    def processAdjectives(self, adjectives, mainId, flags):
+    def processAdjectives(self, adjectives, mainId):
         #For any adjectives, we add it in the ontology with the objectProperty 'hasFeature'
         for adj in adjectives:
             #learmore
-            self.learnMore(adj, flags)
+            self.learnMore(adj)
             self._statements.append(mainId + " hasFeature " + adj)
     
 
        
 
-    def processVerbalGroup(self, verbalGroup, mainId, relativeId, idSender, flags):
+    def processVerbalGroup(self, mainId, relativeId):
 
-        desires_group = ['want', 'desire', 'would+like']
-
+        verbalGroup = self._sentence.sv
+        
+        desires_group = ResourcePool().goal_verbs
 
 
         #we vonlontary choose sitId of a size bigger than mainId, inorder to make sure they would never be the same
-        #and we prefix it with SIT_  as Situation = StaticSituation|Events
-        sitId = self.generateId(len(mainId)+1, flags) + '_SIT'
+        #and we suffix it with _SIT  as Situation = StaticSituation|Events
+        sitId = self.generateId(len(mainId)+1) + '_SIT'
         
         if verbalGroup.vrb_main != []:
+            verb = verbalGroup.vrb_main[0]
             #case 1: the verb is an action verb
-            if re.findall(r'^be$|^Be$', verbalGroup.vrb_main[0]) == []:
-                if verbalGroup.vrb_main[0] in desires_group:
+            logging.debug("Found an action verb: " + verb)
+            if re.findall(r'^be$|^Be$', verb) == []:
+                if self._sentence.data_type == "imperative":
+                    self._statements.append(mainId + " desires " + sitId)
+                    self._statements.append(sitId + " rdf:type " + verb.capitalize())
+                elif verb in desires_group:
                     self._statements.append(mainId + " desires " + sitId)
                     self._statements.append(sitId + " rdf:type StaticSituation")
                 else:
@@ -192,9 +214,9 @@ class StatementBuilder:
             #        and sitId refers to the mainId
             else:
                 sitId = mainId
-                flags[2] = "TOBE"
+                self._flags[2] = "TOBE"
         #we process the following, only for query
-        if flags[0] == 'query':
+        if self._flags[0] == 'query':
             self.flagsToQueryExtension(mainId, sitId, flags)
 
         #direct object processing
@@ -204,53 +226,53 @@ class StatementBuilder:
             if relativeId != '':
                 objId = relativeId
             else:
-                objId = self.generateId(len(mainId)+1, flags) + '_OBJ'
+                objId = self.generateId(len(mainId)+1) + '_OBJ'
 
             #if a verb is an action verb, then we are dealing with a situation involving some objects
             if re.findall(r'^be$|^Be$', verbalGroup.vrb_main[0]) == []:
                 self._statements.append(sitId + " involves "+ objId)
-                self.processNominalGroup(verbalGroup.d_obj,objId, idSender, flags)
+                self.processNominalGroup(verbalGroup.d_obj,objId)
             #otherwise , we are dealing with a state verb
             else:
-                self.processNominalGroup(verbalGroup.d_obj, mainId, idSender, flags)
+                self.processNominalGroup(verbalGroup.d_obj, mainId)
                 
         #indirect complement and adverbials processing
         if verbalGroup.i_cmpl != []:
             for i_cmpl in verbalGroup.i_cmpl:
-                i_cmpl_Id = self.generateId(len(mainId)+1, flags) + '_ICMPL'
+                i_cmpl_Id = self.generateId(len(mainId)+1) + '_ICMPL'
 
                 #case 1: the i_cmpl is refering to a person or a thing. The preposition is either to|towards|into or ''
                 if i_cmpl.prep == [] or re.findall(r'to|To', i_cmpl.prep[0]) != []:
                     if i_cmpl.nominal_group != []:
-                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id, idSender, flags)
-                        if flags[0] == 'order':
+                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id)
+                        if self._flags[0] == 'order':
                              self._statements.append(i_cmpl_Id + " desires "+ sitId)
                         else:
                             self._statements.append(sitId + " isTo "+i_cmpl_Id)
 
                 else:
                     if i_cmpl.nominal_group != []:
-                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id, idSender, flags)
+                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id)
                         self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize()+" "+i_cmpl_Id)
                         
         #adverbs processing
         if verbalGroup.advrb != []:
             for advrb in verbalGroup.advrb:
-                self.processAdverb(advrb, sitId, flags)
+                self.processAdverb(advrb, sitId)
 
         """
         #secondary verb processing. E.g in "I want you to take a bottle". 'take' is the secondary verb
         if verbalGroup.sv_sec != None:
-            self.processVerbalGroup(verbalGroup.sv_sec, mainId,'', idSender, file)
+            self.processVerbalGroup(verbalGroup.sv_sec, mainId,'', self._current_speaker, file)
         """
 
 
-    def processAdverb(self, advrb, mainId, flags):
+    def processAdverb(self, advrb, mainId):
         file.write('\n')
 
 
 
-    def flagsToQueryExtension(self, subjectId, objectId, flags):
+    def flagsToQueryExtension(self, subjectId, objectId):
 
         id = objectId
         aims = {
@@ -286,20 +308,20 @@ class StatementBuilder:
         """
 
         
-        if flags[2] == 'TOBE':
+        if self._flags[2] == 'TOBE':
             id = subjectId
             aims['thing'] = " rdf:type ?any, ?any rdfs:subClassOf owl:Thing"
             aims['people'] = " rdfs:label ?any"
 
-        if flags[3] == 'LABEL':
+        if self._flags[3] == 'LABEL':
             aims['people'] = " rdf:type ?any, ?any rdfs:subClassOf owl:Thing"
             
                   
-        if flags[4] != 'NO_SN' :
-            if flags[1] in aims.keys():
-                file.write('\n' + id + aims[flags[1]])
+        if self._flags[4] != 'NO_SN' :
+            if self._flags[1] in aims.keys():
+                file.write('\n' + id + aims[self._flags[1]])
             else:
-                file.write('\n' + id + ' ?data has'+flags[1].capitalize() + ' ?any')
+                file.write('\n' + id + ' ?data has'+self._flags[1].capitalize() + ' ?any')
 
 def unit_tests():
 	"""This function tests the main features of the class StatementBuilder"""
