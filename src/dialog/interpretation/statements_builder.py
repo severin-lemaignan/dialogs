@@ -6,6 +6,8 @@ import re
 import random
 from resources_manager import ResourcePool
 
+from dialog_exceptions import GrammaticalError
+
 """This module implements ...
 
 """
@@ -183,16 +185,17 @@ class StatementBuilder:
 
        
 
-    def processVerbalGroup(self, mainId, relativeId):
+    def processVerbalGroup(self, subject, relativeId):
 
         verbalGroup = self._sentence.sv
         
         desires_group = ResourcePool().goal_verbs
+        thematic_roles = ResourcePool().thematic_roles
 
 
-        #we vonlontary choose sitId of a size bigger than mainId, inorder to make sure they would never be the same
+        #we vonlontary choose sitId of a size bigger than subject, inorder to make sure they would never be the same
         #and we suffix it with _SIT  as Situation = StaticSituation|Events
-        sitId = self.generateId(len(mainId)+1) + '_SIT'
+        sitId = self.generateId(len(subject)+1) + '_SIT'
         
         if verbalGroup.vrb_main != []:
             verb = verbalGroup.vrb_main[0]
@@ -200,24 +203,27 @@ class StatementBuilder:
             logging.debug("Found an action verb: " + verb)
             if re.findall(r'^be$|^Be$', verb) == []:
                 if self._sentence.data_type == "imperative":
-                    self._statements.append(mainId + " desires " + sitId)
+                    self._statements.append(self._current_speaker + " desires " + sitId)
                     self._statements.append(sitId + " rdf:type " + verb.capitalize())
+                    self._statements.append(sitId + 
+                                            thematic_roles.get_subject_role(verb, True) + 
+                                            subject)
                 elif verb in desires_group:
-                    self._statements.append(mainId + " desires " + sitId)
+                    self._statements.append(subject + " desires " + sitId)
                     self._statements.append(sitId + " rdf:type StaticSituation")
                 else:
-                    self._statements.append(mainId + " performs " + sitId)
+                    self._statements.append(subject + " performs " + sitId)
                     self._statements.append(sitId + " rdf:type " + verbalGroup.vrb_main[0].capitalize())
                              
                
             #case 2: the verb is "to be" ,we update "flags" in case of a query
-            #        and sitId refers to the mainId
+            #        and sitId refers to the subject
             else:
-                sitId = mainId
+                sitId = subject
                 self._flags[2] = "TOBE"
         #we process the following, only for query
         if self._flags[0] == 'query':
-            self.flagsToQueryExtension(mainId, sitId, flags)
+            self.flagsToQueryExtension(subject, sitId, flags)
 
         #direct object processing
         if verbalGroup.d_obj != []:
@@ -226,34 +232,43 @@ class StatementBuilder:
             if relativeId != '':
                 objId = relativeId
             else:
-                objId = self.generateId(len(mainId)+1) + '_OBJ'
+                objId = self.generateId(len(subject)+1) + '_OBJ'
 
             #if a verb is an action verb, then we are dealing with a situation involving some objects
-            if re.findall(r'^be$|^Be$', verbalGroup.vrb_main[0]) == []:
-                self._statements.append(sitId + " involves "+ objId)
+            verb = verbalGroup.vrb_main[0]
+            if re.findall(r'^be$|^Be$', verb) == []:
+                self._statements.append(sitId + 
+                                        thematic_roles.get_next_cmplt_role(verb, True) + 
+                                        objId)
                 self.processNominalGroup(verbalGroup.d_obj,objId)
             #otherwise , we are dealing with a state verb
             else:
-                self.processNominalGroup(verbalGroup.d_obj, mainId)
+                self.processNominalGroup(verbalGroup.d_obj, subject)
                 
         #indirect complement and adverbials processing
         if verbalGroup.i_cmpl != []:
             for i_cmpl in verbalGroup.i_cmpl:
-                i_cmpl_Id = self.generateId(len(mainId)+1) + '_ICMPL'
+                
+                i_cmpl_Id = self.generateId(len(subject)+1) + '_ICMPL'
+                if not i_cmpl.nominal_group:
+                        raise GrammaticalError("Indirect complement with no nominal group! Don't know what to do.")
 
-                #case 1: the i_cmpl is refering to a person or a thing. The preposition is either to|towards|into or ''
-                if i_cmpl.prep == [] or re.findall(r'to|To', i_cmpl.prep[0]) != []:
-                    if i_cmpl.nominal_group != []:
-                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id)
-                        if self._flags[0] == 'order':
-                             self._statements.append(i_cmpl_Id + " desires "+ sitId)
-                        else:
-                            self._statements.append(sitId + " isTo "+i_cmpl_Id)
-
+                self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id)
+                
+                #case 1: the i_cmpl is refering to a person or a thing: no preposition ''
+                if not i_cmpl.prep:
+                    if self._flags[0] == 'order':
+                         self._statements.append(sitId + 
+                                                thematic_roles.get_next_cmplt_role(verb, True) + 
+                                                i_cmpl_Id)
+                #case 2: Do we have a thematic role associated to the preposition?
+                elif thematic_roles.get_cmplt_role_for_preposition(verb, True):
+                    self._statements.append(sitId + 
+                                            thematic_roles.get_cmplt_role_for_preposition(verb, True) + 
+                                            i_cmpl_Id)
+                #case 3: Don't know what to do: build a relation from "is" + preposition (like "isIn")
                 else:
-                    if i_cmpl.nominal_group != []:
-                        self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id)
-                        self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize()+" "+i_cmpl_Id)
+                    self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize()+" "+i_cmpl_Id)
                         
         #adverbs processing
         if verbalGroup.advrb != []:
@@ -263,7 +278,7 @@ class StatementBuilder:
         """
         #secondary verb processing. E.g in "I want you to take a bottle". 'take' is the secondary verb
         if verbalGroup.sv_sec != None:
-            self.processVerbalGroup(verbalGroup.sv_sec, mainId,'', self._current_speaker, file)
+            self.processVerbalGroup(verbalGroup.sv_sec, subject,'', self._current_speaker, file)
         """
 
 

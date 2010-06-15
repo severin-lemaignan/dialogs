@@ -6,7 +6,14 @@ class UnsufficientInputError(Exception):
     def __str__(self):
         return repr(self.value)
 
-class EmptyGrammaticalGroup(Exception):
+
+class GrammaticalError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+        
+class EmptyGrammaticalGroup(GrammaticalError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
@@ -17,3 +24,10 @@ class UnrecognizedSentenceType(Exception):
         self.value = value
     def __str__(self):
         return repr(self.value)
+
+class UnknownVerb(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+

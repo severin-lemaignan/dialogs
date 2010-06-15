@@ -3,6 +3,8 @@
 
 import os.path
 
+from dialog_exceptions import UnknownVerb
+
 #This value is overridden in dialog.py. Only useful to test parser.py alone.
 DATA_DIR = 'share/dialog'
 
@@ -44,8 +46,32 @@ class VerbEntry:
     def __init__(self, name, ref, roles):        
         self.name = name
         self.ref = ref
-        self.roles = roles
+        self.subject = roles[0]
+        self.roles = roles[1:]
+        
+        self._role_pointer = 0
     
+    def next_role(self):
+        self._role_pointer += 1
+        try:
+            role = self.roles[self._role_pointer - 1]
+            
+            if role.preposition: #if next role is supposed to be introduced by a preposition, skip it
+                return self.next_role()
+            else:
+                return role
+            
+        except IndexError:
+            return None
+    
+    def get_role_for_preposition(self, prep):
+        
+        for role in self.roles:
+            if role.preposition == prep:
+                self.roles.remove(role)
+                return role
+        return None
+            
     def __str__(self):
         res = "verb \"" + self.name + "\""
         
@@ -79,6 +105,28 @@ class ThematicRolesDict:
         
         for verb in verbs:
             self.verbs[verb.name] = verb
+            
+    def get_subject_role(self, verb, with_spaces = False):
+        try:
+            res = self.verbs[verb.lower()].subject.id
+        except KeyError:
+            raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+        return (" " + res + " ") if with_spaces else res
+        
+    def get_next_cmplt_role(self, verb, with_spaces = False):
+        try:
+            res = self.verbs[verb.lower()].next_role().id
+        except KeyError:
+            raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+        return (" " + res + " ") if with_spaces else res
+    
+    def get_cmplt_role_for_preposition(self, verb, preposition, with_spaces = False):
+        try:
+            res = self.verbs[verb.lower()].get_role_for_preposition(preposition).id
+        except KeyError:
+            raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+        return (" " + res + " ") if with_spaces else res
+    
         
     def __str__(self):
         res = ""
@@ -105,9 +153,9 @@ class ResourcePool:
         self.goal_verbs = []
         
         """
-        list of all verbs for which thematic roles are known.
+        dictionnary of all verbs for which thematic roles are known.
         """
-        self.thematic_roles = {}
+        self.thematic_roles = ThematicRolesDict()
         
         for line in open (os.path.join(data_path, "adjectives")):
             if line.startswith("#") or not line.strip():
@@ -135,20 +183,18 @@ class ResourcePool:
                             for line 
                             in open (os.path.join(data_path, "goal_verbs"))]
         
-        thematic_role_dict = ThematicRolesDict()
         
         desc = ""
         for line in open (os.path.join(data_path, "thematic_roles")):
-            if line.startswith("#") or line.startswith("\n"):
+            if line.startswith("#") or not line.strip():
                 continue
             
             desc += line
             
             if line.startswith("}"): #end of block
-                thematic_role_dict.add_verb(desc)
+                self.thematic_roles.add_verb(desc)
                 desc = ""
-        
-        self.thematic_roles = thematic_role_dict.verbs
+
 
 if __name__ == '__main__':
     
@@ -181,6 +227,5 @@ if __name__ == '__main__':
     
     print
     print("Thematic roles:")
-    for name, verb in resources.thematic_roles.items():
-            print(str(verb))
+    print(str(resources.thematic_roles))
 
