@@ -1,0 +1,54 @@
+# This file describe the thematic roles of action verbs for the robot.
+# the syntax is:
+#
+# action_name_as_it_appears_in_the_ontology (comma_delimited_list_of_synonyms) {
+# performedBy subject
+# predicate class_of_concept
+# predicate [optional_preposition] class_of_concept
+# [predicate class_of_concept]
+# ...
+# }
+#
+# the first predicate is always performedBy and introduce the subject of the 
+# verb. The second predicate is bound to the direct object complement (if it 
+# exists).
+# Following ones are indirect complements, in the order they appear.
+# If a predicate is preceded by a preposition, only a complement introduced by
+# this preposition will be used.
+# By default, all predicates are mandatory. If a predicate is inside square 
+# brackets, it means it is optional.
+
+get (pick,take) {
+performedBy Agent
+actsOnObject Artifact
+}
+
+place (put) {
+performedBy Agent
+actsOnObject Artifact
+receivedBy [on] Physical_Support
+}
+
+give (bring) {
+performedBy Agent
+actsOnObject Artifact
+receivedBy Agent
+}
+
+show {
+performedBy Agent
+actsOnObject Artifact
+[receivedBy Agent]
+}
+
+hide {
+performedBy Agent
+actsOnObject Artifact
+[receivedBy Agent]
+}
+
+move (go) {
+performedBy Agent
+[actsOnObject Artifact]
+hasGoal [to] Location
+}
