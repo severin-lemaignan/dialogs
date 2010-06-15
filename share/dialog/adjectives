@@ -1,7 +1,19 @@
-big
-black
-blue
-green
+# List of 'special' adjectives (ie not build from a common pattern -ing, -ish, -ful,...)
+# the optinal category of the adjective (within parenthesis) is used to build the
+# corresponding predicate by prefixing the category with "has": eg. "hasColor"
+
+black Color
+blue Color
+green Color
+red Color
+yellow Color
+white Color
+purple Color
+orange Color
+
+big Size
+small Size
+
 happy
 last
 next
@@ -9,7 +21,6 @@ new
 old
 open
 poor
-red
 same
-small
-yellow 
+
+

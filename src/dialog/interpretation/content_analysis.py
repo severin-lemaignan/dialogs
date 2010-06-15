@@ -24,7 +24,9 @@ class ContentAnalyser:
                             sentence, 
                             "human_xyz", 
                             flags)
-        logging.info("Generated statements: " + str(stmts))
+        logging.info("Generated statements: ")
+        for s in stmts:
+            logging.info(">> " + s)
 
 def unit_tests():
     """This function tests the main features of the class ContentAnalysis"""

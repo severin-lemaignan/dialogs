@@ -178,7 +178,7 @@ class StatementBuilder:
         for adj in adjectives:
             #learmore
             self.learnMore(adj)
-            self._statements.append(mainId + " hasFeature " + adj)
+            self._statements.append(mainId + " has" + ResourcePool().adjectives[adj] + " " + adj)
     
 
        

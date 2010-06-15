@@ -91,7 +91,7 @@ class ResourcePool:
     
     def __init__(self, data_path = DATA_DIR):
         
-        self.adjectives = []
+        self.adjectives = {}
         self.irregular_verbs = []
         self.preposition_verbs = []
 
@@ -109,10 +109,15 @@ class ResourcePool:
         """
         self.thematic_roles = {}
         
-        #lecture de la liste des adjectifs
-        self.adjectives = [line.strip()
-                            for line 
-                            in open (os.path.join(data_path, "adjectives"))]
+        for line in open (os.path.join(data_path, "adjectives")):
+            if line.startswith("#") or not line.strip():
+                continue
+            try:
+                adj, cat = line.split()
+            except ValueError: #for adjectives without category, set a generic "Feature" category
+                adj = line.split()[0]
+                cat = "Feature"
+            self.adjectives[adj] = cat
         
         self.irregular_verbs = [tuple(line.split()) 
                                 for line 

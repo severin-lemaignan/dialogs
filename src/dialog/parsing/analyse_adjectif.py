@@ -9,7 +9,7 @@ dans une liste qui contient les adjectifs irreguliers
 
 from resources_manager import ResourcePool
 
-list_adjectif = ResourcePool().adjectives
+list_adjectif = ResourcePool().adjectives.keys()
 
 #trouver des adjectifs pour recuperer la position du nom
 def position_adj(phrase, pos_mot):
