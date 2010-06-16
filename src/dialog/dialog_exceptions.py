@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 
-class UnsufficientInputError(Exception):
+class DialogError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+        
+class UnsufficientInputError(DialogError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
         return repr(self.value)
 
 
-class GrammaticalError(Exception):
+class GrammaticalError(DialogError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
@@ -19,15 +25,14 @@ class EmptyGrammaticalGroup(GrammaticalError):
     def __str__(self):
         return repr(self.value)
 
-class UnrecognizedSentenceType(Exception):
+class UnrecognizedSentenceType(DialogError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
         return repr(self.value)
 
-class UnknownVerb(Exception):
+class UnknownVerb(DialogError):
     def __init__(self, value):
         self.value = value
     def __str__(self):
         return repr(self.value)
-
