@@ -38,7 +38,7 @@ class Discrimination():
     # INPUT:
     # - description: 
     #   [[agent1 '?obj' oro_query]..[[agentN '?obj' oro_query]]
-    #   (oro_query= "?obj hasColor blue, ?obj hasShape box")
+    #   (oro_query= ['?obj hasColor blue',.. ?obj hasShape box'])
     # 
     # OUTPUT:
     # - empty list: no objects found fulfilling the description
@@ -50,9 +50,9 @@ class Discrimination():
         
         for agent_desc in description:
             if agent_desc[0] == 'myself':
-                obj_tmp = self.oro.find(agent_desc[1], '[' + agent_desc[2] + ']')
+                obj_tmp = self.oro.find(agent_desc[1], '[' + ', '.join(agent_desc[2]) + ']')
             else:
-                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[' + agent_desc[2] + ']')
+                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[' + ', '.join(agent_desc[2]) + ']')
 
             # if no object found, no need to continue
             if not obj_tmp: 
@@ -98,8 +98,9 @@ class Discrimination():
     # Searches for a new descriptor candidate from all agents.
     #
     # INPUT:
-    # - description ([[robot isVisible true hasColor blue]...\ 
-    #   [agent isVisible true hasColor blue])
+    # - description: 
+    #   [[agent1 '?obj' oro_query]..[[agentN '?obj' oro_query]]
+    #   (oro_query= ['?obj hasColor blue',.. ?obj hasShape box'])
     # - allowPartialDesc: consider also partial discriminants (1) or not (0) (0 default)
     #
     # OUTPUT:
@@ -152,14 +153,14 @@ class Discrimination():
     # discriminating as possible.
     #
     # INPUT:
-    # - description ([[robot isVisible true hasColor blue]...\ 
-    #   [agent isVisible true hasColor blue])
+    # - description [['myself', '?obj', ['?obj rdf:type Bottle', '?obj hasColor blue']],
+    #                ['agent1', '?obj', ['?obj isVisible True']]
     #
     # OUTPUT:
     # - objectID: ok
     # - UnsufficientInputError:
     #   - "new info required": no match, new info required (forget previous description)
-    #   - [descriptor, values]: user should indicate value for descriptor
+    #   - "Which value? ..." user should indicate value for descriptor
     #   - "additional info required": user should give additional info (mantain previous description)
     # -----------------------------------------------------------------------------#
     def clarify(self, description):
@@ -167,19 +168,56 @@ class Discrimination():
         logging.debug('Clarify for objL = ' +  str(objL))
 
         if len(objL) == 0:
-            raise UnsufficientInputError("New info required")
-            #return "New info required"
+            raise UnsufficientInputError("I don\'t know what object you are talkikng about. Tell me something about it.")
+            #return "I don\'t know what object you are talkikng about. Tell me something about it."
         elif len(objL) == 1:
             return objL[0]
         else:
             agent, descriptor = self.get_descriptor(description)
 
             if descriptor:
-                raise UnsufficientInputError([descriptor, self.get_values_for_descriptor(agent, descriptor, objL)])
-                #return [descriptor, self.get_values_for_descriptor(agent, descriptor, objL)]
+                question = None
+                values = self.get_values_for_descriptor(agent, descriptor, objL)
+                
+                if descriptor == 'hasColor'  or  descriptor == 'mainColorOfObject':
+                    question = 'Which color is the object? '
+                    
+                elif descriptor == 'hasShape':
+                    question = 'Which shape has the object? '
+
+                elif descriptor == 'hasSize':
+                    question = 'Which size is the object? ' 
+
+                elif descriptor == 'isOn':
+                    question = "Is the object on "
+
+                elif descriptor == 'isIn':
+                    question = "Is the object in "
+                    
+                elif descriptor == 'isNexto':
+                    question = "Is the object next to "
+
+                elif descriptor == 'isAt':
+                    question = "Is the object at "
+
+                elif descriptor == 'isLocated'  or  descriptor == 'isAt':
+                    question = 'Where is the object placed wrt to'
+                                        
+                    if agent == 'myself':
+                        question += ' me? '
+                    else:
+                        question += ' you? '
+                
+                else:
+                    question = "Give me the value for the " + descriptor + " "
+
+                question += ' or '.join(values) + '?'
+                raise UnsufficientInputError(question)
+                #return question
+                    
             else:
                 raise UnsufficientInputError("Additional info required")
-                #return "Additional info required"
+                #return "Tell me more about the the object."
 
     # -- ADD_DESCRIPTOR -----------------------------------------------------------#
     # Includes descriptor in description list.
@@ -202,7 +240,7 @@ class Discrimination():
                     return index, item
                     
         idx, desc = find(agent, description)
-        desc[2] = desc[2] + ', ?obj ' + descriptor + ' ' + value
+        desc[2].append('?obj ' + descriptor + ' ' + value)
         description[idx] = desc
         
         return description
@@ -222,7 +260,7 @@ class Discrimination():
         description = None
         # get the first class name
         type = self.oro.getDirectClassesOf(objectID).keys()[0] 
-        description = [['myself','?obj','?obj rdf:type ' + type]]        
+        description = [['myself','?obj',['?obj rdf:type ' + type]]]        
         objL = self.get_all_objects_with_desc(description)
          
         while len(objL) > 1:
@@ -251,7 +289,7 @@ def unit_tests():
     disc = Discrimination()
 
     print "Test1: No ambiguity."
-    description = [['myself', '?obj', '?obj rdf:type Bottle, ?obj hasColor blue']]
+    description = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj hasColor blue']]]
     expected_result = "BLUE_BOTTLE"
     res = disc.clarify(description)
     print '\t expected res = ', expected_result
@@ -259,49 +297,57 @@ def unit_tests():
     print '\n*********************************'
     
     print "\nTest2: Complete discriminant in robot model found."
-    description = [['myself', '?obj', '?obj rdf:type Bottle']]
-    expected_result = ['mainColorOfObject', ['blue', 'orange', 'yellow']]
+    description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
+    expected_result = "Which color is the object? blue or orange or yellow?"
     res = disc.clarify(description)
     print '\t expected res = ', expected_result
     print '\t obtained res = ', res
     print "\n*********************************"
     
     print "\nTest3: No complete discriminant in robot model found."
-    description = [['myself', '?obj', '?obj rdf:type Box']]
-    expected_result = "Additional info required"
+    description = [['myself', '?obj', ['?obj rdf:type Box']]]
+    expected_result = "Tell me more about the the object."
     res = disc.clarify(description)
     print '\t expected res = ', expected_result
     print '\t obtained res = ', res
     print "\n*********************************"
     
     print "\nTest4: Including visibility constraints"
-    description = [['myself', '?obj', '?obj rdf:type Bottle']]
-    description.append(['raquel', '?obj', '?obj isVisible true'])
-    expected_result = ['mainColorOfObject', ['blue', 'orange']]
+    description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
+    description.append(['raquel', '?obj', ['?obj isVisible true']])
+    expected_result = "Which color is the object? blue or orange?"
     res = disc.clarify(description)
     print '\t expected res = ', expected_result
     print '\t obtained res = ', res
     print "\n*********************************"
     
-    print "\nTest5: Generate unambiguous description"
+    print "\nTest5: Testing location"
+    description = [['myself', '?obj', ['?obj rdf:type Box', '?obj hasColor orange']]]
+    expected_result = "Is the object on ACCESSKIT or HRP2TABLE?"
+    res = disc.clarify(description)
+    print '\t expected res = ', expected_result
+    print '\t obtained res = ', res
+    print "\n*********************************"
+    
+    print "\nTest6: Generate unambiguous description"
     objectID = 'BLUE_BOTTLE'
-    expected_result = [['myself', '?obj', '?obj rdf:type Bottle, ?obj mainColorOfObject blue']]
+    expected_result = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj mainColorOfObject blue']]]
     res = disc.find_unambiguous_desc(objectID)
     print '\t expected res = ', expected_result
     print '\t obtained res = ', res
     print "\n*********************************"
 
-    print "\nTest6: Generate unambiguous description"
+    print "\nTest7: Generate unambiguous description"
     objectID = 'ACCESSKIT'
-    expected_result = [['myself', '?obj', '?obj rdf:type Box, ?obj mainColorOfObject white, ?obj isUnder ORANGEBOX']]
+    expected_result = [['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white', '?obj isUnder ORANGEBOX']]]
     res = disc.find_unambiguous_desc(objectID)
     print '\t expected res = ', expected_result
     print '\t obtained res = ', res
     print "\n*********************************"
 
-    print "\nTest6: Generate unambiguous description"
+    print "\nTest8: Generate unambiguous description"
     objectID = 'SPACENAVBOX'
-    expected_result = ['SPACENAVBOX', ['myself', '?obj', '?obj rdf:type Box, ?obj mainColorOfObject white']]
+    expected_result = ['SPACENAVBOX', ['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white']]]
     res = disc.find_unambiguous_desc(objectID)
     print '\t expected res = ', expected_result
     print '\t obtained res = ', res
