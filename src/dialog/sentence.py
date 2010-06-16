@@ -148,6 +148,9 @@ class Verbal_Group:
         if self.vrb_sub_sentence:
             for vrb_sub_s in self.vrb_sub_sentence:
                 res += 'vrb_sub_sentence:\n\t' + str(vrb_sub_s).replace("\n", "\n\t") + "\n"
+        
+        if self.sv_sec:
+                res += 'sv_sec:\n\t' + str(self.sv_sec).replace("\n", "\n\t") + "\n"
 
         
         return res
