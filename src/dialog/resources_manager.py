@@ -92,6 +92,15 @@ class ThematicRolesDict:
     def __init__(self):
         self.verbs = {}
     
+    def get_ref(self, verb):
+        """If the verb is the synonym of a known verb, as stated in the
+        thematic_roles file, return the known verb.
+        """
+        try:
+            return self.verbs[verb].ref
+        except KeyError:
+            raise UnknownVerb('Verb ' + verb + ' doesn\'t exist in the thematic role list.')
+            
     def add_verb(self, desc):
         lines = desc.split("\n")
         verb_desc = lines[0].strip().split()
