@@ -122,22 +122,26 @@ class StatementBuilder:
                 self._statements.append(mainId + " rdf:type " + nominalGroup.noun[0].capitalize())
                 #case 2.1: the determinant is 'this', that is, the talker sees the subject and the subject is next to him
                 if re.findall(r'^this$|^This$', nominalGroup.det[0]) != []:
-                    file.write("\n"+ self._current_speaker + " sees " + mainId + "\n" + self._current_speaker + " isNextTo " + mainId)
+                    self._statements.append(self._current_speaker + " sees " + mainId)
+                    self._statements.append(self._current_speaker + " isNextTo " + mainId)
 
                 #case 2.2: the determinant is 'that'; that is the subject is far from the talker but can still see it
                 if re.findall(r'^that$|^That$', nominalGroup.det[0]) != []:
-                    file.write("\n"+ self._current_speaker + " sees " + mainId + "\n" + self._current_speaker + " isFarFrom " + mainId)
+                    self._statements.append(self._current_speaker + " sees " + mainId)
+                    self._statements.append(self._current_speaker + " isFarFrom " + mainId)
 
                 #case 2.3: the determinant is a possessive adjective such as my, your
                 if re.findall(r'^my$|^My$', nominalGroup.det[0]) != []:
                     situationId = self.generateId(len(mainId)+1) + "_SIT"
-                    file.write("\n"+ self._current_speaker + " has" +nominalGroup.noun[0].capitalize()+" "+ situationId)
-                    file.write("\n"+ situationId +" rdf:type StaticSituation" + "\n" + situationId +" involves "+ mainId)
+                    self._statements.append(self._current_speaker + " has" +nominalGroup.noun[0].capitalize()+" "+ situationId)
+                    self._statements.append(situationId +" rdf:type StaticSituation")
+                    self._statements.append(situationId +" involves "+ mainId)
 
                 if re.findall(r'^your$|^Your$', nominalGroup.det[0]) != []:
                     situationId = self.generateId(len(mainId)+1) + "_SIT"
-                    file.write("\n"+ "myself" + " has" +nominalGroup.noun[0].capitalize()+" "+ situationId)
-                    file.write("\n"+ situationId +" rdf:type StaticSituation" + "\n" + situationId +" involves "+ mainId)
+                    self._statements.append("myself" + " has" +nominalGroup.noun[0].capitalize()+" "+ situationId)
+                    self._statements.append(situationId +" rdf:type StaticSituation")
+                    self._statements.append(situationId +" involves "+ mainId)
 
                 #process the noun phrase complement
                 if nominalGroup.noun_cmpl != []:
@@ -145,7 +149,7 @@ class StatementBuilder:
                     #And we suffix it with _NCMPL
                     noun_cmpl_Id = self.generateId(len(mainId)+1) + '_NCMPL'
                     self.processNominalGroup(nominalGroup.noun_cmpl, noun_cmpl_Id)
-                    file.write("\n"+ noun_cmpl_Id + " has"+nominalGroup.noun[0].capitalize() + " " + mainId)
+                    self._statements.append(noun_cmpl_Id + " has"+nominalGroup.noun[0].capitalize() + " " + mainId)
 
             #process adjectives
             if nominalGroup.adj != []:
@@ -176,11 +180,18 @@ class StatementBuilder:
 
 
     def processAdjectives(self, adjectives, mainId):
-        #For any adjectives, we add it in the ontology with the objectProperty 'hasFeature'
+        """For any adjectives, we add it in the ontology with the objectProperty 
+        'hasFeature' except if a specific category has been specified in the 
+        adjectives list.
+        """
+        
         for adj in adjectives:
             #learmore
             self.learnMore(adj)
-            self._statements.append(mainId + " has" + ResourcePool().adjectives[adj] + " " + adj)
+            try:
+                self._statements.append(mainId + " has" + ResourcePool().adjectives[adj] + " " + adj)
+            except KeyError:
+                self._statements.append(mainId + " hasFeature " + adj)
     
 
        
@@ -210,7 +221,9 @@ class StatementBuilder:
                                             subject)
                 elif verb in desires_group:
                     self._statements.append(subject + " desires " + sitId)
-                    self._statements.append(sitId + " rdf:type StaticSituation")
+                    #secondary verb processing. E.g in "I want you to take a bottle". 'take' is the secondary verb
+                    if verbalGroup.sv_sec:
+                        self.processVerbalGroup(verbalGroup.sv_sec, subject,'', self._current_speaker, file)
                 else:
                     self._statements.append(subject + " performs " + sitId)
                     self._statements.append(sitId + " rdf:type " + verbalGroup.vrb_main[0].capitalize())
@@ -274,12 +287,6 @@ class StatementBuilder:
         if verbalGroup.advrb != []:
             for advrb in verbalGroup.advrb:
                 self.processAdverb(advrb, sitId)
-
-        """
-        #secondary verb processing. E.g in "I want you to take a bottle". 'take' is the secondary verb
-        if verbalGroup.sv_sec != None:
-            self.processVerbalGroup(verbalGroup.sv_sec, subject,'', self._current_speaker, file)
-        """
 
 
     def processAdverb(self, advrb, mainId):
