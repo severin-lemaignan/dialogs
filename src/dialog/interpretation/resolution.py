@@ -29,8 +29,10 @@ class Resolver:
         
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
-        
-        stmts = builder.processNominalGroup([nominal_group], '?concept')
+            
+        logging.debug("Resolving \"" + str(nominal_group) + "\"")
+
+        stmts = builder.processNominalGroup([nominal_group], '?concept',{0:'query'})
         
         logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
         for s in stmts:
@@ -38,7 +40,7 @@ class Resolver:
         
         builder.clear_statements()
         
-        description = [[current_speaker, '?concept', stmts[0]]]
+        description = [[current_speaker, '?concept', stmts]]
         
         id = discriminator.clarify(description)
         logging.debug("Hurra! Found \"" + id + "\"")

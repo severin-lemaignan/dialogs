@@ -6,7 +6,9 @@ import re
 import random
 from resources_manager import ResourcePool
 
+from dialog_exceptions import DialogError
 from dialog_exceptions import GrammaticalError
+
 
 """This module implements ...
 
@@ -53,17 +55,18 @@ class StatementBuilder:
             generatedId += i
 
         #TODO: NOT A GOOD IDEA TO CHECK THAT EVERY ID IS UNIQUE THIS WAY!
-        if self._flags[0] == "inform":
-            #verify the identifier doesn't exist in the server yet
-            oro = Oro(self.host, self.port)
-            if oro.lookup(generatedId) != []:
-                generatedId = self.generateId(k)
-            oro.close()
+        if 0 in self._flags:
+            if self._flags[0] == "inform":
+                #verify the identifier doesn't exist in the server yet
+                oro = Oro(self.host, self.port)
+                if oro.lookup(generatedId) != []:
+                    generatedId = self.generateId(k)
+                oro.close()
 
-        elif self._flags[0] == 'query':
-            generatedId = '?' + generatedId
-        else:
-            pass
+            elif self._flags[0] == 'query':
+                generatedId = '?' + generatedId
+            else:
+                pass
 
         return generatedId
 
@@ -71,6 +74,9 @@ class StatementBuilder:
     def processOrderSentence(self, aSentence, idSender, flags):
         #The sentence is in the imperative form. A subject might not be declared.
         #process sentence.sv
+        
+        if not aSentence.resolved():
+            raise DialogError("Trying to process an unresolved sentence!")
         
         self._sentence = aSentence
         self._current_speaker = idSender
@@ -84,13 +90,17 @@ class StatementBuilder:
     def processSentence(self, aSentence, idSender, flags):
         #process sentence.sn
         
+        if not aSentence.resolved():
+            raise DialogError("Trying to process an unresolved sentence!")
+        
         self._sentence = aSentence
         self._current_speaker = idSender
         self._flags = flags
         
-        subjId = self.generateId(2, self._flags) + '_SBJ'
-        if aSentence.sn != []:
-            self.processNominalGroup(aSentence.sn, subjId)
+        subjId = self.generateId(2) + '_SBJ'
+        if aSentence.sn:
+            subjId = aSentence.sn.id
+
         #Done because of case III.4.4 in buildObjectInteractionFromObjectInteraction
         else:
             if self._flags[0] == 'query':
@@ -101,7 +111,10 @@ class StatementBuilder:
         if aSentence.sv:
             self.processVerbalGroup(aSentence.sv, subjId, '')
 
-    def processNominalGroup(self, nominalGroups, mainId):
+    def processNominalGroup(self, nominalGroups, mainId, flags = None):
+        if flags:
+            self._flags = flags
+            
         for nominalGroup in nominalGroups:
             
             #case 1: the  noun phrase is a proper name or a person pronoun
@@ -149,13 +162,13 @@ class StatementBuilder:
                     self._statements.append(situationId +" rdf:type StaticSituation")
                     self._statements.append(situationId +" involves "+ mainId)
 
-                #process the noun phrase complement
-                if nominalGroup.noun_cmpl != []:
+                #process the noun phrase complements
+                if nominalGroup.noun_cmpl:
                     #we vonlontary choose noun_cmpl_Id of a size bigger than mainId, inorder to make sure they would not be the same
                     #And we suffix it with _NCMPL
                     noun_cmpl_Id = self.generateId(len(mainId)+1) + '_NCMPL'
                     self.processNominalGroup(nominalGroup.noun_cmpl, noun_cmpl_Id)
-                    self._statements.append(noun_cmpl_Id + " has"+nominalGroup.noun[0].capitalize() + " " + mainId)
+                    self._statements.append(mainId + " belongsTo " + noun_cmpl_Id)
 
             #process adjectives
             if nominalGroup.adj != []:
@@ -167,7 +180,7 @@ class StatementBuilder:
             #case : the subject of the sentence is complement of the relative clause
             #         e.g. the man that you heard from is my boss
             #               => the man is my boss + you heard from the man
-            if nominalGroup.relative != None:
+            if nominalGroup.relative:
                 #case 1:
                 if nominalGroup.relative.sn == []:
                     if nominalGroup.relative.sv != None:
@@ -176,7 +189,7 @@ class StatementBuilder:
                 #case 2:
                 else:
                     #process sentence.sn
-                    subjId = self.generateId(2, flags) + '_SBJ'
+                    subjId = self.generateId(2) + '_SBJ'
                     self.processNominalGroup(nominalGroup.relative.sn, subjId)
                     #process sentence.sv
                     if nominalGroup.relative.sv:
@@ -243,37 +256,36 @@ class StatementBuilder:
                 self._flags[2] = "TOBE"
         #we process the following, only for query
         if self._flags[0] == 'query':
-            self.flagsToQueryExtension(subject, sitId, flags)
+            self.flagsToQueryExtension(subject, sitId, self._flags)
 
         #direct object processing
-        if verbalGroup.d_obj != []:
-            #in case the nominal group has a relative clause for which the subject of the sentence becomes a complement,
-            #objId is affected with the value of the subject ID.
-            if relativeId != '':
-                objId = relativeId
-            else:
-                objId = self.generateId(len(subject)+1) + '_OBJ'
-
-            #if a verb is an action verb, then we are dealing with a situation involving some objects
+        if verbalGroup.d_obj:
+            role = thematic_roles.get_next_cmplt_role(verb, True)
             verb = verbalGroup.vrb_main[0]
-            if re.findall(r'^be$|^Be$', verb) == []:
-                self._statements.append(sitId + 
-                                        thematic_roles.get_next_cmplt_role(verb, True) + 
-                                        objId)
-                self.processNominalGroup(verbalGroup.d_obj,objId)
-            #otherwise , we are dealing with a state verb
-            else:
-                self.processNominalGroup(verbalGroup.d_obj, subject)
+            
+            for d_obj in verbalGroup.d_obj:
+                #in case the nominal group has a relative clause for which the subject of the sentence becomes a complement,
+                #objId is affected with the value of the subject ID.
+                if relativeId != '':
+                    objId = relativeId
+                else:
+                    objId = d_obj.id
+
+                #if a verb is an action verb, then we are dealing with a situation involving some objects
+                
+                if re.findall(r'^be$|^Be$', verb) == []:
+                    self._statements.append(sitId + role + objId)
+                    
+                #otherwise , we are dealing with a state verb
+                else:
+                    self.processNominalGroup(verbalGroup.d_obj, subject)
                 
         #indirect complement and adverbials processing
         if verbalGroup.i_cmpl != []:
             for i_cmpl in verbalGroup.i_cmpl:
                 
-                i_cmpl_Id = self.generateId(len(subject)+1) + '_ICMPL'
-                if not i_cmpl.nominal_group:
-                        raise GrammaticalError("Indirect complement with no nominal group! Don't know what to do.")
+                i_cmpl_Id = i_cmpl.nominal_group.id
 
-                self.processNominalGroup(i_cmpl.nominal_group, i_cmpl_Id)
                 
                 #case 1: the i_cmpl is refering to a person or a thing: no preposition ''
                 if not i_cmpl.prep:
