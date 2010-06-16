@@ -81,7 +81,7 @@ class Discrimination():
         if agent == "myself":
             discriminants = self.oro.discriminate(objL)
         else:
-            discriminants = self.oro.discriminateForAgent(objL)
+            discriminants = self.oro.discriminateForAgent(agent, objL)
         
         logging.debug('discriminants = ' + str(discriminants))
         complete_disc = discriminants[0]
