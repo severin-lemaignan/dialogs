@@ -102,6 +102,8 @@ class Dialog(Thread):
             self.active_sentence = self._resolver.noun_phrases_resolution(self.active_sentence)
             self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
             
+            self._logger.debug("Sentence after resolution:\n" + str(self.active_sentence))
+            
             #Content analysis
             self._logger.info("3/ Content analysis...")
             self._content_analyser.analyse(self.active_sentence)
