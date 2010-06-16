@@ -17,9 +17,12 @@ class StatementBuilder:
     def __init__(self):
         self._sentence = None
         self._current_speaker = None
-        self._flags = []
+        self._flags = {}
         self._statements = []
 
+    def clear_statements(self):
+        self._statements = []
+        
     """
     The following function collects information that has never been said to the robot and return a list of it
     LearnMore object
@@ -31,7 +34,11 @@ class StatementBuilder:
         toLearn = []
 
         if toLearn == [] and noun.lower() != 'thing' :
-            self._flags[6] += [noun]
+            if 6 in self._flags:
+                self._flags[6] += [noun] 
+            else:
+                self._flags[6] = [noun]
+            
             self._flags[5] = 'UNKNOWN'
             
     """
@@ -93,7 +100,6 @@ class StatementBuilder:
         #process sentence.sv
         if aSentence.sv:
             self.processVerbalGroup(aSentence.sv, subjId, '')
-
 
     def processNominalGroup(self, nominalGroups, mainId):
         for nominalGroup in nominalGroups:
@@ -175,7 +181,8 @@ class StatementBuilder:
                     #process sentence.sv
                     if nominalGroup.relative.sv:
                         self.processVerbalGroup(nominalGroup.relative.sv, subjId, mainId)
-
+        
+        return self._statements
 
 
 

@@ -13,16 +13,16 @@ class ContentAnalyser:
     def __init__(self):
         self.builder = StatementBuilder()
         
-    def analyse(self, sentence):
+    def analyse(self, sentence, current_speaker):
         if sentence.data_type == 'imperative':
             logging.debug("Processing the content of an imperative sentence")
-            self.process_order(sentence)
+            self.process_order(sentence, current_speaker)
             
-    def process_order(self, sentence):
+    def process_order(self, sentence, current_speaker):
         flags = ['order', '', '', '', '', '', []]
         stmts = self.builder.processOrderSentence(
                             sentence, 
-                            "human_xyz", 
+                            current_speaker, 
                             flags)
         logging.info("Generated statements: ")
         for s in stmts:

@@ -6,6 +6,9 @@ import logging
 from dialog_exceptions import UnsufficientInputError, UnknownVerb
 from resources_manager import ResourcePool
 
+from statements_builder import StatementBuilder #for nominal group discrimination
+from discrimination import Discrimination
+
 class Resolver:
     """Implements the concept resolution mechanisms.
     Three operations may be conducted:
@@ -21,13 +24,65 @@ class Resolver:
     def references_resolution(self, sentence, current_speaker, current_object):
         logging.debug("References and anaphors resolution not yet implemented")
         return sentence
+    
+    def resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
         
-    def noun_phrases_resolution(self, sentence):
-        logging.debug("Noun phrases resolution not yet implemented")
-        #raise UnsufficientInputError("What apple are you talking of?")
+        if nominal_group._resolved: #already resolved: possible after asking human for more details.
+            return nominal_group
+        
+        stmts = builder.processNominalGroup([nominal_group], '?concept')
+        
+        logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
+        for s in stmts:
+            logging.debug(s)
+        
+        builder.clear_statements()
+        
+        description = [[current_speaker, '?concept', stmts[0]]]
+        
+        id = discriminator.clarify(description)
+        logging.debug("Hurra! Found \"" + id + "\"")
+        
+        return id
+    
+    def resolve_groups_nouns(self, array_sn, current_speaker, discriminator, builder):
+        #TODO: We should start with resolved_sn filled with sentence.sn and replace
+        # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
+        resolved_sn = []
+        for sn in array_sn:
+            sn.id = self.resolve_nouns(sn, current_speaker, discriminator, builder)
+            sn._resolved = True
+            resolved_sn.append(sn)
+        return resolved_sn
+        
+    def noun_phrases_resolution(self, sentence, current_speaker):
+        
+        builder = StatementBuilder()
+        discriminator = Discrimination()
+        
+        if sentence.sn:
+            sentence.sn = self.resolve_groups_nouns(sentence.sn, current_speaker, discriminator, builder)
+        
+        if sentence.sv.d_obj:
+            sentence.sv.d_obj = self.resolve_groups_nouns(sentence.sv.d_obj, current_speaker, discriminator, builder)
+        
+        resolved_i_cmpl = []
+        for i_cmpl in sentence.sv.i_cmpl:
+            i_cmpl.nominal_group = self.resolve_groups_nouns(i_cmpl.nominal_group, 
+                                                            current_speaker, 
+                                                            discriminator, 
+                                                            builder)
+            resolved_i_cmpl.append(i_cmpl)
+        
+        sentence.sv.i_cmpl = resolved_i_cmpl
+            
         return sentence
     
     def resolve_verbs(self, verbal_group):
+        
+        if verbal_group.resolved(): #already resolved: possible after asking human for more details.
+            return verbal_group
+        
         resolved_verbs = []
         for verb in verbal_group.vrb_main:
             try:

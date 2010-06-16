@@ -27,7 +27,7 @@ class Sentence:
         """returns True when the whole sentence is completely resolved
         to concepts known by the robot."""
         return  reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x.resolved(), self.sn), 
+                        map(lambda x: x._resolved, self.sn), 
                         True) \
                 and \
                 self.sv.resolved()
@@ -56,13 +56,12 @@ class Nominal_Group:
     relative : is a relative sentence typed into Sentence
     """
 
-    def __init__(
-            self,
-            det,
-            noun,
-            adj,
-            noun_cmpl,
-            relative):
+    def __init__(   self,
+                    det,
+                    noun,
+                    adj,
+                    noun_cmpl,
+                    relative):
         self.det = det
         self.noun = noun
         self.adj = adj
@@ -72,28 +71,28 @@ class Nominal_Group:
         """This field is True when this nominal group is resolved to a concept
         known by the robot."""
         self._resolved = False
-
-    def resolved(self):
-        return  self._resolved and \
-                reduce( lambda c1,c2: c1 and c2,  #check that each of the relatives are themselves resolved.
-                        map(lambda x: x.resolved(), self.relative), 
-                        True)
-
-
+        
+        """This fields hold the ID of the concept represented by this group.
+        When the group is resolved, id must be different from None
+        """
+        self.id = None
+    
     def __str__(self):
-        res =   'det:' + str(self.det) + "\n" + \
-                'noun:' + str(self.noun) + "\n" + \
-                'adj:' + str(self.adj) + "\n"
-
-        if self.noun_cmpl:
-            for s in self.noun_cmpl:
-                res += 'noun_cmpl:\n\t' + str(s).replace("\n", "\n\t") + "\n"
         
-        if self.relative:
-            for s in self.relative:
-                res += 'relative:\n\t' + str(s).replace("\n", "\n\t") + "\n"
-        
-        res += ">resolved<" if self.resolved() else ">not resolved<"
+        if self._resolved:
+            res = 'id: ' + self.id + '\n>resolved<'
+        else:
+            res =   'det: ' + str(self.det) + "\n" + \
+                    'noun: ' + str(self.noun) + "\n" + \
+                    'adj: ' + str(self.adj) + "\n"
+            
+            if self.noun_cmpl:
+                for s in self.noun_cmpl:
+                    res += 'noun_cmpl:\n\t' + str(s).replace("\n", "\n\t") + "\n"
+            
+            if self.relative:
+                for s in self.relative:
+                    res += 'relative:\n\t' + str(s).replace("\n", "\n\t") + "\n"
         
         return res
 
@@ -165,11 +164,11 @@ class Verbal_Group:
     def resolved(self):
         return  self.resolved \
                 and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.d_obj), True) \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x._resolved, self.d_obj), True) \
                 and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.i_cmpl), True) \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x._resolved, self.i_cmpl), True) \
                 and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.sv_sec), True) \
+                self.sv_sec.resolved() if self.sv_sec else True \
                 and \
                 reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
     
