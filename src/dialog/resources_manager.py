@@ -119,22 +119,28 @@ class ThematicRolesDict:
         try:
             res = self.verbs[verb.lower()].subject.id
         except KeyError:
-            raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            #raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            res = "performedBy" #for now, return by default a generic "performedBy" predicate when no specific thematic role for the subject is defined.
         return (" " + res + " ") if with_spaces else res
         
     def get_next_cmplt_role(self, verb, with_spaces = False):
         try:
             res = self.verbs[verb.lower()].next_role().id
         except KeyError:
-            raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            #raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            res = "involves" #for now, return by default a generic "involve" predicate when no specific thematic role is defined.
         return (" " + res + " ") if with_spaces else res
     
     def get_cmplt_role_for_preposition(self, verb, preposition, with_spaces = False):
         try:
-            res = self.verbs[verb.lower()].get_role_for_preposition(preposition).id
+            role = self.verbs[verb.lower()].get_role_for_preposition(preposition)
         except KeyError:
             raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
-        return (" " + res + " ") if with_spaces else res
+        
+        if not role:
+            return role
+            
+        return (" " + role.id + " ") if with_spaces else role.id
     
         
     def __str__(self):

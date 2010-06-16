@@ -22,6 +22,15 @@ class Sentence:
         self.aim = aim
         self.sn = sn
         self.sv = sv
+        
+    def resolved(self):
+        """returns True when the whole sentence is completely resolved
+        to concepts known by the robot."""
+        return  reduce( lambda c1,c2: c1 and c2, 
+                        map(lambda x: x.resolved(), self.sn), 
+                        True) \
+                and \
+                self.sv.resolved()
 
     def __str__(self):
         res =   "Type: " + self.data_type + '\n' + \
@@ -33,6 +42,7 @@ class Sentence:
                 
         res += (('sv:\n\t' + str(self.sv).replace("\n", "\n\t") + "\n") if self.sv else "")
         
+        res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
         return res
 
 
@@ -47,19 +57,29 @@ class Nominal_Group:
     """
 
     def __init__(
-        self,
-        det,
-        noun,
-        adj,
-        noun_cmpl,
-        relative,
-        ):
+            self,
+            det,
+            noun,
+            adj,
+            noun_cmpl,
+            relative):
         self.det = det
         self.noun = noun
         self.adj = adj
         self.noun_cmpl = noun_cmpl
         self.relative = relative
         
+        """This field is True when this nominal group is resolved to a concept
+        known by the robot."""
+        self._resolved = False
+
+    def resolved(self):
+        return  self._resolved and \
+                reduce( lambda c1,c2: c1 and c2,  #check that each of the relatives are themselves resolved.
+                        map(lambda x: x.resolved(), self.relative), 
+                        True)
+
+
     def __str__(self):
         res =   'det:' + str(self.det) + "\n" + \
                 'noun:' + str(self.noun) + "\n" + \
@@ -73,6 +93,8 @@ class Nominal_Group:
             for s in self.relative:
                 res += 'relative:\n\t' + str(s).replace("\n", "\n\t") + "\n"
         
+        res += ">resolved<" if self.resolved() else ">not resolved<"
+        
         return res
 
 class Indirect_Complement:
@@ -81,10 +103,15 @@ class Indirect_Complement:
     gn : nominal group
     prep : preposition
     """
-
+    
     def __init__(self, prep, nominal_group):
         self.prep = prep
         self.nominal_group = nominal_group
+        
+    def resolved(self):
+        return  reduce( lambda c1,c2: c1 and c2, 
+                        map(lambda x: x.resolved(), self.nominal_group), 
+                        True)
         
     def __str__(self):
         res = 'prep:' + str(self.prep) + '\n'
@@ -130,6 +157,21 @@ class Verbal_Group:
         self.vrb_adv = vrb_adv
         self.state = state
         self.vrb_sub_sentence = vrb_sub_sentence
+        
+        """This field is True when this verbal group is resolved to a concept
+        known by the robot."""
+        self._resolved = False
+        
+    def resolved(self):
+        return  self.resolved \
+                and \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.d_obj), True) \
+                and \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.i_cmpl), True) \
+                and \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.sv_sec), True) \
+                and \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
     
     def __str__(self):
         res =   'vrb_main:' + str(self.vrb_main) + "\n" + \
@@ -151,7 +193,8 @@ class Verbal_Group:
         
         if self.sv_sec:
                 res += 'sv_sec:\n\t' + str(self.sv_sec).replace("\n", "\n\t") + "\n"
-
+        
+        res += ">resolved<" if self.resolved() else ">not resolved<"
         
         return res
 

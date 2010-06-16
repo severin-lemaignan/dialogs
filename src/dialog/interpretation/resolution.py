@@ -27,9 +27,9 @@ class Resolver:
         #raise UnsufficientInputError("What apple are you talking of?")
         return sentence
     
-    def resolve_verbs(self, verbs):
+    def resolve_verbs(self, verbal_group):
         resolved_verbs = []
-        for verb in verbs:
+        for verb in verbal_group.vrb_main:
             try:
                 resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
                 if verb == resolved_verb:
@@ -37,15 +37,23 @@ class Resolver:
                 else:
                     logging.debug("Replacing \"" + verb + "\" by synonym \"" + 
                               resolved_verb + "\"")
+                verbal_group._resolved = True
             except UnknownVerb:
                 resolved_verb = verb
                 logging.debug("Unknown verb \"" + verb + "\": keeping it like that, but I won't do much with it.")
             
             resolved_verbs.append(resolved_verb)
-        return resolved_verbs
+        
+        verbal_group.vrb_main = resolved_verbs
+        
+        if verbal_group.sv_sec:
+            verbal_group.sv_sec = self.resolve_verbs(verbal_group.sv_sec)
+            
+        return verbal_group
     
     def verbal_phrases_resolution(self, sentence):
-        sentence.sv.vrb_main = self.resolve_verbs(sentence.sv.vrb_main)
+        sentence.sv = self.resolve_verbs(sentence.sv)
+        
         return sentence
 
 def unit_tests():
