@@ -27,6 +27,10 @@ def position_adj(phrase, pos_mot):
     return 1+position_adj(phrase, pos_mot+1)
   if phrase[pos_mot].endswith('ing'):
     return 1+position_adj(phrase, pos_mot+1)
+  if phrase[pos_mot].endswith('ish'):
+    return 1+position_adj(phrase, pos_mot+1)
+  if phrase[pos_mot].endswith('ful'):
+    return 1+position_adj(phrase, pos_mot+1)
   return 1
 
 #recuperer les adjectifs lies a un groupe nominal
@@ -40,15 +44,13 @@ def recuperer_adj(gr_nom):
     return list_adj
 
 def reconnaitre_adj(word):
-  if word.endswith('al'):
-    return 1
-  if word.endswith('est'):
-    return 1
-  if word.endswith('ous'):
-    return 1
-  if word.endswith('ing'):
-    return 1
-  for i in list_adjectif:
-    if word==i:
-      return 1
-  return 0
+  if word.endswith('al') or \
+     word.endswith('est') or \
+     word.endswith('ous') or \
+     word.endswith('ing') or \
+     word.endswith('ish') or \
+     word.endswith('ful') or \
+     word in list_adjectif:
+    return True
+
+  return False
