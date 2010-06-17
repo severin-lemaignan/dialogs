@@ -6,11 +6,11 @@ Dialog TODO list for release 1.0
 [DONE] - parsing module for English natural language (NL)
 - sentence pre-processing (punctuation, term expansion, capital letters...)
 [PARTIALLY DONE]- verbalizing module to reconstruct a NL sentence
-- resolution of personal references + anaphors
+[DONE] - resolution of personal references + anaphors
 [DONE] - resolution noun phrases (= identification of concepts)
-[PARTIALLY DONE] - resolution action verbs
-- content analysis (is the sentence a question? a statement?...)
-- statement builder (convert a parsed sentence into RDF statements)
+[DONE BASED ON thematic_roles] - resolution action verbs
+[DONE FOR IMPERATIVE SENTENCES] - content analysis (is the sentence a question? a statement?...)
+[ON GOING] - statement builder (convert a parsed sentence into RDF statements)
 - question handler (for question, try to answer them with ORO)
 [DONE] - glue-ing parsing + resolution + analysis + handling
 - input/output module for supervision
@@ -18,3 +18,4 @@ Dialog TODO list for release 1.0
 - Clarify which members of sentence are list, which are single element.
 For instance, sn.noun is a list. if we have several nouns (like in "toto and 
 tata"), it would be maybe easier to create new sn instead of adding nouns.
+- Sort out the "flags": at least, convert it to a map, maybe, remove it.
