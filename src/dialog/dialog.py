@@ -11,6 +11,8 @@ from collections import deque
 
 from dialog_exceptions import UnsufficientInputError
 
+from sentence import Sentence
+
 from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser
 from interpretation.resolution import Resolver
@@ -46,6 +48,9 @@ class Dialog(Thread):
         #new one.
         self.active_sentence = None
         
+        #true when, during an interaction, more infos is needed.
+        self.waiting_for_more_info = False
+        
         #the object currently discussed. Used to resolve anaphors (like 'this 
         # one').
         self.current_object = None
@@ -64,7 +69,8 @@ class Dialog(Thread):
                 input = self._nl_input_queue.get(block = False).strip()
                 self._logger.info("0/ Got NL input \"" + input + "\"")
                 self.in_interaction = True
-            
+                self.waiting_for_more_info = False
+                
                 try:
                     self._process(input)
                 except UnsufficientInputError as uie:
@@ -76,7 +82,12 @@ class Dialog(Thread):
             try:
                 output = self._sentence_output_queue.get(block = False)
                 self._logger.debug("Got output to verbalize")
-                self._verbalizer.verbalize(output)
+                
+                #TODO: Assuming here that 'output present = more info needed'. Not true in the general case
+                self.waiting_for_more_info = True
+                if isinstance(output, Sentence):
+                    output = self._verbalizer.verbalize(output)
+                sys.stdout.write(str(output) + "\n")
             except Empty:
                 pass
             
@@ -93,13 +104,18 @@ class Dialog(Thread):
             
         self._nl_input_queue.put(input)
         
-    def test(self, speaker, input):
+    def test(self, speaker, input, answer = None):
         """This method eases the testing of dialog by returning only when a 
         sentence is completely processed.
+        The optional 'answer' argument is used to answer a request for more 
+        details from the resolution code.
         """
         self.in_interaction = True
         self.input(input, speaker)
         while(self.in_interaction):
+            if answer and self.waiting_for_more_info:
+                logging.debug("Automatically answering: " + answer)
+                self.input(answer, speaker)
             pass
         
         return self.last_stmts_set

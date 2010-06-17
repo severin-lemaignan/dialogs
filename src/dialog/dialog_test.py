@@ -50,9 +50,9 @@ class TestDialog(unittest.TestCase):
         self.dialog = Dialog()
         self.dialog.start()
         
-        oro = Oro('localhost', 6969)
+        self.oro = Oro('localhost', 6969)
         
-        oro.add([   'shelf rdf:type Shelf',
+        self.oro.add([   'shelf rdf:type Shelf',
                     'table1 rdf:type Table', 
                     'table2 rdf:type Table', 
                     'table2 hasColor blue', 
@@ -64,6 +64,8 @@ class TestDialog(unittest.TestCase):
 
     def test_sentence1(self):
 
+        print("\n#############################################\n")
+        
         ####
         stmt = "put the yellow banana on the shelf"
         ####
@@ -77,8 +79,11 @@ class TestDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
 
         self.assertTrue(self.check_results(res, expected_result))
+        
 
     def test_sentence2(self):
+        
+        print("\n#############################################\n")
 
         ####
         stmt = "give me the green banana"
@@ -93,9 +98,38 @@ class TestDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
 
         self.assertTrue(self.check_results(res, expected_result))
+
+    def test_sentence3(self):
+        
+        print("\n#############################################\n")
+        ####
+        stmt = "the yellow banana is big"
+        ####
+        expected_result = [ 'banana hasSize big']
+        ###
+                            
+        res = self.dialog.test('myself', stmt)
+
+        self.assertTrue(self.check_results(res, expected_result))
+    
+    def test_sentence4(self):
+        
+        print("\n#############################################\n")
+        ####
+        stmt = "the banana is good"
+        ####
+        res = self.dialog.test('myself', stmt, "the yellow banana")
+        ###
+        expected_result = [ 'banana hasFeature good']
+        ###
+        
+
+        self.assertTrue(self.check_results(res, expected_result))
         
     def test_verbalize1(self):
-        print('\n-------- verbalize ----------\n')
+        
+        print("\n#############################################")
+        print('-------- verbalize ----------\n')
         myP = Parser()
                             
         stmt = "the cup is on the desk"
@@ -103,24 +137,28 @@ class TestDialog(unittest.TestCase):
         res = self.dialog._verbalizer.verbalize(sentence[0])
         print 'input: ', stmt
         print 'output:', res
+        self.assertEquals(stmt, res)
 
         stmt = "the green bottle is next to Joe"
         sentence = myP.parse(stmt.split())
         res = self.dialog._verbalizer.verbalize(sentence[0])
         print 'input: ', stmt
         print 'output:', res
+        self.assertEquals(stmt, res)
 
         stmt = "give me the green banana"
         sentence = myP.parse(stmt.split())
         res = self.dialog._verbalizer.verbalize(sentence[0])
         print 'input: ', stmt
         print 'output:', res
+        self.assertEquals(stmt, res)
         
         stmt = "put the yellow banana on the shelf"
         sentence = myP.parse(stmt.split())
         res = self.dialog._verbalizer.verbalize(sentence[0])
         print 'input: ', stmt
         print 'output:', res
+        self.assertEquals(stmt, res)
 
         #sentence = Sentence('w_question',
                             #'place',
@@ -129,9 +167,14 @@ class TestDialog(unittest.TestCase):
                              #Nominal_Group(['the'],  ['father'],[],None, None)],
                             #Verbal_Group(['be'], None,'present simple',None, None,['today'], None, None, None))
         #self.dialog._verbalizer.verbalize(sentence)
-                            
-        
 
+
+    def tearDown():
+        self.dialog.stop()
+        self.dialog.join()
+        
+        self.oro.close()
+        
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")

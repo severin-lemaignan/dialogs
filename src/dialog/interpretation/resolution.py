@@ -27,8 +27,11 @@ class Resolver:
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
         
+        if not nominal_group.noun:
+            return nominal_group
+        
         #TODO: noun[0] is bad! noun should be changed to be a single value instead of an array
-        if current_speaker and nominal_group.noun[0].lower() in ['me', 'I']:
+        if current_speaker and nominal_group.noun[0].lower() in ['me', 'i']:
             logging.debug("Replaced \"me\" or \"I\" by \"" + current_speaker + "\"")
             nominal_group.id = current_speaker
             nominal_group._resolved = True
@@ -38,7 +41,7 @@ class Resolver:
             nominal_group.id = 'myself'
             nominal_group._resolved = True
         
-        if current_object and nominal_group.noun[0].lower() in ['it']:
+        if current_object and nominal_group.noun[0].lower() in ['it', 'one']:
             logging.debug("Replaced the anaphoric reference \"it\" by " + current_object)
             nominal_group.id = current_object
             nominal_group._resolved = True

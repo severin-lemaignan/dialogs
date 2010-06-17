@@ -22,7 +22,7 @@ class Verbalizer:
     def verbalize(self, sentence):
         logging.debug("Verbalizing now...")
         nl_sentence = reconstitution_replique.recon_replique(sentence)
-        print(nl_sentence)
+        logging.debug("Rebuild sentence to: \"" + nl_sentence + "\"")
         return nl_sentence
 
 def unit_tests():
