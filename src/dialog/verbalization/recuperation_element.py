@@ -21,26 +21,33 @@ verbe_ing = [('prepare', 'preparing'), ('take', 'taking')]
 
 def reconstitution_sn(struc_nomi):
     gr_nom = []
+
     if struc_nomi:
-        gr_nom +=   struc_nomi.det if struc_nomi.det else [] + \
-                    struc_nomi.adj if struc_nomi.adj else [] + \
-                    struc_nomi.noun
+        gr_nom += struc_nomi.det if struc_nomi.det else []
+        gr_nom += struc_nomi.adj if struc_nomi.adj else []
+        gr_nom += struc_nomi.noun
+    
         if struc_nomi.noun_cmpl:
             gr_nom += ['of']
             gr_nom += reconstitution_sn(struc_nomi.noun_cmpl[0])
-        return gr_nom
+
+    return gr_nom
 
 def gr_nominal(gn):
     phr = []
     if gn:
         for i in gn:
             phr = phr + reconstitution_sn(i)
+
             if i.relative:
                 phr = phr \
                     + reconstitution_phrase.relative_sentence(i.relative)
                 phr = phr + [',']
+                
             phr = phr + ['and']
-        phr = phr[:len(phr) - 1]
+            
+        phr = phr[:len(phr) - 1] #rm last and
+        
     return phr
 
 

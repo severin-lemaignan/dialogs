@@ -8,6 +8,10 @@ from dialog import Dialog
 
 from pyoro import Oro
 
+# raquel
+from sentence import *
+from parsing.parser import Parser
+
 #sentence="take the blue cube."
 #sentence="give me the small orange bottle."
 #sentence="help me with this blueish thing."
@@ -89,6 +93,44 @@ class TestDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
 
         self.assertTrue(self.check_results(res, expected_result))
+        
+    def test_verbalize1(self):
+        print('\n-------- verbalize ----------\n')
+        myP = Parser()
+                            
+        stmt = "the cup is on the desk"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+
+        stmt = "the green bottle is next to Joe"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+
+        stmt = "give me the green banana"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+        
+        stmt = "put the yellow banana on the shelf"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+
+        #sentence = Sentence('w_question',
+                            #'place',
+                            #[Nominal_Group(['the'],  ['son'],['old','big'],
+                                            #[Nominal_Group(['my'],['aunt'],None,None,None)], None),
+                             #Nominal_Group(['the'],  ['father'],[],None, None)],
+                            #Verbal_Group(['be'], None,'present simple',None, None,['today'], None, None, None))
+        #self.dialog._verbalizer.verbalize(sentence)
+                            
+        
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,

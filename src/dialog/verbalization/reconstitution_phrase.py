@@ -81,19 +81,24 @@ def y_o_question(analyse):
     verbe = recup_string(analyse.sv.vrb_main[0])
     phrase = recuperation_element.conjuguer_verbe_ques(analyse.sn,
             analyse.sv.vrb_tense, verbe, phrase, analyse.sv.vrb_adv)
+
     if analyse.sv.state == 'negative':
         phrase = [phrase[0]] + ['not'] + phrase[1:]
+        
     phrase += recuperation_element.gr_nominal(analyse.sv.d_obj)
     phrase += recuperation_element.reconsitu_indirect_compl(analyse.sv.i_cmpl)
     phrase += (analyse.sv.advrb if analyse.sv.advrb else [])
+
     if analyse.sv.sv_sec:
         phrase += ['to'] + analyse.sv.sv_sec.vrb_adv \
                   + recup_string(analyse.sv.sv_sec.vrb_main[0])
         phrase += recuperation_element.gr_nominal(analyse.sv.sv_sec.d_obj)
         phrase += recuperation_element.reconsitu_indirect_compl(analyse.sv.sv_sec.i_cmpl)
         phrase += analyse.sv.sv_sec.advrb
+        
     if analyse.sv.vrb_sub_sentence:
         phrase += traite_sub(analyse.sv.vrb_sub_sentence)
+    
     return phrase
 
 
