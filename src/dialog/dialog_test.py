@@ -99,6 +99,7 @@ class TestDialog(unittest.TestCase):
 
         self.assertTrue(self.check_results(res, expected_result))
 
+    """
     def test_sentence3(self):
         
         print("\n#############################################\n")
@@ -122,9 +123,10 @@ class TestDialog(unittest.TestCase):
         ###
         expected_result = [ 'banana hasFeature good']
         ###
-        
+    
 
         self.assertTrue(self.check_results(res, expected_result))
+    """
         
     def test_verbalize1(self):
         
@@ -147,11 +149,12 @@ class TestDialog(unittest.TestCase):
         self.assertEquals(stmt, res)
 
         stmt = "give me the green banana"
+        expected_result = "give the green banana to me"
         sentence = myP.parse(stmt.split())
         res = self.dialog._verbalizer.verbalize(sentence[0])
         print 'input: ', stmt
         print 'output:', res
-        self.assertEquals(stmt, res)
+        self.assertEquals(expected_result, res)
         
         stmt = "put the yellow banana on the shelf"
         sentence = myP.parse(stmt.split())
@@ -169,7 +172,7 @@ class TestDialog(unittest.TestCase):
         #self.dialog._verbalizer.verbalize(sentence)
 
 
-    def tearDown():
+    def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
         
@@ -178,4 +181,5 @@ class TestDialog(unittest.TestCase):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")
+    
     unittest.main()
