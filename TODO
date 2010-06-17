@@ -14,3 +14,7 @@ Dialog TODO list for release 1.0
 - question handler (for question, try to answer them with ORO)
 [DONE] - glue-ing parsing + resolution + analysis + handling
 - input/output module for supervision
+
+- Clarify which members of sentence are list, which are single element.
+For instance, sn.noun is a list. if we have several nouns (like in "toto and 
+tata"), it would be maybe easier to create new sn instead of adding nouns.
