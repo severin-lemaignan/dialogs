@@ -73,24 +73,31 @@ class Discrimination():
     # INPUT:
     # - agent
     # - object list
+    # - currentDesc: list of already used descriptors
     # - zPartial: if 1, then partial discriminants are also returned
     # OUTPUT:
     # - discriminant: [C, discriminat] if complete, or [P, discriminant] if partial
+    #   The new discriminant should be different from the ones already known
     # -----------------------------------------------------------------------------#
-    def get_discriminant(self, agent, objL, zPartial):
+    def get_discriminant(self, agent, objL, currentDesc, zPartial):
         if agent == "myself":
             discriminants = self.oro.discriminate(objL)
         else:
             discriminants = self.oro.discriminateForAgent(agent, objL)
         
         logging.debug('discriminants = ' + str(discriminants))
-        complete_disc = discriminants[0]
+        complete_disc = discriminants[0] 
         partial_disc = discriminants[1]
 
         if complete_disc:
-            return complete_disc[0]
+            res =  filter(lambda x: x not in currentDesc, complete_disc)
         elif partial_disc and zPartial:
-            return partial_disc[0]
+            res = filter(lambda x: x not in currentDesc, partial_disc)
+        else:
+            res = None
+            
+        if res:
+            return res[0]
         else:
             return None
 
@@ -114,17 +121,20 @@ class Discrimination():
         # bug in oro doesn't allow to search discriminants base on other agents models!!
         # we cannot search in all agents, but only in robot's model
 #        for agent_desc in description:
-#            descriptor = self.get_discriminant(agent_desc[0], objL, partial_disc)
+#            currentDescriptors = map(lambda x: x.split()[1], agent_desc[2])
+#            descriptor = self.get_discriminant(agent_desc[0], objL, currentDescriptors, partial_disc)
 #
 #            if descriptor:
 #                agent = agent_desc[0]
 #                break
 
         agent = "myself"
-        descriptor = self.get_discriminant(description[0][0], objL, partial_disc)
+        currentDescriptors = map(lambda x: x.split()[1], description[0][2])
+        descriptor = self.get_discriminant(description[0][0], objL, currentDescriptors, partial_disc)
 
         return agent, descriptor
 
+    
     # -- get_values_for_descriptor ------------------------------------------------#
     # Creates the information to be sent to user based on the discriminant found.
     #
@@ -139,13 +149,22 @@ class Discrimination():
 
         # get values for each object
         for obj in objL:
-            if agent == "myself":
-                val = self.oro.find('?val','[' + obj + ' ' + descriptor + ' ?val]')
+            # if the discriminant is type, then look for the directClass of the obj (first found)
+            # how should this work for different agents? There is no directClassForAgent
+            # probably won't be necessary since all the knowledge of the human is part
+            # of the robot's knowledge as well. Then we can obtain this information 
+            # directly from the robot itself.
+            if descriptor == 'rdf:type':
+                val = self.oro.getDirectClassesOf(obj).keys()
             else:
-                val = self.oro.findForAgent(agent, '?val','[' + obj + ' ' + descriptor + ' ?val]')
+                if agent == "myself":
+                    val = self.oro.find('?val','[' + obj + ' ' + descriptor + ' ?val]')
+                else:
+                    val = self.oro.findForAgent(agent, '?val','[' + obj + ' ' + descriptor + ' ?val]')
 
             valL.append(val[0])
 
+        # we make a set to remove repeated elements
         return list(set(valL))
 
     # -- CLARIFY ------------------------------------------------------------------#
