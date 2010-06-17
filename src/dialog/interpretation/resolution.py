@@ -21,8 +21,59 @@ class Resolver:
      action_matcher module.
     
     """
+    
+    def resolve_references(self, nominal_group, current_speaker, current_object):
+        
+        if nominal_group._resolved: #already resolved: possible after asking human for more details.
+            return nominal_group
+        
+        #TODO: noun[0] is bad! noun should be changed to be a single value instead of an array
+        if current_speaker and nominal_group.noun[0].lower() in ['me', 'I']:
+            logging.debug("Replaced \"me\" or \"I\" by \"" + current_speaker + "\"")
+            nominal_group.id = current_speaker
+            nominal_group._resolved = True
+        
+        if nominal_group.noun[0].lower() in ['you']:
+            logging.debug("Replaced \"you\" by \"myself\"")
+            nominal_group.id = 'myself'
+            nominal_group._resolved = True
+        
+        if current_object and nominal_group.noun[0].lower() in ['it']:
+            logging.debug("Replaced the anaphoric reference \"it\" by " + current_object)
+            nominal_group.id = current_object
+            nominal_group._resolved = True
+        
+        return nominal_group
+    
+    def resolve_groups_references(self, array_sn, current_speaker, current_object):
+        #TODO: We should start with resolved_sn filled with sentence.sn and replace
+        # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
+        resolved_sn = []
+        for sn in array_sn:
+            resolved_sn.append(self.resolve_references(sn, current_speaker, current_object))
+
+        return resolved_sn
+            
     def references_resolution(self, sentence, current_speaker, current_object):
-        logging.debug("References and anaphors resolution not yet implemented")
+        logging.debug("Resolving references and anaphors...")
+        
+        if sentence.sn:
+            sentence.sn = self.resolve_groups_references(sentence.sn, current_speaker, current_object)
+        
+        if sentence.sv.d_obj:
+            sentence.sv.d_obj = self.resolve_groups_references(sentence.sv.d_obj, 
+                                                                current_speaker, 
+                                                                current_object)
+        
+        resolved_i_cmpl = []
+        for i_cmpl in sentence.sv.i_cmpl:
+            i_cmpl.nominal_group = self.resolve_groups_references(i_cmpl.nominal_group, 
+                                                            current_speaker, 
+                                                            current_object)
+            resolved_i_cmpl.append(i_cmpl)
+        
+        sentence.sv.i_cmpl = resolved_i_cmpl
+
         return sentence
     
     def resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
