@@ -45,23 +45,25 @@ class Resolver:
         id = discriminator.clarify(description)
         logging.debug("Hurra! Found \"" + id + "\"")
         
-        return id
+        nominal_group.id = id
+        nominal_group._resolved = True
+        
+        return nominal_group
     
     def resolve_groups_nouns(self, array_sn, current_speaker, discriminator, builder):
         #TODO: We should start with resolved_sn filled with sentence.sn and replace
         # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
         resolved_sn = []
         for sn in array_sn:
-            sn.id = self.resolve_nouns(sn, current_speaker, discriminator, builder)
-            sn._resolved = True
-            resolved_sn.append(sn)
+            resolved_sn.append(self.resolve_nouns(sn, current_speaker, discriminator, builder))
+
         return resolved_sn
         
     def noun_phrases_resolution(self, sentence, current_speaker):
         
         builder = StatementBuilder(current_speaker)
         discriminator = Discrimination()
-        
+
         if sentence.sn:
             sentence.sn = self.resolve_groups_nouns(sentence.sn, current_speaker, discriminator, builder)
         
