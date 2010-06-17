@@ -16,7 +16,7 @@ class ContentAnalyser:
     def analyse(self, sentence, current_speaker):
         if sentence.data_type == 'imperative':
             logging.debug("Processing the content of an imperative sentence")
-            self.process_order(sentence, current_speaker)
+            return self.process_order(sentence, current_speaker)
             
     def process_order(self, sentence, current_speaker):
         flags = ['order', '', '', '', '', '', []]
@@ -27,6 +27,8 @@ class ContentAnalyser:
         logging.info("Generated statements: ")
         for s in stmts:
             logging.info(">> " + s)
+        
+        return stmts
 
 def unit_tests():
     """This function tests the main features of the class ContentAnalysis"""
