@@ -6,7 +6,7 @@ import os.path
 from dialog_exceptions import UnknownVerb
 
 #This value is overridden in dialog.py. Only useful to test parser.py alone.
-DATA_DIR = 'share/dialog'
+DATA_DIR = '/home/slemaign/softs-local/dialog/share/dialog'
 
 def singleton(cls):
     instances = {}
@@ -68,7 +68,6 @@ class VerbEntry:
         
         for role in self.roles:
             if role.preposition == prep:
-                self.roles.remove(role)
                 return role
         return None
             
@@ -138,7 +137,7 @@ class ThematicRolesDict:
             raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
         
         if not role:
-            return role
+            return None
             
         return (" " + role.id + " ") if with_spaces else role.id
     

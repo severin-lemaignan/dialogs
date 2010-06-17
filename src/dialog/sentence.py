@@ -109,7 +109,7 @@ class Indirect_Complement:
         
     def resolved(self):
         return  reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x.resolved(), self.nominal_group), 
+                        map(lambda x: x._resolved, self.nominal_group), 
                         True)
         
     def __str__(self):
@@ -162,13 +162,13 @@ class Verbal_Group:
         self._resolved = False
         
     def resolved(self):
-        return  self.resolved \
+        return  self._resolved \
                 and \
                 reduce(lambda c1,c2: c1 and c2, map(lambda x: x._resolved, self.d_obj), True) \
                 and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x._resolved, self.i_cmpl), True) \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.i_cmpl), True) \
                 and \
-                self.sv_sec.resolved() if self.sv_sec else True \
+                (self.sv_sec.resolved() if self.sv_sec else True) \
                 and \
                 reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
     

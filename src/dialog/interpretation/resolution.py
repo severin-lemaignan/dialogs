@@ -59,7 +59,7 @@ class Resolver:
         
     def noun_phrases_resolution(self, sentence, current_speaker):
         
-        builder = StatementBuilder()
+        builder = StatementBuilder(current_speaker)
         discriminator = Discrimination()
         
         if sentence.sn:
@@ -87,6 +87,7 @@ class Resolver:
         
         resolved_verbs = []
         for verb in verbal_group.vrb_main:
+            logging.debug("* \"" + verb + "\"")
             try:
                 resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
                 if verb == resolved_verb:
@@ -109,6 +110,7 @@ class Resolver:
         return verbal_group
     
     def verbal_phrases_resolution(self, sentence):
+        logging.debug("Resolving verbs...")
         sentence.sv = self.resolve_verbs(sentence.sv)
         
         return sentence

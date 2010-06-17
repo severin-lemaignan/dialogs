@@ -16,9 +16,9 @@ from dialog_exceptions import GrammaticalError
 
 class StatementBuilder:
     
-    def __init__(self):
+    def __init__(self, current_speaker = None):
         self._sentence = None
-        self._current_speaker = None
+        self._current_speaker = current_speaker
         self._flags = {}
         self._statements = []
 
@@ -283,24 +283,24 @@ class StatementBuilder:
         #indirect complement and adverbials processing
         if verbalGroup.i_cmpl != []:
             for i_cmpl in verbalGroup.i_cmpl:
-                
-                i_cmpl_Id = i_cmpl.nominal_group.id
 
-                
                 #case 1: the i_cmpl is refering to a person or a thing: no preposition ''
                 if not i_cmpl.prep:
-                    if self._flags[0] == 'order':
-                         self._statements.append(sitId + 
-                                                thematic_roles.get_next_cmplt_role(verb, True) + 
-                                                i_cmpl_Id)
+                    if self._flags[0] == 'order': #TODO: what else?
+                        role = thematic_roles.get_next_cmplt_role(verb, True)
+                        for ic_noun in i_cmpl.nominal_group:
+                             self._statements.append(sitId + role + ic_noun.id)
+
                 #case 2: Do we have a thematic role associated to the preposition?
-                elif thematic_roles.get_cmplt_role_for_preposition(verb, True):
-                    self._statements.append(sitId + 
-                                            thematic_roles.get_cmplt_role_for_preposition(verb, True) + 
-                                            i_cmpl_Id)
+                elif thematic_roles.get_cmplt_role_for_preposition(verb, i_cmpl.prep[0]):
+                    role = thematic_roles.get_cmplt_role_for_preposition(verb, i_cmpl.prep[0], True)
+                    for ic_noun in i_cmpl.nominal_group:
+                         self._statements.append(sitId + role + ic_noun.id)
+
                 #case 3: Don't know what to do: build a relation from "is" + preposition (like "isIn")
                 else:
-                    self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize()+" "+i_cmpl_Id)
+                    for ic_noun in i_cmpl.nominal_group:
+                         self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
                         
         #adverbs processing
         if verbalGroup.advrb != []:
