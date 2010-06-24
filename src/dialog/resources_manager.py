@@ -6,7 +6,7 @@ import os.path
 from dialog_exceptions import UnknownVerb
 
 #This value is overridden in dialog.py. Only useful to test parser.py alone.
-DATA_DIR = '/home/slemaign/softs-local/dialog/share/dialog'
+DATA_DIR = '../../share/dialog/'
 
 def singleton(cls):
     instances = {}
