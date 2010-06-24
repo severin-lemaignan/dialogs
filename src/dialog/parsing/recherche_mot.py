@@ -23,7 +23,7 @@ def rech_sujet (phrase, pos_dep):
   for j in list_cap_let:
     if phrase[pos_dep][0]==j:
       return [phrase[pos_dep]]
-  if phrase[pos_dep][0]=='next' or phrase[pos_dep][0]=='last':
+  if phrase[pos_dep]=='next' or phrase[pos_dep]=='last':
     nb_pos= nb_pos + analyse_adjectif.position_adj(phrase, pos_dep+1)
     return phrase[pos_dep-1 : nb_pos+pos_dep]
   return []
@@ -131,7 +131,7 @@ def rech_SN (reste_phrase):
       if x[0]==n:
         return [reste_phrase[reste_phrase.index(x)]]
     #il s'agit d'un comple circon, donc on le recupere en tant que groupe nominal
-    if x=='last' or x=='next':
+    if (x=='last' or x=='next') and reste_phrase[reste_phrase.index(x)+1]!='to':
       reste_phrase[reste_phrase.index(x)]='the'
       if rech_sujet (reste_phrase, reste_phrase.index('the'))!=[]:
         aux= [x]+(rech_sujet(reste_phrase, reste_phrase.index('the')))[1:]
@@ -187,3 +187,5 @@ def verbe_action_etat(reste_phrase, list_preposition):
     if j==reste_phrase[0]:
       return 1
   return 0
+
+
