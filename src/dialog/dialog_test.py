@@ -99,7 +99,7 @@ class TestDialog(unittest.TestCase):
 
         self.assertTrue(self.check_results(res, expected_result))
 
-    """
+    
     def test_sentence3(self):
         
         print("\n#############################################\n")
@@ -117,16 +117,16 @@ class TestDialog(unittest.TestCase):
         
         print("\n#############################################\n")
         ####
-        stmt = "the banana is good"
+        stmt = "the yellow banana is good"
         ####
-        res = self.dialog.test('myself', stmt, "the yellow banana")
+        res = self.dialog.test('myself', stmt)
         ###
         expected_result = [ 'banana hasFeature good']
         ###
     
 
         self.assertTrue(self.check_results(res, expected_result))
-    """
+   
         
     def test_verbalize1(self):
         
