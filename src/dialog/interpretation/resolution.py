@@ -63,10 +63,11 @@ class Resolver:
         if sentence.sn:
             sentence.sn = self.resolve_groups_references(sentence.sn, current_speaker, current_object)
         
+        
         if sentence.sv.d_obj:
-            sentence.sv.d_obj = self.resolve_groups_references(sentence.sv.d_obj, 
-                                                                current_speaker, 
-                                                                current_object)
+            sentence.sv.d_obj = self.resolve_groups_references(sentence.sv.d_obj,
+                                                               current_speaker,
+                                                               current_object)
         
         resolved_i_cmpl = []
         for i_cmpl in sentence.sv.i_cmpl:
@@ -121,8 +122,25 @@ class Resolver:
         if sentence.sn:
             sentence.sn = self.resolve_groups_nouns(sentence.sn, current_speaker, discriminator, builder)
         
+        
+        """
+        process d_obj 
+        """
         if sentence.sv.d_obj:
-            sentence.sv.d_obj = self.resolve_groups_nouns(sentence.sv.d_obj, current_speaker, discriminator, builder)
+            """
+            process d_obj : case: the yellow banana is good. yellow_banana hasFeature good. Where good is in the sentence.sv.d_obj[0].adj
+            There is no noun in this  nominal group, so no resolve_groups_nouns here.
+            """
+            if sentence.sv.vrb_main == ["be"] and\
+                     sentence.sv.d_obj[0].adj != [] and\
+                     sentence.sv.d_obj[0].noun == [] and\
+                     sentence.sv.d_obj[0].noun_cmpl == []:
+                               
+                sentence.sv.d_obj[0]._resolved = True
+                sentence.sv.d_obj[0].id = sentence.sn[0].id
+                
+            else: sentence.sv.d_obj = self.resolve_groups_nouns(sentence.sv.d_obj, current_speaker, discriminator, builder)
+        
         
         resolved_i_cmpl = []
         for i_cmpl in sentence.sv.i_cmpl:
@@ -145,7 +163,9 @@ class Resolver:
         for verb in verbal_group.vrb_main:
             logging.debug("* \"" + verb + "\"")
             try:
-                resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
+                if verb == "be": resolved_verb = "be"
+                else: resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
+                
                 if verb == resolved_verb:
                     logging.debug("Keeping \"" + verb + "\"")
                 else:
