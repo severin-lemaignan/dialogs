@@ -19,7 +19,20 @@ class StatementBuilder:
     def __init__(self, current_speaker = None):
         self._sentence = None
         self._current_speaker = current_speaker
+        
+        """
+        flags helps for bilding queries and saving some extra informations
+        flags[O] takes the value 'query' or 'inform'. the latter one is the default value.
+        flags[1] takes the sentence aim if flags[O] is query.
+        flags[2] takes the value 'TOBE' if the main verb is a state verb
+        flags[3] takes the value 'LABEL' if a query involves searching for a label. E.g. Who is the man next to me? -> Ramses
+        flags[4] takes the value 'NO_SN' if a w_question has sentence.sn == [] . it helps for this type of question: Who did give you a ball?
+        flags[5] takes the value 'UNKNOWN' when a concept occurs for the first time in the ontology. E.g give me that map -> if the robot doesnt know what is a map, the flag is assigned
+        flags[6] takes the list of all the concepts not known yet in the ontology. It is incremented when flags[5] is assigned to 'UNKNOWN'.
+        flags[7] takes list of all unresolved IDs and sent to the Discriminant module. E.g the bottle is on the table. -> we may like to know which bottle we mention , in case there are more than 2.
+        """
         self._flags = {}
+        #self.flags = ['inform', None, None, None, None, None, [], []]
         self._statements = []
 
     def clear_statements(self):
@@ -46,6 +59,9 @@ class StatementBuilder:
     """
     generate a string of k characters of the range [a-zA-Z0-9]
     """
+    
+    
+    
     def generateId(self, k):
         sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         sample = random.sample(sequence, k)
@@ -69,7 +85,7 @@ class StatementBuilder:
                 pass
 
         return generatedId
-
+        
 
     def processOrderSentence(self, aSentence, idSender, flags):
         #The sentence is in the imperative form. A subject might not be declared.
@@ -98,18 +114,18 @@ class StatementBuilder:
         self._flags = flags
         
         subjId = self.generateId(2) + '_SBJ'
+
         if aSentence.sn:
-            subjId = aSentence.sn.id
-
-        #Done because of case III.4.4 in buildObjectInteractionFromObjectInteraction
-        else:
-            if self._flags[0] == 'query':
-                subjId = '?any'
-                self._flags[4] = 'NO_SN'
-
+            subjId = aSentence.sn[0].id
+    
         #process sentence.sv
-        if aSentence.sv:
-            self.processVerbalGroup(aSentence.sv, subjId, '')
+        if aSentence.sv != None:
+            self.processVerbalGroup(subjId, '')
+
+
+        return self._statements
+    
+          
 
     def processNominalGroup(self, nominalGroups, mainId, flags = None):
         if flags:
@@ -164,7 +180,7 @@ class StatementBuilder:
 
                 #process the noun phrase complements
                 if nominalGroup.noun_cmpl:
-                    #we vonlontary choose noun_cmpl_Id of a size bigger than mainId, inorder to make sure they would not be the same
+                    #we choose noun_cmpl_Id of a size bigger than mainId, in order to make sure they would not be the same
                     #And we suffix it with _NCMPL
                     noun_cmpl_Id = self.generateId(len(mainId)+1) + '_NCMPL'
                     self.processNominalGroup(nominalGroup.noun_cmpl, noun_cmpl_Id)
@@ -222,11 +238,13 @@ class StatementBuilder:
         
         desires_group = ResourcePool().goal_verbs
         thematic_roles = ResourcePool().thematic_roles
+        does_group = ['do', 'perform', 'act']
+        
+        
 
-
-        #we vonlontary choose sitId of a size bigger than subject, inorder to make sure they would never be the same
+        #we choose sitId of a size bigger than subject, in order to make sure they would never be the same
         #and we suffix it with _SIT  as Situation = StaticSituation|Events
-        sitId = self.generateId(len(subject)+1) + '_SIT'
+        sitId = self.generateId(5) + '_SIT'
         
         if verbalGroup.vrb_main != []:
             verb = verbalGroup.vrb_main[0]
@@ -244,6 +262,14 @@ class StatementBuilder:
                     #secondary verb processing. E.g in "I want you to take a bottle". 'take' is the secondary verb
                     if verbalGroup.sv_sec:
                         self.processVerbalGroup(verbalGroup.sv_sec, subject,'', self._current_speaker, file)
+                
+                #this is going to be used in order to process question with do. E.g. what are you doing?
+                elif verb in does_group and flags[0] == 'query':
+                    self._statements.append(mainId + " performs " + sitId)
+                    self._statements.append(sitId + " rdf:type ?any")
+                    flags[2] = "VRB_PERFRM"
+                    
+                    
                 else:
                     self._statements.append(subject + " performs " + sitId)
                     self._statements.append(sitId + " rdf:type " + verbalGroup.vrb_main[0].capitalize())
@@ -271,8 +297,7 @@ class StatementBuilder:
                 else:
                     objId = d_obj.id
 
-                #if a verb is an action verb, then we are dealing with a situation involving some objects
-                
+                #if a verb is an action verb, then we are dealing with a situation involving some objects 
                 if re.findall(r'^be$|^Be$', verb) == []:
                     self._statements.append(sitId + role + objId)
                     
@@ -280,6 +305,9 @@ class StatementBuilder:
                 else:
                     self.processNominalGroup(verbalGroup.d_obj, subject)
                 
+
+
+
         #indirect complement and adverbials processing
         if verbalGroup.i_cmpl != []:
             for i_cmpl in verbalGroup.i_cmpl:
@@ -301,6 +329,8 @@ class StatementBuilder:
                 else:
                     for ic_noun in i_cmpl.nominal_group:
                          self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
+
+
                         
         #adverbs processing
         if verbalGroup.advrb != []:
@@ -309,7 +339,7 @@ class StatementBuilder:
 
 
     def processAdverb(self, advrb, mainId):
-        file.write('\n')
+        pass
 
 
 
@@ -335,7 +365,7 @@ class StatementBuilder:
             age
             duration
             frequency
-            quatity
+            quantity
             distance
             invitation
             opinion
@@ -358,11 +388,11 @@ class StatementBuilder:
             aims['people'] = " rdf:type ?any, ?any rdfs:subClassOf owl:Thing"
             
                   
-        if self._flags[4] != 'NO_SN' :
+        if self._flags[4] != 'NO_SN' and flags[2] != 'VRB_PERFRM' :
             if self._flags[1] in aims.keys():
-                file.write('\n' + id + aims[self._flags[1]])
+                self._statements.append(id + aims[self._flags[1]])
             else:
-                file.write('\n' + id + ' ?data has'+self._flags[1].capitalize() + ' ?any')
+                self._statements.append(id + ' ?data has'+self._flags[1].capitalize() + ' ?any')
 
 def unit_tests():
 	"""This function tests the main features of the class StatementBuilder"""
@@ -370,3 +400,5 @@ def unit_tests():
 
 if __name__ == '__main__':
 	unit_tests()
+    
+    
