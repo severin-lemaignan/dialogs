@@ -14,7 +14,6 @@ list_preposition = [
     'on',
     'at',
     'from',
-    'to',
     'about',
     'for',
     'next',
@@ -44,12 +43,15 @@ def verif_prepo(reste_phrase, objet):
     for i in list_preposition:
         if i == reste_phrase[reste_phrase.index(objet[0])]:
             return objet
+	if i == reste_phrase[reste_phrase.index(objet[0]) - 1]:
+            return [reste_phrase[reste_phrase.index(objet[0]) -1]] \
+                + objet
+	if i == reste_phrase[reste_phrase.index(objet[0]) - 2]:
+            return [convert_string([reste_phrase[reste_phrase.index(objet[0])-2]]+[reste_phrase[reste_phrase.index(objet[0])-1]] )] \
+                + objet
     if reste_phrase.index(objet[0]) == 0:
         return []
-    for i in list_preposition:
-        if i == reste_phrase[reste_phrase.index(objet[0]) - 1]:
-            return [reste_phrase[reste_phrase.index(objet[0]) - 1]] \
-                + objet
+        
     return []
 
 
@@ -131,7 +133,7 @@ def recupere_obj_iobj(reste_phrase, vg):
             if len(verif_prepo(reste_phrase, objet)) == len(objet):
                 prep = []
             else:
-                prep = [reste_phrase[reste_phrase.index(objet[0]) - 1]]
+                prep = [verif_prepo(reste_phrase, objet)[0]]
             gr_objet = []
             while objet != []:
 
@@ -212,30 +214,8 @@ def cas_ph_etat(reste_phrase, vg):
     gr_objet = []
 
   # on utilise le meme code de la fonction de dessus (ou presque)
-
-    if recherche_mot.rech_sujet(reste_phrase, 0) != []:
-        objet = recherche_mot.rech_sujet(reste_phrase, 0)
-        while objet != []:
-            gr_objet = gr_objet + [recuperer_gr_nom(reste_phrase,
-                                   objet, reste_phrase.index(objet[0]))]
-            if gr_objet[len(gr_objet) - 1].relative != None:
-                reste_phrase = reste_phrase[reste_phrase.index(',')
-                    + 1:]
-            else:
-                reste_phrase = \
-                    recuperer_phrase.recup_phr_sans_gn(reste_phrase,
-                        objet, reste_phrase.index(objet[0]))
-            while len(reste_phrase) != 0 and reste_phrase[0] == 'of':
-                gr_nom = recherche_mot.rech_sujet(reste_phrase, 1)
-                reste_phrase = \
-                    recuperer_phrase.recup_phr_sans_gn(reste_phrase,
-                        gr_nom, 1)
-            if len(reste_phrase) != 0 and reste_phrase[0] == 'and':
-                objet = recherche_mot.rech_sujet(reste_phrase, 1)
-            else:
-                objet = []
-    if len(reste_phrase) != 0 and reste_phrase[0] == 'and':
-        reste_phrase = reste_phrase[1:]
+    reste_phrase=recupere_obj_iobj(reste_phrase, vg)
+    
 
   # les adjectifs sont pris pour des COD (meme sans nom)
 
