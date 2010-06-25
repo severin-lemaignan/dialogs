@@ -167,6 +167,33 @@ class Discrimination():
         # we make a set to remove repeated elements
         return list(set(valL))
 
+    # -- get_type_description ------------------------------------------------------#
+    # Returns the first type of concept in the description.
+    #
+    # INPUT:
+    # - description
+    #
+    # OUTPUT:
+    # - type
+    # - none
+    # -------------------------------------------------------------------------------#
+    def get_type_description(self, description):
+
+        def find(value, seq):
+            for item in seq:
+                itemL = item.split()
+                if value in itemL: 
+                    return itemL[2]
+            return None
+
+        type = None
+        
+        for desc in description:
+            type = find('rdf:type', desc[2])
+            if type: break
+            
+        return type
+    
     # -- CLARIFY ------------------------------------------------------------------#
     # Searches for a new descriptor candidate. The descriptor should be as 
     # discriminating as possible.
@@ -197,30 +224,32 @@ class Discrimination():
             if descriptor:
                 question = None
                 values = self.get_values_for_descriptor(agent, descriptor, objL)
+                object = self.get_type_description(description)
+                if not object: object = 'object'
                 
                 if descriptor == 'hasColor'  or  descriptor == 'mainColorOfObject':
-                    question = 'Which color is the object? '
+                    question = 'Which color is the ' + object + '? '
                     
                 elif descriptor == 'hasShape':
-                    question = 'Which shape has the object? '
+                    question = 'Which shape has the ' + object + '? '
 
                 elif descriptor == 'hasSize':
-                    question = 'Which size is the object? ' 
+                    question = 'Which size is the ' + object + '? '
 
                 elif descriptor == 'isOn':
-                    question = "Is the object on "
+                    question = 'Is the ' + object + ' on '
 
                 elif descriptor == 'isIn':
-                    question = "Is the object in "
+                    question = 'Is the ' + object + ' in '
                     
                 elif descriptor == 'isNexto':
-                    question = "Is the object next to "
+                    question = 'Is the ' + object + ' next to '
 
                 elif descriptor == 'isAt':
-                    question = "Is the object at "
+                    question = 'Is the ' + object + ' at '
 
                 elif descriptor == 'isLocated'  or  descriptor == 'isAt':
-                    question = 'Where is the object placed wrt to'
+                    question = 'Where is the ' + object + ' placed wrt to'
                                         
                     if agent == 'myself':
                         question += ' me? '
