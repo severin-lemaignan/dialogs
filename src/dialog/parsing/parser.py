@@ -8,6 +8,7 @@
 import logging
 
 import analyse_phrase
+import recherche_mot
 
 class Parser:
     def __init__(self):
@@ -19,8 +20,33 @@ class Parser:
         logging.debug("Parsing output:\n" + str(sentence))
         
         return [sentence]
+    
         
-
+    def concatener (self,phrase1, phrase2, phrase3):
+        phrase=[]
+        i=0
+        if phrase3[0:2]==['I',"don't",'know']:
+            return phrase2
+        elif len(phrase2)!=0:
+            if phrase2[len(phrase2)-1]== 'one':
+                gr_mom=recherche_mot.rech_SN(phrase3)
+                word=gr_mom[len(gr_mom)-1]
+                phrase2[len(phrase2)-1]=word[:len(word)-1]
+            while i<len(phrase1):
+                if phrase1[i] == phrase2[0]:
+                    if phrase2[len(phrase2)-1]==phrase1[i+1]:
+                        phrase=phrase+phrase2+phrase1[i+2:]
+                        break
+                phrase=phrase+[phrase1[i]]
+                i=i+1
+            
+            return phrase
+        else:
+            return phrase1
+            
+    
+    
+    
 def unit_tests():
     """This function tests the main features of the class Parser
     
