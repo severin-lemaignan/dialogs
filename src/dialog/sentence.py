@@ -176,7 +176,7 @@ class Verbal_Group:
         res =   'vrb_main:' + str(self.vrb_main) + "\n" + \
                 'vrb_tense:' + str(self.vrb_tense) + "\n" + \
                 'advrb: ' + str(self.advrb) + "\n" + \
-                'vrb_adv' + str(self.vrb_adv) + "\n"
+                'vrb_adv: ' + str(self.vrb_adv) + "\n"
                 
         if self.d_obj:
             for cmpl in self.d_obj:
