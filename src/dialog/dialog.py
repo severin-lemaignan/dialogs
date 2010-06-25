@@ -50,6 +50,7 @@ class Dialog(Thread):
         
         #true when, during an interaction, more infos is needed.
         self.waiting_for_more_info = False
+        self.current_output = None
         
         #the object currently discussed. Used to resolve anaphors (like 'this 
         # one').
@@ -64,9 +65,9 @@ class Dialog(Thread):
     
     def run(self):
         while self.go_on:
-            
-            try:
-                input = self._nl_input_queue.get(block = False).strip()
+                  
+            try:               
+                input = self._nl_input_queue.get(block = False).strip()                
                 self._logger.info("0/ Got NL input \"" + input + "\"")
                 self.in_interaction = True
                 self.waiting_for_more_info = False
@@ -88,8 +89,11 @@ class Dialog(Thread):
                 if isinstance(output, Sentence):
                     output = self._verbalizer.verbalize(output)
                 sys.stdout.write(str(output) + "\n")
+                self.current_output = output
+                  
             except Empty:
                 pass
+            
             
     def stop(self):
         while(not self._nl_input_queue.empty()):
@@ -101,7 +105,14 @@ class Dialog(Thread):
             self.current_speaker = speaker
         else:
             self.current_speaker = self._speaker.get_current_speaker_id()
-            
+        
+        #Here, we proceed a sentence that has not been resolved. It is saved in self.active_sentence.
+        #The new input string is concatenated with the former one  
+        if self.waiting_for_more_info:
+            prev_sentence = self._verbalizer.verbalize(self.active_sentence)
+            input_splited = self._parser.concatener(prev_sentence.split(), input.split(), self.current_output.lower().split())           
+            input = ' '.join(input_splited)    
+        
         self._nl_input_queue.put(input)
         
     def test(self, speaker, input, answer = None):
