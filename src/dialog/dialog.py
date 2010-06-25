@@ -116,6 +116,7 @@ class Dialog(Thread):
             if answer and self.waiting_for_more_info:
                 logging.debug("Automatically answering: " + answer)
                 self.input(answer, speaker)
+                answer = None
             pass
         
         return self.last_stmts_set
