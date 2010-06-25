@@ -98,20 +98,23 @@ class TestDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
 
         self.assertTrue(self.check_results(res, expected_result))
+        
 
-    
+    """
     def test_sentence3(self):
         
         print("\n#############################################\n")
         ####
-        stmt = "the yellow banana is big"
+        stmt = "the banana is big"
         ####
-        expected_result = [ 'banana hasSize big']
+        expected_result = [ '* hasSize big']
         ###
                             
         res = self.dialog.test('myself', stmt)
 
         self.assertTrue(self.check_results(res, expected_result))
+    
+    
     
     def test_sentence4(self):
         
@@ -126,6 +129,36 @@ class TestDialog(unittest.TestCase):
     
 
         self.assertTrue(self.check_results(res, expected_result))
+   
+    """
+    
+    def test_sentence5(self):
+        
+        print("\n#############################################\n")
+        ####
+        stmt = "the banana is good"
+        answer = "the green one"
+        ####
+        res = self.dialog.test('myself', stmt, answer)
+        ### here enter: the green banana 
+        expected_result = [ 'green_banana hasFeature good']
+        ###
+    
+    def test_sentence6(self):
+        
+        print("\n#############################################\n")
+        ####
+        stmt = "the banana is good"
+        answer = "the yellow one"
+        ####
+        res = self.dialog.test('myself', stmt, answer)
+        ### here enter: the yellow banana 
+        expected_result = [ 'banana hasFeature good']
+        ###
+    
+
+        self.assertTrue(self.check_results(res, expected_result))
+   
    
         
     def test_verbalize1(self):
@@ -182,4 +215,11 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")
     
-    unittest.main()
+    # all tests
+    #unittest.main()
+    
+    # executing only some tests
+    suiteFew = unittest.TestSuite()
+    suiteFew.addTest(TestDialog("test_sentence5"))
+    suiteFew.addTest(TestDialog("test_sentence6"))
+    unittest.TextTestRunner(verbosity=2).run(suiteFew)
