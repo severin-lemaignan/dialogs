@@ -14,9 +14,11 @@ list_preposition = [
     'on',
     'at',
     'from',
+    'to',
     'about',
     'for',
     'next',
+    'next+to',
     'last',
     'ago',
     ]
@@ -45,9 +47,6 @@ def verif_prepo(reste_phrase, objet):
             return objet
 	if i == reste_phrase[reste_phrase.index(objet[0]) - 1]:
             return [reste_phrase[reste_phrase.index(objet[0]) -1]] \
-                + objet
-	if i == reste_phrase[reste_phrase.index(objet[0]) - 2]:
-            return [convert_string([reste_phrase[reste_phrase.index(objet[0])-2]]+[reste_phrase[reste_phrase.index(objet[0])-1]] )] \
                 + objet
     if reste_phrase.index(objet[0]) == 0:
         return []

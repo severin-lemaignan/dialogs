@@ -170,52 +170,52 @@ def upper_to_lower(sentence):
 
     frt_wd = ResourcePool().sentence_starts
     for j in list_cap_let:
-	if sentence[0][0]==j:
-    		#We convert uppercase to lowercase if it is not 'I'
-    		if sentence[0]=='I':
-        		return sentence
-    		else:
-        		sentence[0]=sentence[0][0].lower()+sentence[0][1:]
+            if sentence[0][0]==j:
+                #We convert uppercase to lowercase if it is not 'I'
+                if sentence[0]=='I':
+                    return sentence
+                else:
+                    sentence[0]=sentence[0][0].lower()+sentence[0][1:]
 
-	    	#If we find the word in the Beginning_sentence list
-	    	for v in frt_wd:
-			if sentence[0]==v[0]:
-			    	return sentence
+                    #If we find the word in the Beginning_sentence list
+                    for v in frt_wd:
+                        if sentence[0]==v[0]:
+                            return sentence
 
-   	    	#If there is a nominal group
-	    	if recherche_mot.rech_sujet (sentence, 0)!=[]:
-			return sentence
+                    #If there is a nominal group
+                    if recherche_mot.rech_sujet (sentence, 0)!=[]:
+                        return sentence
+                    
 
-		#It a propre name, we convert lowercase to uppercase
-	    	sentence[0]=sentence[0][0].upper()+sentence[0][1:]
-	    	return sentence
+                    #It a propre name, we convert lowercase to uppercase
+                    sentence[0]=sentence[0][0].upper()+sentence[0][1:]
+                    
+    return sentence
 
 
-def split_reply(reply):
-
-    word=''
-    reply_splited=[]
-
-    for i in reply:
-        #Creation of the word
-        if i!=' ':
-            word=word+i
-        #Concatenation of the word in the list
-        else:
-            reply_splited=reply_splited+[word]
-            word=''
-
-    #For the last word
-    reply_splited=reply_splited+[word]
-    return reply_splited
-
+def next_to(sentence):
+    
+    
+    
+    
+    i=0
+    while i<len(sentence)-2:
+        if sentence[i]=='next' and sentence[i+1]=='to':
+            sentence=sentence[:i]+['next+to']+sentence[i+2:]
+            
+        i=i+1
+    return sentence
 
 def analyse_phr(reply):
+    
+   
     sentence=[]
     for j in reply:
         if j.endswith('.') or j.endswith('?') or j.endswith('!'):
             sentence=sentence+[j[:len(j)-1]] + [j[len(j)-1]]
-            upper_to_lower(sentence)
+            sentence=upper_to_lower(sentence)
+           
+            sentence=next_to(sentence)
 	    return analysis_phrase(sentence)
             #phrase=trait_penctu(phrase, frt_wd)
             #class_replique
@@ -223,7 +223,9 @@ def analyse_phr(reply):
 
         #If user put space between the last word and the punctuation
         elif j=='.' or j=='?' or j=='!':
-            upper_to_lower(sentence)
+            sentence=upper_to_lower(sentence)
+           
+            sentence=next_to(sentence)
             return analysis_phrase(sentence)
             #phrase=trait_penctu(phrase, frt_wd)
             #class_replique
@@ -234,6 +236,8 @@ def analyse_phr(reply):
 
     #If the user forget the punctuation at the end
     if sentence!=[]:
-        upper_to_lower(sentence)
+        sentence=upper_to_lower(sentence)
+        
+        sentence=next_to(sentence)
         return analysis_phrase(sentence)
 
