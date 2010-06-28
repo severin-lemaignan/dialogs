@@ -16,7 +16,7 @@ from dialog_exceptions import GrammaticalError
 
 class StatementBuilder:
     
-    def __init__(self, current_speaker = None):
+    def __init__(self,current_speaker = None):
         self._sentence = None
         self._current_speaker = current_speaker
         
@@ -103,11 +103,7 @@ class StatementBuilder:
         self._current_speaker = idSender
         self._flags = flags
         
-        if aSentence.sv:
-            
-            print "VERBAL IMPERATIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIVE fefefefge", str(self._sentence)
-            
-            
+        if aSentence.sv:           
             
             self.processVerbalGroup(aSentence.sv, 'myself', '')
         
@@ -119,7 +115,7 @@ class StatementBuilder:
         if not aSentence.resolved():
             raise DialogError("Trying to process an unresolved sentence!")
         
-        self._sentence = aSentence
+        #self._sentence = aSentence
         self._current_speaker = idSender
         self._flags = flags
         
@@ -130,11 +126,7 @@ class StatementBuilder:
     
         #process sentence.sv
         if aSentence.sv != None:
-            
-            
-            print "VERBAL      VVEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRBBBBBBBBB  FERER fefefefge", str(self._sentence)
-            
-            
+                       
             self.processVerbalGroup(aSentence.sv, subjId, '')
 
 
@@ -143,18 +135,7 @@ class StatementBuilder:
           
 
     def processNominalGroup(self, nominalGroups, mainId, flags = None):
-        
-        
-        
-        print "BUGGY TEST GROUPE NOMINAL NOMINAL", str(self._sentence)
-        print "BUGGY TEST NOMINAL", str(nominalGroups[0])   
-                
-        
-        
-        
-        
-        
-        
+              
         if flags:
             self._flags = flags
             
@@ -212,6 +193,7 @@ class StatementBuilder:
                     noun_cmpl_Id = self.generateId(len(mainId)+1) + '_NCMPL'
                     self.processNominalGroup(nominalGroup.noun_cmpl, noun_cmpl_Id)
                     self._statements.append(mainId + " belongsTo " + noun_cmpl_Id)
+            
 
             #process adjectives
             if nominalGroup.adj != []:
@@ -223,33 +205,19 @@ class StatementBuilder:
             #case : the subject of the sentence is complement of the relative clause
             #         e.g. the man that you heard from is my boss
             #               => the man is my boss + you heard from the man
+            
+
             if nominalGroup.relative:
                 #case 1:
-               
-                print "STOOOOOOOOOOOOOOOOOOPPPPPPPPPPP   RELLATIVVVVVVVEEEEE"
-                print "SENTNEFENCECECENNCEN RELLALTTTTT", str(self._sentence)
-                
-                print "RELATIVE FFFFFFLAGS ", str(self._flags)
-                
-                
+                    
                 if nominalGroup.relative.sn == []:
-                    
-                    
-                    
-                    print "CASE 1"
-                    print "CASE 1, BuGGY SV", str(nominalGroup.relative.sv)
+                                      
                     
                     if nominalGroup.relative.sv != None:
                         self.processVerbalGroup(nominalGroup.relative.sv, mainId, '')
                         
                 #case 2:
                 else:
-                    
-                    
-                    print "CASE 2"
-                    
-                    
-                    
                     #process sentence.sn
                     subjId = self.generateId(2) + '_SBJ'
                     self.processNominalGroup(nominalGroup.relative.sn, subjId)
@@ -258,8 +226,10 @@ class StatementBuilder:
                         self.processVerbalGroup(nominalGroup.relative.sv, subjId, mainId)
         
         return self._statements
-
-
+    
+    
+    
+    
 
     def processAdjectives(self, adjectives, mainId):
         """For any adjectives, we add it in the ontology with the objectProperty 
@@ -284,8 +254,6 @@ class StatementBuilder:
         thematic_roles = ResourcePool().thematic_roles
         does_group = ['do', 'perform', 'act']
         
-        print "TEST VEERRRRRRRRRRBAAAAAAAAAllllll"
-
         #we choose sitId of a size bigger than subject, in order to make sure they would never be the same
         #and we suffix it with _SIT  as Situation = StaticSituation|Events
         sitId = self.generateId(5) + '_SIT'
@@ -295,16 +263,7 @@ class StatementBuilder:
             #case 1: the verb is an action verb
             logging.debug("Found an action verb: " + verb)
             if verb != "be":
-                
-                
-                
-                
-                
-                print "BUGGY TEST VERBAL", str(self._sentence)
-                
-                
-                
-                
+                                
                 if self._sentence.data_type == "imperative":
                     
                     self._statements.append(self._current_speaker + " desires " + sitId)
@@ -358,10 +317,6 @@ class StatementBuilder:
                     
                 #otherwise , we are dealing with a state verb
                 else:
-                    
-                    print "PROCESS VERBAL GROUB DOBJ SENTECE", str(self._sentence)
-                    
-                    
                     self.processNominalGroup(verbalGroup.d_obj, subject)
                 
 
@@ -376,18 +331,19 @@ class StatementBuilder:
                     if self._flags[0] == 'order': #TODO: what else?
                         role = thematic_roles.get_next_cmplt_role(verb, True)
                         for ic_noun in i_cmpl.nominal_group:
-                             self._statements.append(sitId + role + ic_noun.id)
-
+                            self._statements.append(sitId + role + ic_noun.id)
+                           
                 #case 2: Do we have a thematic role associated to the preposition?
                 elif thematic_roles.get_cmplt_role_for_preposition(verb, i_cmpl.prep[0]):
                     role = thematic_roles.get_cmplt_role_for_preposition(verb, i_cmpl.prep[0], True)
                     for ic_noun in i_cmpl.nominal_group:
-                         self._statements.append(sitId + role + ic_noun.id)
+                        self._statements.append(sitId + role + ic_noun.id)
 
                 #case 3: Don't know what to do: build a relation from "is" + preposition (like "isIn")
                 else:
                     for ic_noun in i_cmpl.nominal_group:
-                         self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
+                        if ic_noun.id:
+                            self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
 
 
                         
