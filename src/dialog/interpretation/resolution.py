@@ -85,10 +85,8 @@ class Resolver:
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
             
-        logging.debug("Resolving \"" + str(nominal_group) + "\"")
-
-        stmts = builder.processNominalGroup([nominal_group], '?concept',{0:'query'})
-        
+        logging.debug("Resolving \"" + str(nominal_group) + "\"")      
+        stmts = builder.processNominalGroup([nominal_group], '?concept',{0:'query'})        
         logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
         for s in stmts:
             logging.debug(s)
@@ -117,6 +115,8 @@ class Resolver:
     def noun_phrases_resolution(self, sentence, current_speaker):
         
         builder = StatementBuilder(current_speaker)
+        builder._sentence = sentence
+        
         discriminator = Discrimination()
 
         if sentence.sn:
@@ -153,6 +153,10 @@ class Resolver:
         sentence.sv.i_cmpl = resolved_i_cmpl
             
         return sentence
+    
+    
+    
+    
     
     def resolve_verbs(self, verbal_group):
         
