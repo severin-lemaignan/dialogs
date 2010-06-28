@@ -91,8 +91,8 @@ class Nominal_Group:
                     res += 'noun_cmpl:\n\t' + str(s).replace("\n", "\n\t") + "\n"
             
             if self.relative:
-                for s in self.relative:
-                    res += 'relative:\n\t' + str(s).replace("\n", "\n\t") + "\n"
+                
+                    res += 'relative:\n\t' + str(self.relative).replace("\n", "\n\t") + "\n"
         
         return res
 
