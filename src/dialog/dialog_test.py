@@ -295,12 +295,21 @@ class TestDialog(unittest.TestCase):
         self.assertTrue(self.check_results(res, expected_result))
 
 
+
+
+
+
+
+
+
+
+
     def test_discrimanate5(self):
         
         print("\n##################### test_discrimanate5 ########################\n")
         ####
-        stmt = "get the apple"
-        answer = "get the big orange box"
+        stmt = "get me the yellow banana that is on the shelf ,"
+        #answer = "get the big orange box"
         ####
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
@@ -308,10 +317,46 @@ class TestDialog(unittest.TestCase):
                             '* actsOnObject ORANGEBOX',
                             '* receivedBy myself']
         ###
-        res = self.dialog.test('myself', stmt, answer)
+        res = self.dialog.test('myself', stmt)
         print res
         self.assertTrue(self.check_results(res, expected_result))
-
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+   
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
     def tearDown(self):
         self.dialog.stop()
@@ -328,8 +373,8 @@ if __name__ == '__main__':
     
     # executing only some tests
     suiteFew = unittest.TestSuite()
-    #suiteFew.addTest(TestDialog("test_sentence2"))
-    suiteFew.addTest(TestDialog("test_sentence5"))
+    #suiteFew.addTest(TestDialog("test_sentence1"))
+    #suiteFew.addTest(TestDialog("test_sentence3"))
     #suiteFew.addTest(TestDialog("test_sentence7"))
     #suiteFew.addTest(TestDialog("test_verbalize5"))
     suiteFew.addTest(TestDialog("test_discrimanate5"))
