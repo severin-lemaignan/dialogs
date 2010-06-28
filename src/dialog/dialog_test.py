@@ -58,9 +58,11 @@ class TestDialog(unittest.TestCase):
                     'table2 hasColor blue', 
                     'Banana rdfs:subClassOf Plant',
                     'banana rdf:type Banana',
+                    'banana isOn shelf',
                     'banana hasColor yellow',
                     'green_banana rdf:type Banana',
                     'green_banana hasColor green',
+                    'green_banana isOn table2',
                     'ACCESSKIT rdf:type Box', 'ACCESSKIT hasColor white', 'ACCESSKIT hasSize big',
                     'ORANGEBOX rdf:type Box', 'ORANGEBOX hasColor orange', 'ORANGEBOX hasSize big',
                     'MYBOX rdf:type Box', 'MYBOX hasColor orange', 'MYBOX hasSize small',
@@ -295,68 +297,22 @@ class TestDialog(unittest.TestCase):
         self.assertTrue(self.check_results(res, expected_result))
 
 
-
-
-
-
-
-
-
-
-
     def test_discrimanate5(self):
         
         print("\n##################### test_discrimanate5 ########################\n")
         ####
-        stmt = "get me the yellow banana that is on the shelf ,"
+        stmt = "get me the banana that is on the shelf ,"
         #answer = "get the big orange box"
         ####
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
                             '* performedBy myself',
-                            '* actsOnObject ORANGEBOX',
+                            '* actsOnObject banana',
                             '* receivedBy myself']
         ###
         res = self.dialog.test('myself', stmt)
         print res
         self.assertTrue(self.check_results(res, expected_result))
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-   
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
 
     def tearDown(self):
         self.dialog.stop()

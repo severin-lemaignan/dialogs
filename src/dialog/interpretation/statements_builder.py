@@ -164,7 +164,7 @@ class StatementBuilder:
                 self.learnMore(nominalGroup.noun[0].capitalize())
                 self._statements.append(mainId + " rdf:type " + nominalGroup.noun[0].capitalize())
                 #case 2.1: the determinant is 'this', that is, the talker sees the subject and the subject is next to him
-                if re.findall(r'^this$|^This$', nominalGroup.det[0]) != []:
+                if 'this' in nominalGroup.det[0].lower():
                     self._statements.append(self._current_speaker + " sees " + mainId)
                     self._statements.append(self._current_speaker + " isNextTo " + mainId)
 
@@ -260,8 +260,8 @@ class StatementBuilder:
         
         if verbalGroup.vrb_main != []:
             verb = verbalGroup.vrb_main[0]
+            logging.debug("Found a verb: " + verb)
             #case 1: the verb is an action verb
-            logging.debug("Found an action verb: " + verb)
             if verb != "be":
                                 
                 if self._sentence.data_type == "imperative":
@@ -312,7 +312,7 @@ class StatementBuilder:
                     objId = d_obj.id
 
                 #if a verb is an action verb, then we are dealing with a situation involving some objects 
-                if re.findall(r'^be$|^Be$', verb) == []:
+                if verb != 'be':
                     self._statements.append(sitId + role + objId)
                     
                 #otherwise , we are dealing with a state verb
@@ -323,7 +323,7 @@ class StatementBuilder:
 
 
         #indirect complement and adverbials processing
-        if verbalGroup.i_cmpl != []:
+        if verbalGroup.i_cmpl:
             for i_cmpl in verbalGroup.i_cmpl:
 
                 #case 1: the i_cmpl is refering to a person or a thing: no preposition ''

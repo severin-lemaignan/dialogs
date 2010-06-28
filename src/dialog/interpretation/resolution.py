@@ -137,9 +137,15 @@ class Resolver:
                      sentence.sv.d_obj[0].noun_cmpl == []:
                                
                 sentence.sv.d_obj[0]._resolved = True
+                #TODO: move the adjective to the subject instead of moving the subject as a "fake" direct obj.
                 sentence.sv.d_obj[0].id = sentence.sn[0].id
                 
-            else: sentence.sv.d_obj = self.resolve_groups_nouns(sentence.sv.d_obj, current_speaker, discriminator, builder)
+            else:
+                sentence.sv.d_obj = self.resolve_groups_nouns(
+                                            sentence.sv.d_obj,
+                                            current_speaker, 
+                                            discriminator, 
+                                            builder)
         
         
         resolved_i_cmpl = []
@@ -167,8 +173,10 @@ class Resolver:
         for verb in verbal_group.vrb_main:
             logging.debug("* \"" + verb + "\"")
             try:
-                if verb == "be": resolved_verb = "be"
-                else: resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
+                if verb == "be":
+                    resolved_verb = "be"
+                else: 
+                    resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
                 
                 if verb == resolved_verb:
                     logging.debug("Keeping \"" + verb + "\"")

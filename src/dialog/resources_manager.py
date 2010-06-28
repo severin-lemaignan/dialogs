@@ -134,7 +134,8 @@ class ThematicRolesDict:
         try:
             role = self.verbs[verb.lower()].get_role_for_preposition(preposition)
         except KeyError:
-            raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            #raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            return None
         
         if not role:
             return None
