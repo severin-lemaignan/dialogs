@@ -71,13 +71,18 @@ class StatementBuilder:
             generatedId += i
 
         #TODO: NOT A GOOD IDEA TO CHECK THAT EVERY ID IS UNIQUE THIS WAY!
+        
         if 0 in self._flags:
             if self._flags[0] == "inform":
+                pass
+            
+                """
                 #verify the identifier doesn't exist in the server yet
                 oro = Oro(self.host, self.port)
                 if oro.lookup(generatedId) != []:
                     generatedId = self.generateId(k)
                 oro.close()
+                """
 
             elif self._flags[0] == 'query':
                 generatedId = '?' + generatedId
@@ -99,7 +104,12 @@ class StatementBuilder:
         self._flags = flags
         
         if aSentence.sv:
-            self.processVerbalGroup('myself', '')
+            
+            print "VERBAL IMPERATIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIVE fefefefge", str(self._sentence)
+            
+            
+            
+            self.processVerbalGroup(aSentence.sv, 'myself', '')
         
         return self._statements
             
@@ -120,7 +130,12 @@ class StatementBuilder:
     
         #process sentence.sv
         if aSentence.sv != None:
-            self.processVerbalGroup(subjId, '')
+            
+            
+            print "VERBAL      VVEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRBBBBBBBBB  FERER fefefefge", str(self._sentence)
+            
+            
+            self.processVerbalGroup(aSentence.sv, subjId, '')
 
 
         return self._statements
@@ -128,6 +143,18 @@ class StatementBuilder:
           
 
     def processNominalGroup(self, nominalGroups, mainId, flags = None):
+        
+        
+        
+        print "BUGGY TEST GROUPE NOMINAL NOMINAL", str(self._sentence)
+        print "BUGGY TEST NOMINAL", str(nominalGroups[0])   
+                
+        
+        
+        
+        
+        
+        
         if flags:
             self._flags = flags
             
@@ -198,12 +225,31 @@ class StatementBuilder:
             #               => the man is my boss + you heard from the man
             if nominalGroup.relative:
                 #case 1:
+               
+                print "STOOOOOOOOOOOOOOOOOOPPPPPPPPPPP   RELLATIVVVVVVVEEEEE"
+                print "SENTNEFENCECECENNCEN RELLALTTTTT", str(self._sentence)
+                
+                print "RELATIVE FFFFFFLAGS ", str(self._flags)
+                
+                
                 if nominalGroup.relative.sn == []:
+                    
+                    
+                    
+                    print "CASE 1"
+                    print "CASE 1, BuGGY SV", str(nominalGroup.relative.sv)
+                    
                     if nominalGroup.relative.sv != None:
                         self.processVerbalGroup(nominalGroup.relative.sv, mainId, '')
                         
                 #case 2:
                 else:
+                    
+                    
+                    print "CASE 2"
+                    
+                    
+                    
                     #process sentence.sn
                     subjId = self.generateId(2) + '_SBJ'
                     self.processNominalGroup(nominalGroup.relative.sn, subjId)
@@ -232,15 +278,13 @@ class StatementBuilder:
 
        
 
-    def processVerbalGroup(self, subject, relativeId):
-
-        verbalGroup = self._sentence.sv
-        
+    def processVerbalGroup(self, verbalGroup, subject, relativeId):
+                
         desires_group = ResourcePool().goal_verbs
         thematic_roles = ResourcePool().thematic_roles
         does_group = ['do', 'perform', 'act']
         
-        
+        print "TEST VEERRRRRRRRRRBAAAAAAAAAllllll"
 
         #we choose sitId of a size bigger than subject, in order to make sure they would never be the same
         #and we suffix it with _SIT  as Situation = StaticSituation|Events
@@ -250,8 +294,19 @@ class StatementBuilder:
             verb = verbalGroup.vrb_main[0]
             #case 1: the verb is an action verb
             logging.debug("Found an action verb: " + verb)
-            if re.findall(r'^be$|^Be$', verb) == []:
+            if verb != "be":
+                
+                
+                
+                
+                
+                print "BUGGY TEST VERBAL", str(self._sentence)
+                
+                
+                
+                
                 if self._sentence.data_type == "imperative":
+                    
                     self._statements.append(self._current_speaker + " desires " + sitId)
                     self._statements.append(sitId + " rdf:type " + verb.capitalize())
                     self._statements.append(sitId + 
@@ -264,10 +319,10 @@ class StatementBuilder:
                         self.processVerbalGroup(verbalGroup.sv_sec, subject,'', self._current_speaker, file)
                 
                 #this is going to be used in order to process question with do. E.g. what are you doing?
-                elif verb in does_group and flags[0] == 'query':
-                    self._statements.append(mainId + " performs " + sitId)
+                elif verb in does_group and self._flags[0] == 'query':
+                    self._statements.append(subject + " performs " + sitId)
                     self._statements.append(sitId + " rdf:type ?any")
-                    flags[2] = "VRB_PERFRM"
+                    self._flags[2] = "VRB_PERFRM"
                     
                     
                 else:
@@ -282,9 +337,9 @@ class StatementBuilder:
                 self._flags[2] = "TOBE"
         #we process the following, only for query
         if self._flags[0] == 'query':
-            self.flagsToQueryExtension(subject, sitId, self._flags)
+            self.flagsToQueryExtension(subject, sitId)
 
-        #direct object processing
+        #direct object processing    
         if verbalGroup.d_obj:
             role = thematic_roles.get_next_cmplt_role(verb, True)
             verb = verbalGroup.vrb_main[0]
@@ -303,6 +358,10 @@ class StatementBuilder:
                     
                 #otherwise , we are dealing with a state verb
                 else:
+                    
+                    print "PROCESS VERBAL GROUB DOBJ SENTECE", str(self._sentence)
+                    
+                    
                     self.processNominalGroup(verbalGroup.d_obj, subject)
                 
 
@@ -379,16 +438,16 @@ class StatementBuilder:
         """
 
         
-        if self._flags[2] == 'TOBE':
+        if 2 in self._flags and self._flags[2] == 'TOBE':
             id = subjectId
             aims['thing'] = " rdf:type ?any, ?any rdfs:subClassOf owl:Thing"
             aims['people'] = " rdfs:label ?any"
 
-        if self._flags[3] == 'LABEL':
+        if 3 in self._flags and self._flags[3] == 'LABEL':
             aims['people'] = " rdf:type ?any, ?any rdfs:subClassOf owl:Thing"
             
                   
-        if self._flags[4] != 'NO_SN' and flags[2] != 'VRB_PERFRM' :
+        if 4 in self._flags and self._flags[4] != 'NO_SN' and 2 in self._flags and self._flags[2] != 'VRB_PERFRM' :
             if self._flags[1] in aims.keys():
                 self._statements.append(id + aims[self._flags[1]])
             else:
