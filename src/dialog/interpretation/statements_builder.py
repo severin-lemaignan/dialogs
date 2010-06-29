@@ -325,7 +325,6 @@ class StatementBuilder:
         #indirect complement and adverbials processing
         if verbalGroup.i_cmpl:
             for i_cmpl in verbalGroup.i_cmpl:
-
                 #case 1: the i_cmpl is refering to a person or a thing: no preposition ''
                 if not i_cmpl.prep:
                     if self._flags[0] == 'order': #TODO: what else?
@@ -344,7 +343,9 @@ class StatementBuilder:
                     for ic_noun in i_cmpl.nominal_group:
                         if ic_noun.id:
                             self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
-
+                        else:
+                            ic_noun.id = self.generateId(3) + "FAKE"
+                            self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
 
                         
         #adverbs processing
