@@ -342,11 +342,13 @@ class StatementBuilder:
                 else:
                     for ic_noun in i_cmpl.nominal_group:
                         if ic_noun.id:
-                            self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
+                            #self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
+                            self._statements.append(sitId + " receivedBy " + ic_noun.id)
                         else:
                             ic_noun.id = self.generateId(3) + "FAKE"
                             self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
-
+                            #self._statements.append(ic_noun.id + " rdf:type " + ic_noun.noun[0].capitalize())
+                            self.processNominalGroup([ic_noun], ic_noun.id, self._flags)
                         
         #adverbs processing
         if verbalGroup.advrb != []:
