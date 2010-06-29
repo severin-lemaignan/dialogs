@@ -22,23 +22,44 @@ class Parser:
         return [sentence]
     
         
-    def concatener (self,phrase1, phrase2, phrase3):
-        phrase=[]
-        i=0
+    def concatener(self, phrase1, phrase2, phrase3):
+        phrase=relative=[]
+        i=j=0
         if phrase3[0:2]==['I',"don't",'know']:
             return phrase2
+
         elif len(phrase2)!=0:
-            if phrase2[len(phrase2)-1]== 'one':
-                gr_mom=recherche_mot.rech_SN(phrase3)
-                word=gr_mom[len(gr_mom)-1]
-                phrase2[len(phrase2)-1]=word[:len(word)-1]
-            while i<len(phrase1):
-                if phrase1[i] == phrase2[0]:
-                    if phrase2[len(phrase2)-1]==phrase1[i+1]:
-                        phrase=phrase+phrase2+phrase1[i+2:]
-                        break
-                phrase=phrase+[phrase1[i]]
-                i=i+1
+            for x in phrase2:
+                if x=='on'or x=='in' or x=='at' or x=='next+to':
+                    
+                    gr_nom=recherche_mot.rech_SN(phrase2[phrase2.index(x):])
+                    
+                    if gr_nom!=[]:
+                        relative=['that','is']+[x]+gr_nom+[',']
+            
+            if relative==[]:
+                if phrase2[len(phrase2)-1]== 'one':
+                    gr_mom=recherche_mot.rech_SN(phrase3)
+                    
+                    word=gr_mom[len(gr_mom)-1]
+                    phrase2[len(phrase2)-1]=word[:len(word)-1]
+                
+                while i<len(phrase1):
+                    if phrase1[i] == phrase2[0]:
+                        if phrase2[len(phrase2)-1]==phrase1[i+1]:
+                            phrase=phrase+phrase2+phrase1[i+2:]
+                            break
+                    phrase=phrase+[phrase1[i]]
+                    i=i+1
+            else:
+                while j<len(phrase1):
+                    if phrase3[2]==phrase1[j]:
+                        if j==len(phrase1)-1:
+                            phrase=phrase1+relative+phrase
+                        else:
+                            phrase=phrase1[:j+1]+relative+phrase[j+1:]
+                    j=j+1
+
             
             return phrase
         else:
