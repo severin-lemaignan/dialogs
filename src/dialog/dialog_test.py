@@ -301,7 +301,7 @@ class TestDialog(unittest.TestCase):
         
         print("\n##################### test_discrimanate5 ########################\n")
         ####
-        stmt = "get me the yellow banana that is on the shelf ,"
+        stmt = "give me the yellow banana that is on the shelf ,"
         #answer = "get the big orange box"
         ####
         expected_result = [ 'myself desires *',
