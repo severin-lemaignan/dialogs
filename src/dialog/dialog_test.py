@@ -58,8 +58,8 @@ class TestDialog(unittest.TestCase):
                     'table2 hasColor blue', 
                     'Banana rdfs:subClassOf Plant',
                     'banana rdf:type Banana',
-                    'banana isOn shelf',
                     'banana hasColor yellow',
+                    'banana isOn shelf',
                     'green_banana rdf:type Banana',
                     'green_banana hasColor green',
                     'green_banana isOn table2',
@@ -301,14 +301,12 @@ class TestDialog(unittest.TestCase):
         
         print("\n##################### test_discrimanate5 ########################\n")
         ####
-        stmt = "get me the banana that is on the shelf ,"
+        stmt = "get me the yellow banana that is on the shelf ,"
         #answer = "get the big orange box"
         ####
         expected_result = [ 'myself desires *',
-                            '* rdf:type Get',
-                            '* performedBy myself',
-                            '* actsOnObject banana',
-                            '* receivedBy myself']
+                            '* rdf:type Banana',
+                            '* isOn shelf']
         ###
         res = self.dialog.test('myself', stmt)
         print res
