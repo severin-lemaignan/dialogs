@@ -52,21 +52,21 @@ class TestDialog(unittest.TestCase):
         
         self.oro = Oro('localhost', 6969)
         
-        self.oro.add(['shelf rdf:type Shelf',
+        self.oro.add(['shelf1 rdf:type Shelf',
                     'table1 rdf:type Table', 
                     'table2 rdf:type Table', 
                     'table2 hasColor blue', 
                     'Banana rdfs:subClassOf Plant',
-                    'banana rdf:type Banana',
-                    'banana hasColor yellow',
-                    'banana isOn shelf',
+                    'y_banana rdf:type Banana',
+                    'y_banana hasColor yellow',
+                    'y_banana isOn shelf',
                     'green_banana rdf:type Banana',
                     'green_banana hasColor green',
                     'green_banana isOn table2',
-                    'ACCESSKIT rdf:type Box', 'ACCESSKIT hasColor white', 'ACCESSKIT hasSize big',
-                    'ORANGEBOX rdf:type Box', 'ORANGEBOX hasColor orange', 'ORANGEBOX hasSize big',
-                    'MYBOX rdf:type Box', 'MYBOX hasColor orange', 'MYBOX hasSize small',
-                    'SPACENAVBOX rdf:type Box', 'SPACENAVBOX hasColor white'
+                    'ACCESSKIT rdf:type Gamebox', 'ACCESSKIT hasColor white', 'ACCESSKIT hasSize big', 'ACCESSKIT isOn table1',
+                    'ORANGEBOX rdf:type Gamebox', 'ORANGEBOX hasColor orange', 'ORANGEBOX hasSize big', 'ORANGEBOX isOn ACCESSKIT',
+                    'MYBOX rdf:type Gamebox', 'MYBOX hasColor orange', 'MYBOX hasSize small', 'MYBOX isOn table1',
+                    'SPACENAVBOX rdf:type Gamebox', 'SPACENAVBOX hasColor white'
                     ])
 
     def test_sentence1(self):
@@ -79,7 +79,7 @@ class TestDialog(unittest.TestCase):
         expected_result = [ 'myself desires *',
                             '* rdf:type Place',
                             '* performedBy myself',
-                            '* actsOnObject banana',
+                            '* actsOnObject y_banana',
                             '* receivedBy shelf']
         ###
         res = self.dialog.test('myself', stmt)
@@ -105,11 +105,12 @@ class TestDialog(unittest.TestCase):
 
     def test_sentence3(self):
         
-        print("\n##################### test_sentence3 ########################\n")
+        print("\n##################### test_sentence3 ########################\n")              
+                
         ####
         stmt = "the yellow banana is big"
         ####
-        expected_result = ['banana hasSize big']
+        expected_result = ['y_banana hasSize big']
         ###
         res = self.dialog.test('myself', stmt)
         self.assertTrue(self.check_results(res, expected_result))
@@ -126,10 +127,70 @@ class TestDialog(unittest.TestCase):
         expected_result = ['green_banana hasFeature good']
         self.assertTrue(self.check_results(res, expected_result))
    
+        """
+#    def test_verbalize1(self):
+#           
+#        print("\n##################### test_verbalize1 ########################\n")
+#        myP = Parser()
+#                            
+#        stmt = "the cup is on the desk"
+#        sentence = myP.parse(stmt.split())
+#        res = self.dialog._verbalizer.verbalize(sentence[0])
+#        print 'input: ', stmt
+#        print 'output:', res
+#        self.assertEquals(stmt, res)
+#
+#    def test_verbalize2(self):
+#        
+#        print("\n##################### test_verbalize2 ########################\n")
+#        myP = Parser()
+#        stmt = "the green bottle is next to Joe"
+#        sentence = myP.parse(stmt.split())
+#        res = self.dialog._verbalizer.verbalize(sentence[0])
+#        print 'input: ', stmt
+#        print 'output:', res
+#        self.assertEquals(stmt, res)
+#
+#    def test_verbalize3(self):
+#        
+#        print("\n##################### test_verbalize3 ########################\n")
+#        myP = Parser()
+#        stmt = "give me the green banana"
+#        expected_result = "give the green banana to me"
+#        sentence = myP.parse(stmt.split())
+#        res = self.dialog._verbalizer.verbalize(sentence[0])
+#        print 'input: ', stmt
+#        print 'output:', res
+#        self.assertEquals(expected_result, res)
+#        
+#    def test_verbalize4(self):
+#        
+#        print("\n##################### test_verbalize4 ########################\n")
+#        myP = Parser()
+#        stmt = "put the yellow banana on the shelf"
+#        sentence = myP.parse(stmt.split())
+#        res = self.dialog._verbalizer.verbalize(sentence[0])
+#        print 'input: ', stmt
+#        print 'output:', res
+#        self.assertEquals(stmt, res)
+#
+#    def test_verbalize5(self):
+#        
+#        print("\n##################### test_verbalize5 ########################\n")
+#        myP = Parser()
+#        stmt = "give the green banana to me"
+#        #stmt = "give me the green banana"
+#        sentence = myP.parse(stmt.split())
+#        res = self.dialog._verbalizer.verbalize(sentence[0])
+#        print 'input: ', stmt
+#        print 'output:', res
+#        self.assertEquals(stmt, res)
+    """
     
-    def test_sentence5(self):
+    
+    def test_discriminate1(self):
         
-        print("\n##################### test_sentence5 ########################\n")
+        print("\n##################### test_discriminate1 ########################\n")
         ####
         stmt = "the banana is good"
         answer = "the green one"
@@ -139,20 +200,20 @@ class TestDialog(unittest.TestCase):
         self.assertTrue(self.check_results(res, expected_result))
     
 
-    def test_sentence6(self):
+    def test_discriminate2(self):
         
-        print("\n##################### test_sentence6 ########################\n")
+        print("\n##################### test_discriminate2 ########################\n")
         ####
         stmt = "the banana is good"
         answer = "the yellow one"
         ####
         res = self.dialog.test('myself', stmt, answer)
-        expected_result = [ 'banana hasFeature good']
+        expected_result = [ 'y_banana hasFeature good']
         self.assertTrue(self.check_results(res, expected_result))
         
-    def test_sentence7(self):
+    def test_discriminate3(self):
         
-        print("\n##################### test_sentence7 ########################\n")
+        print("\n##################### test_discriminate3 ########################\n")
         ####
         stmt = "give me the banana"
         answer = "the green one"
@@ -166,72 +227,13 @@ class TestDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt, answer)
         print res
         self.assertTrue(self.check_results(res, expected_result))
-
-       
-    def test_verbalize1(self):
         
-        print("\n##################### test_verbalize1 ########################\n")
-        myP = Parser()
-                            
-        stmt = "the cup is on the desk"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
-        print 'input: ', stmt
-        print 'output:', res
-        self.assertEquals(stmt, res)
-
-    def test_verbalize2(self):
         
-        print("\n##################### test_verbalize2 ########################\n")
-        myP = Parser()
-        stmt = "the green bottle is next to Joe"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
-        print 'input: ', stmt
-        print 'output:', res
-        self.assertEquals(stmt, res)
-
-    def test_verbalize3(self):
+    def test_discriminate4(self):
         
-        print("\n##################### test_verbalize3 ########################\n")
-        myP = Parser()
-        stmt = "give me the green banana"
-        expected_result = "give the green banana to me"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
-        print 'input: ', stmt
-        print 'output:', res
-        self.assertEquals(expected_result, res)
-        
-    def test_verbalize4(self):
-        
-        print("\n##################### test_verbalize4 ########################\n")
-        myP = Parser()
-        stmt = "put the yellow banana on the shelf"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
-        print 'input: ', stmt
-        print 'output:', res
-        self.assertEquals(stmt, res)
-
-    def test_verbalize5(self):
-        
-        print("\n##################### test_verbalize5 ########################\n")
-        myP = Parser()
-        stmt = "give the green banana to me"
-        #stmt = "give me the green banana"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
-        print 'input: ', stmt
-        print 'output:', res
-        self.assertEquals(stmt, res)
-
-
-    def test_discrimanate1(self):
-        
-        print("\n##################### test_discrimanate1 ########################\n")
+        print("\n##################### test_discriminate4 ########################\n")
         ####
-        stmt = "get the box on the table"
+        stmt = "get the gamebox that is on the table ,"
         answer = "the orange one"
         ####
         expected_result = [ 'myself desires *',
@@ -244,73 +246,56 @@ class TestDialog(unittest.TestCase):
         print res
         self.assertTrue(self.check_results(res, expected_result))
         
-    def test_discrimanate2(self):
+    def test_discriminate5(self):
         
-        print("\n##################### test_discrimanate1 ########################\n")
+        print("\n##################### test_discriminate5 ########################\n")
         ####
-        stmt = "get the orange box"
-        answer = "the one on ACCESSKIT"
+        stmt = "get the orange gamebox"
+        answer = "the one that is on the ACCESSKIT ,"
         ####
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
                             '* performedBy myself',
-                            '* actsOnObject ORANGEBOX',
-                            '* receivedBy myself']
+                            '* actsOnObject ORANGEBOX']
         ###
         res = self.dialog.test('myself', stmt, answer)
         print res
         self.assertTrue(self.check_results(res, expected_result))
 
-    def test_discrimanate3(self):
+    def test_discriminate6(self):
         
-        print("\n##################### test_discrimanate3 ########################\n")
+        print("\n##################### test_discriminate6 ########################\n")
         ####
-        stmt = "get the orange box"
-        answer = "the small one"
+        stmt = "get the big gamebox"
+        answer = "the white one"
         ####
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
                             '* performedBy myself',
-                            '* actsOnObject ORANGEBOX',
-                            '* receivedBy myself']
-        ###
-        res = self.dialog.test('myself', stmt, answer)
-        print res
-        self.assertTrue(self.check_results(res, expected_result))
-
-
-    def test_discrimanate4(self):
-        
-        print("\n##################### test_discrimanate4 ########################\n")
-        ####
-        stmt = "get the big box"
-        answer = "get the big orange box"
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Get',
-                            '* performedBy myself',
-                            '* actsOnObject ORANGEBOX',
-                            '* receivedBy myself']
+                            '* actsOnObject ACCESSKIT']
         ###
         res = self.dialog.test('myself', stmt, answer)
         print res
         self.assertTrue(self.check_results(res, expected_result))
 
 
-    def test_discrimanate5(self):
+    def test_discriminate7(self):
         
-        print("\n##################### test_discrimanate5 ########################\n")
+        print("\n##################### test_discriminate7 ########################\n")
         ####
-        stmt = "give me the yellow banana that is on the shelf ,"
-        #answer = "get the big orange box"
+        stmt = "get the gamebox that is on the ACCESSKIT ,"
         ####
+
         expected_result = [ 'myself desires *',
-                            '* rdf:type Banana',
-                            '* isOn shelf']
+                            '* rdf:type Get',
+                            '* performedBy myself',
+                            '* actsOnObject ORANGEBOX']
         ###
         res = self.dialog.test('myself', stmt)
         print res
         self.assertTrue(self.check_results(res, expected_result))
+        
+    
 
     def tearDown(self):
         self.dialog.stop()
@@ -323,13 +308,13 @@ if __name__ == '__main__':
                     format="%(message)s")
     
     # all tests
-    #unittest.main()
+    unittest.main()
     
     # executing only some tests
-    suiteFew = unittest.TestSuite()
+    #suiteFew = unittest.TestSuite()
     #suiteFew.addTest(TestDialog("test_sentence1"))
     #suiteFew.addTest(TestDialog("test_sentence3"))
     #suiteFew.addTest(TestDialog("test_sentence7"))
     #suiteFew.addTest(TestDialog("test_verbalize5"))
-    suiteFew.addTest(TestDialog("test_discrimanate5"))
-    unittest.TextTestRunner(verbosity=2).run(suiteFew)
+    suiteFew.addTest(TestDialog("test_discriminate1"))
+ #   unittest.TextTestRunner(verbosity=2).run(suiteFew)
