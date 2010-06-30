@@ -15,6 +15,7 @@ class Parser:
         pass
     
     def parse(self, nl_input, active_sentence = None):
+        print "MMMMMAAAAAHHHHDDDDDIIIII", nl_input
         sentence = analyse_phrase.analyse_phr(nl_input)
         
         logging.debug("Parsing output:\n" + str(sentence))
@@ -25,7 +26,7 @@ class Parser:
     def concatener(self, phrase1, phrase2, phrase3):
         phrase=relative=[]
         i=j=0
-        if phrase3[0:2]==['I',"don't",'know']:
+        if phrase3[0:3]==['I',"don't",'know']:
             return phrase2
 
         elif len(phrase2)!=0:
@@ -39,17 +40,23 @@ class Parser:
             
             if relative==[]:
                 if phrase2[len(phrase2)-1]== 'one':
-                    gr_mom=recherche_mot.rech_SN(phrase3)
+                    if phrase3[0:2] == ['tell', 'me']:
+                        gr_mom=recherche_mot.rech_SN(phrase3[2:])
+                    else:
+                        gr_mom=recherche_mot.rech_SN(phrase3)
                     
                     word=gr_mom[len(gr_mom)-1]
-                    phrase2[len(phrase2)-1]=word[:len(word)-1]
-                
+                    phrase2[len(phrase2)-1]=word
+                    print phrase2
                 while i<len(phrase1):
                     if phrase1[i] == phrase2[0]:
-                        if phrase2[len(phrase2)-1]==phrase1[i+1]:
-                            phrase=phrase+phrase2+phrase1[i+2:]
+                        noun=recherche_mot.rech_sujet(phrase1, i)
+                        
+                        
+                        if noun[len(noun)-1]==phrase2[len(phrase2)-1]:
+                            phrase=phrase1[:i]+noun[:len(noun)-1]+phrase2[1:]
+                            
                             break
-                    phrase=phrase+[phrase1[i]]
                     i=i+1
             else:
                 while j<len(phrase1):
