@@ -211,30 +211,31 @@ class Discrimination():
     # -----------------------------------------------------------------------------#
     def clarify(self, description):
         objL = self.get_all_objects_with_desc(description)
+        logging.debug('Clarify recieves description = ' +  str(description))
         logging.debug('Clarify for objL = ' +  str(objL))
 
         if len(objL) == 0:
-            raise UnsufficientInputError("I don\'t know what object you are talkikng about. Tell me something about it.")
+            raise UnsufficientInputError("I don't know what object you are talkikng about. Tell me something about it.")
             #return "I don\'t know what object you are talkikng about. Tell me something about it."
         elif len(objL) == 1:
             return objL[0]
         else:
             agent, descriptor = self.get_descriptor(description)
+            object = self.get_type_description(description)
 
             if descriptor:
                 question = None
                 values = self.get_values_for_descriptor(agent, descriptor, objL)
-                object = self.get_type_description(description)
                 if not object: object = 'object'
                 
                 if descriptor == 'hasColor'  or  descriptor == 'mainColorOfObject':
-                    question = 'Which color is the ' + object + '? '
+                    question = 'Which color is the ' + object + ' ? '
                     
                 elif descriptor == 'hasShape':
-                    question = 'Which shape has the ' + object + '? '
+                    question = 'Which shape has the ' + object + ' ? '
 
                 elif descriptor == 'hasSize':
-                    question = 'Which size is the ' + object + '? '
+                    question = 'Which size is the ' + object + ' ? '
 
                 elif descriptor == 'isOn':
                     question = 'Is the ' + object + ' on '
@@ -252,19 +253,20 @@ class Discrimination():
                     question = 'Where is the ' + object + ' placed wrt to'
                                         
                     if agent == 'myself':
-                        question += ' me? '
+                        question += ' me ? '
                     else:
-                        question += ' you? '
+                        question += ' you ? '
                 
                 else:
                     question = "Give me the value for the " + descriptor + " "
 
-                question += ' or '.join(values) + '?'
+                question += ' or '.join(values) + ' ?'
                 raise UnsufficientInputError(question)
                 #return question
                     
             else:
-                raise UnsufficientInputError("Additional info required")
+                question = "Tell me something about the " + object
+                raise UnsufficientInputError(question)
                 #return "Tell me more about the the object."
 
     # -- ADD_DESCRIPTOR -----------------------------------------------------------#
