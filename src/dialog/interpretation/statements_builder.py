@@ -4,6 +4,7 @@
 import logging
 import re
 import random
+from pyoro import Oro
 from resources_manager import ResourcePool
 
 from dialog_exceptions import DialogError
@@ -150,8 +151,7 @@ class StatementBuilder:
                 #case 1.2: the phrase noun is 'you'
                 elif nominalGroup.noun != [] and re.findall(r'^You$|^you$', nominalGroup.noun[0])  != []:
                     self._statements.append(mainId + " owl:sameAs " + "myself")
-                    
-                    
+                                    
                 #case 1.3: the phrase noun is a proper name, the 3 index of the flag is updated to LABEL
                 else:
                     if nominalGroup.noun != []:
@@ -160,6 +160,19 @@ class StatementBuilder:
             #case 2: the  noun phrase is a common name. That is, there is a determinant
             #in case 2, we can therefore have adjectives and noun complements
             else:
+                
+                
+                #If the noun phrase is an existing ID in the ontology, we lookup then we return the statement as it is, with no further processing
+                oro = Oro("localhost", 6969)
+                onto = oro.lookup(nominalGroup.noun[0])
+                oro.close()
+                
+                if onto and [nominalGroup.noun[0],"INSTANCE"] in onto:
+                    #case 1.3.1  the noun phrase is possibly an existing ID in the ontology
+                    self._statements.append(mainId + " owl:sameAs " + nominalGroup.noun[0])
+                    return self._statements               
+                
+                
                 #learmore
                 self.learnMore(nominalGroup.noun[0].capitalize())
                 self._statements.append(mainId + " rdf:type " + nominalGroup.noun[0].capitalize())
