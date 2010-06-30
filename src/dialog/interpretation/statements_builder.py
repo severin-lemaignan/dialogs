@@ -275,6 +275,8 @@ class StatementBuilder:
             verb = verbalGroup.vrb_main[0]
             logging.debug("Found a verb: " + verb)
             #case 1: the verb is an action verb
+            logging.debug("Found a verb: " + verb)
+
             if verb != "be":
                                 
                 if self._sentence.data_type == "imperative":
@@ -362,6 +364,7 @@ class StatementBuilder:
                             self._statements.append(sitId + " is"+i_cmpl.prep[0].capitalize() + " " + ic_noun.id)
                             #self._statements.append(ic_noun.id + " rdf:type " + ic_noun.noun[0].capitalize())
                             self.processNominalGroup([ic_noun], ic_noun.id, self._flags)
+
                         
         #adverbs processing
         if verbalGroup.advrb != []:

@@ -285,17 +285,31 @@ class TestDialog(unittest.TestCase):
         ####
         stmt = "get the gamebox that is on the ACCESSKIT ,"
         ####
-
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
                             '* performedBy myself',
                             '* actsOnObject ORANGEBOX']
         ###
+        res = self.dialog.test('myself', stmt, answer)
+        print res
+        self.assertTrue(self.check_results(res, expected_result))
+
+
+    def test_discrimanate5(self):
+        
+        print("\n##################### test_discrimanate5 ########################\n")
+        ####
+        stmt = "get me the yellow banana that is on the shelf ,"
+        #answer = "get the big orange box"
+        ####
+        expected_result = [ 'myself desires *',
+                            '* rdf:type Banana',
+                            '* isOn shelf']
+        ###
         res = self.dialog.test('myself', stmt)
         print res
         self.assertTrue(self.check_results(res, expected_result))
-        
-    
+
 
     def tearDown(self):
         self.dialog.stop()
