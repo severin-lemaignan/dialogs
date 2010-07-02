@@ -35,3 +35,17 @@ Features
 - pre content-analysis -> "what color is the tape?" -> don't use the color to 
 discriminate
 - handling of "or" :)
+
+
+Interface
+---------
+
+- Improve the output of the dialog module (including colors) to make clear
+what append (especially for demos):
+  * First parsing
+  * Resolution *relying on perspective taking* + symbolic knowledge
+  * Back interaction with the human
+  * Re-parsing
+  * Generation of final statements
+- Add the possibility to pause the processing to explain step by step what
+happen
