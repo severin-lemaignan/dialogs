@@ -7,13 +7,26 @@ Bugs
 
 - sentence pre-processing (punctuation, term expansion, capital letters...)
 - Turn everything to English
-- Clarify which members of sentence are list, which are single element.
-For instance, sn.noun is a list. if we have several nouns (like in "toto and 
-tata"), it would be maybe easier to create new sn instead of adding nouns.
-- Sort out the "flags": at least, convert it to a map, maybe, remove it.
+[DONE]- Clarify which members of sentence are list, which are single element. 
+	Everything is a list, except 
+	sentence.data_type, 
+	sentence.aim, 
+	sentence.sv.state,
+	sentence.sv,vrb_tense,
+	nominal_group.id
+	nominal_group._resolved
+	nominal_group._and_or
+	
+	If we have several nouns, e.g "toto" and "tata", we create a new nominal group, even though this results to several single-element lists.
+
+[ON GOING]- Sort out the "flags": at least, convert it to a map, maybe, remove it.
+	In the new version of statement builder, the parameter "flags" has been removed.
+	After implementing Question Handler, we'll probably remove them all.
+	
 - "close the loop" -> parser should be able to complete a previously, partially 
 resolved, sentence.
 - "this bottle is blue" <- what to do with blue? (see unit-test test_sentence3)
+		The adjectives blue, will be sent to the nominal group that
 - "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
 
 Features
