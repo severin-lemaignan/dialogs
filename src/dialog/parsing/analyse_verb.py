@@ -26,7 +26,7 @@ from resources_manager import ResourcePool
 ## We have to read all past irregular verb forms                                    ##
 ######################################################################################
 """
-past_irreg_vrb = ResourcePool().past_irregular_verbs
+past_irreg_vrb = ResourcePool().irregular_verbs_past
 
 
 """
@@ -34,7 +34,7 @@ past_irreg_vrb = ResourcePool().past_irregular_verbs
 ## We have to read all past irregular verb forms                                    ##
 ######################################################################################
 """
-present_irreg_vrb = ResourcePool().present_irregular_verbs
+present_irreg_vrb = ResourcePool().irregular_verbs_present
 
 
 """
