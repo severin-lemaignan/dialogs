@@ -34,20 +34,13 @@ apostrophe_s_to_is_list=["he's", "she's", "it's", "that's", "what's", "who's", "
 
 #replacement_tuples={"n't": " not","I'm": ["I", "am"]}
 
-"""
-######################################################################################
-## We have to read all irregular adjectives before the treatment                    ##
-######################################################################################
-"""
-act_vbr_list = ResourcePool().sentence_starts.keys()
-
 
 """
 ######################################################################################
 ## We have to read all words that sentence can begin with                           ##
 ######################################################################################
 """
-frt_wd = ResourcePool().sentence_starts.keys()
+frt_wd = ResourcePool().sentence_starts
 
 
 """
@@ -75,11 +68,6 @@ def upper_to_lower(sentence):
         #If there is a nominal group
         if analyse_nominal_group.find_sn_pos (sentence, 0)!=[]:
             return sentence
-
-        #If there is an action verb
-        for x in act_vbr_list:
-            if x==sentence[0]:
-                return sentence
 
         #It a propre name, we convert lowercase to uppercase
         sentence[0]=sentence[0][0].upper()+sentence[0][1:]
