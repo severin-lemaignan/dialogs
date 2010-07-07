@@ -28,17 +28,16 @@ class StatementBuilder:
     def clear_statements(self):
         self._statements = []
     
+    def set_current_speaker(self, current_speaker):
+        self._current_speaker = current_speaker
     
     def process_sentence(self, sentence):
-        """
         if not sentence.resolved():
             raise DialogError("Trying to process an unresolved sentence!")
             
         self._sentence = sentence
-        """
         
-        self._sentence = dump_resolved(sentence, self._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
-        
+        #self._sentence = dump_resolved(sentence, self._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
         if sentence.sn:
             self.process_nominal_groups(self._sentence.sn)
         if sentence.sv:
@@ -115,6 +114,10 @@ class NominalGroupStatementBuilder:
             # Case 1: definite article : the"""
             # Case 2: demonstratives : this, that, these, those"""
             # Case 3: possessives : my, your, his, her, its, our, their """
+            if det == "my":
+                self._statements.append(ng_id + " belongsTo " + self._current_speaker)
+            elif det == "your":
+                self._statements.append(ng_id + " belongsTo myself")
             # Case 4: general determiners: See http://www.learnenglish.de/grammar/determinertext.htm"""
             
     
@@ -241,7 +244,7 @@ class VerbalGroupStatementBuilder:
             if vg.vrb_sub_sentence:
                 self.process_adverb(vg)   
 
-        
+    #TODO:   
     def process_state(self, state):
         """For A != B, Shall we use owl:complementOf => see Negation in http://www.co-ode.org/resources/tutorials/intro/slides/OWLFoundationsSlides.pdf """
         pass
@@ -250,7 +253,8 @@ class VerbalGroupStatementBuilder:
         for verb in verbal_group.vrb_main:
          
             logging.debug("Found verb:\"" + verb + "\"")
-                       
+            #TODO: modal verbs e.g can+go
+            
             #Case 1:  the linking verb 'to be'/"""
             #Case 2:  actions or stative verbs with a specified 'goal' role:
             #                          see '../../share/dialog/thematic_roles'
@@ -364,7 +368,7 @@ class VerbalGroupStatementBuilder:
                     self._statements.append(sit_id + " receivedBy " + ic_noun_id)
                     
                 elif role:
-                    self._statements.append(sit_id + " " + role + " " + ic_noun_id)
+                    self._statements.append(sit_id + "" + role + "" + ic_noun_id)
                 else:
                     self._statements.append(sit_id + " is" + ic.prep[0]+ " " + ic_noun_id)
                 
@@ -376,17 +380,17 @@ class VerbalGroupStatementBuilder:
          
                 
                 
-            
+    #TODO:      
     def process_adverbial_sentence(self, advrb):
         for adv in advrb:
             logging.debug("Found adverbial phrase:\"" + adv + "\"")
             
-            
+    #TODO:       
     def process_adverb(self, advrb):
         for adv in advrb:
             logging.debug("Found adverb:\"" + adv + "\"")
             
-    
+    #TODO:
     def vrb_subsentence(self, vrb_sub_sentence):
         for sub in vrb_sub_sentence:
             logging.debug("Processing adverbial clauses:")
@@ -472,7 +476,7 @@ def test_1():
                        '* performedBy *',
                        '* involves *',
                        '* rdf:type Car',
-                       '* hasColor Blue']
+                       '* hasColor blue']
     
     return test(sentence, expected_result, display_statement_result = True)
 
@@ -480,10 +484,10 @@ def test_1():
 
 def test_2():
     print "**** Test 2  *** "
-    print "my box is blue"
+    print "my car is blue"
     sentence = Sentence("statement", "", 
                          [Nominal_Group(['my'],
-                                        ['box'],
+                                        ['car'],
                                         ['blue'],
                                         [],
                                         [])],                                         
@@ -496,8 +500,10 @@ def test_2():
                                        [],
                                        'affirmative',
                                        [])])
-    #expected_resut = []    
-    return test(sentence, display_statement_result = True)
+    expected_result = ['* rdf:type Car',
+                       '* hasColor blue',
+                       '* belongsTo SPEAKER']   
+    return test(sentence, expected_result, display_statement_result = True)
     
     
 def test_3():
@@ -518,8 +524,9 @@ def test_3():
                                        [],
                                        'affirmative',
                                       [])])  
-    #expected_resut = []
-    return test(sentence, display_statement_result = True)
+    expected_result = ['* rdfs:label "Jido"',
+                       '* rdf:type Robot']   
+    return test(sentence, expected_result, display_statement_result = True)
     
 
 def test_4():
@@ -561,8 +568,15 @@ def test_4():
                                        [],
                                        'affirmative',
                                        [])]) 
-    #expected_resut = []
-    return test(sentence, display_statement_result = True)
+    expected_resut = ['* rdf:type Man',
+                      '* performedBy SPEAKER',
+                      '* rdf:type See',
+                      '* involves *',
+                      '* rdf:type Have',
+                      '* performedBy *',
+                      '* rdf:type Car *',
+                      '* hasSize small *']
+    return test(sentence, expected_resut, display_statement_result = True)
     
     
 def test_5():
@@ -600,8 +614,14 @@ def test_5():
                                        'affirmative',
                                        [])])    
     
-    #expected_resut = []
-    return test(sentence, display_statement_result = True)
+    expected_resut = ['* rdf:type Man',
+                      '* rdf:type Talk',
+                      '* performedBy *',
+                      '* rdf:type Have',
+                      '* involves *',
+                      '* rdf:type Car *',
+                      '* hasSize small *']
+    return test(sentence, expected_resut, display_statement_result = True)
     
 
 
@@ -644,9 +664,17 @@ def test_6():
                                         [],
                                         'affirmative', 
                                         [])])
-    #expected_resut = []
+    expected_resut = ['* rdf:type Give',
+                      '* performedBy SPEAKER',
+                      '* involves *',
+                      '* rdf:type Car',
+                      '* belongsTo *',
+                      '* rdf:type Brother',
+                      '* belongsTo *',
+                      '* rdfs:label "Danny"',
+                      '* receivedBy myself']
     
-    return test(sentence, display_statement_result = True)
+    return test(sentence, expected_resut, display_statement_result = True)
     
 
 def test_7():
@@ -668,13 +696,16 @@ def test_7():
                                        [],
                                        'affirmative',
                                        [])])
-    #expected_resut = []
-    return test(sentence, display_statement_result = True)
+    expected_resut = ['* rdf:type Go',
+                      '* performedBy SPEAKER',
+                      '* actsOnObject *',
+                      '* rdfs:label "Toulouse"']
+    return test(sentence, expected_resut, display_statement_result = True)
     
 
 def test_8():
     print "**** Test 8  *** "
-    print "put the bottle in the box"
+    print "put the bottle in the cardbox"
     sentence = Sentence("imperative", "", 
                          [],                                         
                          [Verbal_Group(['put'],
@@ -682,12 +713,19 @@ def test_8():
                                        'present_simple',
                                        [Nominal_Group(['the'],['bottle'],[],[],[])],
                                        [Indirect_Complement(['in'],
-                                                            [Nominal_Group(['the'],['box'],[],[],[])]) ],
+                                                            [Nominal_Group(['the'],['cardbox'],[],[],[])]) ],
                                        [],
                                        [],
                                        'affirmative',
-                                       [])])    
-    return test(sentence, display_statement_result = True)
+                                       [])])
+    expected_resut = ['SPEAKER desires *',
+                      '* rdf:type Put',
+                      '* performedBy myself',
+                      '* involves *',
+                      '* rdf:type Bottle',
+                      '* actsOnObject *',
+                      '* rdf:type Cardbox']  
+    return test(sentence, expected_resut, display_statement_result = True)
     
     
     
@@ -741,13 +779,18 @@ def dump_resolved(sentence, current_speaker, current_listener):
 
 
 def test(sentence, expected_result = None, display_statement_result = False):
-    stmt = StatementBuilder("HUMAN")
+    stmt = StatementBuilder("SPEAKER")
     collect_checkup = []
     try:
         res = stmt.process_sentence(sentence)
     except RuntimeError:
         collect_checkup.extend([inspect.stack()[1][3], "ERROR PROCESSING"])
-        
+    
+    if display_statement_result:
+        print "*** result " + inspect.stack()[1][3] + " ****"
+        str(res)
+    
+    
     if expected_result:
         if check_results(res, expected_result):
             collect_checkup.extend([inspect.stack()[1][3], "OK"])
@@ -756,22 +799,33 @@ def test(sentence, expected_result = None, display_statement_result = False):
     else:
         collect_checkup.extend([inspect.stack()[1][3], "EXPECTED_RESULT not stated"])
         
-    if display_statement_result:
-        str(res)
     
     return collect_checkup
 
 
 def check_results(res, expected):
-    for c in zip(expected, res):
-        for d in zip(c[0].split(), c[1].split()):
-            if not d[0] == '*':
-                if d[0] != d[1]:
-                    return False
-    return True  
+    def check_triplets(tr , te):
+        tr_split = tr.split()
+        te_split = te.split()
+        
+        return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
+                (tr_split[1] == te_split[1]) and\
+                (tr_split[2] == te_split[2] or te_split[2] == '*') 
+       
+    while res:
+        r = res.pop()
+        for e in expected:
+            if check_triplets(r, e):
+                expected.remove(e)
+    if expected:
+        print "**** Missing assertion from result:   "
+        print expected
+        print "FAIL"
+           
+    return expected == res
+        
     
 
-    
 def str(list):
     for l in list:
         print l
