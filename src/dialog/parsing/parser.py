@@ -18,7 +18,7 @@
 ##    unit_tests : to perform unit tests                                            ##
 ######################################################################################
 """
-from sentence import Sentence
+from sentence import *
 import logging
 import preprocessing
 import analyse_sentence
@@ -75,7 +75,7 @@ def compare_nom_gr(ng,rslt_ng):
                     j=j+1
             
             #We compare the flag (if there is an 'or' or an 'and')
-            if rslt_ng[i]._and_or!=ng[i]._and_or:
+            if rslt_ng[i]._conjunction!=ng[i]._conjunction:
                 return 1
             i=i+1
         return 0
@@ -201,7 +201,7 @@ def display_ng(nom_str):
         display_ng(i)
 
     for j in nom_str.relative:
-        display ([j])
+        display (j)
         print ''
 
 
@@ -277,7 +277,7 @@ def display(a):
 ######################################################################################
 """ 
 def unit_tests():
-    
+ '''   
     """
     Aim of this test : To use different cases with a state's verb 
     """
@@ -289,8 +289,8 @@ def unit_tests():
     print reply
     print '###############################################################'
     print ''
-    sentence_list=analyse_reply.treat_sentence(reply,frt_wd)
-    class_list= analyse_sentence.sentences_analyzer(sentence_list, frt_wd)
+    sentence_list=preprocessing.treat_sentence(reply)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
     rslt=[Sentence('statement', '',
             [Nominal_Group(['the'],['bottle'],[],[],[])],
             [Verbal_Group(['be'], [],'present simple',
@@ -312,11 +312,14 @@ def unit_tests():
     compare_reply(class_list,rslt,sentence_list)
     print ''
     
+'''    
     
+
+sentence_list=preprocessing.treat_sentence("don't quickly give me the bottle which is on the table ; and the glass which I cleaned yesterday ; at my left")
+class_list= analyse_sentence.sentences_analyzer(sentence_list)
+for i in class_list:
+    display(i)
     
-
-
-
 """
 ############################## Testing ##################################
 """
