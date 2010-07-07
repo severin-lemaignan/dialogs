@@ -127,65 +127,63 @@ class TestDialog(unittest.TestCase):
         expected_result = ['green_banana hasFeature good']
         self.assertTrue(self.check_results(res, expected_result))
    
-        """
-#    def test_verbalize1(self):
-#           
-#        print("\n##################### test_verbalize1 ########################\n")
-#        myP = Parser()
-#                            
-#        stmt = "the cup is on the desk"
-#        sentence = myP.parse(stmt.split())
-#        res = self.dialog._verbalizer.verbalize(sentence[0])
-#        print 'input: ', stmt
-#        print 'output:', res
-#        self.assertEquals(stmt, res)
-#
-#    def test_verbalize2(self):
-#        
-#        print("\n##################### test_verbalize2 ########################\n")
-#        myP = Parser()
-#        stmt = "the green bottle is next to Joe"
-#        sentence = myP.parse(stmt.split())
-#        res = self.dialog._verbalizer.verbalize(sentence[0])
-#        print 'input: ', stmt
-#        print 'output:', res
-#        self.assertEquals(stmt, res)
-#
-#    def test_verbalize3(self):
-#        
-#        print("\n##################### test_verbalize3 ########################\n")
-#        myP = Parser()
-#        stmt = "give me the green banana"
-#        expected_result = "give the green banana to me"
-#        sentence = myP.parse(stmt.split())
-#        res = self.dialog._verbalizer.verbalize(sentence[0])
-#        print 'input: ', stmt
-#        print 'output:', res
-#        self.assertEquals(expected_result, res)
-#        
-#    def test_verbalize4(self):
-#        
-#        print("\n##################### test_verbalize4 ########################\n")
-#        myP = Parser()
-#        stmt = "put the yellow banana on the shelf"
-#        sentence = myP.parse(stmt.split())
-#        res = self.dialog._verbalizer.verbalize(sentence[0])
-#        print 'input: ', stmt
-#        print 'output:', res
-#        self.assertEquals(stmt, res)
-#
-#    def test_verbalize5(self):
-#        
-#        print("\n##################### test_verbalize5 ########################\n")
-#        myP = Parser()
-#        stmt = "give the green banana to me"
-#        #stmt = "give me the green banana"
-#        sentence = myP.parse(stmt.split())
-#        res = self.dialog._verbalizer.verbalize(sentence[0])
-#        print 'input: ', stmt
-#        print 'output:', res
-#        self.assertEquals(stmt, res)
-    """
+        
+    def test_verbalize1(self):
+           
+        print("\n##################### test_verbalize1 ########################\n")
+        myP = Parser()                            
+        stmt = "the cup is on the desk"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+
+    def test_verbalize2(self):
+        
+        print("\n##################### test_verbalize2 ########################\n")
+        myP = Parser()
+        stmt = "the green bottle is next to Joe"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+
+    def test_verbalize3(self):
+        
+        print("\n##################### test_verbalize3 ########################\n")
+        myP = Parser()
+        stmt = "give me the green banana"
+        expected_result = "give the green banana to me"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(expected_result, res)
+        
+    def test_verbalize4(self):
+        
+        print("\n##################### test_verbalize4 ########################\n")
+        myP = Parser()
+        stmt = "put the yellow banana on the shelf"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+
+    def test_verbalize5(self):
+        
+        print("\n##################### test_verbalize5 ########################\n")
+        myP = Parser()
+        stmt = "give the green banana to me"
+        sentence = myP.parse(stmt.split())
+        res = self.dialog._verbalizer.verbalize(sentence[0])
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+    
     
     
     def test_discriminate1(self):
@@ -290,25 +288,12 @@ class TestDialog(unittest.TestCase):
                             '* performedBy myself',
                             '* actsOnObject ORANGEBOX']
         ###
-        res = self.dialog.test('myself', stmt, answer)
-        print res
-        self.assertTrue(self.check_results(res, expected_result))
-
-
-    def test_discrimanate5(self):
-        
-        print("\n##################### test_discrimanate5 ########################\n")
-        ####
-        stmt = "get me the yellow banana that is on the shelf ,"
-        #answer = "get the big orange box"
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Banana',
-                            '* isOn shelf']
-        ###
         res = self.dialog.test('myself', stmt)
         print res
         self.assertTrue(self.check_results(res, expected_result))
+
+
+    
 
 
     def tearDown(self):
@@ -326,9 +311,5 @@ if __name__ == '__main__':
     
     # executing only some tests
     #suiteFew = unittest.TestSuite()
-    #suiteFew.addTest(TestDialog("test_sentence1"))
-    #suiteFew.addTest(TestDialog("test_sentence3"))
-    #suiteFew.addTest(TestDialog("test_sentence7"))
-    #suiteFew.addTest(TestDialog("test_verbalize5"))
-    suiteFew.addTest(TestDialog("test_discriminate1"))
- #   unittest.TextTestRunner(verbosity=2).run(suiteFew)
+    #suiteFew.addTest(TestDialog("test_name"))
+    #unittest.TextTestRunner(verbosity=2).run(suiteFew)
