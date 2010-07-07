@@ -1,6 +1,9 @@
-when 1 1 
-where 1 2 
-what 1 3 
+hi 0 0
+hello 0 0
+good 0 0
+when 1 1
+where 1 2
+what 1 3
 how 1 4
 why 1 5
 whose 1 6
@@ -26,5 +29,12 @@ must 2 17
 shall 2 18
 would 2 19
 if 3 1
-thank 4 1
-thanks 4 2 
+ok 4 1
+nice 4 3
+good 4 4
+yes 4 5
+alright 4 6
+no 5 1
+sorry 5 2
+thank 6 1
+thanks 6 2
