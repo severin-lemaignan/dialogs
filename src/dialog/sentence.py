@@ -76,7 +76,9 @@ class Nominal_Group:
         When the group is resolved, id must be different from None
         """
         self.id = None
-    
+        
+        self._conjunction = 'AND' #could be 'AND' or 'OR'. TODO: use constants!
+            
     def __str__(self):
         
         if self._resolved:
