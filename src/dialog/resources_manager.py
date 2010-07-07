@@ -158,8 +158,10 @@ class ResourcePool:
     def __init__(self, data_path = DATA_DIR):
         
         self.adjectives = {}
-        self.irregular_verbs = []
+        self.irregular_verbs_past = []
+        self.irregular_verbs_present = []
         self.preposition_verbs = []
+        self.special_nouns = []
 
         """list of tokens that can start a sentence"""
         self.sentence_starts = []
@@ -185,9 +187,13 @@ class ResourcePool:
                 cat = "Feature"
             self.adjectives[adj] = cat
         
-        self.irregular_verbs = [tuple(line.split()) 
+        self.irregular_verbs_past = [tuple(line.split()) 
                                 for line 
-                                in open (os.path.join(data_path, "irregular_verbs"))]
+                                in open (os.path.join(data_path, "irregular_verbs_past"))]
+        
+        self.irregular_verbs_present = [tuple(line.split()) 
+                                for line 
+                                in open (os.path.join(data_path, "irregular_verbs_present"))]
         
         self.preposition_verbs = [tuple(line.split()) 
                                 for line 
@@ -195,7 +201,11 @@ class ResourcePool:
                                 
         self.sentence_starts = [tuple(line.split()) 
                                 for line 
-                                in open (os.path.join(data_path, "sentence_starts"))]        
+                                in open (os.path.join(data_path, "sentence_starts"))]       
+         
+        self.special_nouns = [tuple(line.split()) 
+                                for line 
+                                in open (os.path.join(data_path, "special_nouns"))]   
         
         self.goal_verbs = [line.strip()
                             for line 

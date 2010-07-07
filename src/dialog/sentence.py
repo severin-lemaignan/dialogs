@@ -22,7 +22,7 @@ class Sentence:
         self.aim = aim
         self.sn = sn
         self.sv = sv
-        
+            
     def resolved(self):
         """returns True when the whole sentence is completely resolved
         to concepts known by the robot."""
@@ -95,8 +95,7 @@ class Nominal_Group:
         """
         self.id = None
         
-        """ When a nominal group ...   this field hold the value 0 (resp. 1)"""
-        self._and_or = None
+        self._conjunction = 'AND' #could be 'AND' or 'OR'. TODO: use constants!
         
         
         
@@ -122,6 +121,9 @@ class Nominal_Group:
     """
     
     """new version: relative is a list"""
+
+       
+
     def __str__(self):
         
         if self._resolved:
