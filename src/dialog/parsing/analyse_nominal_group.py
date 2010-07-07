@@ -46,7 +46,7 @@ adjective_list = ResourcePool().adjectives.keys()
 ## We have to read all nouns which have a confusion with regular adjectives         ##
 ######################################################################################
 """
-noun_list = ResourcePool().adjectives.keys()
+noun_list = ResourcePool().special_nouns
 
 
 """
