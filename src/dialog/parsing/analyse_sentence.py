@@ -49,7 +49,7 @@ modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
 ## We have to read all words that sentence can begin with                           ##
 ######################################################################################
 """
-frt_wd = ResourcePool().sentence_starts.keys()
+frt_wd = ResourcePool().sentence_starts
 
 
 """
