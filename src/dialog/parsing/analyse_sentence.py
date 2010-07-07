@@ -248,17 +248,17 @@ def w_quest_quant(type, request, sentence):
         if sentence[2]==j[0]:
             if j[1]=='2':
                 #This case is the same with y_n_question
-                return y_n_ques(type, request,sentence[2:], 1)
+                return y_n_ques(type, request,sentence[2:])
 
     analysis=y_n_ques(type, request,sentence[3:])
 
     #There is not sn in the sentence
     if analysis.sn==[]:
-        analysis.sn=[Nominal_Group(['a'],[sentence[2]],[],[],[],0)]
+        analysis.sn=[Nominal_Group(['a'],[sentence[2]],[],[],[])]
 
     #There is not direct object in the sentence
     else:
-        analysis.sv[0].d_obj=[Nominal_Group(['a'],[sentence[2]],[],[],[],0)]
+        analysis.sv[0].d_obj=[Nominal_Group(['a'],[sentence[2]],[],[],[])]
     
     return analysis
 
@@ -352,7 +352,7 @@ def y_n_ques(type, request, sentence):
         sentence=sentence[:1]+ sentence[2:]
 
     #In this case we have an imperative sentence
-    if analyse_nominal_group.find_sn_pos(sentence, 0)==[] and type!='w_question':
+    if analyse_nominal_group.find_sn_pos(sentence, 1)==[] and type!='w_question':
         #We have to reput the 'not'
         if vg.state=='negative':
             sentence=sentence[:1]+['not']+sentence[1:]
@@ -365,7 +365,7 @@ def y_n_ques(type, request, sentence):
     sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
     
     #If there is one element => it is an auxiliary => verb 'be'
-    if len(sentence)==1:
+    if len(sentence)==0:
         vg.vrb_tense = analyse_verb.find_tense_statement(aux, vg.vrb_adv)
         vg.vrb_main=['be']
     else:

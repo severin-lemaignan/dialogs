@@ -22,7 +22,7 @@ class Sentence:
         self.aim = aim
         self.sn = sn
         self.sv = sv
-        
+            
     def resolved(self):
         """returns True when the whole sentence is completely resolved
         to concepts known by the robot."""
