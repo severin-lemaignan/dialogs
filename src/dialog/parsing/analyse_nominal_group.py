@@ -65,7 +65,7 @@ def adjective_pos(phrase, word_pos):
 
     #It is a noun so we have to return 1
     for j in noun_list:
-        if phrase[word_pos]==j:
+        if phrase[word_pos]==j[0]:
             return 1
 
     #For the regular adjectives
