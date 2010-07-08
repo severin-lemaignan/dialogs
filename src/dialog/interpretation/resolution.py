@@ -91,7 +91,7 @@ class Resolver:
                                                                     current_object)
                     resolved_i_cmpl.append(i_cmpl)
                 
-                sentence.sv.i_cmpl = resolved_i_cmpl
+                sv.i_cmpl = resolved_i_cmpl
 
         return sentence
     
@@ -101,22 +101,22 @@ class Resolver:
             return nominal_group
             
         logging.debug("Resolving \"" + str(nominal_group) + "\"")
-        builder.process_nominal_group(nominal_group, '?concept') 
+        builder.process_nominal_group(nominal_group, '?concept')
         stmts = builder.get_statements()
         #TODO: See the problem below with current speaker.
-        #logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
+        logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
         #I have turned the above line into:
-        logging.debug("Trying to identify this concept in "+ 'myself' + "'s model:")
+        #logging.debug("Trying to identify this concept in "+ 'myself' + "'s model:")
         
         for s in stmts:
             logging.debug(s)
         
         builder.clear_statements()
         #TODO: Clarify this with Severin and Raquel: Problem with the following line when current_speaker holds a different value from  'myself'
-        #description = [[current_speaker, '?concept', stmts]]
+        description = [[current_speaker, '?concept', stmts]]
         #So I've turned it into and it works so far.
-        description = [['myself', '?concept', stmts]]
-        
+        #description = [['myself', '?concept', stmts]]
+        logging.debug("with description: " + str(description))
         id = discriminator.clarify(description)
         logging.debug("Hurra! Found \"" + id + "\"")
         
@@ -163,7 +163,7 @@ class Resolver:
                                                        discriminator,
                                                        builder)
                     resolved_i_cmpl.append(i_cmpl)
-                sentence.sv.i_cmpl = resolved_i_cmpl
+                sv.i_cmpl = resolved_i_cmpl
                         
         
         
@@ -211,8 +211,7 @@ class Resolver:
     
     
     
-    def resolve_verbs(self, verbal_group):
-        
+    def resolve_verbs(self, verbal_group):        
         if verbal_group.resolved(): #already resolved: possible after asking human for more details.
             return verbal_group
         
@@ -246,7 +245,8 @@ class Resolver:
     
     def verbal_phrases_resolution(self, sentence):
         logging.debug("Resolving verbs...")
-        sentence.sv = self.resolve_verbs(sentence.sv)
+        for sv in sentence.sv:
+            sv = self.resolve_verbs(sv)
         
         return sentence
 

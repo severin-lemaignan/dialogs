@@ -30,25 +30,11 @@ class Sentence:
                         map(lambda x: x._resolved, self.sn), 
                         True) \
                 and \
-                self.sv.resolved()
+                reduce( lambda c1,c2: c1 and c2, 
+                        map(lambda x: x._resolved, self.sv), 
+                        True)
+
     
-    """Old version """
-    """
-    def __str__(self):
-        res =   "Type: " + self.data_type + '\n' + \
-                "Aim: " + self.aim + '\n'
-        
-        if self.sn:
-            for s in self.sn:
-                res += 'sn:\n\t' + str(s).replace("\n", "\n\t") + "\n"
-            
-        res += (('sv:\n\t' + str(self.sv).replace("\n", "\n\t") + "\n") if self.sv else "")
-        
-        res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
-        return res
-    """
-    
-    """New version: sv is a list"""
     def __str__(self):
         res =   "Type: " + self.data_type + '\n' + \
                 "Aim: " + self.aim + '\n'
@@ -97,32 +83,6 @@ class Nominal_Group:
         
         self._conjunction = 'AND' #could be 'AND' or 'OR'. TODO: use constants!
         
-        
-        
-    """Old version """
-    """
-    def __str__(self):
-        
-        if self._resolved:
-            res = 'id: ' + self.id + '\n>resolved<'
-        else:
-            res =   'det: ' + str(self.det) + "\n" + \
-                    'noun: ' + str(self.noun) + "\n" + \
-                    'adj: ' + str(self.adj) + "\n"
-            
-            if self.noun_cmpl:
-                for s in self.noun_cmpl:
-                    res += 'noun_cmpl:\n\t' + str(s).replace("\n", "\n\t") + "\n"
-            
-            if self.relative:
-                res += 'relative:\n\t' + str(self.relative).replace("\n", "\n\t") + "\n"
-        
-        return res
-    """
-    
-    """new version: relative is a list"""
-
-       
 
     def __str__(self):
         
@@ -247,52 +207,37 @@ class Verbal_Group:
         return res
 
 
-class ObjectInteraction:
-
-    def __init__(
-        self,
-        sentence,
-        sender,
-        recipient,
-        date,
-        time,
-        ):
-        self.sentence = sentence
-        self.sender = sender
-        self.recipient = recipient
-        self.date = date
-        self.time = time
 
 def unit_tests():
 
     sentence1 = Sentence('w_question',
                         'location',
-                        [Nominal_Group(['the'],  ['mother'],[],None, None)],
-                        Verbal_Group(['be'], None,'present simple',None, None,['today'], None, None, None))
+                        [Nominal_Group(['the'],  ['mother'],[],[], [])],
+                        Verbal_Group(['be'], [],'present simple',[], [],['today'], [], [], []))
     
     print("*********************************")
     print(sentence1)
     
     sentence2 = Sentence('statement', 
                         '', 
-                        [Nominal_Group([],["Jido"],[],[],None), Nominal_Group([],["Danny"],[],[],None)], 
-                        Verbal_Group(["want"],None, 'infinitive',[],[],[],[],'affirmative', None))
+                        [Nominal_Group([],["Jido"],[],[],[]), Nominal_Group([],["Danny"],[],[],[])], 
+                        Verbal_Group(["want"],[], 'infinitive',[],[],[],[],'affirmative', []))
     
     print("*********************************")
     print(sentence2)
     
     sentence3 = Sentence('statement', 
                         '', 
-                        [Nominal_Group([],["Holmes"],[],[],None), Nominal_Group([],["Sherlock"],[],[],None)], 
+                        [Nominal_Group([],["Holmes"],[],[],[]), Nominal_Group([],["Sherlock"],[],[],[])], 
                         Verbal_Group(["want"],
-                                    Verbal_Group(["eat"],None, 'infinitive',[],[],[],[],'affirmative', None), 
+                                    Verbal_Group(["eat"],[], 'infinitive',[],[],[],[],'affirmative', []), 
                                     'past simple',
                                     [],
                                     [],
                                     [],
                                     [],
                                     'negative', 
-                                    None))
+                                    []))
     
     print("*********************************")
     print(sentence3)
@@ -302,17 +247,17 @@ def unit_tests():
                         [Nominal_Group( ['the'],  
                                         ['bottle'],
                                         ['blue', 'gray'],
-                                        [Nominal_Group(['my'],  ['mother'],[],[], [sentence2]), Nominal_Group(['my'],  ['father'],[],[], None)], 
-                                        None)], 
+                                        [Nominal_Group(['my'],  ['mother'],[],[], [sentence2]), Nominal_Group(['my'],  ['father'],[],[], [])], 
+                                        [])], 
                         Verbal_Group(['know'], 
-                                    None,
+                                    [],
                                     'present simple',
-                                    [Nominal_Group(['the'],  ["land"],['old'],[], None), Nominal_Group(['the'],  ["brand"],['lazy'],[], None)],
+                                    [Nominal_Group(['the'],  ["land"],['old'],[], []), Nominal_Group(['the'],  ["brand"],['lazy'],[], [])],
                                     [
                                         Indirect_Complement(['in'], 
-                                                            [Nominal_Group(['the'],  ['garden'],['green'],[], None)]), 
+                                                            [Nominal_Group(['the'],  ['garden'],['green'],[], [])]), 
                                         Indirect_Complement(['to'], 
-                                                            [Nominal_Group(['the'],  ['car'],['red'],[], None)])
+                                                            [Nominal_Group(['the'],  ['car'],['red'],[], [])])
                                     ],
                                     ["slowly"], 
                                     ["now"], 

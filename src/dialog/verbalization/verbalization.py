@@ -13,7 +13,7 @@ import logging
 
 from sentence import *
 
-import reconstitution_replique
+import retort_recovery
 
 class Verbalizer:
     """Implements the verbalization module: Verbalizer.verbalize() takes as
@@ -21,7 +21,7 @@ class Verbalizer:
     """
     def verbalize(self, sentence):
         logging.debug("Verbalizing now...")
-        nl_sentence = reconstitution_replique.recon_replique(sentence)
+        nl_sentence = retort_recovery.verbalising(sentence)
         logging.debug("Rebuild sentence to: \"" + nl_sentence + "\"")
         return nl_sentence
 
