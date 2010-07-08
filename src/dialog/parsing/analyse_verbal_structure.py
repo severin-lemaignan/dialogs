@@ -238,7 +238,7 @@ def treat_scd_sentence(phrase, vg, sec_vrb):
     #We take off the part of the sentence after 'to'
     scd_sentence=phrase[phrase.index(sec_vrb[0]):]
     phrase=phrase[:phrase.index(sec_vrb[0])]
-
+    
     #We treat the verb
     if scd_sentence[0]=='not':
         scd_verb=[other_functions.convert_to_string(analyse_verb.return_verb(scd_sentence, [scd_sentence[1]], ''))]

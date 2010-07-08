@@ -142,7 +142,7 @@ def dispatching(sentence):
 
                     #For 'why'
                     elif x[2]=='5':
-                        return y_n_ques('w_question', 'purpose', sentence[1:])
+                        return y_n_ques('w_question', 'reason', sentence[1:])
 
                     #For 'whose'
                     elif x[2]=='6':
@@ -292,7 +292,7 @@ def condi_sentence(sentence):
 
     #We perform the 2 treatments
     analysis=other_sentence('statement', '', sentence[sentence.index(';')+1:])
-    analysis.sv[0].vrb_sub_sentence=[other_sentence('condition', 'if', conditionnal_sentence)]
+    analysis.sv[0].vrb_sub_sentence=[other_sentence('subsentence', 'if', conditionnal_sentence)]
 
     return analysis
 
