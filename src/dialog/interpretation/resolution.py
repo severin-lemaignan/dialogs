@@ -22,7 +22,7 @@ class Resolver:
     
     """
     
-    def resolve_references(self, nominal_group, current_speaker, current_object, onto):
+    def resolve_references(self, nominal_group, current_speaker, current_object, onto = None):
         
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
@@ -72,23 +72,26 @@ class Resolver:
     def references_resolution(self, sentence, current_speaker, current_object):
         logging.debug("Resolving references and anaphors...")
         
+        #sentence sn nominal groups reference resolution
         if sentence.sn:
             sentence.sn = self.resolve_groups_references(sentence.sn, current_speaker, current_object)
         
         
-        if sentence.sv.d_obj:
-            sentence.sv.d_obj = self.resolve_groups_references(sentence.sv.d_obj,
+        #sentence sv nominal groups reference resolution
+        for sv in sentence.sv:
+            if sv.d_obj:
+                sv.d_obj = self.resolve_groups_references(sv.d_obj,
                                                                current_speaker,
                                                                current_object)
-        
-        resolved_i_cmpl = []
-        for i_cmpl in sentence.sv.i_cmpl:
-            i_cmpl.nominal_group = self.resolve_groups_references(i_cmpl.nominal_group, 
-                                                            current_speaker, 
-                                                            current_object)
-            resolved_i_cmpl.append(i_cmpl)
-        
-        sentence.sv.i_cmpl = resolved_i_cmpl
+            if sv.i_cmpl:
+                resolved_i_cmpl = []
+                for i_cmpl in sv.i_cmpl:
+                    i_cmpl.nominal_group = self.resolve_groups_references(i_cmpl.nominal_group, 
+                                                                    current_speaker, 
+                                                                    current_object)
+                    resolved_i_cmpl.append(i_cmpl)
+                
+                sentence.sv.i_cmpl = resolved_i_cmpl
 
         return sentence
     
@@ -98,14 +101,21 @@ class Resolver:
             return nominal_group
             
         logging.debug("Resolving \"" + str(nominal_group) + "\"")
-        stmts = builder.process_nominal_group(self, nominal_group, '?concept')    
-        logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
+        builder.process_nominal_group(nominal_group, '?concept') 
+        stmts = builder.get_statements()
+        #TODO: See the problem below with current speaker.
+        #logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
+        #I have turned the above line into:
+        logging.debug("Trying to identify this concept in "+ 'myself' + "'s model:")
+        
         for s in stmts:
             logging.debug(s)
         
         builder.clear_statements()
-        
-        description = [[current_speaker, '?concept', stmts]]
+        #TODO: Clarify this with Severin and Raquel: Problem with the following line when current_speaker holds a different value from  'myself'
+        #description = [[current_speaker, '?concept', stmts]]
+        #So I've turned it into and it works so far.
+        description = [['myself', '?concept', stmts]]
         
         id = discriminator.clarify(description)
         logging.debug("Hurra! Found \"" + id + "\"")
@@ -129,30 +139,31 @@ class Resolver:
         
         #Discrimination
         discriminator = Discrimination()
-
+        
+        #sentence.sn nominal groups nouns phrase resolution
         if sentence.sn:
             sentence.sn = self.resolve_groups_nouns(sentence.sn, 
                                                     current_speaker,
                                                     discriminator,
                                                     builder)
         """new version """
-        if sentence.sv:
-            for sv in sentence.sv:
-                if sv.d_obj:
-                    sv.d_obj = self.resolve_groups_nouns(sv.d_obj, 
-                                                         current_speaker,
-                                                         discriminator,
-                                                         builder)
-        
-                if sv.i_cmpl:
-                    resolved_i_cmpl = []
-                    for i_cmpl in sv.i_cmpl:
-                        i_cmpl = self.resolve_groups_nouns(sv.i_cmpl, 
-                                                           current_speaker,
-                                                           discriminator,
-                                                           builder)
-                        resolved_i_cmpl.append(i_cmpl)
-                    sentence.sv.i_cmpl = resolved_i_cmpl
+        #sentence.sv nominal groups nouns phrase resolution
+        for sv in sentence.sv:
+            if sv.d_obj:
+                sv.d_obj = self.resolve_groups_nouns(sv.d_obj, 
+                                                     current_speaker,
+                                                     discriminator,
+                                                     builder)
+    
+            if sv.i_cmpl:
+                resolved_i_cmpl = []
+                for i_cmpl in sv.i_cmpl:
+                    i_cmpl.nominal_group = self.resolve_groups_nouns(i_cmpl.nominal_group, 
+                                                       current_speaker,
+                                                       discriminator,
+                                                       builder)
+                    resolved_i_cmpl.append(i_cmpl)
+                sentence.sv.i_cmpl = resolved_i_cmpl
                         
         
         
