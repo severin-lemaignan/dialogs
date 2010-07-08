@@ -31,7 +31,9 @@ class Sentence:
                         True) \
                 and \
                 self.sv.resolved()
-
+    
+    """Old version """
+    """
     def __str__(self):
         res =   "Type: " + self.data_type + '\n' + \
                 "Aim: " + self.aim + '\n'
@@ -39,8 +41,24 @@ class Sentence:
         if self.sn:
             for s in self.sn:
                 res += 'sn:\n\t' + str(s).replace("\n", "\n\t") + "\n"
-                
+            
         res += (('sv:\n\t' + str(self.sv).replace("\n", "\n\t") + "\n") if self.sv else "")
+        
+        res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
+        return res
+    """
+    
+    """New version: sv is a list"""
+    def __str__(self):
+        res =   "Type: " + self.data_type + '\n' + \
+                "Aim: " + self.aim + '\n'
+        
+        if self.sn:
+            for s in self.sn:
+                res += 'sn:\n\t' + str(s).replace("\n", "\n\t") + "\n"
+        if self.sv:
+            for s in self.sv:  
+                res += 'sv:\n\t' + str(s).replace("\n", "\n\t") + "\n"
         
         res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
         return res
@@ -72,13 +90,17 @@ class Nominal_Group:
         known by the robot."""
         self._resolved = False
         
-        """This fields hold the ID of the concept represented by this group.
+        """This field hold the ID of the concept represented by this group.
         When the group is resolved, id must be different from None
         """
         self.id = None
         
         self._conjunction = 'AND' #could be 'AND' or 'OR'. TODO: use constants!
-            
+        
+        
+        
+    """Old version """
+    """
     def __str__(self):
         
         if self._resolved:
@@ -93,11 +115,36 @@ class Nominal_Group:
                     res += 'noun_cmpl:\n\t' + str(s).replace("\n", "\n\t") + "\n"
             
             if self.relative:
-                
-                    res += 'relative:\n\t' + str(self.relative).replace("\n", "\n\t") + "\n"
+                res += 'relative:\n\t' + str(self.relative).replace("\n", "\n\t") + "\n"
         
         return res
+    """
+    
+    """new version: relative is a list"""
 
+       
+
+    def __str__(self):
+        
+        if self._resolved:
+            res = 'id: ' + self.id + '\n>resolved<'
+        else:
+            res =   'det: ' + str(self.det) + "\n" + \
+                    'noun: ' + str(self.noun) + "\n" + \
+                    'adj: ' + str(self.adj) + "\n"
+            
+            if self.noun_cmpl:
+                for s in self.noun_cmpl:
+                    res += 'noun_cmpl:\n\t' + str(s).replace("\n", "\n\t") + "\n"
+            
+            if self.relative:
+                for rel in self.relative:
+                    res += 'relative:\n\t' + str(rel).replace("\n", "\n\t") + "\n"
+        
+        return res
+    
+    
+    
 class Indirect_Complement:
     """
     Indirect complement class declaration

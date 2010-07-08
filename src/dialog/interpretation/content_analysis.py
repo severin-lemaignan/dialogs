@@ -14,44 +14,23 @@ class ContentAnalyser:
         self.builder = StatementBuilder()
         
     def analyse(self, sentence, current_speaker):
-        """analyse an imperative data_type sentence"""
-        if sentence.data_type == 'imperative':
-            logging.debug("Processing the content of an imperative sentence")
-            return self.process_order(sentence, current_speaker)
-
-	
-        """analyse a statement data_type sentence"""
-        if sentence.data_type == 'statement':
-            logging.debug("Processing the content of a statement type sentence")
-            return self.process_statement(sentence, current_speaker)
-	
+        """analyse an imperative or statement data_type sentence"""
+        if sentence.data_type in ['imperative', 'statement']:
+            logging.debug("Processing the content of an imperative or statement data_type sentence")
+            return self.process_sentence(sentence, current_speaker)
 
 
             
-    def process_order(self, sentence, current_speaker):
-        flags = ['order', '', '', '', '', '', [], []]
-        stmts = self.builder.processOrderSentence(
-                            sentence, 
-                            current_speaker, 
-                            flags)
+    def process_sentence(self, sentence, current_speaker):
+        self.builder.set_current_speaker(current_speaker)
+        stmts = self.builder.process_sentence(sentence)
+        
         logging.info("Generated statements: ")
         for s in stmts:
             logging.info(">> " + s)
         
         return stmts
 
-
-    def process_statement(self, sentence, current_speaker):
-        flags = ['inform', '', '', '', '', '', [], []]
-        stmts = self.builder.processSentence(
-                            sentence,
-                            current_speaker,
-                            flags)
-        logging.info("Generated statements: ")        
-        for s in stmts:
-            logging.info(">> " + s)
-        
-        return stmts
     
 
 def unit_tests():
