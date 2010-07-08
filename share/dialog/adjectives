@@ -2,18 +2,6 @@
 # the optinal category of the adjective (within parenthesis) is used to build the
 # corresponding predicate by prefixing the category with "has": eg. "hasColor"
 
-black Color
-blue Color
-green Color
-red Color
-yellow Color
-white Color
-purple Color
-orange Color
-
-big Size
-small Size
-
 aback
 abaft
 aberrant
@@ -45,11 +33,11 @@ belligerent
 bent
 berserk
 better
-big
+big Size
 bitter
 bizarre
-black
-blue
+black Color
+blue Color
 brash
 brave 
 brief
@@ -140,7 +128,7 @@ good
 grandiose
 gratis
 great
-green
+green Color
 grotesque
 gruesome
 half
@@ -229,7 +217,7 @@ old
 omniscient
 open
 opposite
-orange
+orange Color
 overconfident
 overt
 overwrought
@@ -253,7 +241,7 @@ present
 private
 profuse
 proud
-purple
+purple Color
 quack
 quaint
 quarrelsome
@@ -265,6 +253,7 @@ rapid
 rare
 rebel
 recondite
+red Color
 redundant
 regular
 reminiscent
@@ -298,7 +287,7 @@ simple
 sincere
 slim
 slow
-small
+small Size
 smart
 smooth
 soft
@@ -382,7 +371,7 @@ wise
 woebegone
 wooden
 wrong
-yellow
+yellow Color
 young
 
 
