@@ -9,8 +9,8 @@ from statements_builder import NominalGroupStatementBuilder
 from statements_builder import VerbalGroupStatementBuilder
 from sentence import *
 from pyoro import Oro
+from pyoro import OroServerError
 from resources_manager import ResourcePool
-
 from dialog_exceptions import DialogError
 from dialog_exceptions import GrammaticalError
 
@@ -22,26 +22,26 @@ class QuestionHandler:
 		self._statements = []
 		self._current_speaker = current_speaker
 		#This field takes the value True or False when processing a Yes-No-question 
-		#		and takes a list of returned values from the ontology when processing a Wh-question 
+		#		and takes a list of returned values from the ontology when processing a w_question 
 		self._answer = False
 		#connection to Oro
 		self._oro = Oro("localhost", 6969)
 		
 	def process_sentence(self, sentence):
-		"""
+		
 		if not sentence.resolved():
-		raise DialogError("Trying to process an unresolved sentence!")
+			raise DialogError("Trying to process an unresolved sentence!")	
 		
 		self._sentence = sentence
-		"""
-		self._sentence = dump_resolved(sentence, self._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of query builder. Need to be replaced as commented above
 		
+		#StatementBuilder
 		builder = StatementBuilder(self._current_speaker)
 		self._statements = builder.process_sentence(self._sentence)
+		logging.info("statement Builder result: " + str(self._statements))
+		
 		#Case the question is a y_n_question
 		if sentence.data_type == 'yes_no_question':
 			self._answer = self._oro.check(self._resolve_action_verb_reference(self._statements))
-			
 			
 		#Case the question is a w_question		
 		if sentence.data_type == 'w_question':
@@ -57,42 +57,27 @@ class QuestionHandler:
 		return self._answer
 		
 	def _resolve_action_verb_reference(self, statements):
-		
-		
-		sit_id = self._oro.find('?event', statements)
-		if not sit_id:
-			return statements
-		
-		else:
-			stmts = []
-			logging.debug("/Found a staticSituation matching the yes_no_question query to be checked: "+ str(sit_id))
-			for s in statements:
-				#TODO:the ontology might find severals sit ID matching the query. Should we take this consideration?
-				#The longer the query, the better the result of sit_id
-				stmts.append(s.replace('?event', sit_id[0]))
-			return stmts
-	
+		stmts = []
+		try: 
+			sit_id = self._oro.find('?event', statements)
+			if sit_id:
+				logging.debug("\t/Found a staticSituation matching the yes_no_question query to be checked: "+ str(sit_id))
+				for s in statements:
+					#TODO:the ontology might find severals sit ID matching the query. Should we take this consideration?
+					#The longer the query, the better the result of sit_id
+					stmts.append(s.replace('?event', sit_id[0]))
+		except OroServerError:
+			stmts = statements
+			
+		return stmts
+	"""
 	def process_w_question(self, sentence):
-		"""
-		if not sentence.resolved():
-			raise DialogError("Trying to process an unresolved sentence!")
-		
-		self._sentence = sentence
-		"""
-		
 		#Case the question is about the subject
 		#Case the question is about the verb
 		#Case the question is about the objects
 		
 		if sentence.sv:
 			self.process_w_question_verbal_group(self, sentence.sv)
-			
-			
-			
-			
-			
-			
-			
 			
 			vg_stmt_builder = VerbalGroupStatementBuilder(sentence.sv, self._current_speaker)
 			for sn in sentence.sn:
@@ -119,54 +104,51 @@ class QuestionHandler:
 				self.get_statements_based_on_aim(self._sentence.aim, '?event')
 			
 			
-	
-	
+	"""
+	"""		
 	def get_statements_based_on_aim(self, aim, id = None):
-		aim_dic = {'place':' isOn ',
-				    'thing':' involves '				    
-				    }
-		if id:
-			self._statements.append(id + aim_dic[aim]+ '?concept')
-
-
-		"""		
-		case:
-			y_n_question
-			Do
-			can
-			must
-			
-			
-			e.g.  Do you know Ramses 
-				  -> yes, I do
-				  Can I you give me a bottle?
-				  -> yes, I can  No, I cannot
+	aim_dic = {'place':' isOn ',
+			    'thing':' involves '				    
+			    }
+	if id:
+		self._statements.append(id + aim_dic[aim]+ '?concept')
+	case:
+		y_n_question
+		Do
+		can
+		must
 		
 		
+		e.g.  Do you know Ramses 
+			  -> yes, I do
+			  Can I you give me a bottle?
+			  -> yes, I can  No, I cannot
+	
+	
+	
+	Case: Wh-Question => data_type = w_question
+		see http://www.eslgold.com/grammar/wh_questions.html
 		
-		Case: Wh-Question => data_type = w_question
-			see http://www.eslgold.com/grammar/wh_questions.html
-			
-			
-			what aim => 'thing'
-				what kind => aim = 'thing', sn = [the kind of]
-				what type => aim = 'thing' , sn = [the type of]
-				what time => aim = 'time'
-			which aim => 'choice'
-			when  aim => 'date'
-			where aim => 'Place'
-				where (from) => 'origin'
-			why   aim => 'reason'
-			who   aim => 'person'
-			whose aim => 'owner'
-			whom  aim => 'person'
-			how   aim => 'place'
-				how long  => aim = 'duration'
-				how far   => aim = 'distance'
-	 			how often => aim = 'Frequency'
-	 			How much  => aim = 'Quantity'
-				How many  => aim = 'Quantity'
-		"""	
+		
+		what aim => 'thing'
+			what kind => aim = 'thing', sn = [the kind of]
+			what type => aim = 'thing' , sn = [the type of]
+			what time => aim = 'time'
+		which aim => 'choice'
+		when  aim => 'date'
+		where aim => 'Place'
+			where (from) => 'origin'
+		why   aim => 'reason'
+		who   aim => 'person'
+		whose aim => 'owner'
+		whom  aim => 'person'
+		how   aim => 'place'
+			how long  => aim = 'duration'
+			how far   => aim = 'distance'
+ 			how often => aim = 'Frequency'
+ 			How much  => aim = 'Quantity'
+			How many  => aim = 'Quantity'
+	"""	
 
 
 class TestQuestionHandler(unittest.TestCase):
@@ -286,7 +268,7 @@ class TestQuestionHandler(unittest.TestCase):
 	
 	
 	def test_4_y_n_question(self):
-		print "\n*************  test_4_y_n_question ******************"
+		print "\n*************  test_4_y_n_question action verb******************"
 		print "Did you get the blue cube?"
 		sentence = Sentence("yes_no_question", "", 
 	                         [Nominal_Group([],
@@ -310,13 +292,92 @@ class TestQuestionHandler(unittest.TestCase):
 		statement_query = ['* rdf:type Get',
 						   '* performedBy myself',
 						   '* actsOnObject blue_cube']
-		expected_result = True
-		
+		expected_result = True		
 		self.process(sentence , statement_query, expected_result)
+		
+		
+	def test_5_y_n_question(self):
+		print "\n*************  test_5_y_n_question verb to be followed by complement******************"
+		print "Is the blue cube on the table?"
+		sentence = Sentence("yes_no_question", "", 
+	                         [Nominal_Group(['the'],
+	                                        ['cube'],
+	                                        ['blue'],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['be'],
+	                                       [],
+	                                       'present simple',
+	                                       [],
+	                                       [Indirect_Complement(['on'],
+															    [Nominal_Group(['the'],
+																			   ['table1'],
+																			   [],
+																			   [],
+																			   [])])],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['blue_cube isOn table1']
+		expected_result = True		
+		self.process(sentence , statement_query, expected_result)
+	
+	
+	def test_6_y_n_question(self):
+		print "\n*************  test_6_y_n_question verb to be not followed by complement and sentence resolved******************"
+		print "Is the cube blue?"
+		sentence = Sentence("yes_no_question", "", 
+	                         [Nominal_Group(['the'],
+	                                        ['cube'],
+	                                        ['blue'],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['be'],
+	                                       [],
+	                                       'present simple',
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = []
+		expected_result = True		
+		self.process(sentence , statement_query, expected_result)
+		
+	
+	def test_7_y_n_question(self):
+		print "\n*************  test_7_y_n_question verb to be ******************"
+		print "Is my cube on the table1?"
+		sentence = Sentence("yes_no_question", "", 
+	                         [Nominal_Group(['my'],
+	                                        ['cube'],
+	                                        [],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['be'],
+	                                       [],
+	                                       'present simple',
+	                                       [],
+	                                       [Indirect_Complement(['on'],
+															    [Nominal_Group(['the'],
+																			   ['table1'],
+																			   [],
+																			   [],
+																			   [])])],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['another_cube isOn table1']
+		expected_result = False		
+		self.process(sentence , statement_query, expected_result) 
 	
 	
 	
 	def process(self, sentence , statement_query, expected_result):
+		sentence = dump_resolved(sentence, 'SPEAKER', 'myself')#TODO: dumped_resolved is only for the test of query builder
 		res = self.qhandler.process_sentence(sentence)
 		logging.debug("Result: " + str(res))
 		self.assertEqual(res, expected_result)
@@ -336,7 +397,6 @@ def dump_resolved(sentence, current_speaker, current_recipient = None):
 	sentence = resolver.noun_phrases_resolution(sentence,
 											    current_speaker)
 	sentence = resolver.verbal_phrases_resolution(sentence)
-	print "RRREEEEOOOSC", sentence
 	return sentence
 
 
@@ -344,11 +404,7 @@ def unit_tests():
 	"""This function tests the main features of the class QuestionHandler"""
 	
 	print("This is a test...")
-	#unittest.main()
-	
-	oro = Oro("localhost", 6969)
-	oro.add(['oo rdf:type OO'])
-	print oro.check(['oo rdf:type OO'])
+	unittest.main()
 	
 	
 if __name__ == '__main__':
