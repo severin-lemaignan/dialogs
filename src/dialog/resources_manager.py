@@ -145,6 +145,8 @@ class ThematicRolesDict:
             
         return (" " + role.id + " ") if with_spaces else role.id
     
+    def get_all_verbs(self):
+        return self.verbs.keys()
         
     def __str__(self):
         res = ""

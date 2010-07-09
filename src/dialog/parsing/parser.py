@@ -591,7 +591,7 @@ def unit_tests():
     print ''
     """
     
-    
+    """
     """
     ## Aim of this test : Using nested relative with he duplication with 'and' 
     """
@@ -891,7 +891,7 @@ def unit_tests():
 
     compare_reply(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
     """
     """
@@ -1334,6 +1334,32 @@ def unit_tests():
     print ''
     """
 
+    
+    
+    """
+    ## Aim of this test : Using wrong in the what questions
+    """
+    print ''
+    print ('######################## test 4.4 ##############################')
 
+    reply="what is wrong with him?"
+    print 'The object of our test is this reply :'
+    print reply
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.treat_sentence(reply)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('w_question', 'thing', 
+            [Nominal_Group([],[],['wrong'],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['with'],[Nominal_Group([],['him'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+
+    compare_reply(class_list,rslt,sentence_list)
+    print ''
+    
+    
 if __name__ == '__main__':
     unit_tests()
