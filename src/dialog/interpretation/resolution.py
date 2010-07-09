@@ -104,18 +104,20 @@ class Resolver:
         builder.process_nominal_group(nominal_group, '?concept')
         stmts = builder.get_statements()
         #TODO: See the problem below with current speaker.
-        logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
-        #I have turned the above line into:
-        #logging.debug("Trying to identify this concept in "+ 'myself' + "'s model:")
+        #logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
+        #For Question handler test ONLY, I have turned the above line into:
+        logging.debug("Trying to identify this concept in "+ 'myself' + "'s model:")
         
         for s in stmts:
             logging.debug(s)
         
         builder.clear_statements()
-        #TODO: Clarify this with Severin and Raquel: Problem with the following line when current_speaker holds a different value from  'myself'
-        description = [[current_speaker, '?concept', stmts]]
-        #So I've turned it into and it works so far.
-        #description = [['myself', '?concept', stmts]]
+        #TODO: Problem with the following line when current_speaker holds a different value from  'myself'
+        #In order to solve it, Try to catch an exception and report it to user
+        #description = [[current_speaker, '?concept', stmts]]
+        #For Question handler test ONLY, I have turned the above line into.
+        description = [['myself', '?concept', stmts]]
+        
         logging.debug("with description: " + str(description))
         id = discriminator.clarify(description)
         logging.debug("Hurra! Found \"" + id + "\"")
@@ -130,7 +132,6 @@ class Resolver:
         for ng in nominal_groups:
             resolved_sn.append(self.resolve_nouns(ng, current_speaker, discriminator, builder))
             
-
         return resolved_sn
         
     def noun_phrases_resolution(self, sentence, current_speaker):
@@ -146,7 +147,7 @@ class Resolver:
                                                     current_speaker,
                                                     discriminator,
                                                     builder)
-        """new version """
+        
         #sentence.sv nominal groups nouns phrase resolution
         for sv in sentence.sv:
             if sv.d_obj:
@@ -165,50 +166,7 @@ class Resolver:
                     resolved_i_cmpl.append(i_cmpl)
                 sv.i_cmpl = resolved_i_cmpl
                         
-        
-        
-        """old version
-        process d_obj 
-        """
-        """
-        if sentence.sv.d_obj:
-        
-            #process d_obj : case: the yellow banana is good. yellow_banana hasFeature good. Where good is in the sentence.sv.d_obj[0].adj
-            #There is no noun in this  nominal group, so no resolve_groups_nouns here.
-        
-            if sentence.sv.vrb_main == ["be"] and\
-                     sentence.sv.d_obj[0].adj != [] and\
-                     sentence.sv.d_obj[0].noun == [] and\
-                     sentence.sv.d_obj[0].noun_cmpl == []:
-                               
-                sentence.sv.d_obj[0]._resolved = True
-                #TODO: move the adjective to the subject instead of moving the subject as a "fake" direct obj.
-                sentence.sv.d_obj[0].id = sentence.sn[0].id
-                
-            else:
-                sentence.sv.d_obj = self.resolve_groups_nouns(
-                                            sentence.sv.d_obj,
-                                            current_speaker, 
-                                            discriminator, 
-                                            builder)
-        
-        
-        resolved_i_cmpl = []
-        for i_cmpl in sentence.sv.i_cmpl:
-            i_cmpl.nominal_group = self.resolve_groups_nouns(i_cmpl.nominal_group, 
-                                                            current_speaker, 
-                                                            discriminator, 
-                                                            builder)
-            resolved_i_cmpl.append(i_cmpl)
-        
-        sentence.sv.i_cmpl = resolved_i_cmpl
-        """
-        
-           
         return sentence
-    
-    
-    
     
     
     def resolve_verbs(self, verbal_group):        
@@ -233,7 +191,6 @@ class Resolver:
             except UnknownVerb:
                 resolved_verb = verb
                 logging.debug("Unknown verb \"" + verb + "\": keeping it like that, but I won't do much with it.")
-            
             resolved_verbs.append(resolved_verb)
         
         verbal_group.vrb_main = resolved_verbs
