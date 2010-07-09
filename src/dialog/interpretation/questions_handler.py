@@ -23,7 +23,7 @@ class QuestionHandler:
 		self._current_speaker = current_speaker
 		#This field takes the value True or False when processing a Yes-No-question 
 		#		and takes a list of returned values from the ontology when processing a Wh-question 
-		self._answer = None
+		self._answer = False
 		#connection to Oro
 		self._oro = Oro("localhost", 6969)
 		
@@ -35,29 +35,42 @@ class QuestionHandler:
 		self._sentence = sentence
 		"""
 		self._sentence = dump_resolved(sentence, self._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of query builder. Need to be replaced as commented above
+		
 		builder = StatementBuilder(self._current_speaker)
 		self._statements = builder.process_sentence(self._sentence)
-		
 		#Case the question is a y_n_question
 		if sentence.data_type == 'yes_no_question':
-			logging.debug("Ontologie:check(" + str(self._statements) + ")")
-			return self._oro.check(self._statements)
-		
-		#Case the question is a w_question	
+			self._answer = self._oro.check(self._resolve_action_verb_reference(self._statements))
+			
+			
+		#Case the question is a w_question		
 		if sentence.data_type == 'w_question':
-			self._statements.append(pr)
+			pass
+			"""
+			self._statements.append(?????)
 			logging.debug("Ontologie:find('?concept', " + str(self._statements) + ")")
-			return self.process_w_question(sentence)
+			self.process_w_question(sentence)
+			"""
+		
 		
 		self._oro.close()
-	
+		return self._answer
 		
-	def process_y_n_question(self, sentence):
-		builder = StatementBuilder(sentence, self._current_speaker)
-		self._statements = builder.process_sentence(sentence)
-		#Query performed on the ontology
+	def _resolve_action_verb_reference(self, statements):
 		
-	
+		
+		sit_id = self._oro.find('?event', statements)
+		if not sit_id:
+			return statements
+		
+		else:
+			stmts = []
+			logging.debug("/Found a staticSituation matching the yes_no_question query to be checked: "+ str(sit_id))
+			for s in statements:
+				#TODO:the ontology might find severals sit ID matching the query. Should we take this consideration?
+				#The longer the query, the better the result of sit_id
+				stmts.append(s.replace('?event', sit_id[0]))
+			return stmts
 	
 	def process_w_question(self, sentence):
 		"""
@@ -184,9 +197,9 @@ class TestQuestionHandler(unittest.TestCase):
 				 'see_shelf performedBy myself',
 				 'see_shelf involves shelf1',
 				 
-				 'take_blue_cube canBePerformedBy myself',
-				 'take_blue_cube rdf:type Take',
-				 'take_blue_cube involves blue_cube',
+				 'take_blue_cube performedBy myself',
+				 'take_blue_cube rdf:type Get',
+				 'take_blue_cube actsOnObject blue_cube',
 				 
 				 'take_my_cube canBePerformedBy SPEAKER',
 				 'take_my_cube involves another_cube',
@@ -195,7 +208,7 @@ class TestQuestionHandler(unittest.TestCase):
 		
 		self.qhandler = QuestionHandler("SPEAKER")
 	
-
+	"""
 	def test_1_w_question(self):
 		print "\n*************  test_1_w_question ******************"
 		print "Where is the blue cube?"
@@ -268,22 +281,22 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = ['shelf1']
 		
 		self.process(sentence , statement_query, expected_result)
-	
+	"""
 	
 	
 	
 	def test_4_y_n_question(self):
 		print "\n*************  test_4_y_n_question ******************"
-		print "Could you take the blue cube?"
-		sentence = Sentence("y_n_question", "", 
+		print "Did you get the blue cube?"
+		sentence = Sentence("yes_no_question", "", 
 	                         [Nominal_Group([],
 	                                        ['you'],
 	                                        [''],
 	                                        [],
 	                                        [])],                                         
-	                         [Verbal_Group(['Can+Take'],
+	                         [Verbal_Group(['get'],
 	                                       [],
-	                                       'present_simple',
+	                                       'past_simple',
 	                                       [Nominal_Group(['the'],
 	                                                      ['cube'],
 					                                      ['blue'],
@@ -294,9 +307,9 @@ class TestQuestionHandler(unittest.TestCase):
 	                                       [],
 	                                       'affirmative',
 	                                       [])])
-		statement_query = ['* rdf:type Take',
-						   '* canBePerformedBy myself',
-						   '* involves blue_cube']
+		statement_query = ['* rdf:type Get',
+						   '* performedBy myself',
+						   '* actsOnObject blue_cube']
 		expected_result = True
 		
 		self.process(sentence , statement_query, expected_result)
@@ -319,9 +332,11 @@ def dump_resolved(sentence, current_speaker, current_recipient = None):
 	sentence = resolver.references_resolution(sentence,
                                               current_speaker, 
                                               None)
+	
 	sentence = resolver.noun_phrases_resolution(sentence,
 											    current_speaker)
-	
+	sentence = resolver.verbal_phrases_resolution(sentence)
+	print "RRREEEEOOOSC", sentence
 	return sentence
 
 
@@ -329,7 +344,12 @@ def unit_tests():
 	"""This function tests the main features of the class QuestionHandler"""
 	
 	print("This is a test...")
-	unittest.main()
-
+	#unittest.main()
+	
+	oro = Oro("localhost", 6969)
+	oro.add(['oo rdf:type OO'])
+	print oro.check(['oo rdf:type OO'])
+	
+	
 if __name__ == '__main__':
 	unit_tests()
