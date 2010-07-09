@@ -24,6 +24,7 @@ class StatementBuilder:
         self._sentence = None
         self._current_speaker = current_speaker
         self._statements = []
+        
 
     def clear_statements(self):
         self._statements = []
@@ -32,14 +33,13 @@ class StatementBuilder:
         self._current_speaker = current_speaker
     
     def process_sentence(self, sentence):
-        """
+        
         if not sentence.resolved():
             raise DialogError("Trying to process an unresolved sentence!")
             
         self._sentence = sentence
-        """
         
-        self._sentence = dump_resolved(sentence, self._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
+        #self._sentence = dump_resolved(sentence, self._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
         
         if sentence.sn:
             self.process_nominal_groups(self._sentence.sn)
@@ -51,20 +51,27 @@ class StatementBuilder:
     
     def process_nominal_groups(self, nominal_groups):
         ng_stmt_builder = NominalGroupStatementBuilder(nominal_groups, self._current_speaker) 
-        self._statements.extend(ng_stmt_builder._process())
+        self._statements.extend(ng_stmt_builder.process())
         
         
     def process_verbal_groups(self, sentence):
         vg_stmt_builder = VerbalGroupStatementBuilder(sentence.sv, self._current_speaker)
+        
+        vg_stmt_builder.set_attribute_on_data_type(sentence)
+        """"
         #Case: an imperative sentence does not contain an sn attribute,
         #      we will assume that it is implicitly an order from the current speaker.
         #      performed by the recipient of the order.
         #      Therefore, the sn.id holds the value 'myself'
         if sentence.data_type == 'imperative':
-            subject_id = 'myself'
-            vg_stmt_builder._processing_order = True
+            self._process_on_imperative = True
             self._statements.extend(vg_stmt_builder._process(subject_id))        
+        
         else:
+            #Case: a yes_no_question set the attribute process_on_yes_no_question on True
+            if sentence.data_type == 'yes_no_question':
+                self._process_on_yes_no_question = True
+        
             for sn in sentence.sn:
                 if sn.id:
                     subject_id = sn.id
@@ -72,7 +79,16 @@ class StatementBuilder:
                     subject_id = generate_id()                  
                 
                 self._statements.extend(vg_stmt_builder._process(subject_id))
-    
+        """
+        if not sentence.sn:
+            self._statements.extend(vg_stmt_builder.process())
+        for sn in sentence.sn:
+            if sn.id:
+                subject_id = sn.id
+            else:
+                subject_id = generate_id()                  
+            
+            self._statements.extend(vg_stmt_builder.process(subject_id))
 
 class NominalGroupStatementBuilder:
     def __init__(self, nominal_groups, current_speaker = None):
@@ -87,7 +103,7 @@ class NominalGroupStatementBuilder:
         self._statements = []
         
         
-    def _process(self):
+    def process(self):
         """ The following function builds a list of statement from a list of nominal group
         A NominalGroupStatementBuilder needs to have been instantiated before"""
         
@@ -176,7 +192,7 @@ class NominalGroupStatementBuilder:
     def process_noun_cmpl(self, nominal_group, ng_id):
         logging.debug("processing noun complement:")
         for noun_cmpl in nominal_group.noun_cmpl:
-            if noun_cmpl._resolved:
+            if noun_cmpl.id:
                 noun_cmpl_id = noun_cmpl.id
             else:
                 noun_cmpl_id = generate_id()
@@ -230,23 +246,41 @@ class VerbalGroupStatementBuilder:
         self._verbal_groups = verbal_groups
         self._current_speaker = current_speaker
         self._statements = []
-        #the following attribute holds the value True when an imperative sentence or an order is processed
-        self._processing_order = False
         
-        #TODO:Find another way to do this without adding to Statement builder roles it shouldn't hold like processing a query
-        #The following attribute holds the value True when a question is processed. It is used in QuestionHandler
-        #self.processing_query = False
+        #This field holds the value True when the active sentence is of yes_no_questyion data_type
+        self._process_on_yes_no_question = False
         
+        #This field holds the value True when the active sentence is of imperative data_type
+        self._process_on_imperative = False
+
+    def set_attribute_on_data_type(self, sentence):
+        if sentence.data_type == 'imperative':
+            self._process_on_imperative = True
+        if sentence.data_type == 'yes_no_question':
+            self._process_on_yes_no_question = True
         
     def clear_statements(self):
         self._statements = [] 
     
-    def _process(self, subject_id):
+    def process(self, subject_id = None):
+        #Case: an imperative sentence does not contain an sn attribute,
+        #      we will assume that it is implicitly an order from the current speaker.
+        #      performed by the recipient of the order.
+        #      Therefore, the subject_id holds the value 'myself'
+        if self._process_on_imperative:
+            subject_id = 'myself'
+            
+        if not subject_id:
+            subject_id = '?concept'       
+        
+            
         self.process_verbal_groups(self._verbal_groups  , subject_id)                
         return self._statements
    
     def get_statements(self):
         return self._statements
+    
+    
     
     def process_verbal_groups(self, verbal_groups, subject_id, subject_rel_id = None):
         
@@ -285,9 +319,12 @@ class VerbalGroupStatementBuilder:
                 sit_id = subject_id
                 
             else:
-                sit_id = generate_id()#TODO: does an action verb involves an unique situation ID? => NO
-                if not '?' in subject_id:
-                    sit_id = sit_id.lstrip('?')
+                if self._process_on_yes_no_question:
+                    sit_id = '?event'
+                else:
+                    sit_id = generate_id()  #means the subject_id might not have been resolved
+                    if not '?' in subject_id:#means the subject_id has been resolved
+                        sit_id = sit_id.lstrip('?')
                 
                 
                 #Case 2:                
@@ -303,7 +340,7 @@ class VerbalGroupStatementBuilder:
                     
             
             
-            if self._processing_order:
+            if self._process_on_imperative:
                 self._statements.append(self._current_speaker + " desires " + sit_id)
             
             #Direct object
