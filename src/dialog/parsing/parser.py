@@ -73,6 +73,9 @@ def compare_nom_gr(ng,rslt_ng):
                     if compare_sentence(rslt_ng[i].relative[j], ng[i].relative[j])==1:
                         return 1
                     j=j+1
+                    
+                #reinit
+                j=0
             
             #We compare the flag (if there is an 'or' or an 'and')
             if rslt_ng[i]._conjunction!=ng[i]._conjunction:
@@ -588,7 +591,7 @@ def unit_tests():
     print ''
     """
     
-    """
+    
     """
     ## Aim of this test : Using nested relative with he duplication with 'and' 
     """
@@ -615,9 +618,9 @@ def unit_tests():
                 Nominal_Group(['the'],['glass'],[],[],[Sentence('relative', '', 
                     [Nominal_Group([],['I'],[],[],[])],  
                     [Verbal_Group(['clean'], [],'past simple', 
-                        [Nominal_Group(['the'],['bottle'],[],[],[])],
                         [],
-                        [], ['yesterday'] ,'negative',[])])])],
+                        [],
+                        [], ['yesterday'] ,'affirmative',[])])])],
             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]), Indirect_Complement(['at'],[Nominal_Group(['my'],['left'],[],[],[])])],
             ['quickly'], [] ,'negative',[])])]
 
@@ -790,7 +793,7 @@ def unit_tests():
     sentence_list=preprocessing.treat_sentence(reply)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
-    rslt=[Sentence('w_question', 'descrition', 
+    rslt=[Sentence('w_question', 'description', 
             [Nominal_Group(['the'],['weather'],[],[],[])], 
             [Verbal_Group(['like'], [],'present simple', 
                 [], 
@@ -888,7 +891,7 @@ def unit_tests():
 
     compare_reply(class_list,rslt,sentence_list)
     print ''
-    """
+    
     
     """
     """
@@ -1176,7 +1179,7 @@ def unit_tests():
     print ''
     """
     
-    
+    """
     """
     ## Aim of this test : Using different cases of what question with relative 
     """
@@ -1329,7 +1332,7 @@ def unit_tests():
 
     compare_reply(class_list,rslt,sentence_list)
     print ''
-    
+    """
 
 
 if __name__ == '__main__':

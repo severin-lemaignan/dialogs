@@ -16,6 +16,7 @@
 ######################################################################################
 """
 from resources_manager import ResourcePool
+from sentence import *
 import sentence_recovery
 import other_functions
 
@@ -23,7 +24,7 @@ import other_functions
 """
 ############################## Statement of lists ####################################
 """
-modal_list=['can', 'could', 'must', 'should', 'may', 'might', 'shall']
+modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
 
 
 
@@ -61,9 +62,9 @@ def nom_struc_recovery(nom_struc):
         #The first nominal group not preceded
         if i > 0:
             #With the flag we put 'or' or 'and'
-            if nom_struc[i]._and_or==0:
+            if nom_struc[i]._conjunction=='AND':
                 nominal_structure=nominal_structure+['and']
-            elif nom_struc[i]._and_or==0:
+            elif nom_struc[i]._conjunction=='OR':
                 nominal_structure=nominal_structure+['or']
 
         #We recover the nominal group and his complement
@@ -115,16 +116,23 @@ def indirect_compl_recovery(indirect_compl):
 ## Output=the verb conjugated                                                       ##
 ######################################################################################
 """
-def conjugate_vrb(tense, verb, sn):
+def conjugate_vrb(tense, verb, sn, type):
 
     #If there is no tense => we use the present simple
     if tense=='':
         tense='present simple'
-
-    #If no subject, we use the third person of singular
+    
+    
     if sn==[]:
-        sn[0].noun=['it']
-        return conjugate_vrb(tense, verb, sn)
+        if type=='imperative':
+            #If no subject, we use the third person of plural
+            sn=[Nominal_Group([],['they'],[],[],[])]
+            
+        else:
+            #If no subject, we use the third person of singular
+            sn=[Nominal_Group([],['it'],[],[],[])]
+            
+        return conjugate_vrb(tense, verb, sn, type)
 
     #For future simple
     if tense=='future simple':
@@ -177,20 +185,20 @@ def conjugate_vrb(tense, verb, sn):
     elif tense=='present progressive':
         for m in present_irreg_vrb:
             if m[0]==verb[0]:
-                return conjugate_vrb('present simple', ['be'], sn)+[m[2]]+verb[1:]
-        return conjugate_vrb('present simple', ['be'], sn)+[verb[0]+'ing']+verb[1:]
+                return conjugate_vrb('present simple', ['be'], sn, type)+[m[2]]+verb[1:]
+        return conjugate_vrb('present simple', ['be'], sn, type)+[verb[0]+'ing']+verb[1:]
     elif tense=='past progressive':
         for m in present_irreg_vrb:
             if m[0]==verb[0]:
-                return conjugate_vrb('past simple', ['be'], sn)+[m[2]]+verb[1:]
-        return conjugate_vrb('past simple', ['be'], sn)+[verb[0]+'ing']+verb[1:]
+                return conjugate_vrb('past simple', ['be'], sn, type)+[m[2]]+verb[1:]
+        return conjugate_vrb('past simple', ['be'], sn, type)+[verb[0]+'ing']+verb[1:]
 
     #For perfect forms
     elif tense=='present perfect':
         for i in past_irreg_vrb:
             if verb[0]==i[0]:
-                return conjugate_vrb('present simple', ['have'], sn)+[i[2]]+verb[1:]
-        return conjugate_vrb('present simple', ['have'], sn)+[verb[0]+'ed']+verb[1:]
+                return conjugate_vrb('present simple', ['have'], sn, type)+[i[2]]+verb[1:]
+        return conjugate_vrb('present simple', ['have'], sn, type)+[verb[0]+'ed']+verb[1:]
     elif tense=='present perfect':
         for i in past_irreg_vrb:
             if verb[0]==i[0]:
@@ -199,15 +207,15 @@ def conjugate_vrb(tense, verb, sn):
 
     #For passive forms
     elif tense=='present passive':
-        return conjugate_vrb('present simple', ['be'], sn)+conjugate_vrb('present perfect', verb, sn)[1:]
+        return conjugate_vrb('present simple', ['be'], sn, type)+conjugate_vrb('present perfect', verb, sn, type)[1:]
     elif tense=='past passive':
-        return conjugate_vrb('past simple', ['be'], sn)+conjugate_vrb('present perfect', verb, sn)[1:]
+        return conjugate_vrb('past simple', ['be'], sn, type)+conjugate_vrb('present perfect', verb, sn, type)[1:]
 
     #For conditionnal forms
     elif tense=='present conditionnal':
         return ['would']+verb
     elif tense=='past conditionnal':
-        return ['would']+conjugate_vrb('present perfect', ['be'], sn)
+        return ['would']+conjugate_vrb('present perfect', ['be'], sn, type)
 
     #Default case
     return []
@@ -220,20 +228,27 @@ def conjugate_vrb(tense, verb, sn):
 ## Output=verb part                                                                 ##
 ######################################################################################
 """
-def vrb_stat_recovery(tense, verb, adv, sn, state):
+def vrb_stat_recovery(tense, verb, adv, sn, state, type):
 
+    #init
+    vrb_condjugated=[]
+    
     #We take of the '+'
     vrb=other_functions.list_recovery(verb[0])
 
     #If there is modal => no treatment
     for i in modal_list:
-        if i!=vrb[0]:
-            vrb_condjugated=conjugate_vrb(tense, vrb, sn)
+        if i==vrb[0]:
+            vrb_condjugated=vrb
+    
+    #No modal => normal treatment
+    if vrb_condjugated==[]:
+        vrb_condjugated=conjugate_vrb(tense, vrb, sn, type)
 
     #Affirmative case
     if state=='affirmative':
         if len(vrb)>1:
-            return vrb_condjugated[0]+adv+vrb_condjugated[1:]
+            return [vrb_condjugated[0]]+adv+vrb_condjugated[1:]
         else:
             return adv+vrb_condjugated
 
@@ -241,13 +256,14 @@ def vrb_stat_recovery(tense, verb, adv, sn, state):
     elif state=='negative':
 
         if vrb[0]=='be' or vrb[0]=='do' or vrb[0]=='have':
-            return vrb_condjugated[0]+['not']+adv+vrb_condjugated[1:]
-
+            return [vrb_condjugated[0]]+['not']+adv+vrb_condjugated[1:]
+        if tense!='present simple' and tense!='past simple':
+            return [vrb_condjugated[0]]+['not']+adv+vrb_condjugated[1:]
         for i in modal_list:
             if i==vrb[0]:
-                return vrb_condjugated[0]+['not']+adv+vrb_condjugated[1:]
+                return [vrb_condjugated[0]]+['not']+adv+vrb_condjugated[1:]
 
-        return conjugate_vrb(tense, ['do'], sn)+['not']+adv+vrb
+        return conjugate_vrb(tense, ['do'], sn, type)+['not']+adv+vrb
 
 
 """
@@ -257,30 +273,36 @@ def vrb_stat_recovery(tense, verb, adv, sn, state):
 ## Output=verb part                                                                 ##
 ######################################################################################
 """
-def vrb_ques_recovery(sn, tense, verb, adverb, state):
-
+def vrb_ques_recovery(tense, verb, adverb, sn, state):
+    
     #We take of the '+'
     vrb=other_functions.list_recovery(verb[0])
 
-    #If there is be or do or have : it is ok
-    if vrb[0]=='be' or vrb[0]=='do' or vrb[0]=='have':
-        vrb_condjugated=conjugate_vrb(tense, vrb, sn)
+    #If there is be or have : it is ok
+    if vrb[0]=='be' or vrb[0]=='have':
+        vrb_condjugated=conjugate_vrb(tense, vrb, sn, '')
         if state=='negative':
-            return vrb_condjugated[0]+['not']+adverb+vrb_condjugated[1:]
-        return vrb_condjugated[0]+adverb+vrb_condjugated[1:]
+            return [vrb_condjugated[0]]+['not']+adverb+vrb_condjugated[1:]
+        return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
 
     #Modal also
     for i in modal_list:
         if i==vrb[0]:
             if state=='negative':
-                return vrb[0]+['not']+adverb+vrb[1:]
-            return vrb[0]+adverb+vrb[1:]
-
-    #We need to add the auxilary
-    aux=conjugate_vrb(tense, ['do'], sn)
-    if state=='negative':
-        return aux+['not']+adverb+vrb
-    return aux+adverb+vrb
+                return [vrb[0]]+['not']+adverb+vrb[1:]
+            return [vrb[0]]+adverb+vrb[1:]
+    
+    if tense=='present simple' or tense=='past simple':
+        #We need to add the auxilary
+        aux=conjugate_vrb(tense, ['do'], sn,'')
+        if state=='negative':
+            return aux+['not']+adverb+vrb
+        return aux+adverb+vrb
+    else:
+        vrb_condjugated=conjugate_vrb(tense, vrb, sn,'')
+        if state=='negative':
+            return [vrb_condjugated[0]]+['not']+adverb+vrb_condjugated[1:]
+        return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
     
 
 """
@@ -290,10 +312,10 @@ def vrb_ques_recovery(sn, tense, verb, adverb, state):
 ## Output=end of the sentence                                                       ##
 ######################################################################################
 """
-def end_statement_recovery(sentence, sv ,sn):
+def end_statement_recovery(sentence, sv ,sn, type):
 
     #Recovering the verb in the correct form
-    phrase=vrb_stat_recovery(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state)
+    phrase=vrb_stat_recovery(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state, type)
 
     #We add the direct and indirect complement
     phrase=phrase+nom_struc_recovery(sv[0].d_obj)
@@ -305,14 +327,14 @@ def end_statement_recovery(sentence, sv ,sn):
     #If there is a second verb
     if sv[0].sv_sec!=[]:
         #Add this verb with 'to'
-        phrase=phrase+['to']+sv[0].sv_sec.vrb_adv+other_functions.list_recovery(sv[0].sv_sec.vrb_main[0])
+        phrase=phrase+['to']+sv[0].sv_sec[0].vrb_adv+other_functions.list_recovery(sv[0].sv_sec[0].vrb_main[0])
 
         #We add the direct and indirect complement
-        phrase=phrase+nom_struc_recovery(sv[0].sv_sec.d_obj)
-        phrase=phrase+indirect_compl_recovery(sv[0].sv_sec.i_cmpl)
+        phrase=phrase+nom_struc_recovery(sv[0].sv_sec[0].d_obj)
+        phrase=phrase+indirect_compl_recovery(sv[0].sv_sec[0].i_cmpl)
 
         #We add the adverb of the sentence
-        phrase=phrase+sv[0].sv_sec.advrb
+        phrase=phrase+sv[0].sv_sec[0].advrb
 
     return sentence+phrase
 
@@ -339,13 +361,13 @@ def end_question_recovery(sentence, sv ,sn):
     #If there is a second verb
     if sv[0].sv_sec!=[]:
         #Add this verb with 'to'
-        phrase=phrase+['to']+sv[0].sv_sec.vrb_adv+other_functions.list_recovery(sv[0].sv_sec.vrb_main[0])
+        phrase=phrase+['to']+sv[0].sv_sec[0].vrb_adv+other_functions.list_recovery(sv[0].sv_sec[0].vrb_main[0])
 
         #We add the direct and indirect complement
-        phrase=phrase+nom_struc_recovery(sv[0].sv_sec.d_obj)
-        phrase=phrase+indirect_compl_recovery(sv[0].sv_sec.i_cmpl)
+        phrase=phrase+nom_struc_recovery(sv[0].sv_sec[0].d_obj)
+        phrase=phrase+indirect_compl_recovery(sv[0].sv_sec[0].i_cmpl)
 
         #We add the adverb of the sentence
-        phrase=phrase+sv[0].sv_sec.advrb
+        phrase=phrase+sv[0].sv_sec[0].advrb
 
     return sentence+phrase
