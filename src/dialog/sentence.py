@@ -3,6 +3,8 @@
 
 #SVN:rev202 + PythonTidy + rewrite 'toString' methods using Python __str__ + test cases
 
+import helpers #to colorize the sentence output
+
 class Sentence:
     """
     A sentence is formed from:
@@ -17,11 +19,13 @@ class Sentence:
         aim,
         sn,
         sv,
+        coloured_output=True
         ):
         self.data_type = data_type
         self.aim = aim
         self.sn = sn
         self.sv = sv
+        self._coloured_output = coloured_output
             
     def resolved(self):
         """returns True when the whole sentence is completely resolved
@@ -43,8 +47,7 @@ class Sentence:
             for s in self.sn:
                 res += 'sn:\n\t' + str(s).replace("\n", "\n\t") + "\n"
         if self.sv:
-            for s in self.sv:  
-                res += 'sv:\n\t' + str(s).replace("\n", "\n\t") + "\n"
+            res += 'sv:\n\t' + str(self.sv).replace("\n", "\n\t") + "\n"
         
         res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
         return res
@@ -89,9 +92,9 @@ class Nominal_Group:
         if self._resolved:
             res = 'id: ' + self.id + '\n>resolved<'
         else:
-            res =   'det: ' + str(self.det) + "\n" + \
-                    'noun: ' + str(self.noun) + "\n" + \
-                    'adj: ' + str(self.adj) + "\n"
+            res =   helpers.format_colour('$BG-YELLOW' + str(self.det) + "$RESET ") + \
+                    helpers.format_colour('$BG-GREEN' + str(self.noun) + "$RESET ") + \
+                    helpers.format_colour('$BG-BLUE' + str(self.adj) + "$RESET\n")
             
             if self.noun_cmpl:
                 for s in self.noun_cmpl:
