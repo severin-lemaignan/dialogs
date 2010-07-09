@@ -351,8 +351,13 @@ def y_n_ques(type, request, sentence):
         #We remove 'not'
         sentence=sentence[:1]+ sentence[2:]
 
+    #Wrong is a noun but not followed by the determinant
+    if sentence[1]=='wrong' and request=='thing':
+        analysis.sn=[Nominal_Group([],[],['wrong'],[],[])]
+        sentence=[sentence[0]]+sentence[2:]
+    
     #In this case we have an imperative sentence
-    if analyse_nominal_group.find_sn_pos(sentence, 1)==[] and type!='w_question':
+    elif analyse_nominal_group.find_sn_pos(sentence, 1)==[] and type!='w_question':
         #We have to reput the 'not'
         if vg.state=='negative':
             sentence=sentence[:1]+['not']+sentence[1:]
