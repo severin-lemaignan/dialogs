@@ -36,15 +36,15 @@ def dispatching(analysis):
 
     #For start
     elif analysis.data_type=='start':
-        return 'hello'
+        return 'hello. '
 
     #For agree
     elif analysis.data_type=='agree':
-        return 'ok'
+        return 'ok. '
 
     #For disagree
     elif analysis.data_type=='disagree':
-        return 'no'
+        return 'no. '
 
     #For w_question
     elif analysis.data_type=='w_question':
@@ -55,8 +55,8 @@ def dispatching(analysis):
         elif analysis.aim=='place':
             return other_functions.convert_string(['where']+sentence_recovery.y_o_question(analysis))
 
-        elif analysis.aim=='origine':
-            return other_functions.convert_string(['where']+sentence_recovery.y_o_question(analysis)+['from'])
+        elif analysis.aim=='origin':
+            return other_functions.convert_string(['where']+sentence_recovery.y_o_question(analysis))
 
         elif analysis.aim=='time':
             return other_functions.convert_string(['what','time']+sentence_recovery.y_o_question(analysis))
@@ -82,7 +82,7 @@ def dispatching(analysis):
         elif analysis.aim=='distance':
             return other_functions.convert_string(['how', 'far']+sentence_recovery.y_o_question(analysis))
 
-        elif analysis.aim=='manner' or analysis.aim=='opinion':
+        elif analysis.aim=='manner':
             return other_functions.convert_string(['how']+sentence_recovery.y_o_question(analysis))
 
         elif analysis.aim=='reason':
@@ -99,7 +99,7 @@ def dispatching(analysis):
         
         #All other cases of w_question
         else:
-            return other_functions.convert_string(['what']+sentence_recovery.w_question(analysis))
+            return other_functions.convert_string(sentence_recovery.w_question(analysis))
 
     #Default case
     return ''
