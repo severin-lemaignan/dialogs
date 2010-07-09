@@ -142,8 +142,8 @@ class TestDialog(unittest.TestCase):
         print("\n##################### test_verbalize1 ########################\n")
         myP = Parser()                            
         stmt = "the cup is on the desk"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
+        sentence = myP.parse(stmt)
+        res = self.dialog._verbalizer.verbalize(sentence)
         print 'input: ', stmt
         print 'output:', res
         self.assertEquals(stmt, res)
@@ -153,8 +153,8 @@ class TestDialog(unittest.TestCase):
         print("\n##################### test_verbalize2 ########################\n")
         myP = Parser()
         stmt = "the green bottle is next to Joe"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
+        sentence = myP.parse(stmt)
+        res = self.dialog._verbalizer.verbalize(sentence)
         print 'input: ', stmt
         print 'output:', res
         self.assertEquals(stmt, res)
@@ -165,8 +165,8 @@ class TestDialog(unittest.TestCase):
         myP = Parser()
         stmt = "give me the green banana"
         expected_result = "give the green banana to me"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
+        sentence = myP.parse(stmt)
+        res = self.dialog._verbalizer.verbalize(sentence)
         print 'input: ', stmt
         print 'output:', res
         self.assertEquals(expected_result, res)
@@ -176,8 +176,8 @@ class TestDialog(unittest.TestCase):
         print("\n##################### test_verbalize4 ########################\n")
         myP = Parser()
         stmt = "put the yellow banana on the shelf"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
+        sentence = myP.parse(stmt)
+        res = self.dialog._verbalizer.verbalize(sentence)
         print 'input: ', stmt
         print 'output:', res
         self.assertEquals(stmt, res)
@@ -187,8 +187,8 @@ class TestDialog(unittest.TestCase):
         print("\n##################### test_verbalize5 ########################\n")
         myP = Parser()
         stmt = "give the green banana to me"
-        sentence = myP.parse(stmt.split())
-        res = self.dialog._verbalizer.verbalize(sentence[0])
+        sentence = myP.parse(stmt)
+        res = self.dialog._verbalizer.verbalize(sentence)
         print 'input: ', stmt
         print 'output:', res
         self.assertEquals(stmt, res)
