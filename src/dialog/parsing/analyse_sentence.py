@@ -226,7 +226,7 @@ def w_quest_what(type, sentence,sbj_pos):
 
     #The case when we have 'like' + conditionnal
     elif analysis.sv[0].vrb_main[0].endswith('like') and not(analysis.sv[0].vrb_tense.endswith('conditionnal')):
-        analysis.aim='descrition'
+        analysis.aim='description'
 
     #The case when we have 'do' + ing form
     elif analysis.sv[0].vrb_main[0].endswith('do') and analysis.sv[0].i_cmpl!=[] and analysis.sv[0].i_cmpl[0].nominal_group[0].noun[0].endswith('ing'):
