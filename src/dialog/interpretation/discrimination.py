@@ -13,10 +13,6 @@ from pyoro import Oro
 from pyoro import OroServerError
 from dialog_exceptions import UnsufficientInputError
 
-#LOG_FILENAME = 'logging_example.out'
-#logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
-logging.basicConfig(level=logging.DEBUG) # to print output in screen
-
 HOST = 'localhost'    # The remote host
 PORT = 6969           # The same port as used by the server
 
