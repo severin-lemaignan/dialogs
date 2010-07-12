@@ -11,7 +11,7 @@
     compare_icompl : to compare 2 indirect complements                            
     compare_vs : to compare 2 verbal structures                                   
     compare_sentence : to compare 2 sentences                                     
-    compare_reply : to compare 2 replies                                          
+    compare_utterance : to compare 2 replies                                          
     display_ng : to display nominal group                                         
     display : to display class Sentence                                           
     unit_tests : to perform unit tests                                           
@@ -30,7 +30,7 @@ class Parser:
         
         #Do all basic replacements (like capitals, n't -> not, etc) + splits in several 
         #sentence with points.
-        self._sentence_list = preprocessing.treat_sentence(nl_input)
+        self._sentence_list = preprocessing.process_sentence(nl_input)
         
         #Do the actual grammatical parsing
         self._class_list = analyse_sentence.sentences_analyzer(self._sentence_list)
@@ -164,7 +164,7 @@ def compare_sentence(stc, stc_rslt):
 
 
 
-def compare_reply(reply, rslt_reply, sentence_list):
+def compare_utterance(utterance, rslt_utterance, sentence_list):
     """
     Function to compare 2 replies                                                    
     """ 
@@ -172,17 +172,17 @@ def compare_reply(reply, rslt_reply, sentence_list):
     #init
     i=0
 
-    if len(reply)!=len(rslt_reply):
-        print 'There is a problem with the analyse reply : length(reply)!=length(result)'
+    if len(utterance)!=len(rslt_utterance):
+        print 'There is a problem with the analyse utterance : length(utterance)!=length(result)'
     else:
-        while i < len(rslt_reply):
+        while i < len(rslt_utterance):
             
-            print "The sentence after the analyse reply is :"
+            print "The sentence after the analyse utterance is :"
             print sentence_list[i]
             
-            display(reply[i])
+            display(utterance[i])
             
-            flag=compare_sentence(reply[i], rslt_reply[i])
+            flag=compare_sentence(utterance[i], rslt_utterance[i])
             if flag==1:
                 print "There is a problem with parsing this sentence"
                 print ''
@@ -283,12 +283,12 @@ def unit_tests():
     print ''
     print ('######################## test 1.1 ##############################')
 
-    reply="The bottle is on the table. The bottle is blue. the bottle is Blue"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="The bottle is on the table. The bottle is blue. the bottle is Blue"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '',
@@ -310,7 +310,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -321,12 +321,12 @@ def unit_tests():
     print ''
     print ('######################## test 1.2 ##############################')
 
-    reply="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
@@ -342,7 +342,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
 
     
@@ -353,12 +353,12 @@ def unit_tests():
     print ''
     print ('######################## test 1.3 ##############################')
 
-    reply="It's on the table. I give it to you. give me the bottle. I don't give the bottle to you."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="It's on the table. I give it to you. give me the bottle. I don't give the bottle to you."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
@@ -386,7 +386,7 @@ def unit_tests():
                 [Indirect_Complement(['to'],[Nominal_Group([],['you'],[],[],[])])],
                 [], [] ,'negative',[])])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -397,12 +397,12 @@ def unit_tests():
     print ''
     print ('######################## test 1.4 ##############################')
 
-    reply="you aren't preparing the car and my father's moto at the same time. is the bottle of my brother in your right?"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="you aren't preparing the car and my father's moto at the same time. is the bottle of my brother in your right?"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
@@ -418,7 +418,7 @@ def unit_tests():
                 [Indirect_Complement(['in'],[Nominal_Group(['your'],['right'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
 
     
@@ -429,23 +429,23 @@ def unit_tests():
     print ''
     print ('######################## test 1.5 ##############################')
 
-    reply="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? shall I go"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? shall I go"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
             [Nominal_Group([],['you'],[],[],[])], 
-            [Verbal_Group(['should+drive'], [],'present conditionnal', 
+            [Verbal_Group(['should+drive'], [],'present conditional', 
                 [Nominal_Group(['the'],['car'],['big', 'new'],[Nominal_Group(['the'],['wife'],[],[Nominal_Group(['his'],['uncle'],['poorest'],[], [])],[])],[])], 
                 [],
                 [], [] ,'negative',[])]),
         Sentence('yes_no_question', '', 
             [Nominal_Group([],['I'],[],[],[])], 
-            [Verbal_Group(['should+give'], [],'present conditionnal', 
+            [Verbal_Group(['should+give'], [],'present conditional', 
                 [Nominal_Group(['the'],['bottle'],[],[],[])], 
                 [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
                 [], [] ,'affirmative',[])]),
@@ -456,7 +456,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -467,12 +467,12 @@ def unit_tests():
     print ''
     print ('######################## test 1.6 ##############################')
 
-    reply="Isn't he doing his homework and his game now? Cann't he take this bottle. good afternoon"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="Isn't he doing his homework and his game now? Cann't he take this bottle. good afternoon"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('yes_no_question', '', 
@@ -489,7 +489,7 @@ def unit_tests():
                 [], [] ,'negative',[])]),
         Sentence('start', '', [], [])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -500,12 +500,12 @@ def unit_tests():
     print ''
     print ('######################## test 1.7 ##############################')
 
-    reply="Don't quickly give me the blue bottle. I wanna play with my guitar. I'd like to go to the cinema."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="Don't quickly give me the blue bottle. I wanna play with my guitar. I'd like to go to the cinema."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('imperative', '', 
@@ -532,12 +532,12 @@ def unit_tests():
                     [], 
                     [Indirect_Complement(['to'],[Nominal_Group(['the'],['cinema'],[],[],[])])],
                     [], [] ,'affirmative',[])], 
-                'present conditionnal',
+                'present conditional',
                 [], 
                 [],
                 [], [] ,'affirmative',[])])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -548,12 +548,12 @@ def unit_tests():
     print ''
     print ('######################## test 1.8 ##############################')
 
-    reply="the man which talks ; has a new car. I play the guitar which I bought yesterday ; ."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="the man which talks ; has a new car. I play the guitar which I bought yesterday ; ."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
@@ -579,7 +579,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -590,12 +590,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.1 ##############################')
 
-    reply="don't quickly give me the bottle which is on the table ; and the glass which I cleaned yesterday ; at my left"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="don't quickly give me the bottle which is on the table ; and the glass which I cleaned yesterday ; at my left"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('imperative', '', 
@@ -616,7 +616,7 @@ def unit_tests():
             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]), Indirect_Complement(['at'],[Nominal_Group(['my'],['left'],[],[],[])])],
             ['quickly'], [] ,'negative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -627,12 +627,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.2 ##############################')
 
-    reply="The bottle which I bought from the store which is in the shopping centre ; ; is yours."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="The bottle which I bought from the store which is in the shopping centre ; ; is yours."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
@@ -652,7 +652,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -663,12 +663,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.3 ##############################')
 
-    reply="When won't the planning session take place? when must you take the bus"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="When won't the planning session take place? when must you take the bus"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'date', 
@@ -684,7 +684,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -695,12 +695,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.4 ##############################')
 
-    reply="Where is Broyen ? where are you going. Where must Jido and you be from?"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="Where is Broyen ? where are you going. Where must Jido and you be from?"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'place', 
@@ -722,7 +722,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -733,12 +733,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.5 ##############################')
 
-    reply="What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna to the Laas?"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna to the Laas?"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'time', 
@@ -766,7 +766,7 @@ def unit_tests():
                 [Indirect_Complement(['to'],[Nominal_Group(['the'],['Laas'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -777,12 +777,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.6 ##############################')
 
-    reply="what is the weather like in the winter here? what were you doing? What isn't Jido going to do tomorrow"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="what is the weather like in the winter here? what were you doing? What isn't Jido going to do tomorrow"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'description', 
@@ -809,7 +809,7 @@ def unit_tests():
                 [],
                 [], [] ,'negative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -820,12 +820,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.7 ##############################')
 
-    reply="What's happening. What must happen in the company today? What didn't happen here. no. Sorry."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="What's happening. What must happen in the company today? What didn't happen here. no. Sorry."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'situation', 
@@ -849,7 +849,7 @@ def unit_tests():
         Sentence('disagree', '', [], []),
         Sentence('disagree', '', [], [])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -860,12 +860,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.8 ##############################')
 
-    reply="What is the bigest bottle's color on your left. What does your brother do for a living?"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="What is the bigest bottle's color on your left. What does your brother do for a living?"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'thing', 
@@ -881,7 +881,7 @@ def unit_tests():
                 [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     """
     
@@ -892,12 +892,12 @@ def unit_tests():
     print ''
     print ('######################## test 3.1 ##############################')
 
-    reply="What type of people don't read this magazine? what kind of music must he listen to everyday"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="What type of people don't read this magazine? what kind of music must he listen to everyday"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'classification+people', 
@@ -913,7 +913,7 @@ def unit_tests():
                 [],
                 [], ['everyday'] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -923,16 +923,16 @@ def unit_tests():
     print ''
     print ('######################## test 3.2 ##############################')
 
-    reply="What kind of sport is your favourite? what is the problem with him? what is the matter with this person"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="What kind of sport is your favorite? what is the problem with him? what is the matter with this person"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'classification+sport', 
-            [Nominal_Group(['your'],['favourite'],[],[],[])], 
+            [Nominal_Group(['your'],['favorite'],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [], 
                 [],
@@ -950,7 +950,7 @@ def unit_tests():
                 [Indirect_Complement(['with'],[Nominal_Group(['this'],['person'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -961,12 +961,12 @@ def unit_tests():
     print ''
     print ('######################## test 3.3 ##############################')
 
-    reply="How old are you? how long is your uncle's store opened tonight? how long is your uncle's store open tonight?"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="How old are you? how long is your uncle's store opened tonight? how long is your uncle's store open tonight?"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'age', 
@@ -988,7 +988,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -999,12 +999,12 @@ def unit_tests():
     print ''
     print ('######################## test 3.4 ##############################')
 
-    reply="how far is it from the hotel to the restaurant? how soon can you be here? How often does Jido go skiing?"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="how far is it from the hotel to the restaurant? how soon can you be here? How often does Jido go skiing?"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'distance', 
@@ -1026,7 +1026,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1037,17 +1037,17 @@ def unit_tests():
     print ''
     print ('######################## test 3.5 ##############################')
 
-    reply="how much water should they transport? how many guests weren't at the party? how much does the motocycle cost"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="how much water should they transport? how many guests weren't at the party? how much does the motocycle cost"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'quantity', 
             [Nominal_Group([],['they'],[],[],[])], 
-            [Verbal_Group(['should+transport'], [],'present conditionnal', 
+            [Verbal_Group(['should+transport'], [],'present conditional', 
                 [Nominal_Group(['a'],['water'],[],[],[])], 
                 [],
                 [], [] ,'affirmative',[])]),
@@ -1064,7 +1064,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1075,12 +1075,12 @@ def unit_tests():
     print ''
     print ('######################## test 3.6 ##############################')
 
-    reply="How about going to the cinema? how have not they gotten a loan for their business? OK"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="How about going to the cinema? how have not they gotten a loan for their business? OK"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'invitation', 
@@ -1097,7 +1097,7 @@ def unit_tests():
                 [], [] ,'negative',[])]),
         Sentence('agree', '',[],[])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1108,12 +1108,12 @@ def unit_tests():
     print ''
     print ('######################## test 3.7 ##############################')
 
-    reply="How did you like Steven Spilburg's new movie. how could I get to the restaurant from here"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="How did you like Steven Spilburg's new movie. how could I get to the restaurant from here"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'opinion', 
@@ -1124,12 +1124,12 @@ def unit_tests():
                 [], [] ,'affirmative',[])]),
         Sentence('w_question', 'manner', 
             [Nominal_Group([],['I'],[],[],[])], 
-            [Verbal_Group(['could+get+to'], [],'present conditionnal', 
+            [Verbal_Group(['could+get+to'], [],'present conditional', 
                 [Nominal_Group(['the'],['restaurant'],[],[],[])], 
                 [],
                 [], ['here'] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1140,34 +1140,34 @@ def unit_tests():
     print ''
     print ('######################## test 3.8 ##############################')
 
-    reply="Why should she go to Toulouse? who could you talk to on the phone. Whose blue bottle and red glass are these."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="Why should she go to Toulouse? who could you talk to on the phone. Whose blue bottle and red glass are these."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'reason', 
             [Nominal_Group([],['she'],[],[],[])], 
-            [Verbal_Group(['should+go'], [],'present conditionnal', 
+            [Verbal_Group(['should+go'], [],'present conditional', 
                 [], 
                 [Indirect_Complement(['to'],[Nominal_Group([],['Toulouse'],[],[],[])])],
                 [], [] ,'affirmative',[])]),
         Sentence('w_question', 'people', 
             [Nominal_Group([],['you'],[],[],[])], 
-            [Verbal_Group(['could+talk+to'], [],'present conditionnal', 
+            [Verbal_Group(['could+talk+to'], [],'present conditional', 
                 [], 
                 [Indirect_Complement(['on'],[Nominal_Group(['the'],['phone'],[],[],[])])],
                 [], [] ,'affirmative',[])]),
-        Sentence('w_question', 'possession', 
+        Sentence('w_question', 'owner', 
             [Nominal_Group(['that'],['bottle'],['blue'],[],[]), Nominal_Group(['that'],['glass'],['red'],[],[])], 
             [Verbal_Group(['be'], [],'', 
                 [], 
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     """
     
@@ -1178,12 +1178,12 @@ def unit_tests():
     print ''
     print ('######################## test 4.1 ##############################')
 
-    reply="What are you thinking about the idea which I present you ; ? what color is the bottle which you bought ;"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="What are you thinking about the idea which I present you ; ? what color is the bottle which you bought ;"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'opinion', 
@@ -1209,7 +1209,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1220,12 +1220,12 @@ def unit_tests():
     print ''
     print ('######################## test 4.2 ##############################')
 
-    reply="Which competition's salesperson won the award which we won in the last years ;."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="Which competition's salesperson won the award which we won in the last years ;."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'choice', 
@@ -1240,7 +1240,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1251,12 +1251,12 @@ def unit_tests():
     print ''
     print ('######################## test 4.3 ##############################')
 
-    reply="what'll your house look like? what do you think of the latest novel which Jido wrote ;"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="what'll your house look like? what do you think of the latest novel which Jido wrote ;"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'description', 
@@ -1277,7 +1277,7 @@ def unit_tests():
             [],
             [], [] ,'affirmative',[])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1288,12 +1288,12 @@ def unit_tests():
     print ''
     print ('######################## test 4.4 ##############################')
 
-    reply="learn that I want you to give me the blue bottle ;. If you do your job ; you will be happy."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="learn that I want you to give me the blue bottle ;. If you do your job ; you will be happy."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('imperative', '', 
@@ -1322,7 +1322,7 @@ def unit_tests():
                         [],
                         [], [] ,'affirmative',[])])])])]
 
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
 
@@ -1333,12 +1333,12 @@ def unit_tests():
     print ''
     print ('######################## test 4.5 ##############################')
 
-    reply="what is wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago."
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="what is wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago."
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'thing', 
@@ -1362,7 +1362,7 @@ def unit_tests():
 
     rslt[1].sv[0].d_obj[1]._conjunction="OR"
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1373,12 +1373,12 @@ def unit_tests():
     print ''
     print ('######################## test 4.6 ##############################')
 
-    reply="this is a bottle. There is a bottle on the table"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="this is a bottle. There is a bottle on the table"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '',
@@ -1394,7 +1394,7 @@ def unit_tests():
                 [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     
     
@@ -1405,12 +1405,12 @@ def unit_tests():
     print ''
     print ('######################## test 4.7 ##############################')
 
-    reply="What do you do for a living in this building? What does your brother do for a living here"
-    print 'The object of our test is this reply :'
-    print reply
+    utterance="What do you do for a living in this building? What does your brother do for a living here"
+    print 'The object of our test is this utterance :'
+    print utterance
     print '#################################################################'
     print ''
-    sentence_list=preprocessing.treat_sentence(reply)
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'explication', 
@@ -1427,7 +1427,51 @@ def unit_tests():
                 [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])])],
                 [], ['here'] ,'affirmative',[])])]
     
-    compare_reply(class_list,rslt,sentence_list)
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
+    
+    
+    """
+    ## Aim of this test : To use different cases with a state's verb 
+    """
+    print ''
+    print ('######################## test 4.8 ##############################')
+
+    utterance="To whom are you talking? you should have the bottle. would you have played a guitar. you would have played a guitar"
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('w_question', 'people', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['talk+to'], [],'present progressive', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['should+have'], [],'present conditional', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['play'], [],'past conditional', 
+                [Nominal_Group(['a'],['guitar'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['play'], [],'past conditional', 
+                [Nominal_Group(['a'],['guitar'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+    
+    compare_utterance(class_list,rslt,sentence_list)
     print ''
     """
     

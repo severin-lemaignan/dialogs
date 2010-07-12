@@ -31,10 +31,11 @@ pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 
 det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there']
 proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
+adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 
 
 """
-We have to read all irregular adjectives before the treatment                    
+We have to read all irregular adjectives before the processing                    
 """
 adjective_list = ResourcePool().adjectives.keys()
 
@@ -62,32 +63,11 @@ def adjective_pos(phrase, word_pos):
     for j in noun_list:
         if phrase[word_pos]==j[0]:
             return 1
-
+    
     #For the regular adjectives
-    if phrase[word_pos].endswith('al'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('est'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('ous'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('ing'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('y'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('less'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('ble'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('ed'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('ful'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('ish'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('ive'):
-        return 1+adjective_pos(phrase, word_pos+1)
-    if phrase[word_pos].endswith('ic'):
-        return 1+adjective_pos(phrase, word_pos+1)
+    for k in adj_rules:
+        if phrase[word_pos].endswith(k):
+            return 1+adjective_pos(phrase, word_pos+1)
 
     #We use the irregular adjectives list to find it
     for i in adjective_list:
@@ -312,7 +292,7 @@ def find_relative (nom_gr, phrase, position, propo_rel_list):
     """
     Function to find the position of the relative                                    
     Input=sentence, nominal group and his position and the relative's proposal's list
-    Output=the position of the relative                                              
+    Output=the position of the relative or -1 if there is no relative                                        
     """
 
     #Nominal group or phrase is empty

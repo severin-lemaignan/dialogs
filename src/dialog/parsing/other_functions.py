@@ -75,7 +75,7 @@ def recover_end_pos_sub(phrase, propo_sub_list):
         if y==';':
             nb_sub=nb_sub-1
             if nb_sub==0:
-                #The of the treatment is here, when there is no 'sub'
+                #The of the processing is here, when there is no 'sub'
                 return position
 
     #Default case

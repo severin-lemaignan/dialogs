@@ -6,9 +6,9 @@
  Created by Chouayakh Mahdi                                                       
  22/06/2010                                                                       
  The package contains functions which are important for the pre-parsing
- We return a list of all sentence in the retort to do traitment                    
+ We return a list of all sentence in the utterance to do processing                    
  Functions:                                                                       
-    upper_to_lower : to treat the uppcase at the baginning of the sentence        
+    upper_to_lower : to process the uppcase at the baginning of the sentence        
     concatenate_pos : to concatenate an element in a position given               
     case_apostrophe_s_to_is : to know if there is this kind of "'s"               
     expand_contractions : to perform expand contraction using concatenate_pos     
@@ -16,9 +16,9 @@
     find_nom_gr_list : take off noun chain linked by 'of'                         
     create_possession_claus : to transform a noun chain to string's list with 'of'
     possesion_form : to exchange the "'s" to 'of' by using 2 lastest functions    
-    other_treatment : to perform other treatments                                 
-    move_prep : to put the preposition before te nominal group
-    treat_sentence : to split retort into many sentences using all other functions 
+    other_processing : to perform other processing                                 
+    move_prep : to put the preposition before the nominal group
+    process_sentence : to split utterance into many sentences using all other functions 
 """
 from resources_manager import ResourcePool
 from resources_manager import ThematicRolesDict
@@ -149,10 +149,24 @@ def expand_contractions(sentence):
 
 
 
+def prep_concat(sentence):
+    """
+    This function to concatenate some words to have a preposition 
+    Input=sentence                                     Output=sentence               
+    """    
+    
+    #For the case of whom
+    if sentence[0:2]==['To', 'whom']:
+        sentence=['To+whom']+sentence[2:]
+    
+    return sentence
+    
+    
+
 def comma(sentence):
     """
-    This function treats the case when there is a comma                              ##
-    Input=sentence                                     Output=sentence               ##
+    This function process the case when there is a comma                              
+    Input=sentence                                     Output=sentence               
     """
     
     #Replace ',' by 'and'
@@ -274,7 +288,7 @@ def possesion_form(sentence):
             end_pos=nom_gr_list[len(nom_gr_list)-1]+begin_pos
             sentence=sentence[:begin_pos]+create_possession_claus(nom_gr_list[:len(nom_gr_list)-1])+sentence[end_pos:]
 
-            #We continue treatment from the end's position
+            #We continue processing from the end's position
             begin_pos=end_pos
             
         else:
@@ -284,9 +298,9 @@ def possesion_form(sentence):
 
 
 
-def other_treatment(sentence):
+def other_processing(sentence):
     """
-    This function performs treatments to facilitate the analysis that comes after    ##
+    This function performs processing to facilitate the analysis that comes after    ##
     Input=sentence                              Output=sentence                      ##
     """
     
@@ -325,26 +339,27 @@ def move_prep(sentence):
                 
 
 
-def treat_sentence(retort):
+def process_sentence(utterance):
     """
-    This function breaks the retort (as a list) into sentences                        
-    And does the treatment of punctuation                                            
-    Input=retort and beginning sentence list         Output=list of sentence          
+    This function breaks the utterance (as a list) into sentences                        
+    And does the processing of punctuation                                            
+    Input=utterance and beginning sentence list         Output=list of sentence          
     """
 
     #init
     sentence=[]
     sentence_list=[]
-    retort = retort.split()
+    utterance = utterance.split()
    
-    for j in retort:
+    for j in utterance:
 
         #If user put space between the last word and the punctuation
         if j=='.' or j=='?' or j=='!':
             sentence = sentence+[j]
             sentence = expand_contractions(sentence)
+            sentence = prep_concat(sentence)
             sentence = upper_to_lower(sentence)
-            sentence = other_treatment(sentence)
+            sentence = other_processing(sentence)
             sentence = possesion_form(sentence)
             sentence = comma(sentence)
             sentence = move_prep(sentence)
@@ -354,8 +369,9 @@ def treat_sentence(retort):
         elif j.endswith('.') or j.endswith('?') or j.endswith('!'):
             sentence = sentence+[j[:len(j)-1]] + [j[len(j)-1]]
             sentence = expand_contractions(sentence)
+            sentence = prep_concat(sentence)
             sentence = upper_to_lower(sentence)
-            sentence = other_treatment(sentence)
+            sentence = other_processing(sentence)
             sentence = possesion_form(sentence)
             sentence = comma(sentence)
             sentence = move_prep(sentence)
@@ -368,8 +384,9 @@ def treat_sentence(retort):
     #If the user forget the punctuation at the end
     if sentence!=[]:
         sentence = expand_contractions(sentence)
+        sentence = prep_concat(sentence)
         sentence = upper_to_lower(sentence)
-        sentence = other_treatment(sentence)
+        sentence = other_processing(sentence)
         sentence = possesion_form(sentence)
         sentence = comma(sentence)
         sentence = move_prep(sentence)

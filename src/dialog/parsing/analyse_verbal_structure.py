@@ -15,8 +15,8 @@
 ##    check_proposal : to know if there is a proposal before the object             ##
 ##    recover_obj_iobj : to find the direct, indirect object and the adverbial      ##
 ##    find_scd_vrb : to recover the second verb in a sentence                       ##
-##    treat_scd_sentence : to treat the second sentence found                       ##
-##    treat_subsentence : to treat the subsentence                                  ##
+##    process_scd_sentence : to process the second sentence found                       ##
+##    process_subsentence : to process the subsentence                                  ##
 ######################################################################################
 """
 from sentence import *
@@ -160,7 +160,7 @@ def recover_obj_iobj(phrase, vg):
                     
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
                     
-                    #We treat the 'or' like the 'and' and remove it
+                    #We process the 'or' like the 'and' and remove it
                     if phrase[0]=='or':
                         conjunction='OR'
                     else:
@@ -201,7 +201,7 @@ def recover_obj_iobj(phrase, vg):
                     
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
                     
-                    #We treat the 'or' like the 'and' and remove it
+                    #We process the 'or' like the 'and' and remove it
                     if phrase[0]=='or':
                         conjunction='OR'
                     else:
@@ -252,18 +252,18 @@ def find_scd_vrb(phrase):
 
 """
 ######################################################################################
-## This function treats the second sentence found                                   ##
+## This function process the second sentence found                                   ##
 ## Input=sentence, verbal class and the second verb                                 ##
 ## Output=sentence and verbal class                                                 ##
 ######################################################################################
 """
-def treat_scd_sentence(phrase, vg, sec_vrb):
+def process_scd_sentence(phrase, vg, sec_vrb):
 
     #We take off the part of the sentence after 'to'
     scd_sentence=phrase[phrase.index(sec_vrb[0]):]
     phrase=phrase[:phrase.index(sec_vrb[0])]
     
-    #We treat the verb
+    #We process the verb
     if scd_sentence[0]=='not':
         scd_verb=[other_functions.convert_to_string(analyse_verb.return_verb(scd_sentence, [scd_sentence[1]], ''))]
         vg.sv_sec=vg.sv_sec+[Verbal_Group(scd_verb, [], '', [], [], [], [], 'negative',[])]
@@ -275,7 +275,7 @@ def treat_scd_sentence(phrase, vg, sec_vrb):
         #We delete the verb
         scd_sentence= scd_sentence[scd_sentence.index(scd_sentence[0])+1:]
 
-    #We treat the end of the second sentence
+    #We process the end of the second sentence
     vg.sv_sec[0].advrb=find_adv(scd_sentence)
     scd_sentence=recover_obj_iobj(scd_sentence, vg.sv_sec[0])
 
@@ -284,11 +284,11 @@ def treat_scd_sentence(phrase, vg, sec_vrb):
 
 """
 ######################################################################################
-## This function treats the subsentence                                             ##
+## This function process the subsentence                                             ##
 ## Input=sentence and verbal class         Output=sentence and verbal class         ##
 ######################################################################################
 """
-def treat_subsentence(phrase,vg):
+def process_subsentence(phrase,vg):
     
     #init
     begin_pos=-1
@@ -309,7 +309,7 @@ def treat_subsentence(phrase,vg):
                 #We have to remove the proposal
                 subsentence= phrase[begin_pos+1:end_pos]
                 
-                #We perform treatment
+                #We perform processing
                 vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', w ,subsentence)]
                 
                 #We delete the subsentence

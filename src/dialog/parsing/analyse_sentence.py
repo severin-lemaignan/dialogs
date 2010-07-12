@@ -3,31 +3,20 @@
 # SVN:rev202 + PythonTidy
 
 """
-cette fonction nous permet de traiter une phrase recuperee sous forme
-de liste de chaine de caracteres et de retourner une liste de class
-contenant les information necessaire pour interroger le serveur
-
-v.0.2: 21:frt_wd from ResourcePool
-"""
-
-
-"""
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 25/06/2010                                                                       ##
-## The package contains functions to analyse all sentence of a reply                ##
-## Functions:                                                                       ##
-##    dispatching : to distribute the sentence                                      ##
-##    w_quest_where : to treat many different type of where question                ##
-##    w_quest_what  : to treat many different type of what question                 ##
-##    w_quest_quant : to treat many different type of how question                  ##
-##    w_quest_how : to treat many different type of how question                    ##
-##    condi_sentence : to treat the conditionnal sentence                           ##
-##    w_quest_whose : to treat many different type of whose question                ##
-##    y_n_ques : to treat the yes or no question from of a sentence                 ##
-##    other_sentence : to treat the other from of a sentence                        ##
-##    sentences_analyzer : is the basic fonction of parsing                         ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 25/06/2010                                                                       
+ The package contains functions to analyse all sentence of a utterance            
+ Functions:                                                                       
+    dispatching : to distribute the sentence                                      
+    w_quest_where : to process many different type of where question                
+    w_quest_what  : to process many different type of what question                 
+    w_quest_quant : to process many different type of how question
+    w_quest_how : to process many different type of how question                    
+    condi_sentence : to process the conditional sentence                           
+    w_quest_whose : to process many different type of whose question                
+    y_n_ques : to process the yes or no question from of a sentence                 
+    other_sentence : to process the other from of a sentence                        
+    sentences_analyzer : is the basic function of parsing                         
 """
 from sentence import *
 from resources_manager import ResourcePool
@@ -103,9 +92,9 @@ def dispatching(sentence):
                         elif sentence[1]=='size':
                             return y_n_ques('w_question', 'size', sentence[2:])
 
-                        #Here we have to use a specific treatment for 'type' and 'kind'
+                        #Here we have to use a specific processing for 'type' and 'kind'
                         elif sentence[1]=='type' or sentence[1]=='kind':
-                            #We start by treating the end of the sentence like a y_n_question
+                            #We start by processing the end of the sentence like a y_n_question
                             return y_n_ques('w_question', 'classification'+'+'+sentence[3],sentence[4:])
 
                         #For other type of 'what' question
@@ -147,7 +136,7 @@ def dispatching(sentence):
 
                     #For 'whose'
                     elif x[2]=='6':
-                        return w_quest_whose('w_question', 'possession', sentence)
+                        return w_quest_whose('w_question', 'owner', sentence)
 
                     #For 'who'
                     elif x[2]=='7':
@@ -156,12 +145,16 @@ def dispatching(sentence):
                     #For 'which'
                     elif x[2]=='8':
                         return other_sentence('w_question', 'choice', sentence[1:])
+                    
+                    #For 'to whom'
+                    elif x[2]=='9':
+                        return w_quest_whom('w_question', 'people', sentence[1:])
 
                 #It's a y_n_question
                 elif x[1] == '2':
                     return y_n_ques('yes_no_question', '', sentence)
 
-                #It's a conditionnal sentence
+                #It's a conditional sentence
                 elif x[1]=='3':
                     return condi_sentence(sentence)
 
@@ -189,8 +182,8 @@ def dispatching(sentence):
 
 """
 ######################################################################################
-## This function treats many different type of where question                       ##
-## Input=type and requestion of sentence, the sentence      Output=class Sentence   ##
+## This function process many different type of where question                       ##
+## Input=type and requesting of sentence, the sentence      Output=class Sentence   ##
 ######################################################################################
 """
 def w_quest_where(type, request, stc):
@@ -207,14 +200,14 @@ def w_quest_where(type, request, stc):
 
 """
 ######################################################################################
-## This function treats many different type of what question                        ##
-## Input=type of sentence, the sentence and position of suject                      ##
+## This function process many different type of what question                        ##
+## Input=type of sentence, the sentence and position of subject                      ##
 ## Output=class Sentence                                                            ##
 ######################################################################################
 """
 def w_quest_what(type, sentence,sbj_pos):
     
-    #We start with a treatment with the function of y_n_question's case
+    #We start with a processing with the function of y_n_question's case
     analysis=y_n_ques(type, 'thing',sentence[sbj_pos-1:])
     
     #The case when we have 'happen'
@@ -225,8 +218,8 @@ def w_quest_what(type, sentence,sbj_pos):
     elif analysis.sv[0].vrb_main[0].endswith('think+of') or analysis.sv[0].vrb_main[0].endswith('think+about'):
         analysis.aim='opinion'
 
-    #The case when we have 'like' + conditionnal
-    elif analysis.sv[0].vrb_main[0].endswith('like') and not(analysis.sv[0].vrb_tense.endswith('conditionnal')):
+    #The case when we have 'like' + conditional
+    elif analysis.sv[0].vrb_main[0].endswith('like') and not(analysis.sv[0].vrb_tense.endswith('conditional')):
         analysis.aim='description'
 
     #The case when we have 'do' + ing form
@@ -238,8 +231,8 @@ def w_quest_what(type, sentence,sbj_pos):
 
 """
 ######################################################################################
-## This function treats many different type of quantity question                    ##
-## Input=type and requestion of sentence, the sentence and beginning sentence list  ##
+## This function process many different type of quantity question                    ##
+## Input=type and requesting of sentence, the sentence and beginning sentence list  ##
 ## Output=class Sentence                                                            ##
 ######################################################################################
 """
@@ -266,7 +259,7 @@ def w_quest_quant(type, request, sentence):
 
 """
 ######################################################################################
-## This function treats many different type of how question                         ##
+## This function process many different type of how question                         ##
 ## Input=type of sentence, the sentence      Output=class Sentence                  ##
 ######################################################################################
 """
@@ -282,26 +275,26 @@ def w_quest_how(type, sentence):
 
 """
 ######################################################################################
-## This function treats the conditionnal sentence                                   ##
+## This function process the conditional sentence                                   ##
 ## Input=sentence                                          Output=class Sentence    ##
 ######################################################################################
 """
 def condi_sentence(sentence):
 
-    #We recover the conditionnal sentence
-    conditionnal_sentence=sentence[1:sentence.index(';')]
+    #We recover the conditional sentence
+    conditional_sentence=sentence[1:sentence.index(';')]
 
-    #We perform the 2 treatments
+    #We perform the 2 processing
     analysis=other_sentence('statement', '', sentence[sentence.index(';')+1:])
-    analysis.sv[0].vrb_sub_sentence=[other_sentence('subsentence', 'if', conditionnal_sentence)]
+    analysis.sv[0].vrb_sub_sentence=[other_sentence('subsentence', 'if', conditional_sentence)]
 
     return analysis
 
 
 """
 ######################################################################################
-## This function treats many different type of whose question                       ##
-## Input=type and requestion of sentence and the sentence                           ##
+## This function process many different type of whose question                       ##
+## Input=type and requesting of sentence and the sentence                           ##
 ## Output=class Sentence                                                            ##
 ######################################################################################
 """
@@ -324,10 +317,30 @@ def w_quest_whose(type, request, sentence):
     return analysis
 
 
+
 """
 ######################################################################################
-## This function treats the yes or no question from of a sentence                   ##
-## Input=type and requestion of sentence and the sentence                           ##
+## This function process whom question                                            
+## Input=type and requesting of sentence and the sentence                           ##
+## Output=class Sentence                                                            ##
+######################################################################################
+"""
+def w_quest_whom(type, request, sentence):
+    
+    #It is the same with yes or no question
+    analysis=y_n_ques(type, request, sentence)
+    
+    #We have to add 'to' to the verb
+    analysis.sv[0].vrb_main[0]=analysis.sv[0].vrb_main[0]+'+to'
+    
+    return analysis
+
+
+    
+"""
+######################################################################################
+## This function process the yes or no question from of a sentence                   ##
+## Input=type and requesting of sentence and the sentence                           ##
 ## Output=class Sentence                                                            ##
 ######################################################################################
 """
@@ -338,7 +351,7 @@ def y_n_ques(type, request, sentence):
     analysis=Sentence(type, request, [], [])
     modal=[]
 
-    #We recover the auxilary 
+    #We recover the auxiliary 
     aux=sentence[0]
     
     #We have to know if there is a modal
@@ -364,7 +377,7 @@ def y_n_ques(type, request, sentence):
             sentence=sentence[:1]+['not']+sentence[1:]
         return other_sentence(type, request, sentence)
 
-    #We delete the auxilary
+    #We delete the auxiliary
     sentence=sentence[1:]
 
     #We recover the subject
@@ -378,7 +391,7 @@ def y_n_ques(type, request, sentence):
         vg.vrb_adv=analyse_verbal_structure.find_vrb_adv(sentence)
         vg.vrb_tense = analyse_verb.find_tense_question(sentence, aux, vg.vrb_adv)
 
-        #We treat the verb
+        #We process the verb
         verb=analyse_verb.find_verb_question(sentence, vg.vrb_adv, aux, vg.vrb_tense)
         verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
         vg.vrb_main=[other_functions.convert_to_string(verb_main)]
@@ -393,7 +406,7 @@ def y_n_ques(type, request, sentence):
             analysis.sn[0].adj=analysis.sn[0].adj+sentence[:pos-1]
             sentence=sentence[pos:]
         
-        #Here we have special treatment for different cases
+        #Here we have special processing for different cases
         if sentence!=[]:
             #For 'what' descrition case
             if sentence[0]=='like' and aux!='would':
@@ -407,10 +420,10 @@ def y_n_ques(type, request, sentence):
         #It verifies if there is a secondary verb
         sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
         if sec_vrb!=[]:
-            sentence=analyse_verbal_structure.treat_scd_sentence(sentence, vg, sec_vrb)
+            sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
 
         #We recover the subsentence
-        sentence=analyse_verbal_structure.treat_subsentence(sentence, vg)
+        sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
         
         #We recover the direct, indirect complement and the adverbial
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
@@ -418,7 +431,7 @@ def y_n_ques(type, request, sentence):
         #We have to take off abverbs form the sentence
         vg.advrb=analyse_verbal_structure.find_adv(sentence)
 
-    #We perform the treatment with the modal
+    #We perform the processing with the modal
     if modal!=[]:
         vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
         
@@ -428,8 +441,8 @@ def y_n_ques(type, request, sentence):
 
 """
 ######################################################################################
-## This function treats the other from of a sentence                                ##
-## Input=type and requestion of sentence and the sentence                           ##
+## This function process the other from of a sentence                                ##
+## Input=type and requesting of sentence and the sentence                           ##
 ## Output=class Sentence                                                            ##
 ######################################################################################
 """
@@ -470,7 +483,7 @@ def other_sentence(type, request, sentence):
         if len(sentence)>1 and sentence[1]=='not':
             vg.state='negative'
 
-            #Before the negative form we have an auxilary for the negation
+            #Before the negative form we have an auxiliary for the negation
             if sentence[0]=='do' or sentence[0]=='does' or sentence[0]=='did' :
                 vg.vrb_tense = analyse_verb.find_tense_statement([sentence[0]], [])
                 sentence=sentence[2:]
@@ -478,7 +491,7 @@ def other_sentence(type, request, sentence):
             
             #There is a modal
             elif modal!=[]:
-                sentence=sentence[2:]
+                sentence=[sentence[0]]+sentence[2:]
                 vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
                 vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
 
@@ -488,7 +501,7 @@ def other_sentence(type, request, sentence):
                 vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
                 vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
         
-        #For the affirmative treatment
+        #For the affirmative processing
         else:
             vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
             vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
@@ -506,13 +519,9 @@ def other_sentence(type, request, sentence):
             analysis.sn[0].adj=analysis.sn[0].adj+sentence[:pos-1]
             sentence=sentence[pos:]
             
-        #We perform the treatment with the modal
+        #We perform the processing with the modal
         if modal!=[]:
             vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
-            #We force the time
-            if modal=='should' or modal=='might' or modal=='could':
-                vg.vrb_tense='present conditionnal'
-
 
     #This is a imperative form
     else:
@@ -528,7 +537,7 @@ def other_sentence(type, request, sentence):
         else:
             vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
 
-        #We treat the verb
+        #We process the verb
         verb=[sentence[0+len(vg.vrb_adv)]]
         vg.vrb_main=[other_functions.convert_to_string(analyse_verb.return_verb(sentence, verb, vg.vrb_tense))]
         
@@ -536,12 +545,12 @@ def other_sentence(type, request, sentence):
         sentence= sentence[sentence.index(verb[0])+len(verb):]
     
     #We recover the subsentence
-    sentence=analyse_verbal_structure.treat_subsentence(sentence, vg)
+    sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
     
     #It verifies if there is a secondary verb
     sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
     if sec_vrb!=[]:
-        sentence=analyse_verbal_structure.treat_scd_sentence(sentence, vg, sec_vrb)
+        sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
     
     #We recover the direct, indirect complement and the adverbial
     sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
@@ -553,19 +562,18 @@ def other_sentence(type, request, sentence):
     return analysis
 
 
-"""
-######################################################################################
-## This function is the basic fonction of parsing                                   ##
-## Input=list of sentences and beginning sentence list                              ##
-## Output=list of class Sentence                                                    ##
-######################################################################################
-"""
+
 def sentences_analyzer(sentences):
+    """
+    This function is the basic function of parsing                                   
+    Input=list of sentences and beginning sentence list                              
+    Output=list of class Sentence                                                    
+    """
 
     #init
     class_sentence_list=[]
 
-    #We treat all sentences of the list
+    #We process all sentences of the list
     for i in sentences:
         class_sentence_list=class_sentence_list+[dispatching(i)]
 

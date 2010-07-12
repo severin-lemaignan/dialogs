@@ -42,11 +42,11 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     adj=analyse_nominal_group.return_adj(nom_gr)
     noun=analyse_nominal_group.return_noun(nom_gr, adj, det)
 
-    #We will treat the relative
+    #We will process the relative
     begin_pos_rel=analyse_nominal_group.find_relative(nom_gr, phrase, pos_nom_gr, propo_rel_list)
     end_pos_rel=other_functions.recover_end_pos_sub(phrase[begin_pos_rel:], propo_rel_list)
 
-    #There is a relatve
+    #There is a relative
     if begin_pos_rel!=-1:
         relative_phrase=phrase[begin_pos_rel+1:begin_pos_rel+end_pos_rel-1]
         
@@ -91,7 +91,7 @@ def recover_ns(phrase, analysis, position):
         #We take off the nominal group
         phrase=analyse_nominal_group.take_off_nom_gr(phrase, sbj, phrase.index(sbj[0]))
         
-        #Pre-treatment to remove the 
+        #Pre-processing to remove the 
         begin_pos_rel=analyse_nominal_group.find_relative(sbj, phrase, position, propo_rel_list)
         end_pos_rel=other_functions.recover_end_pos_sub(phrase, propo_rel_list)
         
@@ -102,10 +102,10 @@ def recover_ns(phrase, analysis, position):
         #If there is 'and', we need to duplicate the information
         if len(phrase)>position and (phrase[position]=='and' or phrase[position]=='or'):
             
-            #Reperform the 'and' or 'or' treatment
+            #Reperform the 'and' or 'or' processing
             sbj=analyse_nominal_group.find_sn_pos(phrase[1:], position)
             
-            #We treat the 'or' like the 'and' and remove it
+            #We process the 'or' like the 'and' and remove it
             if phrase[position]=='or':
                 conjunction='OR'
             else:
