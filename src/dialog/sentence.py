@@ -3,7 +3,7 @@
 
 #SVN:rev202 + PythonTidy + rewrite 'toString' methods using Python __str__ + test cases
 
-import helpers #to colorize the sentence output
+from helpers import colored_print #to colorize the sentence output
 
 class Sentence:
     """
@@ -19,13 +19,11 @@ class Sentence:
         aim,
         sn,
         sv,
-        coloured_output=True
         ):
         self.data_type = data_type
         self.aim = aim
         self.sn = sn
         self.sv = sv
-        self._coloured_output = coloured_output
             
     def resolved(self):
         """returns True when the whole sentence is completely resolved
@@ -40,16 +38,19 @@ class Sentence:
 
     
     def __str__(self):
-        res =   "Type: " + self.data_type + '\n' + \
-                "Aim: " + self.aim + '\n'
+        res =   colored_print(">> " + self.data_type.upper(), 'bold')
+        if self.aim:
+            res += " (aim: " + self.aim + ')'
+        res += '\n'
         
         if self.sn:
             for s in self.sn:
-                res += 'sn:\n\t' + str(s).replace("\n", "\n\t") + "\n"
+                res += colored_print('nominal grp', 'bold') + ':\n\t' + str(s).replace("\n", "\n\t") + "\n"
         if self.sv:
-            res += 'sv:\n\t' + str(self.sv).replace("\n", "\n\t") + "\n"
+            for s in self.sv:
+                res += colored_print('verbal grp', 'bold') + ':\n\t' + str(s).replace("\n", "\n\t") + "\n"
         
-        res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
+        #res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
         return res
 
 
@@ -68,13 +69,14 @@ class Nominal_Group:
                     noun,
                     adj,
                     noun_cmpl,
-                    relative):
+                    relative,
+                    ):
         self.det = det
         self.noun = noun
         self.adj = adj
         self.noun_cmpl = noun_cmpl
         self.relative = relative
-        
+                
         """This field is True when this nominal group is resolved to a concept
         known by the robot."""
         self._resolved = False
@@ -90,15 +92,15 @@ class Nominal_Group:
     def __str__(self):
         
         if self._resolved:
-            res = 'id: ' + self.id + '\n>resolved<'
+            res = colored_print(self.id, 'white', 'blue') + '\n' + colored_print('>resolved<', 'green')
         else:
-            res =   helpers.format_colour('$BG-YELLOW' + str(self.det) + "$RESET ") + \
-                    helpers.format_colour('$BG-GREEN' + str(self.noun) + "$RESET ") + \
-                    helpers.format_colour('$BG-BLUE' + str(self.adj) + "$RESET\n")
+            res =   colored_print(self.det, 'yellow') + " " + \
+                    colored_print(self.adj, 'green') + " " + \
+                    colored_print(self.noun, 'blue') + '\n'
             
             if self.noun_cmpl:
                 for s in self.noun_cmpl:
-                    res += 'noun_cmpl:\n\t' + str(s).replace("\n", "\n\t") + "\n"
+                    res += '[OF] \n\t' + str(s).replace("\n", "\n\t") + "\n"
             
             if self.relative:
                 for rel in self.relative:
@@ -125,11 +127,11 @@ class Indirect_Complement:
                         True)
         
     def __str__(self):
-        res = 'prep:' + str(self.prep) + '\n'
+        res = colored_print(self.prep, 'yellow') + "..."
         
         if self.nominal_group:
             for s in self.nominal_group:
-                res += 'sn:\n\t' + str(s).replace("\n", "\n\t") + "\n"
+                res += '\n\t' + str(s).replace("\n", "\n\t") + "\n"
         
         return res
 
@@ -148,17 +150,17 @@ class Verbal_Group:
     """
 
     def __init__(
-        self,
-        vrb_main,
-        sv_sec,
-        vrb_tense,
-        d_obj,
-        i_cmpl,
-        vrb_adv,
-        advrb,
-        state,
-        vrb_sub_sentence,
-        ):
+            self,
+            vrb_main,
+            sv_sec,
+            vrb_tense,
+            d_obj,
+            i_cmpl,
+            vrb_adv,
+            advrb,
+            state,
+            vrb_sub_sentence,
+            ):
         self.vrb_main = vrb_main
         self.sv_sec = sv_sec
         self.vrb_tense = vrb_tense
@@ -185,27 +187,30 @@ class Verbal_Group:
                 reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
     
     def __str__(self):
-        res =   'vrb_main:' + str(self.vrb_main) + "\n" + \
-                'vrb_tense:' + str(self.vrb_tense) + "\n" + \
-                'advrb: ' + str(self.advrb) + "\n" + \
-                'vrb_adv: ' + str(self.vrb_adv) + "\n"
+        res =   colored_print(self.vrb_main, 'magenta') + " (" + str(self.vrb_tense) + ")\n"
+        if self.advrb:
+            res += 'adverb: ' + colored_print(self.advrb, 'yellow') + "\n"
+        if self.vrb_adv:
+            res += 'vrb adv: ' + colored_print(self.vrb_adv, 'green') + "\n"
                 
         if self.d_obj:
+            res += 'direct objects:\n'
             for cmpl in self.d_obj:
-                res += 'd_obj:\n\t' + str(cmpl).replace("\n", "\n\t") + "\n"
+                res += '\t' + str(cmpl).replace("\n", "\n\t") + "\n"
         
         if self.i_cmpl:
+            res += 'indirect objects:\n'
             for cmpl in self.i_cmpl:
-                res += 'i_cmpl:\n\t' + str(cmpl).replace("\n", "\n\t") + "\n"
+                res += '\t' + str(cmpl).replace("\n", "\n\t") + "\n"
         
         if self.vrb_sub_sentence:
             for vrb_sub_s in self.vrb_sub_sentence:
                 res += 'vrb_sub_sentence:\n\t' + str(vrb_sub_s).replace("\n", "\n\t") + "\n"
         
         if self.sv_sec:
-                res += 'sv_sec:\n\t' + str(self.sv_sec).replace("\n", "\n\t") + "\n"
+                res += 'secondary verbal grp:\n\t' + str(self.sv_sec).replace("\n", "\n\t") + "\n"
         
-        res += ">resolved<" if self.resolved() else ">not resolved<"
+        res += colored_print(">resolved<", 'green') if self.resolved() else colored_print(">not resolved<", 'red')
         
         return res
 

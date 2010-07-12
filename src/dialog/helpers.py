@@ -20,6 +20,29 @@ COLORS = {
     'WHITE'    : WHITE,
 }
 
+def colored_print(text, fg_colour = None, bg_colour = None):
+    
+    try:
+        if len(text) == 0:
+            return ''
+        if type(text) == str:
+            pass
+        elif len(text) == 1:
+            text = text[0]
+        else:
+            text = "[" + ", ".join(text) + "]"
+    except TypeError:
+        pass
+    
+    if not fg_colour and not bg_colour:
+        return text
+    if not fg_colour:
+        return format_colour('$BG-' + bg_colour.upper() + text + "$RESET", True)
+    if not bg_colour:
+        return format_colour('$' + fg_colour.upper() + text + "$RESET", True)
+    
+    return format_colour('$BG-' + bg_colour.upper() + '$' + fg_colour.upper() + text + "$RESET", True)
+    
 def format_colour(message, use_color = True):
     
     if not use_color:
