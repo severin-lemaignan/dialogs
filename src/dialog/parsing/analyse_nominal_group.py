@@ -4,60 +4,55 @@
 
 
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 21/06/2010                                                                       ##
-## The package contains functions that affect the analysis of nominal groups        ##
-## We return all elements of a nominal group                                        ##
-## Functions:                                                                       ##
-##    adjective_pos : to return the postion of the noun in the sentence             ##
-##    find_sn_pos : to return the nom_group in a given position with adjective_pos  ##
-##    find_sn : to return the first nominal group found in the sentence             ##
-##    refine_nom_gr : to refine the nominal group if there is a mistake             ##
-##    return_det : to recover the determinant of the nominal group                  ##
-##    return_adj : to recover the adjectives of the nominal group                   ##
-##    return_noun : to recover the noun of the nominal group                        ##
-##    find_nom_gr_compl : to recover the complement noun of the nominal group       ##
-##    take_off_nom_gr : to take off a nominal group from the sentence               ##
-##    find_relative : to find the position of the relative                          ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 21/06/2010                                                                       
+ The package contains functions that affect the analysis of nominal groups        
+ We return all elements of a nominal group                                        
+ Functions:                                                                       
+    adjective_pos : to return the postion of the noun in the sentence             
+    find_sn_pos : to return the nom_group in a given position with adjective_pos  
+    find_sn : to return the first nominal group found in the sentence             
+    refine_nom_gr : to refine the nominal group if there is a mistake             
+    return_det : to recover the determinant of the nominal group                  
+    return_adj : to recover the adjectives of the nominal group                   
+    return_noun : to recover the noun of the nominal group                        
+    find_nom_gr_compl : to recover the complement noun of the nominal group       
+    take_off_nom_gr : to take off a nominal group from the sentence               
+    find_relative : to find the position of the relative                          
 """
 from resources_manager import ResourcePool
 import other_functions
 
 
 """
-############################## Statement of lists ####################################
+Statement of lists
 """
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every']
+det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there']
+proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by']
+adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 
 
 """
-######################################################################################
-## We have to read all irregular adjectives before the treatment                    ##
-######################################################################################
+We have to read all irregular adjectives before the treatment                    
 """
 adjective_list = ResourcePool().adjectives.keys()
 
 
 """
-######################################################################################
-## We have to read all nouns which have a confusion with regular adjectives         ##
-######################################################################################
+We have to read all nouns which have a confusion with regular adjectives        
 """
 noun_list = ResourcePool().special_nouns
 
 
-"""
-######################################################################################
-## This function return the position of the end of the nominal group                ##
-## We have to use the list of irregular adjectives                                  ##
-## Input=the sentence (list of strings) and the position of the first adjective    ##
-## Output=the position of the last word of the nominal group                        ##
-######################################################################################
-"""
+
 def adjective_pos(phrase, word_pos):
+    """
+    This function return the position of the end of the nominal group                
+    We have to use the list of irregular adjectives                                  
+    Input=the sentence (list of strings) and the position of the first adjective    
+    Output=the position of the last word of the nominal group                       
+    """
 
     #If it is the end of the phrase
     if len(phrase)-1==word_pos:
@@ -104,15 +99,14 @@ def adjective_pos(phrase, word_pos):
     return 1
 
 
-"""
-######################################################################################
-## We will find the nominal group which is in a known position                      ##
-## We have to use adjective_pos to return the end position of nominal group         ##
-## Input=the sentence (list of strings) and the position of the nominal group       ##
-## Output=the nominal group                                                         ##
-######################################################################################
-"""
+
 def find_sn_pos (phrase, begin_pos):
+    """
+    We will find the nominal group which is in a known position                      
+    We have to use adjective_pos to return the end position of nominal group         
+    Input=the sentence (list of strings) and the position of the nominal group       
+    Output=the nominal group                                                         
+    """
 
     end_pos = 1
 
@@ -141,14 +135,14 @@ def find_sn_pos (phrase, begin_pos):
     return phrase[begin_pos : counter]
 
 
-"""
-######################################################################################
-## We will find the nominal group without the position                              ##
-## Input=the sentence (list of strings)                                             ##
-## Output=the nominal group                                                         ##
-######################################################################################
-"""
+
 def find_sn (phrase):
+    """
+    We will find the nominal group without the position                              
+    Input=the sentence (list of strings)                                             
+    Output=the nominal group                                                        
+    """
+
     nb_position=1
 
     #If phrase is empty
@@ -188,27 +182,35 @@ def find_sn (phrase):
     return []
 
 
-"""
-######################################################################################
-## This function refine the nominal group if there is a mistake                     ##
-## Input=nominal group                              Output=nominal group            ##
-######################################################################################
-"""
-def refine_nom_gr(nom_gr):
 
+def refine_nom_gr(nom_gr):
+    """
+    This function refine the nominal group if there is a mistake                     
+    Input=nominal group                              Output=nominal group            
+    """
+
+    #Case of the end of the sentence
     if nom_gr[len(nom_gr)-1]=='?' or nom_gr[len(nom_gr)-1]=='!' or nom_gr[len(nom_gr)-1]=='.':
         return nom_gr[:len(nom_gr)-1]
-
+    
+    #Case of after we have a indirect complement
+    for i in proposal_list:
+        if nom_gr[len(nom_gr)-1]==i:
+            return nom_gr[:len(nom_gr)-1]
+    
+    #Case of after we have an adverb
+    for i in adv_list:
+        if nom_gr[len(nom_gr)-1]==i:
+            return nom_gr[:len(nom_gr)-1]
     return nom_gr
 
 
-"""
-######################################################################################
-## This function returns the determinant of the nominal group                       ##
-## Input=nominal group                              Output=the determinant          ##
-######################################################################################
-"""
+
 def return_det (nom_gr):
+    """
+    This function returns the determinant of the nominal group                       
+    Input=nominal group                              Output=the determinant          
+    """
 
     #nom_gr is empty
     if nom_gr==[]:
@@ -221,13 +223,12 @@ def return_det (nom_gr):
     return []
 
 
-"""
-######################################################################################
-## This function returns adjectives of the nominal group                            ##
-## Input=nominal group                              Output=the adjective            ##
-######################################################################################
-"""
+
 def return_adj (nom_gr):
+    """
+    This function returns adjectives of the nominal group                            
+    Input=nominal group                              Output=the adjective            
+    """
 
     #If nom_gr is empty
     if nom_gr==[]:
@@ -242,13 +243,12 @@ def return_adj (nom_gr):
     return []
 
 
-"""
-######################################################################################
-## This function returns the noun of the nominal group                              ##
-## Input=nominal group, the determinant and the adjecvtive        Output=the noun   ##
-######################################################################################
-"""
+
 def return_noun (nom_gr, adjective, determinant):
+    """
+    This function returns the noun of the nominal group
+    Input=nominal group, the determinant and the adjecvtive        Output=the noun   
+    """
 
     #If nom_gr is empty
     if nom_gr==[]:
@@ -257,15 +257,14 @@ def return_noun (nom_gr, adjective, determinant):
     return nom_gr[len(determinant)+len(adjective):]
 
 
-"""
-######################################################################################
-## We will find the complement of the nominal group which is a nominal group also   ##
-## We know the position of the complement so we use find_sn_pos                     ##
-## Input=nominal group, his position and the sentence                               ##
-## Output=nominal group complement                                                  ##
-######################################################################################
-"""
+
 def find_nom_gr_compl (nom_gr, phrase, position):
+    """
+    We will find the complement of the nominal group which is a nominal group also   
+    We know the position of the complement so we use find_sn_pos                     
+    Input=nominal group, his position and the sentence                               
+    Output=nominal group complement                                                 
+    """
 
     #If the nom_gr or phrase is empty
     if nom_gr==[]:
@@ -285,13 +284,12 @@ def find_nom_gr_compl (nom_gr, phrase, position):
     return []
 
 
-"""
-######################################################################################
-## Function to delete the nominal group form the sentence                           ##
-## Input=sentence, nominal group and his position               Output=sentence     ##
-######################################################################################
-"""
+
 def take_off_nom_gr(phrase, nom_gr, nom_gr_pos):
+    """
+    Function to delete the nominal group form the sentence                           
+    Input=sentence, nominal group and his position               Output=sentence     
+    """
 
     if nom_gr!=[]:
         
@@ -309,14 +307,13 @@ def take_off_nom_gr(phrase, nom_gr, nom_gr_pos):
     return phrase
 
 
-"""
-######################################################################################
-## Function to find the position of the relative                                    ##
-## Input=sentence, nominal group and his position and the relative's proposal's list##
-## Output=the position of the relative                                              ##
-######################################################################################
-"""
+
 def find_relative (nom_gr, phrase, position, propo_rel_list):
+    """
+    Function to find the position of the relative                                    
+    Input=sentence, nominal group and his position and the relative's proposal's list
+    Output=the position of the relative                                              
+    """
 
     #Nominal group or phrase is empty
     if nom_gr==[] or phrase ==[]:

@@ -251,11 +251,11 @@ def find_verb_question (phrase, adv, aux, tense):
 ######################################################################################
 """
 def infinitive (verb, tense):
-
+    
     #Treatment for the future simple
     if tense=='future simple':
         return verb
-
+    
     #Treatment for the present simple
     elif tense=='present simple':
         for i in present_irreg_vrb:

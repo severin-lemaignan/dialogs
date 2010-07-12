@@ -2,55 +2,59 @@
 # -*- coding: utf-8 -*-
 # SVN:rev202 + PythonTidy
 
-
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 22/06/2010                                                                       ##
-## The package contains functions which are important for the pre-parsing           ##
-## We return a list of all sentence in the reply to do traitment                    ##
-## Functions:                                                                       ##
-##    upper_to_lower : to treat the uppcase at the baginning of the sentence        ##
-##    concatenate_pos : to concatenate an element in a position given               ##
-##    case_apostrophe_s_to_is : to know if there is this kind of "'s"               ##
-##    expand_contractions : to perform expand contraction using concatenate_pos     ##
-##    comma : to replace ',' by 'and'                                               ##
-##    find_nom_gr_list : take off noun chain linked by 'of'                         ##
-##    create_possession_claus : to transform a noun chain to string's list with 'of'##
-##    possesion_form : to exchange the "'s" to 'of' by using 2 lastest functions    ##
-##    other_treatment : to perform other treatments                                 ##
-##    treat_sentence : to split reply into many sentences using all other functions ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 22/06/2010                                                                       
+ The package contains functions which are important for the pre-parsing
+ We return a list of all sentence in the retort to do traitment                    
+ Functions:                                                                       
+    upper_to_lower : to treat the uppcase at the baginning of the sentence        
+    concatenate_pos : to concatenate an element in a position given               
+    case_apostrophe_s_to_is : to know if there is this kind of "'s"               
+    expand_contractions : to perform expand contraction using concatenate_pos     
+    comma : to replace ',' by 'and'                                               
+    find_nom_gr_list : take off noun chain linked by 'of'                         
+    create_possession_claus : to transform a noun chain to string's list with 'of'
+    possesion_form : to exchange the "'s" to 'of' by using 2 lastest functions    
+    other_treatment : to perform other treatments                                 
+    move_prep : to put the preposition before te nominal group
+    treat_sentence : to split retort into many sentences using all other functions 
 """
 from resources_manager import ResourcePool
+from resources_manager import ThematicRolesDict
 import analyse_nominal_group
 import other_functions
 
 
 """
-############################## Statement of lists ####################################
+Statement of lists
 """
 apostrophe_s_to_is_list=["he's", "she's", "it's", "that's", "what's", "who's", "how's"]
+replacement_tuples=[("won't",['will', 'not']),("wanna",['want', 'to']),("gonna",['going', 'to'])]
+insertion_tuples=[("'m", 'am', 2),("'ve", 'have', 3),("'re", 'are', 3),("'ll", 'will', 3),("'d", 'would', 2),("n't", 'not', 3)]
+prep_list=['ago']
 
-#replacement_tuples={"n't": " not","I'm": ["I", "am"]}
 
 
 """
-######################################################################################
-## We have to read all words that sentence can begin with                           ##
-######################################################################################
+We have to read all words that sentence can begin with                           
 """
 frt_wd = ResourcePool().sentence_starts
 
 
 """
-######################################################################################
-## This function converts the uppercase to lowercase                                ##
-## Input=sentence, beginning sentence list                  Output=sentence         ##
-######################################################################################
+We have to read action verbs known by the robot                                  
 """
-def upper_to_lower(sentence):
+action_verb = ThematicRolesDict().get_all_verbs()
 
+
+
+def upper_to_lower(sentence):
+    """
+    This function converts the uppercase to lowercase
+    Input=sentence, beginning sentence list                  Output=sentence         
+    """
+    
     #If the sentence begins with uppercase
     if other_functions.find_cap_lettre(sentence[0]):
 
@@ -59,7 +63,12 @@ def upper_to_lower(sentence):
             return sentence
         else:
             sentence[0]=sentence[0][0].lower()+sentence[0][1:]
-
+        
+        #We find an action verb => it is an imperative sentence        
+        for i in action_verb:
+            if sentence[0]==i:
+                return sentence
+            
         #If we find the word in the Beginning_sentence list
         for v in frt_wd:
             if sentence[0]==v[0]:
@@ -77,14 +86,13 @@ def upper_to_lower(sentence):
     return sentence
 
 
-"""
-######################################################################################
-## Function to concatenate an element in sentence at a position                     ##
-## Input=sentece, position+element to concatenate, letter's number to remove        ##
-## Output=sentence                                                                  ##
-######################################################################################
-"""
+
 def concatenate_pos(sentence, position, element, pos_rem):
+    """
+    Function to concatenate an element in sentence at a position                     
+    Input=sentece, position+element to concatenate, letter's number to remove        
+    Output=sentence                                                                  
+    """
 
     #We perform concatenation
     sentence = sentence[:position+1] + element + sentence[position+1:]
@@ -94,13 +102,13 @@ def concatenate_pos(sentence, position, element, pos_rem):
     return sentence
 
 
-"""
-######################################################################################
-## Function to know if we have to expand contraction 's to is (return 1)            ##
-## Input=word                      Output=flag(0 if no or 1 if yes)                 ##
-######################################################################################
-"""
+
 def case_apostrophe_s_to_is(word):
+    """
+    Function to know if we have to expand contraction 's to is (return 1)            
+    Input=word                      Output=flag(0 if no or 1 if yes)                 
+    """
+    
     word=word[0].lower()+word[1:]
     for i in apostrophe_s_to_is_list:
         if i == word:
@@ -108,69 +116,45 @@ def case_apostrophe_s_to_is(word):
     return 0
 
 
+
 def expand_contractions(sentence):
     """
     Replaces the contractions by the equivalent meaning, but without contraction
     Input=sentence                       Output=sentence
     """
-    for i in sentence:
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
 
-        if case_apostrophe_s_to_is(i)==1:
-            sentence = concatenate_pos(sentence, sentence.index(i), ['is'], 2)
-
-
-        #try:
-        #    sentence= sentence = sentence[:sentence.index(i)] + replacements[i] + sentence[sentence.index(i)+1:]
-        #except KeyError:
-        #    pass
+        if case_apostrophe_s_to_is(sentence[i])==1:
+            sentence = concatenate_pos(sentence, i, ['is'], 2)
+            i=i+1
         
-        #For 'will not'
-        elif i == "won't":
-            sentence= sentence = sentence[:sentence.index(i)] + ['will', 'not'] + sentence[sentence.index(i)+1:]
-
-        #For 'am'
-        elif i.endswith("'m"):
-            sentence = concatenate_pos(sentence, sentence.index(i), ['am'], 2)
-
-        #For 'are'
-        elif i.endswith("'re"):
-            sentence = concatenate_pos(sentence, sentence.index(i), ['are'], 3)
-
-        #For 'have'
-        elif i.endswith("'ve"):
-            sentence = concatenate_pos(sentence, sentence.index(i), ['have'], 3)
-
-        #For 'will'
-        elif i.endswith("'ll"):
-            sentence = concatenate_pos(sentence, sentence.index(i), ['will'], 3)
-
-        #For 'would'
-        elif i.endswith("'d"):
-            sentence = concatenate_pos(sentence, sentence.index(i), ['would'], 2)
-
-        #For 'not'
-        elif i.endswith("n't"):
-            sentence = concatenate_pos(sentence, sentence.index(i), ['not'], 3)
-
-        #For 'want to'
-        elif i.endswith("wanna"):
-            sentence = sentence[:sentence.index(i)] + ['want', 'to'] + sentence[sentence.index(i)+1:]
-
-        #For 'going to'
-        elif i.endswith("gonna"):
-            sentence = sentence[:sentence.index(i)] + ['going', 'to'] + sentence[sentence.index(i)+1:]
+        for j in replacement_tuples:
+            if sentence[i].endswith(j[0]):
+                sentence = sentence[:i] + j[1] + sentence[i+1:]
+                i=i+1
+                break
+            
+        for j in insertion_tuples:
+            if sentence[i].endswith(j[0]):
+                sentence = concatenate_pos(sentence, i, [j[1]], j[2])
+                i=i+1
+                break
+        i=i+1
         
     return sentence
 
 
-"""
-######################################################################################
-## This function treats the case when there is a comma                              ##
-## Input=sentence                                     Output=sentence               ##
-######################################################################################
-"""
-def comma(sentence):
 
+def comma(sentence):
+    """
+    This function treats the case when there is a comma                              ##
+    Input=sentence                                     Output=sentence               ##
+    """
+    
     #Replace ',' by 'and'
     for i in sentence:
         if i==',':
@@ -180,14 +164,13 @@ def comma(sentence):
     return sentence
 
 
-"""
-######################################################################################
-## This function break phrase into nominal groups with ('s)                         ##
-## And return also the elments number of the end of this list in the sentence       ##
-## Input=sentence                    Output=list of nominal group                   ##
-######################################################################################
-"""
+
 def find_nom_gr_list(phrase):
+    """
+    This function break phrase into nominal groups with ('s)                         
+    And return also the elments number of the end of this list in the sentence       
+    Input=sentence                    Output=list of nominal group                   
+    """
     
     #init
     list=[]
@@ -221,14 +204,13 @@ def find_nom_gr_list(phrase):
     return list
 
 
-"""
-######################################################################################
-## This function create phrase with 'of'                                            ##
-## Input=list of nominal group                 Output=phrase of nominal group       ##
-######################################################################################
-"""
-def create_possession_claus(list):
 
+def create_possession_claus(list):
+    """
+    This function create phrase with 'of'                                            
+    Input=list of nominal group                 Output=phrase of nominal group       
+    """
+    
     #init
     i=1
     #To take the first element
@@ -248,13 +230,12 @@ def create_possession_claus(list):
     return phrase
 
 
-"""
-######################################################################################
-## This function convert 's to possession form 'of'                                 ##
-## Input=sentence                                     Output=sentence               ##
-######################################################################################
-"""
-def possesion_form(sentence):
+
+def possesion_form(sentence): 
+    """
+    This function convert 's to possession form 'of'                                 
+    Input=sentence                                     Output=sentence               
+    """
 
     #init
     begin_pos=0
@@ -302,35 +283,61 @@ def possesion_form(sentence):
     return sentence
 
 
-"""
-######################################################################################
-## This function performs treatments to facilitate the analysis that comes after    ##
-## Input=sentence                              Output=sentence                      ##
-######################################################################################
-"""
-def other_treatment(sentence):
 
+def other_treatment(sentence):
+    """
+    This function performs treatments to facilitate the analysis that comes after    ##
+    Input=sentence                              Output=sentence                      ##
+    """
+    
     #Question with which starts with nominal group without determinant
     if sentence[0]=='which':
         sentence=[sentence[0]]+['the']+sentence[1:]
 
     return sentence
+ 
+ 
+ 
+def move_prep(sentence):
+    """ 
+    This function to put the preposition before te nominal group                     ##
+    Input=sentence                              Output=sentence                      ##
+    """ 
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        for p in prep_list:
+            
+            #If there is a preposal
+            if sentence[i]==p:
+                position=i
+                
+                #We have to find the nominal group just before
+                while analyse_nominal_group.find_sn_pos(sentence, position)==[]:
+                    position=position-1
+                    
+                sentence=sentence[:position]+[p]+sentence[position:i]+sentence[i+1:]
+        i=i+1
+        
+    return sentence 
+                
 
-"""
-######################################################################################
-## This function breaks the reply (as a list) into sentences                        ##
-## And does the treatment of punctuation                                            ##
-## Input=reply and beginning sentence list         Output=list of sentence          ##
-######################################################################################
-"""
-def treat_sentence(reply):
+
+def treat_sentence(retort):
+    """
+    This function breaks the retort (as a list) into sentences                        
+    And does the treatment of punctuation                                            
+    Input=retort and beginning sentence list         Output=list of sentence          
+    """
 
     #init
     sentence=[]
     sentence_list=[]
-    reply = reply.split()
+    retort = retort.split()
    
-    for j in reply:
+    for j in retort:
 
         #If user put space between the last word and the punctuation
         if j=='.' or j=='?' or j=='!':
@@ -340,6 +347,7 @@ def treat_sentence(reply):
             sentence = other_treatment(sentence)
             sentence = possesion_form(sentence)
             sentence = comma(sentence)
+            sentence = move_prep(sentence)
             sentence_list=sentence_list+[sentence]
             sentence=[]
 
@@ -350,6 +358,7 @@ def treat_sentence(reply):
             sentence = other_treatment(sentence)
             sentence = possesion_form(sentence)
             sentence = comma(sentence)
+            sentence = move_prep(sentence)
             sentence_list=sentence_list+[sentence]
             sentence=[]
 
@@ -363,6 +372,7 @@ def treat_sentence(reply):
         sentence = other_treatment(sentence)
         sentence = possesion_form(sentence)
         sentence = comma(sentence)
+        sentence = move_prep(sentence)
         sentence_list=sentence_list+[sentence]
 
     return sentence_list

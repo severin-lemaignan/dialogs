@@ -31,13 +31,10 @@ propo_rel_list=['who', 'which']
 ## Output=the nominal group class                                                   ##
 ######################################################################################
 """
-def fill_nom_gr (phrase, nom_gr, pos_nom_gr):
+def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
 
     #init
     relative=[]
-
-    #We refine the nominal group if there is an error like ending with question mark
-    nom_gr=analyse_nominal_group.refine_nom_gr(nom_gr)
     
     #We start by recovering all information we need
     nom_gr_compl=analyse_nominal_group.find_nom_gr_compl (nom_gr, phrase, pos_nom_gr)
@@ -57,11 +54,14 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr):
 
     #If there is a nom_gr_compl, we must make a recursive process for embedded complement
     if nom_gr_compl!=[]:
-        gn=Nominal_Group(det,noun,adj,[fill_nom_gr(phrase,nom_gr_compl,pos_nom_gr+len(nom_gr)+1)],relative)
+        gn=Nominal_Group(det,noun,adj,[fill_nom_gr(phrase,nom_gr_compl,pos_nom_gr+len(nom_gr)+1,'AND')],relative)
 
     else:
         gn=Nominal_Group(det,noun,adj,[],relative)
-
+        
+    #We recover the conjunction    
+    gn._conjunction=conjunction
+            
     return gn
 
 
@@ -74,13 +74,20 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr):
 """
 def recover_ns(phrase, analysis, position):
     
+    #init
+    conjunction='AND'
+        
     #We recover the first part of the subject
     sbj=analyse_nominal_group.find_sn_pos(phrase, position)
     
     #We loop until we don't have a nominal group
     while sbj!=[]:
-        analysis.sn=analysis.sn+[fill_nom_gr(phrase, sbj, position)]
         
+        #We refine the nominal group if there is an error like ending with question mark
+        sbj=analyse_nominal_group.refine_nom_gr(sbj)
+        
+        analysis.sn=analysis.sn+[fill_nom_gr(phrase, sbj, position,conjunction)]
+    
         #We take off the nominal group
         phrase=analyse_nominal_group.take_off_nom_gr(phrase, sbj, phrase.index(sbj[0]))
         
@@ -93,10 +100,17 @@ def recover_ns(phrase, analysis, position):
             phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
             
         #If there is 'and', we need to duplicate the information
-        if len(phrase)>position and phrase[position]=='and':
-            #We remove the 'and' and reperform the treatment
+        if len(phrase)>position and (phrase[position]=='and' or phrase[position]=='or'):
+            
+            #Reperform the 'and' or 'or' treatment
+            sbj=analyse_nominal_group.find_sn_pos(phrase[1:], position)
+            
+            #We treat the 'or' like the 'and' and remove it
+            if phrase[position]=='or':
+                conjunction='OR'
+            else:
+                conjunction='AND'
             phrase=phrase[1:]
-            sbj=analyse_nominal_group.find_sn_pos(phrase, position)
             
             #This case is used by whose
             if sbj==[]:

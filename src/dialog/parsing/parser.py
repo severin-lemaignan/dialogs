@@ -2,26 +2,25 @@
 # -*- coding: utf-8 -*-
 
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 06/07/2010                                                                       ##
-## The package contains functions to perform test                                   ##
-## It is more used for the subject                                                  ##
-## Functions:                                                                       ##
-##    compare_nom_gr : to compare 2 nominal groups                                  ##
-##    compare_icompl : to compare 2 indirect complements                            ##
-##    compare_vs : to compare 2 verbal structures                                   ##
-##    compare_sentence : to compare 2 sentences                                     ##
-##    compare_reply : to compare 2 replies                                          ##
-##    display_ng : to display nominal group                                         ##
-##    display : to display class Sentence                                           ##
-##    unit_tests : to perform unit tests                                            ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 06/07/2010                                                                       
+ The package contains functions to perform test                                   
+ It is more used for the subject                                                  
+ Functions:                                                                       
+    compare_nom_gr : to compare 2 nominal groups                                  
+    compare_icompl : to compare 2 indirect complements                            
+    compare_vs : to compare 2 verbal structures                                   
+    compare_sentence : to compare 2 sentences                                     
+    compare_reply : to compare 2 replies                                          
+    display_ng : to display nominal group                                         
+    display : to display class Sentence                                           
+    unit_tests : to perform unit tests                                           
 """
 from sentence import *
 import logging
 import preprocessing
 import analyse_sentence
+
 
 class Parser:
     def __init__(self):
@@ -43,12 +42,11 @@ class Parser:
         return self._class_list
              
               
-"""
-######################################################################################
-## Function to compare 2 nominal groups                                             ##
-######################################################################################
-"""
+
 def compare_nom_gr(ng,rslt_ng):
+    """
+    Function to compare 2 nominal groups                                            
+    """
 
     #init
     i=0
@@ -84,12 +82,11 @@ def compare_nom_gr(ng,rslt_ng):
         return 0
     
     
-"""
-######################################################################################
-## Function to compare 2 indirect complements                                       ##
-######################################################################################
-"""    
+  
 def compare_icompl(icompl, rslt_icompl):
+    """
+    Function to compare 2 indirect complements                                      
+    """  
 
     #init
     i=0
@@ -106,12 +103,12 @@ def compare_icompl(icompl, rslt_icompl):
         return 0
 
 
-"""
-######################################################################################
-## Function to compare 2 verbal structures                                          ##
-######################################################################################
-""" 
+
 def compare_vs(vs, rslt_vs):
+    """
+    Function to compare 2 verbal structures                                          
+    """ 
+
     #init
     i=0
     j=0
@@ -151,12 +148,11 @@ def compare_vs(vs, rslt_vs):
         return 0
     
     
-"""
-######################################################################################
-## Function to compare 2 sentences                                                  ##
-######################################################################################
-"""     
+   
 def compare_sentence(stc, stc_rslt):
+    """
+    Function to compare 2 sentences                                                  
+    """  
     if stc.data_type!=stc_rslt.data_type or stc.aim!=stc_rslt.aim:
         return 1
     if compare_nom_gr(stc.sn,stc_rslt.sn)==1:
@@ -167,12 +163,11 @@ def compare_sentence(stc, stc_rslt):
     return 0
 
 
-"""
-######################################################################################
-## Function to compare 2 replies                                                    ##
-######################################################################################
-""" 
+
 def compare_reply(reply, rslt_reply, sentence_list):
+    """
+    Function to compare 2 replies                                                    
+    """ 
 
     #init
     i=0
@@ -198,12 +193,11 @@ def compare_reply(reply, rslt_reply, sentence_list):
             i=i+1
         
        
-"""
-######################################################################################
-## Function to display nominal group                                                ##
-######################################################################################
-"""
+
 def display_ng(nom_str):
+    """
+    Function to display nominal group                                               
+    """
     print  nom_str.det,   nom_str.adj,  nom_str.noun
     for i in nom_str.noun_cmpl:
         display_ng(i)
@@ -213,12 +207,11 @@ def display_ng(nom_str):
         print ''
 
 
-"""
-######################################################################################
-## Function to display class Sentence                                               ##
-######################################################################################
-"""
+
 def display(a):
+    """
+    Function to display class Sentence                                               
+    """
     print ''
     print a.data_type,a.aim
     print ''
@@ -278,13 +271,12 @@ def display(a):
             display(z)
 
    
-"""
-######################################################################################
-## Function to perform unit tests                                                   ##
-######################################################################################
-""" 
+
 def unit_tests():
     """
+    Function to perform unit tests                                                   
+    """ 
+    
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -589,7 +581,7 @@ def unit_tests():
 
     compare_reply(class_list,rslt,sentence_list)
     print ''
-    """
+    
     
     """
     """
@@ -1267,7 +1259,7 @@ def unit_tests():
     sentence_list=preprocessing.treat_sentence(reply)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
-    rslt=[Sentence('w_question', 'descrition', 
+    rslt=[Sentence('w_question', 'description', 
             [Nominal_Group(['your'],['house'],[],[],[])], 
             [Verbal_Group(['look+like'], [],'future simple', 
                 [], 
@@ -1332,17 +1324,16 @@ def unit_tests():
 
     compare_reply(class_list,rslt,sentence_list)
     print ''
-    """
+    
 
     
-    
     """
-    ## Aim of this test : Using wrong in the what questions
+    ## Aim of this test : Using wrong in the what questions, using the 'or' and moving preposition like 'ago'
     """
     print ''
-    print ('######################## test 4.4 ##############################')
+    print ('######################## test 4.5 ##############################')
 
-    reply="what is wrong with him?"
+    reply="what is wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago."
     print 'The object of our test is this reply :'
     print reply
     print '#################################################################'
@@ -1355,10 +1346,91 @@ def unit_tests():
             [Verbal_Group(['be'], [],'present simple', 
                 [], 
                 [Indirect_Complement(['with'],[Nominal_Group([],['him'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['play'], [],'future simple', 
+                [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['play'], [],'past simple', 
+                [Nominal_Group(['a'],['guitar'],[],[],[])], 
+                [Indirect_Complement(['ago'],[Nominal_Group(['a'],['year'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
 
+    rslt[1].sv[0].d_obj[1]._conjunction="OR"
+    
     compare_reply(class_list,rslt,sentence_list)
     print ''
+    
+    
+    
+    """
+    ## Aim of this test : To use different cases with a state's verb 
+    """
+    print ''
+    print ('######################## test 4.6 ##############################')
+
+    reply="this is a bottle. There is a bottle on the table"
+    print 'The object of our test is this reply :'
+    print reply
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.treat_sentence(reply)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '',
+            [Nominal_Group(['this'],[],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [Nominal_Group(['a'],['bottle'],[],[],[])],
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '',
+            [Nominal_Group(['there'],[],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [Nominal_Group(['a'],['bottle'],[],[],[])], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+    
+    compare_reply(class_list,rslt,sentence_list)
+    print ''
+    
+    
+    
+    """
+    ## Aim of this test : To use different cases with a state's verb 
+    """
+    print ''
+    print ('######################## test 4.7 ##############################')
+
+    reply="What do you do for a living in this building? What does your brother do for a living here"
+    print 'The object of our test is this reply :'
+    print reply
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.treat_sentence(reply)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('w_question', 'explication', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['do'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])]),
+                 Indirect_Complement(['in'],[Nominal_Group(['this'],['building'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'explication', 
+            [Nominal_Group(['your'],['brother'],[],[],[])], 
+            [Verbal_Group(['do'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])])],
+                [], ['here'] ,'affirmative',[])])]
+    
+    compare_reply(class_list,rslt,sentence_list)
+    print ''
+    """
+    
     
     
 if __name__ == '__main__':

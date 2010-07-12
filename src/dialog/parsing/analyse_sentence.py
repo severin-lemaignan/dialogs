@@ -42,6 +42,7 @@ import other_functions
 ############################## Statement of lists ####################################
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
+det_dem_list=['this', 'there', 'these']
 
 
 """
@@ -438,7 +439,7 @@ def other_sentence(type, request, sentence):
     vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])
     analysis=Sentence(type, request, [], [])
     modal=[]
-
+    
     #We search the subject
     sbj=analyse_nominal_group.find_sn_pos(sentence, 0)
     if sbj!=[] or type=='relative' :
@@ -446,9 +447,18 @@ def other_sentence(type, request, sentence):
         if type=='':
             analysis.data_type='statement'
 
-
-        #We recover the subject
-        sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
+        
+        #We have to separate the case using these, this or there
+        for p in det_dem_list:
+            
+            if p==sentence[0] and analyse_verb.infinitive([sentence[1]], 'present simple')==['be']:
+                #We recover this information and remove it
+                analysis.sn=[Nominal_Group([p],[],[],[],[])]
+                sentence=sentence[1:]
+        
+        if analysis.sn==[]:
+            #We recover the subject
+            sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
 
         #We have to know if there is a modal
         for m in modal_list:

@@ -118,6 +118,9 @@ def check_proposal(phrase, object):
 """
 def recover_obj_iobj(phrase, vg):
     
+    #init
+    conjunction='AND'
+    
     #We search the first nominal group in sentence
     object= analyse_nominal_group.find_sn(phrase)
    
@@ -132,8 +135,12 @@ def recover_obj_iobj(phrase, vg):
             #This 'while' is for duplicate with 'and'
             while object!=[]:
                 pos_object=phrase.index(object[0])
+                
+                #We refine the nominal group if there is an error like ending with question mark
+                object=analyse_nominal_group.refine_nom_gr(object)
+        
                 #Recovering nominal group
-                gr_nom_list=gr_nom_list+[analyse_nominal_structure.fill_nom_gr(phrase, object, pos_object)]
+                gr_nom_list=gr_nom_list+[analyse_nominal_structure.fill_nom_gr(phrase, object, pos_object,conjunction)]
 
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object,pos_object)
@@ -149,10 +156,17 @@ def recover_obj_iobj(phrase, vg):
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
 
                 #If there is 'and', we need to duplicate the information
-                if len(phrase)!=0 and phrase[0]=='and':
-                    #We remove the 'and'
+                if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or'):
+                    
+                    object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
+                    
+                    #We treat the 'or' like the 'and' and remove it
+                    if phrase[0]=='or':
+                        conjunction='OR'
+                    else:
+                        conjunction='AND'
                     phrase=phrase[1:]
-                    object=analyse_nominal_group.find_sn_pos(phrase, 1)
+                
                 else:
                     object=[]
 
@@ -165,8 +179,12 @@ def recover_obj_iobj(phrase, vg):
             #It reproduces the same code as above
             while object!=[]:
                 pos_object=phrase.index(object[0])
+                
+                #We refine the nominal group if there is an error like ending with question mark
+                object=analyse_nominal_group.refine_nom_gr(object)
+                
                 #Recovering nominal group
-                gr_nom_list=gr_nom_list+[analyse_nominal_structure.fill_nom_gr(phrase, object, pos_object)]
+                gr_nom_list=gr_nom_list+[analyse_nominal_structure.fill_nom_gr(phrase, object, pos_object, conjunction)]
                 
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object, pos_object)
@@ -179,11 +197,17 @@ def recover_obj_iobj(phrase, vg):
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
 
-                #If there is 'and', we need to duplicate the information
-                if len(phrase)!=0 and phrase[0]=='and':
-                    #We remove the 'and'
+                if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or'):
+                    
+                    object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
+                    
+                    #We treat the 'or' like the 'and' and remove it
+                    if phrase[0]=='or':
+                        conjunction='OR'
+                    else:
+                        conjunction='AND'
                     phrase=phrase[1:]
-                    object=analyse_nominal_group.find_sn_pos(phrase, 0)
+                    
                 else:
                     object=[]
 
