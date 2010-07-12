@@ -9,6 +9,8 @@ from threading import Thread
 from Queue import Queue, Empty
 from collections import deque
 
+from helpers import colored_print
+
 from dialog_exceptions import UnsufficientInputError
 
 from sentence import Sentence
@@ -68,26 +70,33 @@ class Dialog(Thread):
                   
             try:               
                 input = self._nl_input_queue.get(block = False).strip()                
-                self._logger.info("0/ Got NL input \"" + input + "\"")
+                self._logger.info(colored_print("###################################", 'green'))
+                self._logger.info(colored_print("#             NL INPUT            #", 'green'))
+                self._logger.info(colored_print("###################################\n", 'green'))
+                self._logger.info(colored_print(input + "\n", 'blue'))
                 self.in_interaction = True
                 self.waiting_for_more_info = False
                 
                 try:
                     self._process(input)
                 except UnsufficientInputError as uie:
-                    self._logger.info("2bis/ Missing content! Going back to human")
+                    self._logger.info(colored_print("##########################################", 'green'))
+                    self._logger.info(colored_print("#  Missing content! Going back to human  #", 'green'))
+                    self._logger.info(colored_print("##########################################", 'green'))
                     self._sentence_output_queue.put(uie.value)
             except Empty:
                 pass
             
             try:
                 output = self._sentence_output_queue.get(block = False)
-                self._logger.debug("Got output to verbalize")
+                self._logger.debug(colored_print("> Got output to verbalize: ", 'bold'))
                 
                 #TODO: Assuming here that 'output present = more info needed'. Not true in the general case
                 self.waiting_for_more_info = True
                 if isinstance(output, Sentence):
                     output = self._verbalizer.verbalize(output)
+                else:
+                    output = colored_print(output, 'red')
                 sys.stdout.write(str(output) + "\n")
                 self.current_output = output
                   
@@ -125,7 +134,8 @@ class Dialog(Thread):
         self.input(input, speaker)
         while(self.in_interaction):
             if answer and self.waiting_for_more_info:
-                logging.debug("Automatically answering: " + answer)
+                logging.debug(colored_print("> Automatically answering: ", 'bold'))
+                logging.debug(colored_print(answer, 'red'))
                 self.input(answer, speaker)
                 answer = None
             pass
@@ -134,15 +144,19 @@ class Dialog(Thread):
 
     def _process(self, nl_input):
         #Parsing
-        self._logger.info("1/ Parsing...")
+        self._logger.info(colored_print("###################################", 'green'))
+        self._logger.info(colored_print("#             PARSING             #", 'green'))
+        self._logger.info(colored_print("###################################", 'green'))
         self.sentences.appendleft(self._parser.parse(nl_input, self.active_sentence)[0])
         
         for s in range(len(self.sentences)): #sentences is a deque. Cannot do a simple [:] to iterate over a copy
             self.active_sentence = self.sentences.popleft()
-            self._logger.debug("Processing NL sentence")
             
             #Resolution
-            self._logger.info("2/ Resolution...")
+            self._logger.info(colored_print("###################################", 'green'))
+            self._logger.info(colored_print("#       RESOLVING SENTENCE        #", 'green'))
+            self._logger.info(colored_print("###################################", 'green'))
+
             self.active_sentence = self._resolver.references_resolution(self.active_sentence,
                                                                         self.current_speaker, 
                                                                         self.current_object)
@@ -150,15 +164,19 @@ class Dialog(Thread):
                                                                           self.current_speaker)
             self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
             
+            self._logger.debug(colored_print("###################################", 'green'))
             self._logger.debug("Sentence after resolution:\n" + str(self.active_sentence))
             
             #Content analysis
-            self._logger.info("3/ Content analysis...")
+            self._logger.info(colored_print("###################################", 'green'))
+            self._logger.info(colored_print("#        CONTENT ANALYSIS         #", 'green'))
+            self._logger.info(colored_print("###################################", 'green'))
             self.last_stmts_set = self._content_analyser.analyse(self.active_sentence, self.current_speaker)
             
         #Finalizing the processing
+        self._logger.info(colored_print("\n###################################\n", 'green'))
         self.active_sentence = None
-        self._logger.info("NL sentence \"" + nl_input + "\" processed!")
+        self._logger.info(colored_print("NL sentence \"" + nl_input + "\" processed!", 'green'))
         self.in_interaction = False
 
 

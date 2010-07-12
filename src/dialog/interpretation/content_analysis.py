@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from helpers import colored_print
 
 from interpretation.statements_builder import StatementBuilder
 
@@ -27,7 +28,7 @@ class ContentAnalyser:
         
         logging.info("Generated statements: ")
         for s in stmts:
-            logging.info(">> " + s)
+            logging.info(">> " + colored_print(s, None, 'magenta'))
         
         return stmts
 

@@ -36,8 +36,7 @@ class Parser:
         self._class_list = analyse_sentence.sentences_analyzer(self._sentence_list)
         
         for s in self._class_list:
-        
-            logging.debug("Parsing output:\n" + str(s))
+            logging.debug(str(s))
         
         return self._class_list
              

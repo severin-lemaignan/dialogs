@@ -62,10 +62,9 @@ def format_colour(message, use_color = True):
                          .replace("$BG" + k,  COLOR_SEQ % (v+40) if use_color else "")\
                          .replace("$BG-" + k, COLOR_SEQ % (v+40) if use_color else "")
     return message + RESET_SEQ
-
-
-if __name__ == '__main__':
     
+if __name__ == '__main__':
+
     #should print a blue 'Hello World'
     print format_colour("$BLUEHello World$RESET")
     
@@ -86,3 +85,4 @@ if __name__ == '__main__':
     
     #should print a 'Hello World' with normal colour.
     print format_colour("Hello World")
+
