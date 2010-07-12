@@ -221,7 +221,7 @@ def unit_tests():
     sentence1 = Sentence('w_question',
                         'location',
                         [Nominal_Group(['the'],  ['mother'],[],[], [])],
-                        Verbal_Group(['be'], [],'present simple',[], [],['today'], [], [], []))
+                        [Verbal_Group(['be'], [],'present simple',[], [],['today'], [], [], [])])
     
     print("*********************************")
     print(sentence1)
@@ -229,7 +229,7 @@ def unit_tests():
     sentence2 = Sentence('statement', 
                         '', 
                         [Nominal_Group([],["Jido"],[],[],[]), Nominal_Group([],["Danny"],[],[],[])], 
-                        Verbal_Group(["want"],[], 'infinitive',[],[],[],[],'affirmative', []))
+                        [Verbal_Group(["want"],[], 'infinitive',[],[],[],[],'affirmative', [])])
     
     print("*********************************")
     print(sentence2)
@@ -237,7 +237,7 @@ def unit_tests():
     sentence3 = Sentence('statement', 
                         '', 
                         [Nominal_Group([],["Holmes"],[],[],[]), Nominal_Group([],["Sherlock"],[],[],[])], 
-                        Verbal_Group(["want"],
+                        [Verbal_Group(["want"],
                                     Verbal_Group(["eat"],[], 'infinitive',[],[],[],[],'affirmative', []), 
                                     'past simple',
                                     [],
@@ -245,7 +245,7 @@ def unit_tests():
                                     [],
                                     [],
                                     'negative', 
-                                    []))
+                                    [])])
     
     print("*********************************")
     print(sentence3)
@@ -257,7 +257,7 @@ def unit_tests():
                                         ['blue', 'gray'],
                                         [Nominal_Group(['my'],  ['mother'],[],[], [sentence2]), Nominal_Group(['my'],  ['father'],[],[], [])], 
                                         [])], 
-                        Verbal_Group(['know'], 
+                        [Verbal_Group(['know'], 
                                     [],
                                     'present simple',
                                     [Nominal_Group(['the'],  ["land"],['old'],[], []), Nominal_Group(['the'],  ["brand"],['lazy'],[], [])],
@@ -270,7 +270,7 @@ def unit_tests():
                                     ["slowly"], 
                                     ["now"], 
                                     "affirmative", 
-                                    [sentence3]))
+                                    [sentence3])])
     print("*********************************")
     print(sentence4)
     
