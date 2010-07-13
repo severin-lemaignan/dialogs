@@ -27,12 +27,13 @@ def statement(analysis):
     #Recovering the subject
     phrase=element_recovery.nom_struc_recovery(analysis.sn)
     
-    #Recovering the end of the sentence
-    phrase=element_recovery.end_statement_recovery(phrase, analysis.sv, analysis.sn, analysis.data_type)
-    
-    #Recovering subsentences
-    for s in analysis.sv[0].vrb_sub_sentence:
-        phrase=phrase+sub_process(s)
+    if analysis.sv!=[]:
+        #Recovering the end of the sentence
+        phrase=element_recovery.end_statement_recovery(phrase, analysis.sv, analysis.sn, analysis.data_type)
+        
+        #Recovering subsentences
+        for s in analysis.sv[0].vrb_sub_sentence:
+            phrase=phrase+sub_process(s)
 
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
@@ -54,13 +55,14 @@ def imperative(analysis):
     #init
     phrase=[]
     
-    #Recovering the basic part of the sentence
-    phrase=element_recovery.end_statement_recovery(phrase, analysis.sv, analysis.sn, analysis.data_type)
-
-    #Recovering subsentences
-    for s in analysis.sv[0].vrb_sub_sentence:
-        phrase=phrase+sub_process(s)
-        
+    if analysis.sv!=[]:
+        #Recovering the basic part of the sentence
+        phrase=element_recovery.end_statement_recovery(phrase, analysis.sv, analysis.sn, analysis.data_type)
+    
+        #Recovering subsentences
+        for s in analysis.sv[0].vrb_sub_sentence:
+            phrase=phrase+sub_process(s)
+            
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
     return phrase+['.']
@@ -78,19 +80,20 @@ def y_o_question(analysis):
     
     #Recovering the subject
     subject=element_recovery.nom_struc_recovery(analysis.sn)
-
-    #Recovering the end of the sentence
-    phrase=element_recovery.end_question_recovery(phrase, analysis.sv, analysis.sn)
-
-    #We need special processing to find the position of the subject
-    if analysis.sv[0].state=='negative':
-        phrase=phrase[0:2]+subject+phrase[2:]
-    else:
-        phrase=[phrase[0]]+subject+phrase[1:]
-
-    #Recovering subsentences
-    for s in analysis.sv[0].vrb_sub_sentence:
-        phrase=phrase+sub_process(s)
+    
+    if analysis.sv!=[]:
+        #Recovering the end of the sentence
+        phrase=element_recovery.end_question_recovery(phrase, analysis.sv, analysis.sn)
+    
+        #We need special processing to find the position of the subject
+        if analysis.sv[0].state=='negative':
+            phrase=phrase[0:2]+subject+phrase[2:]
+        else:
+            phrase=[phrase[0]]+subject+phrase[1:]
+    
+        #Recovering subsentences
+        for s in analysis.sv[0].vrb_sub_sentence:
+            phrase=phrase+sub_process(s)
 
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
@@ -108,11 +111,11 @@ def w_question(analysis):
     This function verbalises a w_question                                            
     Input=class sentence                              Output=sentence                
     """
-    
-    #Opinion is a what question so we have to make some changes
-    if analysis.sv[0].vrb_main[0].endswith('like'):
-        verb=analysis.sv[0].vrb_main[0]
-        analysis.sv[0].vrb_main[0]=verb[:len(verb)-4]+'think+of'
+    if analysis.sv!=[]:
+        #Opinion is a what question so we have to make some changes
+        if analysis.sv[0].vrb_main[0].endswith('like'):
+            verb=analysis.sv[0].vrb_main[0]
+            analysis.sv[0].vrb_main[0]=verb[:len(verb)-4]+'think+of'
 
     #processing as yes or no question
     phrase=y_o_question(analysis)
@@ -142,52 +145,40 @@ def quantity_ques(analysis):
     #We have to memorise the verb
     verb=other_functions.list_recovery(analysis.sv[0].vrb_main[0])
 
+    if analysis.sv!=[]:
     #First case : aim is the subject with verb be
-    if analysis.sv[0].d_obj==[] and (verb[0]=='be' or (len(verb)>1 and  verb[1]=='be')):
-        phrase=statement(analysis)
-        return ['how','much']+phrase[1:len(phrase)-1]+['?']
-
-    #Second case : aim is the subject without verb be
-    elif  analysis.sv[0].d_obj==[]:
-        return ['how','much']+y_o_question(analysis)
-
-    #Third case : as yes no question without the direct complement
-    else:
-        subject=element_recovery.nom_struc_recovery(analysis.sn)
+        if analysis.sv[0].d_obj==[] and (verb[0]=='be' or (len(verb)>1 and  verb[1]=='be')):
+            phrase=statement(analysis)
+            return ['how','much']+phrase[1:len(phrase)-1]+['?']
     
-        #Same processing with yes no question
-        phrase=element_recovery.vrb_ques_recovery(analysis.sv[0].vrb_tense, analysis.sv[0].vrb_main, analysis.sv[0].vrb_adv, analysis.sn, analysis.sv[0].state)
-        phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].i_cmpl)
-        phrase=phrase+analysis.sv[0].advrb
-        if analysis.sv[0].sv_sec!=[]:
-            phrase=phrase+['to']+analysis.sv[0].sv_sec[0].vrb_adv+other_functions.list_recovery(analysis.sv[0].sv_sec[0].vrb_main[0])
-            phrase=phrase+element_recovery.nom_struc_recovery(analysis.sv[0].sv_sec[0].d_obj)
-            phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].sv_sec[0].i_cmpl)
-            phrase=phrase+analysis.sv[0].sv_sec[0].advrb
-
-        for s in analysis.sv[0].vrb_sub_sentence:
-            phrase=phrase+sub_process(s)
-        
-        #processing of the state
-        if analysis.sv[0].state=='negative':
-            phrase=phrase[0:2]+subject+phrase[2:]
+        #Second case : aim is the subject without verb be
+        elif  analysis.sv[0].d_obj==[]:
+            return ['how','much']+y_o_question(analysis)
+    
+        #Third case : as yes no question without the direct complement
         else:
-            phrase=[phrase[0]]+subject+phrase[1:]
-
-        return ['how', 'much']+analysis.sv[0].d_obj[0].noun+phrase+['?']
-
-
-
-def choice_ques(analysis):
-    """
-    This function verbalises a question about choice                                 
-    Input=class sentence                              Output=sentence                
-    """
-
-    #processing as statement
-    phrase=statement(analysis)
-    phrase[0]='which'
-    return phrase
+            subject=element_recovery.nom_struc_recovery(analysis.sn)
+        
+            #Same processing with yes no question
+            phrase=element_recovery.vrb_ques_recovery(analysis.sv[0].vrb_tense, analysis.sv[0].vrb_main, analysis.sv[0].vrb_adv, analysis.sn, analysis.sv[0].state)
+            phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].i_cmpl)
+            phrase=phrase+analysis.sv[0].advrb
+            if analysis.sv[0].sv_sec!=[]:
+                phrase=phrase+['to']+analysis.sv[0].sv_sec[0].vrb_adv+other_functions.list_recovery(analysis.sv[0].sv_sec[0].vrb_main[0])
+                phrase=phrase+element_recovery.nom_struc_recovery(analysis.sv[0].sv_sec[0].d_obj)
+                phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].sv_sec[0].i_cmpl)
+                phrase=phrase+analysis.sv[0].sv_sec[0].advrb
+    
+            for s in analysis.sv[0].vrb_sub_sentence:
+                phrase=phrase+sub_process(s)
+            
+            #processing of the state
+            if analysis.sv[0].state=='negative':
+                phrase=phrase[0:2]+subject+phrase[2:]
+            else:
+                phrase=[phrase[0]]+subject+phrase[1:]
+    
+            return ['how', 'much']+analysis.sv[0].d_obj[0].noun+phrase+['?']
 
 
 
