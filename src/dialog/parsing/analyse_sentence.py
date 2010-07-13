@@ -13,7 +13,8 @@
     w_quest_quant : to process many different type of how question
     w_quest_how : to process many different type of how question                    
     condi_sentence : to process the conditional sentence                           
-    w_quest_whose : to process many different type of whose question                
+    w_quest_whose : to process many different type of whose question   
+    w_quest_whom : to process whom question
     y_n_ques : to process the yes or no question from of a sentence                 
     other_sentence : to process the other from of a sentence                        
     sentences_analyzer : is the basic function of parsing                         
@@ -28,28 +29,25 @@ import other_functions
 
 
 """
-############################## Statement of lists ####################################
+Statement of lists
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
 det_dem_list=['this', 'there', 'these']
 
 
 """
-######################################################################################
-## We have to read all words that sentence can begin with                           ##
-######################################################################################
+We have to read all words that sentence can begin with                           
 """
 frt_wd = ResourcePool().sentence_starts
 
 
-"""
-######################################################################################
-## This function distributes the sentence according to:                             ##
-## their functionality and their type                                               ##
-## Input=sentence, beginning sentence list          Output=class Sentence           ##
-######################################################################################
-"""
+
 def dispatching(sentence):
+    """
+    This function distributes the sentence according to:                             
+    Their functionality and their type                                               
+    Input=sentence, beginning sentence list          Output=class Sentence           
+    """
 
     if len(sentence)>0:
         
@@ -180,13 +178,12 @@ def dispatching(sentence):
     return []
 
 
-"""
-######################################################################################
-## This function process many different type of where question                       ##
-## Input=type and requesting of sentence, the sentence      Output=class Sentence   ##
-######################################################################################
-"""
+
 def w_quest_where(type, request, stc):
+    """
+    This function process many different type of where question                       
+    Input=type and requesting of sentence, the sentence      Output=class Sentence   
+    """
 
     #If there is 'form' at the end => question about the origin
     if stc[len(stc)-1]=='from' or (stc[len(stc)-1]=='?' and stc[len(stc)-2]=='from'):
@@ -198,14 +195,13 @@ def w_quest_where(type, request, stc):
         return y_n_ques(type, request, stc[1:])
 
 
-"""
-######################################################################################
-## This function process many different type of what question                        ##
-## Input=type of sentence, the sentence and position of subject                      ##
-## Output=class Sentence                                                            ##
-######################################################################################
-"""
+
 def w_quest_what(type, sentence,sbj_pos):
+    """
+    This function process many different type of what question                        
+    Input=type of sentence, the sentence and position of subject                      
+    Output=class Sentence                                                            
+    """
     
     #We start with a processing with the function of y_n_question's case
     analysis=y_n_ques(type, 'thing',sentence[sbj_pos-1:])
@@ -229,14 +225,13 @@ def w_quest_what(type, sentence,sbj_pos):
     return analysis
 
 
-"""
-######################################################################################
-## This function process many different type of quantity question                    ##
-## Input=type and requesting of sentence, the sentence and beginning sentence list  ##
-## Output=class Sentence                                                            ##
-######################################################################################
-"""
+
 def w_quest_quant(type, request, sentence):
+    """
+    This function process many different type of quantity question                    
+    Input=type and requesting of sentence, the sentence and beginning sentence list  
+    Output=class Sentence                                                            
+    """
 
     for j in frt_wd :
         if sentence[2]==j[0]:
@@ -257,13 +252,12 @@ def w_quest_quant(type, request, sentence):
     return analysis
 
 
-"""
-######################################################################################
-## This function process many different type of how question                         ##
-## Input=type of sentence, the sentence      Output=class Sentence                  ##
-######################################################################################
-"""
+
 def w_quest_how(type, sentence):
+    """
+    This function process many different type of how question                         
+    Input=type of sentence, the sentence      Output=class Sentence                  
+    """
     
     analysis=y_n_ques(type, 'manner', sentence[1:])
 
@@ -273,13 +267,12 @@ def w_quest_how(type, sentence):
     return analysis
 
 
-"""
-######################################################################################
-## This function process the conditional sentence                                   ##
-## Input=sentence                                          Output=class Sentence    ##
-######################################################################################
-"""
+
 def condi_sentence(sentence):
+    """
+    This function process the conditional sentence
+    Input=sentence                                          Output=class Sentence    
+    """
 
     #We recover the conditional sentence
     conditional_sentence=sentence[1:sentence.index(';')]
@@ -291,15 +284,15 @@ def condi_sentence(sentence):
     return analysis
 
 
-"""
-######################################################################################
-## This function process many different type of whose question                       ##
-## Input=type and requesting of sentence and the sentence                           ##
-## Output=class Sentence                                                            ##
-######################################################################################
-"""
-def w_quest_whose(type, request, sentence):
 
+def w_quest_whose(type, request, sentence):
+    """
+    This function process many different type of whose question                       
+    Input=type and requesting of sentence and the sentence                           
+    Output=class Sentence                                                           
+    """
+
+    #init
     vg=Verbal_Group(['be'], [],'', [], [], [], [] ,'affirmative',[])
     analysis=Sentence(type, request, [], [])
 
@@ -318,14 +311,12 @@ def w_quest_whose(type, request, sentence):
 
 
 
-"""
-######################################################################################
-## This function process whom question                                            
-## Input=type and requesting of sentence and the sentence                           ##
-## Output=class Sentence                                                            ##
-######################################################################################
-"""
 def w_quest_whom(type, request, sentence):
+    """
+    This function process whom question                                            
+    Input=type and requesting of sentence and the sentence
+    Output=class Sentence                                                            
+    """
     
     #It is the same with yes or no question
     analysis=y_n_ques(type, request, sentence)
@@ -336,15 +327,13 @@ def w_quest_whom(type, request, sentence):
     return analysis
 
 
-    
-"""
-######################################################################################
-## This function process the yes or no question from of a sentence                   ##
-## Input=type and requesting of sentence and the sentence                           ##
-## Output=class Sentence                                                            ##
-######################################################################################
-"""
+
 def y_n_ques(type, request, sentence):
+    """
+    This function process the yes or no question from of a sentence
+    Input=type and requesting of sentence and the sentence                           
+    Output=class Sentence                                                            
+    """
     
     #init
     vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])
@@ -439,14 +428,13 @@ def y_n_ques(type, request, sentence):
     return analysis
 
 
-"""
-######################################################################################
-## This function process the other from of a sentence                                ##
-## Input=type and requesting of sentence and the sentence                           ##
-## Output=class Sentence                                                            ##
-######################################################################################
-"""
+
 def other_sentence(type, request, sentence):
+    """
+    This function process the other from of a sentence                                
+    Input=type and requesting of sentence and the sentence                               
+    Output=class Sentence                                                            
+    """
     
     #init
     vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])

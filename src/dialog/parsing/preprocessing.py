@@ -18,6 +18,7 @@
     possesion_form : to exchange the "'s" to 'of' by using 2 lastest functions    
     other_processing : to perform other processing                                 
     move_prep : to put the preposition before the nominal group
+    or_processing : to create a nominal group before and after the 'or'
     process_sentence : to split utterance into many sentences using all other functions 
 """
 from resources_manager import ResourcePool
@@ -300,8 +301,8 @@ def possesion_form(sentence):
 
 def other_processing(sentence):
     """
-    This function performs processing to facilitate the analysis that comes after    ##
-    Input=sentence                              Output=sentence                      ##
+    This function performs processing to facilitate the analysis that comes after    
+    Input=sentence                              Output=sentence                      
     """
     
     #Question with which starts with nominal group without determinant
@@ -314,8 +315,8 @@ def other_processing(sentence):
  
 def move_prep(sentence):
     """ 
-    This function to put the preposition before te nominal group                     ##
-    Input=sentence                              Output=sentence                      ##
+    This function to put the preposition before the nominal group                     
+    Input=sentence                              Output=sentence                      
     """ 
     
     #init
@@ -336,7 +337,48 @@ def move_prep(sentence):
         i=i+1
         
     return sentence 
+
                 
+
+def or_processing(sentence):
+    """ 
+    This function creates a nominal group before and after the 'or'                  
+    Input=sentence                              Output=sentence                      
+    """ 
+    #init
+    i=0
+    
+    while i < len(sentence):
+        
+        if sentence[i]=='or':
+            #We have to find the first and the second nominal group in the sentence
+            position=i
+            fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
+            
+            #Until we find the first nominal group
+            while fst_nom_gr==[]:
+                position=position-1
+                fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
+            
+            #We will find the second nominal group
+            scd_nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
+            
+            if fst_nom_gr[len(fst_nom_gr)-1]=='or' and scd_nom_gr==[]:
+                #We have to know the second nominal group
+                sentence=sentence[:i+1]+[fst_nom_gr[0]]+sentence[i+1:]
+                scd_nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
+                
+                #We insert word to have 2 nominal groups in the sentence
+                sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+['or']+sentence[i+1:]
+            
+            elif fst_nom_gr[len(fst_nom_gr)-1]=='or':
+                #We insert word to have 1 nominal group in the sentence
+                sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+sentence[i:]
+    
+        i=i+1
+    
+    return sentence
+
 
 
 def process_sentence(utterance):
@@ -363,6 +405,7 @@ def process_sentence(utterance):
             sentence = possesion_form(sentence)
             sentence = comma(sentence)
             sentence = move_prep(sentence)
+            sentence = or_processing(sentence)
             sentence_list=sentence_list+[sentence]
             sentence=[]
 
@@ -375,6 +418,7 @@ def process_sentence(utterance):
             sentence = possesion_form(sentence)
             sentence = comma(sentence)
             sentence = move_prep(sentence)
+            sentence = or_processing(sentence)
             sentence_list=sentence_list+[sentence]
             sentence=[]
 
@@ -390,6 +434,7 @@ def process_sentence(utterance):
         sentence = possesion_form(sentence)
         sentence = comma(sentence)
         sentence = move_prep(sentence)
+        sentence = or_processing(sentence)
         sentence_list=sentence_list+[sentence]
 
     return sentence_list

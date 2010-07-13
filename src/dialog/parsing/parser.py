@@ -275,7 +275,7 @@ def unit_tests():
     """
     Function to perform unit tests                                                   
     """ 
-    
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -580,7 +580,7 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
     """
     """
@@ -1473,6 +1473,47 @@ def unit_tests():
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     """
+    
+    
+    """
+    ## Aim of this test : To use different cases with a state's verb 
+    """
+    print ''
+    print ('######################## test 5.1 ##############################')
+
+    utterance="you'd like the blue bottle or the glass? the green or blue bottle is on the table. the green or the blue glass is mine?"
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('yes_no_question', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['like'], [],'present conditional', 
+                [Nominal_Group(['the'],['bottle'],['blue'],[],[]),Nominal_Group(['the'],['glass'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],['green'],[],[]),Nominal_Group(['the'],['bottle'],['blue'],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group(['the'],['glass'],['green'],[],[]),Nominal_Group(['the'],['glass'],['blue'],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],['mine'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+    
+    rslt[0].sv[0].d_obj[1]._conjunction="OR"
+    rslt[1].sn[1]._conjunction="OR"
+    rslt[2].sn[1]._conjunction="OR"
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
     
     
     
