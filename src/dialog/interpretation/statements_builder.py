@@ -36,10 +36,8 @@ class StatementBuilder:
         
         if not sentence.resolved():
             raise DialogError("Trying to process an unresolved sentence!")
-            
+         
         self._sentence = sentence
-        
-        #self._sentence = dump_resolved(sentence, self._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
         
         if sentence.sn:
             self.process_nominal_groups(self._sentence.sn)
@@ -56,8 +54,7 @@ class StatementBuilder:
         
     def process_verbal_groups(self, sentence):
         vg_stmt_builder = VerbalGroupStatementBuilder(sentence.sv, self._current_speaker)
-        
-        vg_stmt_builder.set_attribute_on_data_type(sentence)
+        vg_stmt_builder.set_attribute_on_data_type(sentence.data_type)
         """"
         #Case: an imperative sentence does not contain an sn attribute,
         #      we will assume that it is implicitly an order from the current speaker.
@@ -218,6 +215,15 @@ class NominalGroupStatementBuilder:
             #case 1   
             if rel.sn:
                 logging.warning("Don't know how to resolve a relative clause in this situation yet")
+                #TODO: find or Write a function that compare instance of classes (Nominal_Group) 
+                #    if sn == d_obj
+                #        d_obj.id = sn.id
+                #        process_direct_object()
+                #    elif sn == i_cmpl:
+                #        i_cmpl.id = sn.id
+                #        process_indirect_object()
+                #
+                #
                 """
                 for ng in rel.sn:
                     if ng._resolved:
@@ -253,10 +259,10 @@ class VerbalGroupStatementBuilder:
         #This field holds the value True when the active sentence is of imperative data_type
         self._process_on_imperative = False
 
-    def set_attribute_on_data_type(self, sentence):
-        if sentence.data_type == 'imperative':
+    def set_attribute_on_data_type(self, data_type):
+        if data_type == 'imperative':
             self._process_on_imperative = True
-        if sentence.data_type == 'yes_no_question':
+        if data_type == 'yes_no_question':
             self._process_on_yes_no_question = True
         
     def clear_statements(self):
@@ -492,7 +498,7 @@ def dump_resolved(sentence, current_speaker, current_listener):
         
            
         for ng in ngs:
-            
+            ng._resolved = True
             onto = oro.lookup(ng.noun[0])
             #  : Make sure the following is resolved in Resolution
             if onto and [ng.noun[0],"INSTANCE"] in onto:
@@ -509,7 +515,8 @@ def dump_resolved(sentence, current_speaker, current_listener):
                 
             if ng.relative:
                 for rel in ng.relative:
-                    rel = dump_resolved(rel, current_speaker, current_listener)                    
+                    rel = dump_resolved(rel, current_speaker, current_listener)    
+                                    
         oro.close()
         return ngs
     
@@ -519,6 +526,8 @@ def dump_resolved(sentence, current_speaker, current_listener):
     
     if sentence.sv:
         for sv in sentence.sv:
+            sv._resolved = True
+            
             if sv.d_obj:
                 sv.d_obj = resolve_ng(sv.d_obj)
     
@@ -860,6 +869,9 @@ class TestStatementBuilder(unittest.TestCase):
         
         
     def process(self, sentence, expected_result, display_statement_result = False):
+         
+        sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
+       
         res = self.stmt.process_sentence(sentence)
         if display_statement_result:
             print "*** StatementBuilder result from " + inspect.stack()[1][3] + " ****"
