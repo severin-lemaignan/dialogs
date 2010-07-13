@@ -212,10 +212,10 @@ def conjugate_vrb(tense, verb, sn, type):
         return conjugate_vrb('past simple', ['be'], sn, type)+conjugate_vrb('present perfect', verb, sn, type)[1:]
 
     #For conditionnal forms
-    elif tense=='present conditionnal':
+    elif tense=='present conditional':
         return ['would']+verb
-    elif tense=='past conditionnal':
-        return ['would']+conjugate_vrb('present perfect', ['be'], sn, type)
+    elif tense=='past conditional':
+        return ['would']+conjugate_vrb('present perfect', verb, sn, type)
 
     #Default case
     return []

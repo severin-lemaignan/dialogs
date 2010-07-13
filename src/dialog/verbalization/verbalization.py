@@ -184,13 +184,13 @@ class TestVerbalization(unittest.TestCase):
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['should+drive'], [],'present conditionnal', 
+                [Verbal_Group(['should+drive'], [],'present conditional', 
                     [Nominal_Group(['the'],['car'],['big', 'new'],[Nominal_Group(['the'],['wife'],[],[Nominal_Group(['his'],['uncle'],['poorest'],[], [])],[])],[])], 
                     [],
                     [], [] ,'negative',[])]),
             Sentence('yes_no_question', '', 
                 [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['should+give'], [],'present conditionnal', 
+                [Verbal_Group(['should+give'], [],'present conditional', 
                     [Nominal_Group(['the'],['bottle'],[],[],[])], 
                     [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
@@ -271,7 +271,7 @@ class TestVerbalization(unittest.TestCase):
                         [], 
                         [Indirect_Complement(['to'],[Nominal_Group(['the'],['cinema'],[],[],[])])],
                         [], [] ,'affirmative',[])], 
-                    'present conditionnal',
+                    'present conditional',
                     [], 
                     [],
                     [], [] ,'affirmative',[])])]
@@ -745,7 +745,7 @@ class TestVerbalization(unittest.TestCase):
         
         sentences=[Sentence('w_question', 'quantity', 
                 [Nominal_Group([],['they'],[],[],[])], 
-                [Verbal_Group(['should+transport'], [],'present conditionnal', 
+                [Verbal_Group(['should+transport'], [],'present conditional', 
                     [Nominal_Group(['a'],['water'],[],[],[])], 
                     [],
                     [], [] ,'affirmative',[])]),
@@ -816,7 +816,7 @@ class TestVerbalization(unittest.TestCase):
                     [], [] ,'affirmative',[])]),
             Sentence('w_question', 'manner', 
                 [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['could+get+to'], [],'present conditionnal', 
+                [Verbal_Group(['could+get+to'], [],'present conditional', 
                     [Nominal_Group(['the'],['restaurant'],[],[],[])], 
                     [],
                     [], ['here'] ,'affirmative',[])])]
@@ -839,13 +839,13 @@ class TestVerbalization(unittest.TestCase):
         
         sentences=[Sentence('w_question', 'reason', 
                 [Nominal_Group([],['she'],[],[],[])], 
-                [Verbal_Group(['should+go'], [],'present conditionnal', 
+                [Verbal_Group(['should+go'], [],'present conditional', 
                     [], 
                     [Indirect_Complement(['to'],[Nominal_Group([],['Toulouse'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
             Sentence('w_question', 'people', 
                 [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['could+talk+to'], [],'present conditionnal', 
+                [Verbal_Group(['could+talk+to'], [],'present conditional', 
                     [], 
                     [Indirect_Complement(['on'],[Nominal_Group(['the'],['phone'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
@@ -1042,6 +1042,80 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is : ", utterance
         
         self.assertEquals(original_utterance, utterance)
+        
+        
+        
+    def test_30(self):
+        print ''
+        print '######################## test 1.30 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="To whom are you talking? would you have played a guitar. you would have played a guitar"
+        
+        sentences=[Sentence('w_question', 'people', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['talk+to'], [],'present progressive', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['play'], [],'past conditional', 
+                [Nominal_Group(['a'],['guitar'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['play'], [],'past conditional', 
+                [Nominal_Group(['a'],['guitar'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_recovery.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+       
+       
+        
+    def test_31(self):
+        print ''
+        print '######################## test 1.31 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="To whom are you talking? would you have played a guitar. you would have played a guitar"
+        
+        sentences=[Sentence('w_question', 'people', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['talk+to'], [],'present progressive', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['play'], [],'past conditional', 
+                [Nominal_Group(['a'],['guitar'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['play'], [],'past conditional', 
+                [Nominal_Group(['a'],['guitar'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_recovery.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+    
     
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
