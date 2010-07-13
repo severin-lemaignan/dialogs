@@ -53,30 +53,14 @@ class StatementBuilder:
         
         
     def process_verbal_groups(self, sentence):
+        #VerbalGroupStatementBuilder
         vg_stmt_builder = VerbalGroupStatementBuilder(sentence.sv, self._current_speaker)
+        
+        #Setting up attribute of verbalGroupStatementBuilder:
+        #    process_on_imperative
+        #    process_on_question
         vg_stmt_builder.set_attribute_on_data_type(sentence.data_type)
-        """"
-        #Case: an imperative sentence does not contain an sn attribute,
-        #      we will assume that it is implicitly an order from the current speaker.
-        #      performed by the recipient of the order.
-        #      Therefore, the sn.id holds the value 'myself'
-        if sentence.data_type == 'imperative':
-            self._process_on_imperative = True
-            self._statements.extend(vg_stmt_builder._process(subject_id))        
         
-        else:
-            #Case: a yes_no_question set the attribute process_on_yes_no_question on True
-            if sentence.data_type == 'yes_no_question':
-                self._process_on_yes_no_question = True
-        
-            for sn in sentence.sn:
-                if sn.id:
-                    subject_id = sn.id
-                else:
-                    subject_id = generate_id()                  
-                
-                self._statements.extend(vg_stmt_builder._process(subject_id))
-        """
         if not sentence.sn:
             self._statements.extend(vg_stmt_builder.process())
         for sn in sentence.sn:
@@ -253,8 +237,8 @@ class VerbalGroupStatementBuilder:
         self._current_speaker = current_speaker
         self._statements = []
         
-        #This field holds the value True when the active sentence is of yes_no_questyion data_type
-        self._process_on_yes_no_question = False
+        #This field holds the value True when the active sentence is of yes_no_question or w_question data_type
+        self._process_on_question = False
         
         #This field holds the value True when the active sentence is of imperative data_type
         self._process_on_imperative = False
@@ -262,8 +246,8 @@ class VerbalGroupStatementBuilder:
     def set_attribute_on_data_type(self, data_type):
         if data_type == 'imperative':
             self._process_on_imperative = True
-        if data_type == 'yes_no_question':
-            self._process_on_yes_no_question = True
+        if data_type in ['yes_no_question', 'w_question']:
+            self._process_on_question = True
         
     def clear_statements(self):
         self._statements = [] 
@@ -325,7 +309,7 @@ class VerbalGroupStatementBuilder:
                 sit_id = subject_id
                 
             else:
-                if self._process_on_yes_no_question:
+                if self._process_on_question:
                     sit_id = '?event'
                 else:
                     sit_id = generate_id()  #means the subject_id might not have been resolved
