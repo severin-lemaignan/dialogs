@@ -2,18 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 08/07/2010                                                                       ##
-## The package contains functions to perform test                                   ##
-## It is more used for the subject                                                  ##
-## Functions:                                                                       ##
-
-##    unit_tests : to perform unit tests                                            ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 08/07/2010                                                                       
+ The package contains functions to perform test                                   
+ It is more used for the subject                                                  
+ Functions:                                                                       
+    unit_tests : to perform unit tests                                            
 """
 
-__author__ =  'Séverin Lemaignan'
 
 import logging
 import unittest
@@ -33,12 +29,11 @@ class Verbalizer:
         return nl_sentence
 
 
-"""
-######################################################################################
-## Function to compare 2 nominal groups                                             ##
-######################################################################################
-"""
+
 class TestVerbalization(unittest.TestCase):
+    """
+    Function to compare 2 nominal groups                                            
+    """
     
     def test_01(self):
         print ''
@@ -46,7 +41,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="The bottle is on the table. The bottle is blue. the bottle is Blue"
+        original_utterance="The bottle is on the table. The bottle is blue. The bottle is Blue."
         
         sentences=[Sentence('statement', '',
                 [Nominal_Group(['the'],['bottle'],[],[],[])],
@@ -55,9 +50,9 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '',
-                [Nominal_Group(['the'],['bottle'],['blue'],[],[])],
+                [Nominal_Group(['the'],['bottle'],[],[],[])],
                 [Verbal_Group(['be'], [],'present simple',
-                    [], 
+                    [Nominal_Group([],[],['blue'],[],[])], 
                     [],
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '',
@@ -1101,11 +1096,11 @@ class TestVerbalization(unittest.TestCase):
                 [Nominal_Group(['a'],['guitar'],[],[],[])], 
                 [],
                 [], [] ,'affirmative',[])]),
-        Sentence('statement', '', 
-            [Nominal_Group([],['you'],[],[],[])], 
-            [Verbal_Group(['play'], [],'past conditional', 
-                [Nominal_Group(['a'],['guitar'],[],[],[])], 
-                [],
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group([],['information'],['more'],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),Indirect_Complement(['about'],[Nominal_Group(['the'],['bottle'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
         
         utterance=utterance_recovery.verbalising(sentences)

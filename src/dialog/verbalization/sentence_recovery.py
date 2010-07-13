@@ -1,31 +1,28 @@
 
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 07/07/2010                                                                       ##
-## The package contains functions needed to perform verbalisation of sentences      ##
-## Functions:                                                                       ##
-##    statement : to verbalise a statment                                           ##
-##    imperative : to verbalise an imperative                                       ##
-##    y_o_question : to verbalise an yes or no question                             ##
-##    w_question : to verbalise a w_question                                        ##
-##    quantity_ques : to verbalise a question about quantity                        ##
-##    choice_ques : to verbalise a question about choice                            ##
-##    possession_ques : to verbalise a question about possession                    ##
-##    sub_process : to verbalises a subsentence                                       ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 07/07/2010                                                                       
+ The package contains functions needed to perform verbalisation of sentences      
+ Functions:                                                                       
+    statement : to verbalise a statment                                           
+    imperative : to verbalise an imperative                                       
+    y_o_question : to verbalise an yes or no question                             
+    w_question : to verbalise a w_question                                        
+    quantity_ques : to verbalise a question about quantity                        
+    choice_ques : to verbalise a question about choice                            
+    possession_ques : to verbalise a question about possession                    
+    sub_process : to verbalises a subsentence                                      
 """
 import element_recovery
 import other_functions
 
 
-"""
-######################################################################################
-## This function verbalises a statment                                              ##
-## Input=class sentence                              Output=sentence                ##
-######################################################################################
-"""
+
 def statement(analysis):
+    """
+    This function verbalises a statment                                              
+    Input=class sentence                              Output=sentence                
+    """
 
     #Recovering the subject
     phrase=element_recovery.nom_struc_recovery(analysis.sn)
@@ -47,13 +44,12 @@ def statement(analysis):
     return phrase+['.']
 
 
-"""
-######################################################################################
-## This function verbalises an imperative                                           ##
-## Input=class sentence                              Output=sentence                ##
-######################################################################################
-"""
+
 def imperative(analysis):
+    """
+    This function verbalises an imperative                                           
+    Input=class sentence                              Output=sentence                
+    """
 
     #init
     phrase=[]
@@ -70,13 +66,12 @@ def imperative(analysis):
     return phrase+['.']
 
 
-"""
-######################################################################################
-## This function verbalises an yes or no question                                   ##
-## Input=class sentence                              Output=sentence                ##
-######################################################################################
-"""
+
 def y_o_question(analysis):
+    """
+    This function verbalises an yes or no question                                   
+    Input=class sentence                              Output=sentence                
+    """
     
     #init
     phrase=[]
@@ -107,13 +102,12 @@ def y_o_question(analysis):
     return phrase+['?']
 
 
-"""
-######################################################################################
-## This function verbalises a w_question                                            ##
-## Input=class sentence                              Output=sentence                ##
-######################################################################################
-"""
+
 def w_question(analysis):
+    """
+    This function verbalises a w_question                                            
+    Input=class sentence                              Output=sentence                
+    """
     
     #Opinion is a what question so we have to make some changes
     if analysis.sv[0].vrb_main[0].endswith('like'):

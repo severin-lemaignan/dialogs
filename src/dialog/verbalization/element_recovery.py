@@ -1,19 +1,17 @@
 
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 06/07/2010                                                                       ##
-## The package contains functions that recovering all elements of the class sentence##
-## We return all elements of a nominal group                                        ##
-## Functions:                                                                       ##
-##    nom_struc_recovery : to recover nominal structure                             ##
-##    indirect_compl_recovery : to recover the indirect object                      ##
-##    conjugate_vrb : to conjugate the verb                                         ##
-##    vrb_stat_recovery : to recover the verb part of a statement                   ##
-##    vrb_ques_recovery : to recover the verb part of a question                    ##
-##    end_statement_recovery : to recover the end of the statement                  ##
-##    end_question_recovery : to recover the end of the question                    ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 06/07/2010                                                                       
+ The package contains functions that recovering all elements of the class sentence
+ We return all elements of a nominal group                                        
+ Functions:                                                                       
+    nom_struc_recovery : to recover nominal structure                             
+    indirect_compl_recovery : to recover the indirect object                      
+    conjugate_vrb : to conjugate the verb                                         
+    vrb_stat_recovery : to recover the verb part of a statement                   
+    vrb_ques_recovery : to recover the verb part of a question                    
+    end_statement_recovery : to recover the end of the statement                  
+    end_question_recovery : to recover the end of the question                    
 """
 from resources_manager import ResourcePool
 from sentence import *
@@ -22,36 +20,31 @@ import other_functions
 
 
 """
-############################## Statement of lists ####################################
+Statement of lists
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
 
 
 
 """
-######################################################################################
-## We have to read all past irregular verb forms                                    ##
-######################################################################################
+We have to read all past irregular verb forms                                    
 """
 past_irreg_vrb = ResourcePool().irregular_verbs_past
 
 
 """
-######################################################################################
-## We have to read all past irregular verb forms                                    ##
-######################################################################################
+We have to read all past irregular verb forms                                    
 """
 present_irreg_vrb = ResourcePool().irregular_verbs_present
 
 
-"""
-######################################################################################
-## This function recovers nominal structure                                         ##
-## Input=class nominal structure                                                    ##
-## Output=phrase containe all information of this class                             ##
-######################################################################################
-"""
+
 def nom_struc_recovery(nom_struc):
+    """
+    This function recovers nominal structure                                         
+    Input=class nominal structure                                                    
+    Output=phrase containe all information of this class                             
+    """
 
     #init
     nominal_structure=[]
@@ -82,14 +75,13 @@ def nom_struc_recovery(nom_struc):
     return nominal_structure
 
 
-"""
-######################################################################################
-## This function recovers the indirect object                                       ##
-## Input=class indirect object                                                      ##
-## Output=phrase containe all information of this class                             ##
-######################################################################################
-"""
+
 def indirect_compl_recovery(indirect_compl):
+    """
+    This function recovers the indirect object                                       
+    Input=class indirect object                                                      
+    Output=phrase containe all information of this class                             
+    """
 
     #init
     ind_cmpl=[]
@@ -109,14 +101,13 @@ def indirect_compl_recovery(indirect_compl):
     return ind_cmpl
 
 
-"""
-######################################################################################
-## This function conjugates the verb                                                ##
-## Input=tense, verb in infinitive form, the adverb and subject                     ##
-## Output=the verb conjugated                                                       ##
-######################################################################################
-"""
+
 def conjugate_vrb(tense, verb, sn, type):
+    """
+    This function conjugates the verb                                                
+    Input=tense, verb in infinitive form, the adverb and subject                     
+    Output=the verb conjugated                                                       
+    """
 
     #If there is no tense => we use the present simple
     if tense=='':
@@ -181,7 +172,7 @@ def conjugate_vrb(tense, verb, sn, type):
                     return [i[1]]+verb[1:]
             return [verb[0]+'ed']+verb[1:]
 
-    #For pprogressive forms
+    #For progressive forms
     elif tense=='present progressive':
         for m in present_irreg_vrb:
             if m[0]==verb[0]:
@@ -211,7 +202,7 @@ def conjugate_vrb(tense, verb, sn, type):
     elif tense=='past passive':
         return conjugate_vrb('past simple', ['be'], sn, type)+conjugate_vrb('present perfect', verb, sn, type)[1:]
 
-    #For conditionnal forms
+    #For conditional forms
     elif tense=='present conditional':
         return ['would']+verb
     elif tense=='past conditional':
@@ -221,14 +212,13 @@ def conjugate_vrb(tense, verb, sn, type):
     return []
 
 
-"""
-######################################################################################
-## This function recovers the verb part of a statement                              ##
-## Input=tense, verb in infinitive form, his state, the adverb and subject          ##
-## Output=verb part                                                                 ##
-######################################################################################
-"""
+
 def vrb_stat_recovery(tense, verb, adv, sn, state, type):
+    """
+    This function recovers the verb part of a statement                              
+    Input=tense, verb in infinitive form, his state, the adverb and subject          
+    Output=verb part                                                                 
+    """
 
     #init
     vrb_condjugated=[]
@@ -266,14 +256,13 @@ def vrb_stat_recovery(tense, verb, adv, sn, state, type):
         return conjugate_vrb(tense, ['do'], sn, type)+['not']+adv+vrb
 
 
-"""
-######################################################################################
-## This function recovers the verb part of a question                               ##
-## Input=tense, verb in infinitive form, his state, the adverb and subject          ##
-## Output=verb part                                                                 ##
-######################################################################################
-"""
+
 def vrb_ques_recovery(tense, verb, adverb, sn, state):
+    """
+    This function recovers the verb part of a question                               
+    Input=tense, verb in infinitive form, his state, the adverb and subject          
+    Output=verb part                                                                 
+    """
     
     #We take of the '+'
     vrb=other_functions.list_recovery(verb[0])
@@ -305,14 +294,13 @@ def vrb_ques_recovery(tense, verb, adverb, sn, state):
         return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
     
 
-"""
-######################################################################################
-## This function recovers the end of the statement                                   ##
-## Input=class sentence, subject and the verbal structure                           ##
-## Output=end of the sentence                                                       ##
-######################################################################################
-"""
+
 def end_statement_recovery(sentence, sv ,sn, type):
+    """
+    This function recovers the end of the statement                                   
+    Input=class sentence, subject and the verbal structure                           
+    Output=end of the sentence                                                       
+    """
 
     #Recovering the verb in the correct form
     phrase=vrb_stat_recovery(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state, type)
@@ -339,14 +327,13 @@ def end_statement_recovery(sentence, sv ,sn, type):
     return sentence+phrase
 
 
-"""
-######################################################################################
-## This function recovers the end of the question                                   ##
-## Input=class sentence, subject and the verbal structure                           ##
-## Output=end of the sentence                                                       ##
-######################################################################################
-"""
+
 def end_question_recovery(sentence, sv ,sn):
+    """
+    This function recovers the end of the question                                   
+    Input=class sentence, subject and the verbal structure                           
+    Output=end of the sentence                                                       
+    """
 
     #Recovering the verb in the correct form
     phrase=vrb_ques_recovery(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state)
