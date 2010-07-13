@@ -21,12 +21,19 @@ class QuestionHandler:
 		self._sentence = None
 		self._statements = []
 		self._current_speaker = current_speaker
+		
 		#This field takes the value True or False when processing a Yes-No-question 
 		#		and takes a list of returned values from the ontology when processing a w_question 
 		self._answer = False
-		#connection to Oro
-		self._oro = Oro("localhost", 6969)
 		
+		#This field handle the connection to Oro when required
+		self._oro = None
+	
+	
+	def clear_statements(self):
+		self._statements = []
+	
+	
 	def process_sentence(self, sentence):
 		
 		if not sentence.resolved():
@@ -41,19 +48,18 @@ class QuestionHandler:
 		
 		#Case the question is a y_n_question
 		if sentence.data_type == 'yes_no_question':
-			self._answer = self._oro.check(self._resolve_action_verb_reference(self._statements))
+			self._statements = self._resolve_action_verb_reference(self._statements)
+			logging.debug("Checking on the ontology: check(" + str(self._statements) + ")")
+			
+			self._answer = self._oro.check(self._statements)
 			
 		#Case the question is a w_question		
 		if sentence.data_type == 'w_question':
-			pass
-			"""
-			self._statements.append(?????)
-			logging.debug("Ontologie:find('?concept', " + str(self._statements) + ")")
-			self.process_w_question(sentence)
-			"""
+			self._statements = self._extend_statement_from_sentence_aim(self._statements)
+			logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
+			
+			self._answer = self._oro.find('?concept', self._statements)
 		
-		
-		self._oro.close()
 		return self._answer
 		
 	def _resolve_action_verb_reference(self, statements):
@@ -70,66 +76,83 @@ class QuestionHandler:
 			stmts = statements
 			
 		return stmts
-	"""
-	def process_w_question(self, sentence):
-		#Case the question is about the subject
-		#Case the question is about the verb
-		#Case the question is about the objects
+	
+	def _extend_statement_from_sentence_aim(self, current_statements):
+		#Case: the statement is complete from statement builder e.g: what is in the box? =>[?concept isIn ?id_box, ?id_box rdf:type Box]
+		for s in current_statements:
+			if '?concept' in s.split():
+				return current_statements
+		#case: the statement is partially build from; statement builder
+		stmts = []
+		for sn in self._sentence.sn:
+			for sv in self._sentence.sv:	
+				for verb in sv.vrb_main:
+					if verb.lower() == 'be':
+						stmts.append(sn.id + self.get_role_from_sentence_aim(verb) +'?concept')
+					else:
+						stmts.append('?event' + self.get_role_from_sentence_aim(verb) +'?concept')
+		return current_statements + stmts
+	
+	
+	def get_role_from_sentence_aim(self, verb):
+		#'What-question':
+		#	Case 
+		#		e.g: what do you see? 
+		#		append in statement [?event involves ?concept]
+		#	Case
+		#		e.g: what is a cube?
+		#		append in statement [id_cube rdf:type ?concept]
+		#	Case
+		#		e.g: what is 'in' the blue cube?
+		#		append in statement []
 		
-		if sentence.sv:
-			self.process_w_question_verbal_group(self, sentence.sv)
+		
+		
+		
+		#TODO:See how to use resourcePool in order to perform the line below
+		#has_goal = get_all_verb_from_resource_pool_where(object_property = 'hasGoal')
+		has_goal = ['go','put']#TODO: Replace this line by the above one, when complete
+		
+		#TODO:See how to use resourcePool in order to perform the line below
+		#acts_on_object = get_all_verb_from_resource_pool_where(object_property = 'acts_on_object')
+		acts_on_object = ['put', 'give', 'show']#TODO: Replace this line by the above one, when complete
+		
+		#TODO in resource pool: Create dictionary files
+		#Dictionary for sentence.aim = 'place' 
+		dic_place={'be':'isAt',  
+				   None:'receivedBy',
+				   'has_goal':'hasGoal'}
+		#Dictionary for sentence.aim = 'thing' 
+		dic_thing={'be':'rdf:type', 
+				   None:'involves',
+				   'acts_on_object':'actsOnObject'}
+		
+		#Dictionary for sentence.aim = 'aim' 
+		#dic_manner={'be':'?sub_feature'}
+		
+		#TODO:With dictionary from resource pool
+		#dic_aim = resourcePool.Dictionary(dic_aim)
+		#Dictionary for all
+		dic_aim = {'thing':dic_thing,
+				   'place':dic_place,
+				   'manner':dic_manner}
+		
+		if verb in has_goal:
+			role = dic_aim[self._sentence.aim]['has_goal']
 			
-			vg_stmt_builder = VerbalGroupStatementBuilder(sentence.sv, self._current_speaker)
-			for sn in sentence.sn:
-				self._statements.extend(vg_stmt_builder._process(sn.id))					
-		
-		self.get_statements_based_on_aim(sentence.aim, id = sn.id)
-		#Query performed on the ontology
-		logging.debug("Ontologie:find('?concept', " + str(self._statements) + ")")
-		
-		return self._oro.find('?concept', self._statements)
-		
-	
-	def process_w_question_verbal_groups(self, verbal_groups, id = None):
-		for vg in verbal_groups:
-			self.process_verb(vg, id)
-	
-	def process_verb(self, verbal_group, id = None):
-		for verb in verbal_group.vrb_main:
-			#State verb w question processing
-			if verb == "be":
-				self.get_statements_based_on_aim(self._sentence.aim, id)
-			#Action verb w_question processing
-			else:
-				self.get_statements_based_on_aim(self._sentence.aim, '?event')
+		elif verb in acts_on_object:
+			role = dic_aim[self._sentence.aim]['acts_on_object']
 			
+		elif verb.lower() == 'be':
+			role = dic_aim[self._sentence.aim][verb.lower()]
+		else:
+			role = dic_aim[self._sentence.aim][None]
 			
-	"""
-	"""		
-	def get_statements_based_on_aim(self, aim, id = None):
-	aim_dic = {'place':' isOn ',
-			    'thing':' involves '				    
-			    }
-	if id:
-		self._statements.append(id + aim_dic[aim]+ '?concept')
-	case:
-		y_n_question
-		Do
-		can
-		must
 		
-		
-		e.g.  Do you know Ramses 
-			  -> yes, I do
-			  Can I you give me a bottle?
-			  -> yes, I can  No, I cannot
+		return (' ' + role + ' ')
 	
 	
-	
-	Case: Wh-Question => data_type = w_question
-		see http://www.eslgold.com/grammar/wh_questions.html
-		
-		
+	"""			
 		what aim => 'thing'
 			what kind => aim = 'thing', sn = [the kind of]
 			what type => aim = 'thing' , sn = [the type of]
@@ -160,6 +183,11 @@ class TestQuestionHandler(unittest.TestCase):
 		#sentence="What do you see?"
 		#sentence="Could you take the blue cube?"
 		#sentence="Can you take my cube?"
+		#sentence="What is this?
+		#sentence="what object do you see?"
+		#sentence="what do I see?
+		#sentence="what is blue?"
+		#sentence="what is reachable?"
 		"""
 		self.oro = Oro("localhost", 6969)
 		self.oro.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
@@ -189,8 +217,8 @@ class TestQuestionHandler(unittest.TestCase):
 		
 		
 		self.qhandler = QuestionHandler("SPEAKER")
+		self.qhandler._oro = self.oro
 	
-	"""
 	def test_1_w_question(self):
 		print "\n*************  test_1_w_question ******************"
 		print "Where is the blue cube?"
@@ -263,7 +291,7 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = ['shelf1']
 		
 		self.process(sentence , statement_query, expected_result)
-	"""
+	
 	
 	
 	
@@ -376,10 +404,64 @@ class TestQuestionHandler(unittest.TestCase):
 	
 	
 	
+	
+	def test_8_w_question(self):
+		print "\n*************  test_8_w_question ******************"
+		print "what object is blue?"
+		sentence = Sentence("w_question", "object", 
+	                         [Nominal_Group([],
+	                                        ['object'],
+	                                        ['blue'],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['be'],
+	                                       [],
+	                                       'present simple',
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['?concept hasColor blue']
+		expected_result = ['blue_cube']		
+		self.process(sentence , statement_query, expected_result) 
+		
+		
+	
+	def test_9_w_question(self):
+		print "\n*************  test_9_w_question ******************"
+		print "How is my car?"
+		sentence = Sentence("w_question", "manner", 
+	                         [Nominal_Group(['my'],
+	                                        ['cube'],
+	                                        [],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['be'],
+	                                       [],
+	                                       'present simple',
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['?concept hasColor blue']
+		expected_result = ['blue']		
+		self.process(sentence , statement_query, expected_result) 
+		
+		
 	def process(self, sentence , statement_query, expected_result):
 		sentence = dump_resolved(sentence, 'SPEAKER', 'myself')#TODO: dumped_resolved is only for the test of query builder
 		res = self.qhandler.process_sentence(sentence)
 		logging.debug("Result: " + str(res))
+		
+		print "Query Statement:", str(self.qhandler._statements)
+		print "Expected Result:", expected_result
+		print "Result Found: ", str(self.qhandler._answer)
+		
+		self.qhandler.clear_statements()
 		self.assertEqual(res, expected_result)
 	
 	def tearDown(self):
