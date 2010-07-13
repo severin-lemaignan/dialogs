@@ -1030,7 +1030,7 @@ class TestVerbalization(unittest.TestCase):
                 [Nominal_Group([],['you'],[],[],[])], 
                 [Verbal_Group(['want'], [], 
                     'present simple',
-                    [Nominal_Group(['the'],['bottle'],['blue'],[],[]),Nominal_Group(['the'],['bottle'],['green'],[],[])], 
+                    [Nominal_Group(['the'],[],['blue'],[],[]),Nominal_Group([],['bottle'],['green'],[],[])], 
                     [],
                     [], [] ,'affirmative',[])])]
 

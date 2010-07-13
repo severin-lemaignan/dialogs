@@ -89,6 +89,9 @@ def dispatching(sentence):
                             
                         elif sentence[1]=='size':
                             return y_n_ques('w_question', 'size', sentence[2:])
+                        
+                        elif sentence[1]=='object':
+                            return y_n_ques('w_question', 'object', sentence[2:])
 
                         #Here we have to use a specific processing for 'type' and 'kind'
                         elif sentence[1]=='type' or sentence[1]=='kind':
@@ -410,7 +413,10 @@ def y_n_ques(type, request, sentence):
         sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
         if sec_vrb!=[]:
             sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
-
+        
+        #We recover the conjunctive subsentence
+        sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
+        
         #We recover the subsentence
         sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
         
@@ -441,6 +447,10 @@ def other_sentence(type, request, sentence):
     analysis=Sentence(type, request, [], [])
     modal=[]
     
+    #We have to add punctuation if there is not
+    if sentence[len(sentence)-1]!='.' and sentence[len(sentence)-1]!='?' and sentence[len(sentence)-1]!='!':
+        sentence=sentence+['.']
+            
     #We search the subject
     sbj=analyse_nominal_group.find_sn_pos(sentence, 0)
     if sbj!=[] or type=='relative' :
@@ -503,8 +513,13 @@ def other_sentence(type, request, sentence):
         
         #In case there is a state verb followed by an adjective
         if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
+            
             pos=analyse_nominal_group.adjective_pos(sentence,0)
-            analysis.sn[0].adj=analysis.sn[0].adj+sentence[:pos-1]
+            if analysis.sn!=[]:
+                analysis.sn[0].adj=analysis.sn[0].adj+sentence[:pos-1]
+            else:
+                analysis.sn=[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                
             sentence=sentence[pos:]
             
         #We perform the processing with the modal
@@ -531,6 +546,9 @@ def other_sentence(type, request, sentence):
         
         #We delete the verb
         sentence= sentence[sentence.index(verb[0])+len(verb):]
+    
+    #We recover the conjunctive subsentence
+    sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
     
     #We recover the subsentence
     sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
@@ -563,6 +581,11 @@ def sentences_analyzer(sentences):
 
     #We process all sentences of the list
     for i in sentences:
+        
+        #We have to add punctuation if there is not
+        if i[len(i)-1]!='.' and i[len(i)-1]!='?' and i[len(i)-1]!='!':
+            i=i+['.']
+        
         class_sentence_list=class_sentence_list+[dispatching(i)]
 
     return class_sentence_list

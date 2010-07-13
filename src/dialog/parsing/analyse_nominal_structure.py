@@ -2,15 +2,13 @@
 
 
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 21/06/2010                                                                       ##
-## The package contains functions that affect nominal structure                     ##
-## It is more used for the subject                                                  ##
-## Functions:                                                                       ##
-##    fill_nom_gr : to fulfill a structure Nominal_Group                            ##
-##    recover_ns : to recovers the nominal structure of the sentence                ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 21/06/2010                                                                       
+ The package contains functions that affect nominal structure                     
+ It is more used for the subject                                                  
+ Functions:                                                                       
+    fill_nom_gr : to fulfill a structure Nominal_Group
+    recover_ns : to recovers the nominal structure of the sentence                
 """
 from sentence import *
 import analyse_nominal_group
@@ -19,17 +17,15 @@ import analyse_sentence
 
 
 """
-############################## Statement of lists ####################################
+Statement of lists
 """
-propo_rel_list=['who', 'which']
+propo_rel_list=['who', 'which', 'that']
 
 
 """
-######################################################################################
-## This function fulfills a structure Nominal_Group with given information          ##
-## Input=sentence, nominal group with his position                                  ##
-## Output=the nominal group class                                                   ##
-######################################################################################
+This function fulfills a structure Nominal_Group with given information          
+Input=sentence, nominal group with his position                                  
+Output=the nominal group class                                                   
 """
 def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
 
@@ -50,7 +46,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     if begin_pos_rel!=-1:
         relative_phrase=phrase[begin_pos_rel+1:begin_pos_rel+end_pos_rel-1]
         
-        relative = relative+[analyse_sentence.other_sentence('relative', '',relative_phrase)]
+        relative = relative+[analyse_sentence.other_sentence('relative',phrase[begin_pos_rel],relative_phrase)]
 
     #If there is a nom_gr_compl, we must make a recursive process for embedded complement
     if nom_gr_compl!=[]:
@@ -65,14 +61,13 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     return gn
 
 
-"""
-######################################################################################
-## This function recovers the nominal structure of the sentence                     ##
-## Input=sentence, the class sentence and the position of the nominal structure     ##
-## Output=the class sentence and sentence                                           ##
-######################################################################################
-"""
+
 def recover_ns(phrase, analysis, position):
+    """
+    This function recovers the nominal structure of the sentence                     
+    Input=sentence, the class sentence and the position of the nominal structure     
+    Output=the class sentence and sentence                                           
+    """
     
     #init
     conjunction='AND'

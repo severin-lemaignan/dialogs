@@ -547,7 +547,7 @@ def unit_tests():
     print ''
     print ('######################## test 1.8 ##############################')
 
-    utterance="the man which talks ; has a new car. I play the guitar which I bought yesterday ; ."
+    utterance="the man who talks ; has a new car. I play the guitar that I bought yesterday ; ."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -556,7 +556,7 @@ def unit_tests():
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
-            [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', '', 
+            [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', 'who', 
                 [],  
                 [Verbal_Group(['talk'],[],'present simple', 
                     [], 
@@ -569,7 +569,7 @@ def unit_tests():
         Sentence('statement', '', 
             [Nominal_Group([],['I'],[],[],[])],  
             [Verbal_Group(['play'], [],'present simple', 
-                [Nominal_Group(['the'],['guitar'],[],[],[Sentence('relative', '', 
+                [Nominal_Group(['the'],['guitar'],[],[],[Sentence('relative', 'that', 
                     [Nominal_Group([],['I'],[],[],[])],  
                     [Verbal_Group(['buy'],[],'past simple', 
                         [], 
@@ -600,13 +600,13 @@ def unit_tests():
     rslt=[Sentence('imperative', '', 
             [],  
             [Verbal_Group(['give'], [],'present simple', 
-                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', '', 
+                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
                     [],  
                     [Verbal_Group(['be'], [],'present simple', 
                         [],
                         [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                         [], [] ,'affirmative',[])])]),
-                Nominal_Group(['the'],['glass'],[],[],[Sentence('relative', '', 
+                Nominal_Group(['the'],['glass'],[],[],[Sentence('relative', 'which', 
                     [Nominal_Group([],['I'],[],[],[])],  
                     [Verbal_Group(['clean'], [],'past simple', 
                         [],
@@ -626,7 +626,7 @@ def unit_tests():
     print ''
     print ('######################## test 2.2 ##############################')
 
-    utterance="The bottle which I bought from the store which is in the shopping centre ; ; is yours."
+    utterance="The bottle that I bought from the store which is in the shopping center ; ; is yours."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -635,15 +635,15 @@ def unit_tests():
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
-            [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'that', 
                 [Nominal_Group([],['I'],[],[],[])],  
                 [Verbal_Group(['buy'], [],'past simple', 
                     [], 
-                    [Indirect_Complement(['from'],[Nominal_Group(['the'],['store'],[],[],[Sentence('relative', '', 
+                    [Indirect_Complement(['from'],[Nominal_Group(['the'],['store'],[],[],[Sentence('relative', 'which', 
                         [],  
                         [Verbal_Group(['be'], [],'present simple', 
                             [], 
-                            [Indirect_Complement(['in'],[Nominal_Group(['the'],['centre'],['shopping'],[],[])])],
+                            [Indirect_Complement(['in'],[Nominal_Group(['the'],['center'],['shopping'],[],[])])],
                             [], [] ,'affirmative',[])])])])],
                     [], [] ,'affirmative',[])])])],  
             [Verbal_Group(['be'], [],'present simple', 
@@ -732,7 +732,7 @@ def unit_tests():
     print ''
     print ('######################## test 2.5 ##############################')
 
-    utterance="What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna to the Laas?"
+    utterance="What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna the Laas?"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -859,7 +859,7 @@ def unit_tests():
     print ''
     print ('######################## test 2.8 ##############################')
 
-    utterance="What is the bigest bottle's color on your left. What does your brother do for a living?"
+    utterance="What is the biggest bottle's color on your left. What does your brother do for a living?"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -868,7 +868,7 @@ def unit_tests():
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'thing', 
-            [Nominal_Group(['the'],['color'],[],[Nominal_Group(['the'],['bottle'],['bigest'],[],[])],[])], 
+            [Nominal_Group(['the'],['color'],[],[Nominal_Group(['the'],['bottle'],['biggest'],[],[])],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [], 
                 [Indirect_Complement(['on'],[Nominal_Group(['your'],['left'],[],[],[])])],
@@ -1177,7 +1177,7 @@ def unit_tests():
     print ''
     print ('######################## test 4.1 ##############################')
 
-    utterance="What are you thinking about the idea which I present you ; ? what color is the bottle which you bought ;"
+    utterance="What are you thinking about the idea that I present you ; ? what color is the bottle that you bought ;"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1188,7 +1188,7 @@ def unit_tests():
     rslt=[Sentence('w_question', 'opinion', 
             [Nominal_Group([],['you'],[],[],[])], 
             [Verbal_Group(['think+about'], [],'present progressive', 
-                [Nominal_Group(['the'],['idea'],[],[],[Sentence('relative', '', 
+                [Nominal_Group(['the'],['idea'],[],[],[Sentence('relative', 'that', 
                     [Nominal_Group([],['I'],[],[],[])], 
                     [Verbal_Group(['present'], [],'present simple', 
                         [Nominal_Group([],['you'],[],[],[])], 
@@ -1197,7 +1197,7 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])]),
         Sentence('w_question', 'color', 
-            [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'that', 
                 [Nominal_Group([],['you'],[],[],[])], 
                 [Verbal_Group(['buy'], [],'past simple', 
                     [], 
@@ -1230,7 +1230,7 @@ def unit_tests():
     rslt=[Sentence('w_question', 'choice', 
             [Nominal_Group(['the'],['salesperson'],[],[Nominal_Group(['the'],['competition'],[],[],[])],[])], 
             [Verbal_Group(['win'], [],'past simple', 
-                [Nominal_Group(['the'],['award'],[],[],[Sentence('relative', '', 
+                [Nominal_Group(['the'],['award'],[],[],[Sentence('relative', 'which', 
                     [Nominal_Group([],['we'],[],[],[])], 
                     [Verbal_Group(['win'], [],'past simple', 
                         [], 
@@ -1267,7 +1267,7 @@ def unit_tests():
         Sentence('w_question', 'opinion', 
             [Nominal_Group([],['you'],[],[],[])], 
             [Verbal_Group(['think+of'], [],'present simple', 
-                [Nominal_Group(['the'],['novel'],['latest'],[],[Sentence('relative', '', 
+                [Nominal_Group(['the'],['novel'],['latest'],[],[Sentence('relative', 'which', 
                     [Nominal_Group([],['Jido'],[],[],[])], 
                     [Verbal_Group(['write'], [],'past simple', 
                         [], 
@@ -1310,21 +1310,21 @@ def unit_tests():
                         [],
                         [], [] ,'affirmative',[])])])]),
         Sentence('statement', '', 
-            [Nominal_Group([],['you'],['happy'],[],[])], 
-            [Verbal_Group(['be'], [],'future simple', 
-                [], 
-                [],
-                [], [] ,'affirmative',[Sentence('subsentence', 'if', 
-                    [Nominal_Group([],['you'],[],[],[])], 
-                    [Verbal_Group(['do'], [],'present simple', 
-                        [Nominal_Group(['your'],['job'],[],[],[])], 
-                        [],
-                        [], [] ,'affirmative',[])])])])]
+                [Nominal_Group([],['you'],['happy'],[],[])], 
+                [Verbal_Group(['be'], [],'future simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[Sentence('subsentence', 'if', 
+                        [Nominal_Group([],['you'],[],[],[])], 
+                        [Verbal_Group(['do'], [],'present simple', 
+                            [Nominal_Group(['your'],['job'],[],[],[])], 
+                            [],
+                            [], [] ,'affirmative',[])])])])]
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
 
+    
     
     """
     ## Aim of this test : Using wrong in the what questions, using the 'or' and moving preposition like 'ago'
@@ -1494,13 +1494,13 @@ def unit_tests():
             [Verbal_Group(['like'], [],'present conditional', 
                 [Nominal_Group(['the'],['bottle'],['blue'],[],[]),Nominal_Group(['the'],['glass'],[],[],[])], 
                 [],
-                [], [] ,'affirmative',[])]),
+                [], [] ,'affirmative',[])]),       
         Sentence('statement', '', 
             [Nominal_Group(['the'],['bottle'],['green'],[],[]),Nominal_Group(['the'],['bottle'],['blue'],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [], 
                 [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
-                [], [] ,'affirmative',[])]),
+                [], [] ,'affirmative',[])]), 
         Sentence('yes_no_question', '', 
             [Nominal_Group(['the'],['glass'],['green'],[],[]),Nominal_Group(['the'],['glass'],['blue'],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
@@ -1514,6 +1514,46 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    
+    
+    
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
+    print ''
+    print ('######################## test 5.2 ##############################')
+
+    utterance="learn that I want you to give me the blue bottle that is blue ; ;."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['learn'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[Sentence('subsentence', 'that', 
+                    [Nominal_Group([],['I'],[],[],[])], 
+                    [Verbal_Group(['want'], [Verbal_Group(['give'], [],'', 
+                            [Nominal_Group(['the'],['bottle'],['blue'],[],[Sentence('relative', 'that', 
+                                [Nominal_Group([],[],['blue'],[],[])], 
+                                [Verbal_Group(['be'], [],'present simple', 
+                                    [], 
+                                    [],
+                                    [], [] ,'affirmative',[])])])], 
+                            [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                            [], [] ,'affirmative',[])],'present simple', 
+                        [Nominal_Group([],['you'],[],[],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])])]
+
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
     
     
     

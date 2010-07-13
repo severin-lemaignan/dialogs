@@ -5,19 +5,17 @@
 
 
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 21/06/2010                                                                       ##
-## The package contains functions that affect verbal structure                      ##
-## Functions:                                                                       ##
-##    find_vrb_adv : to recover the list of adverbs bound to verb                   ##
-##    find_adv : to recover the list of adverbs                                     ##
-##    check_proposal : to know if there is a proposal before the object             ##
-##    recover_obj_iobj : to find the direct, indirect object and the adverbial      ##
-##    find_scd_vrb : to recover the second verb in a sentence                       ##
-##    process_scd_sentence : to process the second sentence found                       ##
-##    process_subsentence : to process the subsentence                                  ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 21/06/2010                                                                       
+ The package contains functions that affect verbal structure                      
+ Functions:                                                                       
+    find_vrb_adv : to recover the list of adverbs bound to verb                   
+    find_adv : to recover the list of adverbs                                     
+    check_proposal : to know if there is a proposal before the object             
+    recover_obj_iobj : to find the direct, indirect object and the adverbial      
+    find_scd_vrb : to recover the second verb in a sentence                       
+    process_scd_sentence : to process the second sentence found
+    process_subsentence : to process the subsentence
 """
 from sentence import *
 import analyse_nominal_group
@@ -28,22 +26,22 @@ import analyse_sentence
 
 
 """
-############################## Statement of lists ####################################
+Statement of lists
 """
 aux_list=['have', 'has', 'had', 'is', 'are', 'am', 'was', 'were', 'will']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by']
-rel_list=['which', 'who']
-sub_list=['that', 'while', 'but','where', 'when']
+rel_list=['which', 'who','that']
+sub_list=['while', 'but','where', 'when']
+pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 
 
-"""
-######################################################################################
-## This function recovers the list of adverbs bound to verb                         ##
-## Input=sentence                        Output=verb's adverb list                  ##
-######################################################################################
-"""
+
 def find_vrb_adv(phrase):
+    """
+    This function recovers the list of adverbs bound to verb                         
+    Input=sentence                        Output=verb's adverb list                  
+    """
 
     #If phrase is empty
     if phrase==[]:
@@ -62,13 +60,12 @@ def find_vrb_adv(phrase):
     return []
 
 
-"""
-######################################################################################
-## This function recovers the list of adverbs                                       ##
-## Input=sentence                            Output=adverbs list                    ##
-######################################################################################
-"""
+
 def find_adv(phrase):
+    """
+    This function recovers the list of adverbs                                       
+    Input=sentence                            Output=adverbs list                    
+    """
 
     #If phrase is empty
     if phrase ==[]:
@@ -89,13 +86,12 @@ def find_adv(phrase):
     return []
 
 
-"""
-######################################################################################
-## This function to know if there is a proposal before the object                   ##
-## Input=sentence and object            Output=proposal if the object is indirect   ##
-######################################################################################
-"""
+
 def check_proposal(phrase, object):
+    """
+    This function to know if there is a proposal before the object                   
+    Input=sentence and object            Output=proposal if the object is indirect   
+    """
 
     if object==[]:
         return []
@@ -109,14 +105,13 @@ def check_proposal(phrase, object):
     return []
 
 
-"""
-######################################################################################
-## This function finds the direct, indirect object and the adverbial                ##
-## We, also, put these information in the class                                     ##
-## Input=sentence and verbal class              Output=sentence and verbal class    ##
-######################################################################################
-"""
+
 def recover_obj_iobj(phrase, vg):
+    """
+    This function finds the direct, indirect object and the adverbial                
+    We, also, put these information in the class                                     
+    Input=sentence and verbal class              Output=sentence and verbal class    
+    """
     
     #init
     conjunction='AND'
@@ -196,7 +191,7 @@ def recover_obj_iobj(phrase, vg):
                 if begin_pos_rel!=-1:
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
-
+                    
                 if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or'):
                     
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
@@ -224,13 +219,12 @@ def recover_obj_iobj(phrase, vg):
     return phrase
 
 
-"""
-######################################################################################
-## This function recovers the second verb in a sentence                             ##
-## Input=sentence                        Output=second verb of the sentence         ##
-######################################################################################
-"""
+
 def find_scd_vrb(phrase):
+    """
+    This function recovers the second verb in a sentence                             
+    Input=sentence                        Output=second verb of the sentence         
+    """
     
     for i in phrase:
 
@@ -250,14 +244,13 @@ def find_scd_vrb(phrase):
     return []
 
 
-"""
-######################################################################################
-## This function process the second sentence found                                   ##
-## Input=sentence, verbal class and the second verb                                 ##
-## Output=sentence and verbal class                                                 ##
-######################################################################################
-"""
+
 def process_scd_sentence(phrase, vg, sec_vrb):
+    """
+    This function process the second sentence found                                   
+    Input=sentence, verbal class and the second verb                                 
+    Output=sentence and verbal class                                                 
+    """
 
     #We take off the part of the sentence after 'to'
     scd_sentence=phrase[phrase.index(sec_vrb[0]):]
@@ -282,13 +275,12 @@ def process_scd_sentence(phrase, vg, sec_vrb):
     return phrase
 
 
-"""
-######################################################################################
-## This function process the subsentence                                             ##
-## Input=sentence and verbal class         Output=sentence and verbal class         ##
-######################################################################################
-"""
+
 def process_subsentence(phrase,vg):
+    """
+    This function process the subsentence                                             
+    Input=sentence and verbal class         Output=sentence and verbal class         
+    """
     
     #init
     begin_pos=-1
@@ -318,5 +310,42 @@ def process_subsentence(phrase,vg):
                 
                 return phrase
 
+    return phrase
+
+
+
+def process_conjunctive_sub(phrase,vg):
+    """
+    This function process the conjunctive subsentence
+    Input=sentence and verbal class         Output=sentence and verbal class         
+    """
+    
+    #init
+    begin_pos=-1
+    
+    #We will find conjunctive subsentence if there is
+    if len(phrase)>0 and phrase[0]=='that':
+        begin_pos=0
+        
+    for i in pronoun_list:
+        if len(phrase)>1 and i==phrase[0] and phrase[1]=='that':
+            begin_pos=1
+        
+    
+    if begin_pos!=-1:
+        #We include the relative's and subsentence's proposal if there are relatives or subsentences in this subsentence
+        end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], ['that']+sub_list+rel_list)
+        
+        #We have to remove the proposal
+        subsentence= phrase[begin_pos+1:end_pos]
+        
+        #We perform processing
+        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', 'that' ,subsentence)]
+        
+        
+        #We delete the subsentence
+        phrase=phrase[:phrase.index('that')]
+        phrase=phrase[end_pos:]
+                
     return phrase
         
