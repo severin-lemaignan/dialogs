@@ -1,24 +1,21 @@
 
 """
-######################################################################################
-## Created by Chouayakh Mahdi                                                       ##
-## 07/07/2010                                                                       ##
-## The package contains functions used by all other packages                        ##
-## Functions:                                                                       ##
-##    list_recovery : to return the list of strings without '+'                     ##
-##    eliminate_redundancy : to eliminate redundancy in the phrase                  ##
-##    convert_string : to return concatenate token to have a string (sentence)      ##
-######################################################################################
+ Created by Chouayakh Mahdi                                                       
+ 07/07/2010                                                                       
+ The package contains functions used by all other packages                        
+ Functions:                                                                       
+    list_recovery : to return the list of strings without '+'                     
+    eliminate_redundancy : to eliminate redundancy in the phrase                  
+    convert_string : to return concatenate token to have a string (sentence)      
 """
 
 
-"""
-######################################################################################
-## This function returns the list of strings without '+'                            ##
-## Input=the string           Output=the list of strng corresponding                ##
-######################################################################################
-"""
+
 def list_recovery(string):
+    """
+    This function returns the list of strings without '+'                            
+    Input=the string           Output=the list of strng corresponding                
+    """
 
     for i in string:
         if i=='+':
@@ -26,13 +23,12 @@ def list_recovery(string):
     return [string]
 
 
-"""
-######################################################################################
-## This function to eliminate redundancy in the phrase                              ##
-## Input=phrase                                             Output=phrase           ##
-######################################################################################
-"""
+
 def eliminate_redundancy(phrase):
+    """
+    This function to eliminate redundancy in the phrase                              
+    Input=phrase                                             Output=phrase           
+    """
 
     #init
     phrase_aux=[]
@@ -49,13 +45,12 @@ def eliminate_redundancy(phrase):
     return phrase_aux
 
 
-"""
-######################################################################################
-## This function returns concatenate token to have a string (sentence)              ##
-## Input=list of token                                    Output=sentence           ##
-######################################################################################
-"""
+
 def convert_string(token_list):
+    """
+     This function returns concatenate token to have a string (sentence)
+     Input=list of token                                    Output=sentence           
+    """
 
     #list is empty
     if token_list==[]:

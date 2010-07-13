@@ -236,12 +236,12 @@ def vrb_stat_recovery(tense, verb, adv, sn, state, type):
     #We take of the '+'
     vrb=other_functions.list_recovery(verb[0])
 
-    #If there is modal => no treatment
+    #If there is modal => no processing
     for i in modal_list:
         if i==vrb[0]:
             vrb_condjugated=vrb
     
-    #No modal => normal treatment
+    #No modal => normal processing
     if vrb_condjugated==[]:
         vrb_condjugated=conjugate_vrb(tense, vrb, sn, type)
 

@@ -12,7 +12,7 @@
 ##    quantity_ques : to verbalise a question about quantity                        ##
 ##    choice_ques : to verbalise a question about choice                            ##
 ##    possession_ques : to verbalise a question about possession                    ##
-##    sub_treat : to verbalises a subsentence                                       ##
+##    sub_process : to verbalises a subsentence                                       ##
 ######################################################################################
 """
 import element_recovery
@@ -35,7 +35,7 @@ def statement(analysis):
     
     #Recovering subsentences
     for s in analysis.sv[0].vrb_sub_sentence:
-        phrase=phrase+sub_treat(s)
+        phrase=phrase+sub_process(s)
 
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
@@ -63,7 +63,7 @@ def imperative(analysis):
 
     #Recovering subsentences
     for s in analysis.sv[0].vrb_sub_sentence:
-        phrase=phrase+sub_treat(s)
+        phrase=phrase+sub_process(s)
         
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
@@ -87,7 +87,7 @@ def y_o_question(analysis):
     #Recovering the end of the sentence
     phrase=element_recovery.end_question_recovery(phrase, analysis.sv, analysis.sn)
 
-    #We need special treatment to find the position of the subject
+    #We need special processing to find the position of the subject
     if analysis.sv[0].state=='negative':
         phrase=phrase[0:2]+subject+phrase[2:]
     else:
@@ -95,7 +95,7 @@ def y_o_question(analysis):
 
     #Recovering subsentences
     for s in analysis.sv[0].vrb_sub_sentence:
-        phrase=phrase+sub_treat(s)
+        phrase=phrase+sub_process(s)
 
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
@@ -120,14 +120,14 @@ def w_question(analysis):
         verb=analysis.sv[0].vrb_main[0]
         analysis.sv[0].vrb_main[0]=verb[:len(verb)-4]+'think+of'
 
-    #Treatment as yes or no question
+    #processing as yes or no question
     phrase=y_o_question(analysis)
 
-    #Specific treatment for invitation
+    #Specific processing for invitation
     if analysis.aim=='invitation':
         return ['how', 'about']+phrase[1:]
 
-    #Specific treatment for classification
+    #Specific processing for classification
     if analysis.aim.startswith('classification'):
         aim_question=other_functions.list_recovery(analysis.aim)
         return ['what','kind','of']+aim_question[1:]+phrase
@@ -135,13 +135,12 @@ def w_question(analysis):
     return ['what']+phrase
 
 
-"""
-######################################################################################
-## This function verbalises a question about quantity                               ##
-## Input=class sentence                              Output=sentence                ##
-######################################################################################
-"""
+
 def quantity_ques(analysis):
+    """
+    This function verbalises a question about quantity                               
+    Input=class sentence                              Output=sentence
+    """
     
     #init
     phrase=[]
@@ -162,7 +161,7 @@ def quantity_ques(analysis):
     else:
         subject=element_recovery.nom_struc_recovery(analysis.sn)
     
-        #Same treatment with yes no question
+        #Same processing with yes no question
         phrase=element_recovery.vrb_ques_recovery(analysis.sv[0].vrb_tense, analysis.sv[0].vrb_main, analysis.sv[0].vrb_adv, analysis.sn, analysis.sv[0].state)
         phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].i_cmpl)
         phrase=phrase+analysis.sv[0].advrb
@@ -173,9 +172,9 @@ def quantity_ques(analysis):
             phrase=phrase+analysis.sv[0].sv_sec[0].advrb
 
         for s in analysis.sv[0].vrb_sub_sentence:
-            phrase=phrase+sub_treat(s)
+            phrase=phrase+sub_process(s)
         
-        #Treatment of the state
+        #processing of the state
         if analysis.sv[0].state=='negative':
             phrase=phrase[0:2]+subject+phrase[2:]
         else:
@@ -184,29 +183,27 @@ def quantity_ques(analysis):
         return ['how', 'much']+analysis.sv[0].d_obj[0].noun+phrase+['?']
 
 
-"""
-######################################################################################
-## This function verbalises a question about choice                                 ##
-## Input=class sentence                              Output=sentence                ##
-######################################################################################
-"""
-def choice_ques(analysis):
 
-    #Treatment as statement
+def choice_ques(analysis):
+    """
+    This function verbalises a question about choice                                 
+    Input=class sentence                              Output=sentence                
+    """
+
+    #processing as statement
     phrase=statement(analysis)
     phrase[0]='which'
     return phrase
 
 
-"""
-######################################################################################
-## This function verbalises a question about possession                             ##
-## Input=class sentence                              Output=sentence                ##
-######################################################################################
-"""
-def possession_ques(analysis):
 
-    #Treatment as statement
+def possession_ques(analysis):
+    """
+    This function verbalises a question about possession                             
+    Input=class sentence                              Output=sentence                
+    """
+
+    #processing as statement
     phrase=statement(analysis)
 
     #We have to know if it is plural or singular
@@ -216,14 +213,13 @@ def possession_ques(analysis):
         return ['whose']+phrase[1:len(phrase)-1]+['this']+['?']
 
 
-"""
-######################################################################################
-## This function verbalises a subsentence                                           ##
-## Input=class sentence                              Output=sentence                ##
-######################################################################################
-"""
-def sub_treat(analysis):
 
-    #Treatment as statement
+def sub_process(analysis):
+    """
+    This function verbalises a subsentence                                           
+    Input=class sentence                              Output=sentence                
+    """
+
+    #processing as statement
     subsentence=statement(analysis)
     return [analysis.aim]+subsentence

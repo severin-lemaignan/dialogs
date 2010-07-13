@@ -20,7 +20,7 @@ import unittest
 
 from sentence import *
 
-import retort_recovery
+import utterance_recovery
 
 class Verbalizer:
     """Implements the verbalization module: Verbalizer.verbalize() takes as
@@ -28,7 +28,7 @@ class Verbalizer:
     """
     def verbalize(self, sentence):
         logging.debug("Verbalizing now...")
-        nl_sentence = retort_recovery.verbalising(sentence)
+        nl_sentence = utterance_recovery.verbalising(sentence)
         logging.debug("Rebuild sentence to: \"" + nl_sentence + "\"")
         return nl_sentence
 
@@ -46,7 +46,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="The bottle is on the table. The bottle is blue. the bottle is Blue"
+        original_utterance="The bottle is on the table. The bottle is blue. the bottle is Blue"
         
         sentences=[Sentence('statement', '',
                 [Nominal_Group(['the'],['bottle'],[],[],[])],
@@ -67,12 +67,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_02(self):
         
@@ -81,7 +81,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
+        original_utterance="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
      
         sentences=[Sentence('statement', '', 
                 [Nominal_Group(['the'],['bottle'],['blue'],[Nominal_Group([],['Jido'],[],[],[])],[])], 
@@ -96,12 +96,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
 
     def test_03(self):
         
@@ -110,7 +110,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="It's on the table. I give it to you. give me the bottle. I don't give the bottle to you."
+        original_utterance="It's on the table. I give it to you. give me the bottle. I don't give the bottle to you."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['it'],[],[],[])], 
@@ -137,12 +137,12 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['to'],[Nominal_Group([],['you'],[],[],[])])],
                     [], [] ,'negative',[])])]
         
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
     
     def test_04(self):
         
@@ -151,7 +151,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="you aren't preparing the car and my father's moto at the same time. is the bottle of my brother in your right?"
+        original_utterance="you aren't preparing the car and my father's moto at the same time. is the bottle of my brother in your right?"
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['you'],[],[],[])], 
@@ -166,12 +166,12 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['in'],[Nominal_Group(['your'],['right'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
         
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
 
     def test_05(self):
     
@@ -180,7 +180,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? shall I go"
+        original_utterance="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? shall I go"
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['you'],[],[],[])], 
@@ -201,12 +201,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
     
     def test_06(self):
     
@@ -215,7 +215,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="Isn't he doing his homework and his game now? Cann't he take this bottle. good afternoon"
+        original_utterance="Isn't he doing his homework and his game now? Cann't he take this bottle. good afternoon"
         
         sentences=[Sentence('yes_no_question', '', 
                 [Nominal_Group([],['he'],[],[],[])], 
@@ -231,12 +231,12 @@ class TestVerbalization(unittest.TestCase):
                     [], [] ,'negative',[])]),
             Sentence('start', '', [], [])]
         
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
     
     def test_07(self):
         
@@ -245,7 +245,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="Don't quickly give me the blue bottle. I wanna play with my guitar. I'd like to go to the cinema."
+        original_utterance="Don't quickly give me the blue bottle. I wanna play with my guitar. I'd like to go to the cinema."
         
         sentences=[Sentence('imperative', '', 
                 [], 
@@ -276,12 +276,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_08(self):
         
@@ -290,7 +290,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="the man which talks ; has a new car. I play the guitar which I bought yesterday ; ."
+        original_utterance="the man which talks ; has a new car. I play the guitar which I bought yesterday ; ."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', '', 
@@ -315,12 +315,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
     
     def test_09(self):
         
@@ -329,7 +329,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="don't quickly give me the bottle which is on the table ; and the glass which I cleaned yesterday ; at my left"
+        original_utterance="don't quickly give me the bottle which is on the table ; and the glass which I cleaned yesterday ; at my left"
         
         sentences=[Sentence('imperative', '', 
                 [],  
@@ -349,12 +349,12 @@ class TestVerbalization(unittest.TestCase):
                 [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]), Indirect_Complement(['at'],[Nominal_Group(['my'],['left'],[],[],[])])],
                 ['quickly'], [] ,'negative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_10(self):
         
@@ -363,7 +363,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="The bottle which I bought from the store which is in the shopping centre ; ; is yours."
+        original_utterance="The bottle which I bought from the store which is in the shopping centre ; ; is yours."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', '', 
@@ -382,12 +382,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
     
     def test_11(self):
         
@@ -396,7 +396,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="When won't the planning session take place? when must you take the bus"
+        original_utterance="When won't the planning session take place? when must you take the bus"
         
         sentences=[Sentence('w_question', 'date', 
                 [Nominal_Group(['the'],['session'],['planning'],[],[])], 
@@ -411,12 +411,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
     
     def test_12(self):
         
@@ -425,7 +425,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="Where is Broyen ? where are you going. Where must Jido and you be from?"
+        original_utterance="Where is Broyen ? where are you going. Where must Jido and you be from?"
         
         sentences=[Sentence('w_question', 'place', 
                 [Nominal_Group([],['Broyen'],[],[],[])], 
@@ -446,12 +446,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_13(self):
         
@@ -460,7 +460,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna to the Laas?"
+        original_utterance="What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna to the Laas?"
         
         sentences=[Sentence('w_question', 'time', 
                 [Nominal_Group(['the'],['news'],[],[],[])], 
@@ -487,12 +487,12 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['to'],[Nominal_Group(['the'],['Laas'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_14(self):
         
@@ -501,7 +501,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="what is the weather like in the winter here? what were you doing? What isn't Jido going to do tomorrow"
+        original_utterance="what is the weather like in the winter here? what were you doing? What isn't Jido going to do tomorrow"
         
         sentences=[Sentence('w_question', 'description', 
                 [Nominal_Group(['the'],['weather'],[],[],[])], 
@@ -527,12 +527,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'negative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_15(self):
         
@@ -541,7 +541,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="What's happening. What must happen in the company today? What didn't happen here. no. Sorry."
+        original_utterance="What's happening. What must happen in the company today? What didn't happen here. no. Sorry."
         
         sentences=[Sentence('w_question', 'situation', 
                 [], 
@@ -564,12 +564,12 @@ class TestVerbalization(unittest.TestCase):
             Sentence('disagree', '', [], []),
             Sentence('disagree', '', [], [])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_16(self):
         
@@ -578,7 +578,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="What is the bigest bottle's color on your left. What does your brother do for a living?"
+        original_utterance="What is the bigest bottle's color on your left. What does your brother do for a living?"
         
         sentences=[Sentence('w_question', 'thing', 
                 [Nominal_Group(['the'],['color'],[],[Nominal_Group(['the'],['bottle'],['bigest'],[],[])],[])], 
@@ -593,12 +593,12 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_17(self):
         
@@ -607,7 +607,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="What type of people don't read this magazine? what kind of music must he listen to everyday"
+        original_utterance="What type of people don't read this magazine? what kind of music must he listen to everyday"
         
         sentences=[Sentence('w_question', 'classification+people', 
                 [], 
@@ -622,12 +622,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], ['everyday'] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_18(self):
         
@@ -636,7 +636,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="What kind of sport is your favourite? what is the problem with him? what is the matter with this person"
+        original_utterance="What kind of sport is your favourite? what is the problem with him? what is the matter with this person"
         
         sentences=[Sentence('w_question', 'classification+sport', 
                 [Nominal_Group(['your'],['favourite'],[],[],[])], 
@@ -657,12 +657,12 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['with'],[Nominal_Group(['this'],['person'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_19(self):
         
@@ -671,7 +671,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="How old are you? how long is your uncle's store opened tonight? how long is your uncle's store open tonight?"
+        original_utterance="How old are you? how long is your uncle's store opened tonight? how long is your uncle's store open tonight?"
         
         sentences=[Sentence('w_question', 'age', 
                 [Nominal_Group([],['you'],[],[],[])], 
@@ -692,12 +692,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_20(self):
         
@@ -706,7 +706,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="how far is it from the hotel to the restaurant? how soon can you be here? How often does Jido go skiing?"
+        original_utterance="how far is it from the hotel to the restaurant? how soon can you be here? How often does Jido go skiing?"
         
         sentences=[Sentence('w_question', 'distance', 
                 [Nominal_Group([],['it'],[],[],[])], 
@@ -727,12 +727,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_21(self):
         
@@ -741,7 +741,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="how much water should they transport? how many guests weren't at the party? how much does the motocycle cost"
+        original_utterance="how much water should they transport? how many guests weren't at the party? how much does the motocycle cost"
         
         sentences=[Sentence('w_question', 'quantity', 
                 [Nominal_Group([],['they'],[],[],[])], 
@@ -762,12 +762,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_22(self):
         
@@ -776,7 +776,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="How about going to the cinema? how have not they gotten a loan for their business? OK"
+        original_utterance="How about going to the cinema? how have not they gotten a loan for their business? OK"
         
         sentences=[Sentence('w_question', 'invitation', 
                 [], 
@@ -792,12 +792,12 @@ class TestVerbalization(unittest.TestCase):
                     [], [] ,'negative',[])]),
             Sentence('agree', '',[],[])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_23(self):
         
@@ -806,7 +806,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="How did you like Steven Spilburg's new movie. how could I get to the restaurant from here"
+        original_utterance="How did you like Steven Spilburg's new movie. how could I get to the restaurant from here"
         
         sentences=[Sentence('w_question', 'opinion', 
                 [Nominal_Group([],['you'],[],[],[])], 
@@ -821,12 +821,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], ['here'] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_24(self):
         
@@ -835,7 +835,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="Why should she go to Toulouse? who could you talk to on the phone. Whose blue bottle and red glass are these."
+        original_utterance="Why should she go to Toulouse? who could you talk to on the phone. Whose blue bottle and red glass are these."
         
         sentences=[Sentence('w_question', 'reason', 
                 [Nominal_Group([],['she'],[],[],[])], 
@@ -856,12 +856,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
        
     def test_25(self):
        
@@ -870,7 +870,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="What are you thinking about the idea which I present you ; ? what color is the bottle which you bought ;"
+        original_utterance="What are you thinking about the idea which I present you ; ? what color is the bottle which you bought ;"
         
         sentences=[Sentence('w_question', 'opinion', 
                 [Nominal_Group([],['you'],[],[],[])], 
@@ -895,12 +895,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_26(self):
         
@@ -909,7 +909,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="Which competition's salesperson won the award which we won in the last years ;."
+        original_utterance="Which competition's salesperson won the award which we won in the last years ;."
         
         sentences=[Sentence('w_question', 'choice', 
                 [Nominal_Group(['the'],['salesperson'],[],[Nominal_Group(['the'],['competition'],[],[],[])],[])], 
@@ -923,12 +923,12 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_27(self):
         
@@ -937,7 +937,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="what'll your house look like? what do you think of the latest novel which Jido wrote ;"
+        original_utterance="what'll your house look like? what do you think of the latest novel which Jido wrote ;"
         
         sentences=[Sentence('w_question', 'descrition', 
                 [Nominal_Group(['your'],['house'],[],[],[])], 
@@ -957,12 +957,12 @@ class TestVerbalization(unittest.TestCase):
                 [],
                 [], [] ,'affirmative',[])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
         
     def test_28(self):
         
@@ -971,7 +971,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="learn that I want you to give me the blue bottle ;. If you do your job ; you will be happy."
+        original_utterance="learn that I want you to give me the blue bottle ;. If you do your job ; you will be happy."
         
         sentences=[Sentence('imperative', '', 
                 [], 
@@ -999,12 +999,12 @@ class TestVerbalization(unittest.TestCase):
                             [],
                             [], [] ,'affirmative',[])])])])]
 
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
        
    
     def test_29(self):
@@ -1013,7 +1013,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_retort="you will be happy if you do your job ; .do you want the blue bottle or the green bottle ?"
+        original_utterance="you will be happy if you do your job ; .do you want the blue bottle or the green bottle ?"
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['you'],[],[],[])], 
@@ -1036,12 +1036,12 @@ class TestVerbalization(unittest.TestCase):
 
         sentences[1].sv[0].d_obj[1]._conjunction="OR"
         
-        retort=retort_recovery.verbalising(sentences)
+        utterance=utterance_recovery.verbalising(sentences)
         
-        print "The original retort is : ", original_retort
-        print "The result obtained is : ", retort
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is : ", utterance
         
-        self.assertEquals(original_retort, retort)
+        self.assertEquals(original_utterance, utterance)
     
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
