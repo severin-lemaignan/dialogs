@@ -35,6 +35,7 @@ class TestVerbalization(unittest.TestCase):
     Function to compare 2 nominal groups                                            
     """
     
+    
     def test_01(self):
         print ''
         print '######################## test 1.1 ##############################'
@@ -212,7 +213,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="Isn't he doing his homework and his game now? Cann't he take this bottle. good afternoon"
+        original_utterance="Isn't he doing his homework and his game now? Cann't he take this bottle? Hello."
         
         sentences=[Sentence('yes_no_question', '', 
                 [Nominal_Group([],['he'],[],[],[])], 
@@ -242,7 +243,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="Don't quickly give me the blue bottle. I wanna play with my guitar. I'd like to go to the cinema."
+        original_utterance="Don't quickly give me the blue bottle. I want to play with my guitar. I'd like to go to the cinema."
         
         sentences=[Sentence('imperative', '', 
                 [], 
@@ -287,7 +288,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="the man which talks ; has a new car. I play the guitar which I bought yesterday ; ."
+        original_utterance="The man which talks has a new car. I play the guitar which I bought yesterday."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', '', 
@@ -422,7 +423,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="Where is Broyen ? where are you going. Where must Jido and you be from?"
+        original_utterance="Where is Broyen? Where are you going? Where must Jido and you be from?"
         
         sentences=[Sentence('w_question', 'place', 
                 [Nominal_Group([],['Broyen'],[],[],[])], 
@@ -457,7 +458,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna to the Laas?"
+        original_utterance="What time is the news on TV? What size do you wear? The code is written by me. Is Mahdi going to the Laas?"
         
         sentences=[Sentence('w_question', 'time', 
                 [Nominal_Group(['the'],['news'],[],[],[])], 
@@ -1111,9 +1112,126 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
+    
+    
+    """
+    def test_01(self):
+        print ''
+        print '######################## test 2.1 ##############################'
+        print '#################################################################'
+        print ''
         
+        original_utterance="Is it on the table or the shelf?"
+        
+        sentences=[Sentence('yes_no_question', '',
+                [Nominal_Group([],['it'],[],[],[])],
+                [Verbal_Group(['be'], [],'present simple',
+                    [],
+                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])]),
+                     Indirect_Complement([],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        sentences[0].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+        
+        utterance=utterance_recovery.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
     
+        
+    def test_02(self):
+        
+        print ''
+        print '######################## test 2.2 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Where is it? On the table or on the shelf?"
+     
+        sentences=[Sentence('w_question', 'place',
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('yes_no_question', '', 
+                [], 
+                [Verbal_Group([], [],'', 
+                    [], 
+                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])]),
+                     Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+        
+        utterance=utterance_recovery.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
     
+    def test_03(self):
+        
+        print ''
+        print '######################## test 2.3 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Is it on your left or in front of you?"
+        
+        sentences=[Sentence('yes_no_question', '',
+                [Nominal_Group([],['it'],[],[],[])],
+                [Verbal_Group(['be'], [],'present simple',
+                    [],
+                    [Indirect_Complement(['on'],[Nominal_Group(['your'],['left'],[],[],[])]),
+                     Indirect_Complement(['in+front+of'],[Nominal_Group([],['you'],[],[], [])])],
+                    [], [] ,'affirmative',[])])]
+        
+        sentences[0].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+        
+        utterance=utterance_recovery.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+    def test_04(self):
+        
+        print ''
+        print '######################## test 2.4 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Where is it? On your left or in front of you?"
+        
+        sentences=[Sentence('w_question', 'place',
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('yes_no_question', '',
+                [Nominal_Group([],[],[],[],[])],
+                [Verbal_Group([], [],'',
+                    [],
+                    [Indirect_Complement(['on'],[Nominal_Group(['your'],['left'],[],[],[])]),
+                     Indirect_Complement(['in+front+of'],[Nominal_Group([],['you'],[],[], [])])],
+                    [], [] ,'affirmative',[])])]
+        
+        sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+        
+        utterance=utterance_recovery.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    """
+        
     
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,

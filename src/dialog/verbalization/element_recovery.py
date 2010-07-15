@@ -52,7 +52,6 @@ def nom_struc_recovery(nom_struc):
     i=0
 
     while i < len(nom_struc):
-
         #The first nominal group not preceded
         if i > 0:
             #With the flag we put 'or' or 'and'
@@ -60,7 +59,10 @@ def nom_struc_recovery(nom_struc):
                 nominal_structure=nominal_structure+['and']
             elif nom_struc[i]._conjunction=='OR':
                 nominal_structure=nominal_structure+['or']
-
+        
+        #We can have an 'or' with the first element if it is an indirect complement       
+        if nom_struc[i]._conjunction=='OR':
+            nominal_structure=nominal_structure+['or']
         #We recover the nominal group and his complement
         nominal_structure = nominal_structure + nom_struc[i].det + nom_struc[i].adj + nom_struc[i].noun
         if nom_struc[i].noun_cmpl!=[]:
@@ -86,19 +88,26 @@ def indirect_compl_recovery(indirect_compl):
 
     #init
     ind_cmpl=[]
-    flag=0
 
     #We have 2 cases : with preposal and without
     for i in indirect_compl:
         if i.prep!=[]:
-            ind_cmpl=ind_cmpl + i.prep + nom_struc_recovery(i.nominal_group)
+            nom_gr= nom_struc_recovery(i.nominal_group)
+            
+            if nom_gr[0]=='and' or nom_gr[0]=='or':
+                nom_gr=[nom_gr[0]]+i.prep+nom_gr[1:]
+            else:
+                nom_gr=i.prep+nom_gr
+           
         else:
             """
             if i.nominal_group[0].adj!=[] and (i.nominal_group[0].adj[0]=='last' or i.nominal_group[0].adj[0]=='next'):
                 gr_ind_cmpl=gr_ind_cmpl+gr_nominal(i.nominal_group)
             else:
             """
-            ind_cmpl=ind_cmpl + i.prep + nom_struc_recovery(i.nominal_group)
+            nom_gr= i.prep + nom_struc_recovery(i.nominal_group)
+            
+        ind_cmpl=ind_cmpl+nom_gr
     return ind_cmpl
 
 
@@ -224,6 +233,10 @@ def vrb_stat_recovery(tense, verb, adv, sn, state, type):
     #init
     vrb_condjugated=[]
     
+    #If verb is empty
+    if verb==[]:
+        return []
+    
     #We take of the '+'
     vrb=other_functions.list_recovery(verb[0])
 
@@ -264,6 +277,9 @@ def vrb_ques_recovery(tense, verb, adverb, sn, state):
     Input=tense, verb in infinitive form, his state, the adverb and subject          
     Output=verb part                                                                 
     """
+    #If verb is empty
+    if verb==[]:
+        return []
     
     #We take of the '+'
     vrb=other_functions.list_recovery(verb[0])

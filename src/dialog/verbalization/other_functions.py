@@ -3,7 +3,9 @@
  Created by Chouayakh Mahdi                                                       
  07/07/2010                                                                       
  The package contains functions used by all other packages                        
- Functions:                                                                       
+ Functions:   
+    find_cap_lettre : to return 1 if the word starts with upper case letter     
+    find_plus : to return 1 if the word containe '+'                                                           
     list_recovery : to return the list of strings without '+'                     
     eliminate_redundancy : to eliminate redundancy in the phrase                  
     convert_string : to return concatenate token to have a string (sentence)      
@@ -20,11 +22,24 @@ cap_let_list=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q
 
 def find_cap_lettre(word):
     """
-    Function return 1 if the word starts with uppercase letter                       
-    Input=word               Output=flag(0 if no uppercase or 1 if uppercase)        
+    Function return 1 if the word starts with upper case letter                       
+    Input=word               Output=flag(0 if no upper case or 1 if upper case)        
     """
     for i in cap_let_list:
         if word[0]==i:
+            return 1
+    return 0
+
+
+
+def find_plus(word):
+    """
+    Function return 1 if the word containe '+'                       
+    Input=word                                           Output=flag       
+    """
+    
+    for i in word:
+        if i=='+':
             return 1
     return 0
 
