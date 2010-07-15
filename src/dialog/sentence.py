@@ -97,10 +97,15 @@ class Nominal_Group:
 
     def __str__(self):
         
+        res = ''
+        
+        if self._conjunction != 'AND':
+            res += colored_print('[' + self._conjunction + "] ", 'bold')
+        
         if self._resolved:
-            res = colored_print(self.id, 'white', 'blue') + '\n' + colored_print('>resolved<', 'green')
+            res += colored_print(self.id, 'white', 'blue') + '\n' + colored_print('>resolved<', 'green')
         else:
-            res =   colored_print(self.det, 'yellow') + " " + \
+            res +=   colored_print(self.det, 'yellow') + " " + \
                     colored_print(self.adj, 'green') + " " + \
                     colored_print(self.noun, 'blue') + '\n'
             
