@@ -106,7 +106,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="It's on the table. I give it to you. give me the bottle. I don't give the bottle to you."
+        original_utterance="It's on the table. I give it to you. Give me the bottle. I don't give the bottle to you."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['it'],[],[],[])], 
@@ -147,7 +147,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="you aren't preparing the car and my father's moto at the same time. is the bottle of my brother in your right?"
+        original_utterance="You aren't preparing the car and my father's moto at the same time. Is my brother's bottle in your right?"
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['you'],[],[],[])], 
@@ -176,7 +176,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? shall I go"
+        original_utterance="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? Shall I go?"
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['you'],[],[],[])], 

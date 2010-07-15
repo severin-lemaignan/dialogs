@@ -13,6 +13,7 @@
     possesion_form : to convert 'of' to possession form 's
     and_case : to convert 'and' to ',' if it is necessary
     replace_tuple : to replace some tuples
+    negation : to replace not
     verbalising : is the basic function of this module
 """
 from resources_manager import ResourcePool
@@ -327,6 +328,26 @@ def replace_tuple(sentence):
     
     return sentence            
     
+
+
+def negation(sentence):
+    """
+    This function to replace not                                   
+    Input=sentence                                     Output=sentence               
+    """
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        
+        if sentence[i]=='not':
+            sentence[i-1]=sentence[i-1]+"n't"
+            sentence=sentence[:i]+sentence[i+1:]
+        i=i+1
+    
+    return sentence
+    
     
     
 def verbalising(class_list):
@@ -344,6 +365,7 @@ def verbalising(class_list):
         #To perform some changes to have an usual sentence at the end
         sentence=possesion_form(sentence)
         sentence=and_case(sentence)
+        sentence=negation(sentence)
         sentence=replace_tuple(sentence)
         
         #To have the upper case and convert the list to string
