@@ -216,6 +216,10 @@ class Verbal_Group:
 
 
 
+def union (cl1, cl2, cl3):
+    return cl1
+
+
 def unit_tests():
 
     sentence1 = Sentence('w_question',
