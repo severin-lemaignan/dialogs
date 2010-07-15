@@ -12,6 +12,7 @@
     create_possession_claus : to create phrase with 's
     possesion_form : to convert 'of' to possession form 's
     and_case : to convert 'and' to ',' if it is necessary
+    replace_tuple : to replace some tuples
     verbalising : is the basic function of this module
 """
 from resources_manager import ResourcePool
@@ -28,6 +29,7 @@ adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 wques_rules=[('date',['when']),('place',['where']),('origin',['where']),('time',['what','time']),('color',['what','color']),('size',['what','size']),
              ('people',['who']),('age',['how', 'old']),('duration',['how', 'long']),('frequency',['how', 'often']),('distance',['how', 'far']),
              ('manner',['how']),('reason',['why'])]
+insertion_tuples=[("'m", 'am'),("'ve", 'have'),("'re", 'are'),("'ll", 'will'),("'d", 'would'),("'s", 'is')]
 
 
 """
@@ -300,7 +302,33 @@ def and_case(sentence):
     return sentence
 
 
-
+def replace_tuple(sentence):
+    """
+    This function to replace some tuples                                   
+    Input=sentence                                     Output=sentence               
+    """
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        
+        #If there is a tuple
+        for j in insertion_tuples:
+            if sentence[i]==j[1]:
+                
+                #To perform this process we need to have a pronoun
+                for k in pronoun_list:
+                    if i!=0 and sentence[i-1]==k:
+                        sentence[i-1]=sentence[i-1]+j[0]
+                        sentence=sentence[:i]+sentence[i+1:]
+                        break
+        i=i+1
+    
+    return sentence            
+    
+    
+    
 def verbalising(class_list):
     """
     This function is the basic function of this module                               
@@ -316,6 +344,7 @@ def verbalising(class_list):
         #To perform some changes to have an usual sentence at the end
         sentence=possesion_form(sentence)
         sentence=and_case(sentence)
+        sentence=replace_tuple(sentence)
         
         #To have the upper case and convert the list to string
         sentence[0]=sentence[0][0].upper()+sentence[0][1:]

@@ -52,14 +52,14 @@ action_verb = ThematicRolesDict().get_all_verbs()
 
 def upper_to_lower(sentence):
     """
-    This function converts the uppercase to lowercase
+    This function converts the upper case to lower case
     Input=sentence, beginning sentence list                  Output=sentence         
     """
     
-    #If the sentence begins with uppercase
+    #If the sentence begins with upper case
     if other_functions.find_cap_lettre(sentence[0]):
 
-        #We convert uppercase to lowercase if it is not 'I'
+        #We convert upper case to lower case if it is not 'I'
         if sentence[0]=='I':
             return sentence
         else:
@@ -79,11 +79,11 @@ def upper_to_lower(sentence):
         if analyse_nominal_group.find_sn_pos (sentence, 0)!=[]:
             return sentence
 
-        #It a propre name, we convert lowercase to uppercase
+        #It a proper name, we convert lower case to upper case
         sentence[0]=sentence[0][0].upper()+sentence[0][1:]
         return sentence
 
-    #If the sentence begins with lowercase
+    #If the sentence begins with lower case
     return sentence
 
 
@@ -91,7 +91,7 @@ def upper_to_lower(sentence):
 def concatenate_pos(sentence, position, element, pos_rem):
     """
     Function to concatenate an element in sentence at a position                     
-    Input=sentece, position+element to concatenate, letter's number to remove        
+    Input=sentence, position+element to concatenate, letter's number to remove        
     Output=sentence                                                                  
     """
 

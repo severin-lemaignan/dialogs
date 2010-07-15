@@ -65,7 +65,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -94,7 +94,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -136,7 +136,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
     
@@ -165,7 +165,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
     
@@ -200,7 +200,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -231,7 +231,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
     
@@ -276,7 +276,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -315,7 +315,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
     
@@ -349,7 +349,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -382,7 +382,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
     
@@ -411,7 +411,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
     
@@ -446,7 +446,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -487,7 +487,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -527,7 +527,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -564,7 +564,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -593,7 +593,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -622,7 +622,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -657,7 +657,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -692,7 +692,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -727,7 +727,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -762,7 +762,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -792,7 +792,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -821,7 +821,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -856,7 +856,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
        
@@ -895,7 +895,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -923,7 +923,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -957,7 +957,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -999,7 +999,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
        
@@ -1036,7 +1036,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
@@ -1072,7 +1072,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
        
@@ -1108,7 +1108,7 @@ class TestVerbalization(unittest.TestCase):
         utterance=utterance_recovery.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
-        print "The result obtained is : ", utterance
+        print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
         
