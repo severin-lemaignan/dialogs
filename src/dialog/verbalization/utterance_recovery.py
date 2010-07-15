@@ -5,8 +5,14 @@
  The package contains main functions of this module                               
  We return all elements of a nominal group                                        
  Functions:                                                                       
-    dispatching : to dispatche the main class in corresponding function           
-    verbalising : is the basic function of this module                            
+    dispatching : to dispatche the main class in corresponding function              
+    adjective_pos : to return the position of the noun in the sentence             
+    find_sn_pos : to return the nom_group in a given position with adjective_pos        
+    find_nom_gr_list : to break phrase into nominal groups with 'of'
+    create_possession_claus : to create phrase with 's
+    possesion_form : to convert 'of' to possession form 's
+    and_case : to convert 'and' to ',' if it is necessary
+    verbalising : is the basic function of this module
 """
 from resources_manager import ResourcePool
 import other_functions
@@ -19,6 +25,9 @@ Statement of lists
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
+wques_rules=[('date',['when']),('place',['where']),('origin',['where']),('time',['what','time']),('color',['what','color']),('size',['what','size']),
+             ('people',['who']),('age',['how', 'old']),('duration',['how', 'long']),('frequency',['how', 'often']),('distance',['how', 'far']),
+             ('manner',['how']),('reason',['why'])]
 
 
 """
@@ -66,47 +75,11 @@ def dispatching(analysis):
 
     #For w_question
     elif analysis.data_type=='w_question':
+        for x in wques_rules:
+            if x[0]==analysis.aim:
+                return x[1]+sentence_recovery.y_o_question(analysis)
 
-        if analysis.aim=='date':
-            return ['when']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='place':
-            return ['where']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='origin':
-            return ['where']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='time':
-            return ['what','time']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='color':
-            return ['what','color']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='size':
-            return ['what','size']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='people':
-            return ['who']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='age':
-            return ['how', 'old']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='duration':
-            return ['how', 'long']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='frequency':
-            return ['how', 'often']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='distance':
-            return ['how', 'far']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='manner':
-            return ['how']+sentence_recovery.y_o_question(analysis)
-
-        elif analysis.aim=='reason':
-            return ['why']+sentence_recovery.y_o_question(analysis)
-        
-        elif analysis.aim=='quantity':
+        if analysis.aim=='quantity':
             return sentence_recovery.quantity_ques(analysis)
 
         elif analysis.aim=='choice':
@@ -260,7 +233,7 @@ def create_possession_claus(list):
 
 def possesion_form(sentence):
     """
-    This function convert 'of' to possession form 's                                 
+    This function converts 'of' to possession form 's                                 
     Input=sentence                                     Output=sentence               
     """
     
@@ -306,6 +279,28 @@ def possesion_form(sentence):
 
 
 
+def and_case(sentence):
+    """
+    This function converts 'and' to ',' if it is necessary                                   
+    Input=sentence                                     Output=sentence               
+    """
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        if sentence[i] == 'and':
+            nom_gr=find_sn_pos(sentence, i+1)
+
+            if len(sentence)>len(nom_gr)+i+1 and sentence[len(nom_gr)+i+1]=='and':
+                sentence[i-1]=sentence[i-1]+','
+                sentence=sentence[:i]+sentence[i+1:]
+        i=i+1
+        
+    return sentence
+
+
+
 def verbalising(class_list):
     """
     This function is the basic function of this module                               
@@ -318,8 +313,9 @@ def verbalising(class_list):
     for i in class_list:
         sentence = dispatching(i)
         
-        
+        #To perform some changes to have an usual sentence at the end
         sentence=possesion_form(sentence)
+        sentence=and_case(sentence)
         
         #To have the upper case and convert the list to string
         sentence[0]=sentence[0][0].upper()+sentence[0][1:]

@@ -97,7 +97,8 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is : ", utterance
         
         self.assertEquals(original_utterance, utterance)
-
+        
+        
     def test_03(self):
         
         print ''
