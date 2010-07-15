@@ -11,6 +11,25 @@
 
 
 
+"""
+Statement of lists
+"""
+cap_let_list=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+
+
+
+def find_cap_lettre(word):
+    """
+    Function return 1 if the word starts with uppercase letter                       
+    Input=word               Output=flag(0 if no uppercase or 1 if uppercase)        
+    """
+    for i in cap_let_list:
+        if word[0]==i:
+            return 1
+    return 0
+
+
+
 def list_recovery(string):
     """
     This function returns the list of strings without '+'                            

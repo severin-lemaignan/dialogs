@@ -183,13 +183,14 @@ def comma(sentence):
 def find_nom_gr_list(phrase):
     """
     This function break phrase into nominal groups with ('s)                         
-    And return also the elments number of the end of this list in the sentence       
+    And return also the elements number of the end of this list in the sentence       
     Input=sentence                    Output=list of nominal group                   
     """
     
     #init
     list=[]
     nb_element=0
+    
     nom_gr=analyse_nominal_group.find_sn_pos(phrase, 0)
     #We use the length of the nominal group because it will be different with len(nom_gr)
     nom_gr_lent=len(nom_gr)

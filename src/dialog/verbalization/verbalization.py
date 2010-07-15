@@ -167,7 +167,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is : ", utterance
         
         self.assertEquals(original_utterance, utterance)
-
+    
     def test_05(self):
     
         print ''
@@ -202,6 +202,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is : ", utterance
         
         self.assertEquals(original_utterance, utterance)
+        
     
     def test_06(self):
     
@@ -1109,6 +1110,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is : ", utterance
         
         self.assertEquals(original_utterance, utterance)
+        
     
     
     
