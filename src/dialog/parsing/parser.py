@@ -1555,6 +1555,34 @@ def unit_tests():
     print ''
     
     
+    print ''
+    print ('######################## test 5.3 ##############################')
+
+    utterance="The bottle is behind to me. The bottle is next to the table in front of the kitchen."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '',
+            [Nominal_Group(['the'],['bottle'],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [],
+                [Indirect_Complement(['behind+to'],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '',
+            [Nominal_Group(['the'],['bottle'],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [],
+                [Indirect_Complement(['next+to'],[Nominal_Group(['the'],['table'],[],[],[])]),
+                 Indirect_Complement(['in+front+of'],[Nominal_Group(['the'],['kitchen'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
     
     
 if __name__ == '__main__':
