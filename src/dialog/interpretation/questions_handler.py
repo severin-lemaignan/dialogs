@@ -44,7 +44,7 @@ class QuestionHandler:
 		#StatementBuilder
 		builder = StatementBuilder(self._current_speaker)
 		self._statements = builder.process_sentence(self._sentence)
-		logging.info("statement Builder result: " + str(self._statements))
+		logging.info("statement from Statement Builder: " + str(self._statements))
 		
 		#Case the question is a y_n_question
 		if sentence.data_type == 'yes_no_question':
@@ -56,6 +56,7 @@ class QuestionHandler:
 		#Case the question is a w_question		
 		if sentence.data_type == 'w_question':
 			self._statements = self._extend_statement_from_sentence_aim(self._statements)
+			self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
 			logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
 			
 			self._answer = self._oro.find('?concept', self._statements)
@@ -76,6 +77,7 @@ class QuestionHandler:
 			stmts = statements
 			
 		return stmts
+	
 	
 	def _extend_statement_from_sentence_aim(self, current_statements):
 		#Case: the statement is complete from statement builder e.g: what is in the box? =>[?concept isIn ?id_box, ?id_box rdf:type Box]
@@ -128,7 +130,7 @@ class QuestionHandler:
 				   'acts_on_object':'actsOnObject'}
 		
 		#Dictionary for sentence.aim = 'aim' 
-		#dic_manner={'be':'?sub_feature'}
+		dic_manner={'be':'?sub_feature'}
 		
 		#TODO:With dictionary from resource pool
 		#dic_aim = resourcePool.Dictionary(dic_aim)
@@ -173,7 +175,16 @@ class QuestionHandler:
 			How many  => aim = 'Quantity'
 	"""	
 
-
+	
+	def _remove_statements_with_no_unbound_tokens(self, statements):
+		stmts = []
+		for s in statements:
+			if '?' in s:
+				stmts.append(s)
+				
+		return stmts
+	
+	
 class TestQuestionHandler(unittest.TestCase):
 	def setUp(self):
 	
@@ -188,6 +199,12 @@ class TestQuestionHandler(unittest.TestCase):
 		#sentence="what do I see?
 		#sentence="what is blue?"
 		#sentence="what is reachable?"
+		"""
+		"""Further test
+		#what did I give you?
+		#who has a small car?
+		#how is my bottle?
+		#what does Danny drive?
 		"""
 		self.oro = Oro("localhost", 6969)
 		self.oro.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
@@ -213,7 +230,9 @@ class TestQuestionHandler(unittest.TestCase):
 				 
 				 'take_my_cube canBePerformedBy SPEAKER',
 				 'take_my_cube involves another_cube',
-				 'take_my_cube rdf:type Take'])
+				 'take_my_cube rdf:type Take',
+				 
+				 'SPEAKER focusesOn another_cube'])
 		
 		
 		self.qhandler = QuestionHandler("SPEAKER")
@@ -292,8 +311,54 @@ class TestQuestionHandler(unittest.TestCase):
 		
 		self.process(sentence , statement_query, expected_result)
 	
+	def test_8_w_question(self):
+		print "\n*************  test_8_w_question ******************"
+		print "what is blue?"
+		sentence = Sentence("w_question", "thing", 
+	                         [Nominal_Group([],
+	                                        [],
+	                                        ['blue'],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['be'],
+	                                       [],
+	                                       'present simple',
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['?concept hasColor blue']
+		expected_result = ['blue_cube']		
+		self.process(sentence , statement_query, expected_result) 
+		
+		
 	
+	def test_9_w_question_this(self):
+		print "\n*************  test_9_w_question_this ******************"
+		print "what is this?"
+		sentence = Sentence("w_question", "thing", 
+	                         [Nominal_Group(['this'],
+	                                        [],
+	                                        [],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['be'],
+	                                       [],
+	                                       'present simple',
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['SPEAKER focusesOn ?concept']
+		expected_result = ['another_cube']		
+		self.process(sentence , statement_query, expected_result) 
+		
 	
+	"""
 	
 	def test_4_y_n_question(self):
 		print "\n*************  test_4_y_n_question action verb******************"
@@ -402,33 +467,11 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = False		
 		self.process(sentence , statement_query, expected_result) 
 	
+	"""
 	
 	
-	
-	def test_8_w_question(self):
-		print "\n*************  test_8_w_question ******************"
-		print "what object is blue?"
-		sentence = Sentence("w_question", "object", 
-	                         [Nominal_Group([],
-	                                        ['object'],
-	                                        ['blue'],
-	                                        [],
-	                                        [])],                                         
-	                         [Verbal_Group(['be'],
-	                                       [],
-	                                       'present simple',
-	                                       [],
-	                                       [],
-	                                       [],
-	                                       [],
-	                                       'affirmative',
-	                                       [])])
-		statement_query = ['?concept hasColor blue']
-		expected_result = ['blue_cube']		
-		self.process(sentence , statement_query, expected_result) 
 		
-		
-	
+	"""
 	def test_9_w_question(self):
 		print "\n*************  test_9_w_question ******************"
 		print "How is my car?"
@@ -450,7 +493,7 @@ class TestQuestionHandler(unittest.TestCase):
 		statement_query = ['?concept hasColor blue']
 		expected_result = ['blue']		
 		self.process(sentence , statement_query, expected_result) 
-		
+	"""
 		
 	def process(self, sentence , statement_query, expected_result):
 		sentence = dump_resolved(sentence, 'SPEAKER', 'myself')#TODO: dumped_resolved is only for the test of query builder
@@ -484,10 +527,12 @@ def dump_resolved(sentence, current_speaker, current_recipient = None):
 
 def unit_tests():
 	"""This function tests the main features of the class QuestionHandler"""
-	
+	logging.basicConfig(level=logging.DEBUG,format="%(message)s")
 	print("This is a test...")
 	unittest.main()
 	
 	
 if __name__ == '__main__':
 	unit_tests()
+
+
