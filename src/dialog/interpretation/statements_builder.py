@@ -1,15 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 import logging
 import random
 import inspect
 import unittest
 from pyoro import Oro
 from resources_manager import ResourcePool
+from statements_safe_adder import StatementSafeAdder, generate_id, printer
 
-from dialog_exceptions import DialogError
-from dialog_exceptions import GrammaticalError
+from dialog_exceptions import DialogError, GrammaticalError, EmptyNominalGroupId
+
 
 
 from sentence import *
@@ -19,11 +19,12 @@ from sentence import *
 """
 
 class StatementBuilder:
-    
+    """ Build statements related to a sentence"""
     def __init__(self,current_speaker = None):
         self._sentence = None
         self._current_speaker = current_speaker
         self._statements = []
+        self._unresolved_ids = []
         
 
     def clear_statements(self):
@@ -33,24 +34,25 @@ class StatementBuilder:
         self._current_speaker = current_speaker
     
     def process_sentence(self, sentence):
-        
+        """
         if not sentence.resolved():
             raise DialogError("Trying to process an unresolved sentence!")
-         
+        """
         self._sentence = sentence
         
         if sentence.sn:
             self.process_nominal_groups(self._sentence.sn)
         if sentence.sv:
             self.process_verbal_groups(self._sentence)
-            
+        
+                                 
         return self._statements
     
     
     def process_nominal_groups(self, nominal_groups):
-        ng_stmt_builder = NominalGroupStatementBuilder(nominal_groups, self._current_speaker) 
+        ng_stmt_builder = NominalGroupStatementBuilder(nominal_groups, self._current_speaker)
         self._statements.extend(ng_stmt_builder.process())
-        
+        self._unresolved_ids.extend(ng_stmt_builder._unresolved_ids)
         
     def process_verbal_groups(self, sentence):
         #VerbalGroupStatementBuilder
@@ -63,23 +65,24 @@ class StatementBuilder:
         
         if not sentence.sn:
             self._statements.extend(vg_stmt_builder.process())
-        for sn in sentence.sn:
-            if sn.id:
-                subject_id = sn.id
-            else:
-                subject_id = generate_id()                  
+            self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
             
-            self._statements.extend(vg_stmt_builder.process(subject_id))
+        for sn in sentence.sn:
+            if not sn.id:
+                raise EmptyNominalGroupId("Nominal group ID not resolved or not affected yet")
+            
+            self._statements.extend(vg_stmt_builder.process(sn.id))
+            self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
 
 class NominalGroupStatementBuilder:
+    """ Build statements related to a nominal group"""
     def __init__(self, nominal_groups, current_speaker = None):
         self._nominal_groups = nominal_groups
         self._current_speaker = current_speaker
         self._statements = []
         
-        #this field hold the value True when we build statement in order to query the ontology
-        #self.process_query = False
-    
+        self._unresolved_ids = []
+        
     def clear_statements(self):
         self._statements = []
         
@@ -89,13 +92,13 @@ class NominalGroupStatementBuilder:
         A NominalGroupStatementBuilder needs to have been instantiated before"""
         
         for ng in self._nominal_groups:
-            if ng.id:
-                ng_id = ng.id
-            else:
-                ng_id = generate_id()            
+            if not ng.id:
+                ng.id = generate_id()
+
+                print "GENERATE NominalGroupStatementBuilder process" , ng.id
+                self._unresolved_ids.append(ng.id)          
             
-                
-            self.process_nominal_group(ng, ng_id)
+            self.process_nominal_group(ng, ng.id)
                                     
         return self._statements
     
@@ -104,17 +107,16 @@ class NominalGroupStatementBuilder:
     
     def process_nominal_group(self, ng, ng_id):
         """ The following function processes a single nominal_group"""
-        if '?' in ng_id:#Means not resolved yet  
-            if ng.det:
-                self.process_determiners(ng, ng_id)
-            if ng.noun:
-                self.process_noun_phrases(ng, ng_id)
-            if ng.adj:
-                self.process_adjectives(ng, ng_id)
-            if ng.noun_cmpl:
-                self.process_noun_cmpl(ng, ng_id)
-            if ng.relative:
-                self.process_relative(ng, ng_id)
+        if ng.det:
+            self.process_determiners(ng, ng_id)
+        if ng.noun:
+            self.process_noun_phrases(ng, ng_id)
+        if ng.adj:
+            self.process_adjectives(ng, ng_id)
+        if ng.noun_cmpl:
+            self.process_noun_cmpl(ng, ng_id)
+        if ng.relative:
+            self.process_relative(ng, ng_id)
             
 
     def process_determiners(self, nominal_group, ng_id):
@@ -122,6 +124,8 @@ class NominalGroupStatementBuilder:
             logging.debug("Found determiner:\"" + det + "\"")
             # Case 1: definite article : the"""
             # Case 2: demonstratives : this, that, these, those"""
+            if det in ['this', 'that', 'these', 'those']:
+                self._statements.append(self._current_speaker + " focusesOn " + ng_id)
             # Case 3: possessives : my, your, his, her, its, our, their """
             if det == "my":
                 self._statements.append(ng_id + " belongsTo " + self._current_speaker)
@@ -228,15 +232,16 @@ class NominalGroupStatementBuilder:
                     rel_vg_stmt_builder = VerbalGroupStatementBuilder(rel.sv, self._current_speaker)
                     rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng_id)
                     self._statements.extend(rel_vg_stmt_builder._statements)
-            
+                    self._unresolved_ids.extend(rel_vg_stmt_builder._unresolved_ids)
                     
 
 class VerbalGroupStatementBuilder:
+    """ Build statements related to a verbal group"""
     def __init__(self, verbal_groups, current_speaker = None):
         self._verbal_groups = verbal_groups
         self._current_speaker = current_speaker
         self._statements = []
-        
+        self._unresolved_ids = []
         #This field holds the value True when the active sentence is of yes_no_question or w_question data_type
         self._process_on_question = False
         
@@ -377,7 +382,7 @@ class VerbalGroupStatementBuilder:
                     d_obj_id = d_obj.id
                 else:
                     d_obj_id = generate_id()    
-                
+                    d_obj_stmt_builder._unresolved_ids.append(d_obj_id)
                 #If there is an existing role matching the current verb
                 if d_obj_role:
                     self._statements.append(id + d_obj_role + d_obj_id)
@@ -385,12 +390,11 @@ class VerbalGroupStatementBuilder:
                     self._statements.append(id + " involves " + d_obj_id)
             
             d_obj_stmt_builder.process_nominal_group(d_obj, d_obj_id)
-        
+            
         self._statements.extend(d_obj_stmt_builder._statements)
+        self._unresolved_ids.extend(d_obj_stmt_builder._unresolved_ids)
         
         
-            
-            
             
     def process_indirect_complement(self, indirect_cmpls,verb, sit_id):
         
@@ -428,6 +432,7 @@ class VerbalGroupStatementBuilder:
                     ic_noun_id = ic_noun.id
                 else:
                     ic_noun_id = generate_id()
+                    self._unresolved_ids.append(ic_noun_id)
                     
                 if not ic.prep:
                     self._statements.append(sit_id + " receivedBy " + ic_noun_id)
@@ -441,8 +446,8 @@ class VerbalGroupStatementBuilder:
                 i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id)
                 
             self._statements.extend(i_stmt_builder._statements)
-                
-         
+            self._unresolved_ids.extend(i_stmt_builder._unresolved_ids)
+            
                 
                 
     #TODO:      
@@ -461,78 +466,99 @@ class VerbalGroupStatementBuilder:
             logging.debug("Processing adverbial clauses:")
             
             
-               
-            
-
-def generate_id():
-    sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    sample = random.sample(sequence, 5)
-    return "?" + "".join(sample)
-    
-
 
         
 """
     The following functions are implemented for test purpose only
 """
+
+
 def dump_resolved(sentence, current_speaker, current_listener):
     def resolve_ng(ngs):
         #TODO: remove connection. Use a variable that will be set up for a single connection to ORO
-        oro = Oro("localhost", 6969) 
-        
-           
+        oro = Oro("localhost", 6969)
+
+
         for ng in ngs:
-            ng._resolved = True
-            onto = oro.lookup(ng.noun[0])
-            #  : Make sure the following is resolved in Resolution
-            if onto and [ng.noun[0],"INSTANCE"] in onto:
-                ng.id = ng.noun[0]
-            elif ng.noun[0] in ['me', 'Me','I']:
+            ng._resolved = False
+            onto_focus = oro.find('?concept', [current_speaker + ' focusesOn ?concept'])
+            
+            if ng.noun in [['me'], ['Me'],['I']]:
                 ng.id = current_speaker
-            elif ng.noun[0] in ['you', 'You']:
+            elif ng.noun in [['you'], ['You']]:
                 ng.id = current_listener
-            else:
-                ng.id = generate_id()
+                       
+            elif ng.noun == ['Danny']:
+                ng.id = 'id_danny'
                 
+            elif [ng.noun, ng.adj] == [['car'], ['blue']]:
+                ng.id = 'blue_car'
+            elif [ng.noun, ng.adj] == [['car'], ['small']]:
+                ng.id = 'twingo'
+            elif ng.noun == ['Tom']:
+                ng.id = 'id_tom'
+            elif ng.noun == ['shelf1']:
+                ng.id = 'shelf1'
+            elif onto_focus and ng.det == ['this']:
+                ng.id = onto_focus[0]
+            else:
+                pass
+            
             if ng.noun_cmpl:
                 ng.noun_cmpl = resolve_ng(ng.noun_cmpl)
-                
+
             if ng.relative:
                 for rel in ng.relative:
-                    rel = dump_resolved(rel, current_speaker, current_listener)    
-                                    
+                    rel = dump_resolved(rel, current_speaker, current_listener)
+
         oro.close()
         return ngs
-    
+
     if sentence.sn:
         sentence.sn = resolve_ng(sentence.sn)
-    
-    
+
+
     if sentence.sv:
         for sv in sentence.sv:
-            sv._resolved = True
-            
+            sv._resolved = False
+
             if sv.d_obj:
                 sv.d_obj = resolve_ng(sv.d_obj)
-    
+
             if sv.i_cmpl:
                 for i_cmpl in sv.i_cmpl:
                     i_cmpl = resolve_ng(i_cmpl.nominal_group)
-        
+
     return sentence
 
 
-
-   
-
-def str(list):
-    for l in list:
-        print l
         
 class TestStatementBuilder(unittest.TestCase):
 
     def setUp(self):
+        
+        self.oro = Oro('localhost', 6969)
+        self.oro.add(['id_danny rdfs:label "Danny"',
+                      'id_danny rdf:type Human',
+                      'blue_volvo hasColor blue', 
+                      'blue_volvo rdf:type Car',
+                      'blue_volvo belongsTo SPEAKER',
+                      'id_jido rdf:type Robot',
+                      'id_jido rdfs:label "Jido"',
+                      'twingo rdf:type Car',
+                      'twingo hasSize small',
+                      'a_man rdf:type Man',
+                      'fiat belongsTo id_tom',
+                      'fiat rdf:type Car',
+                      'id_tom rdfs:label "Tom"',
+                      'id_tom rdf:type Brother',
+                      'id_tom belongsTo id_danny',
+                      'id_toulouse rdfs:label "Toulouse"',
+                      'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
+                      'SPEAKER focusesOn another_cube'])
+        
         self.stmt = StatementBuilder("SPEAKER")
+        self.stmt_adder = StatementSafeAdder()
         
     """
         Please write your test below using the following template
@@ -572,6 +598,7 @@ class TestStatementBuilder(unittest.TestCase):
         #    or
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
+    
                         
     """
     def test_1(self):
@@ -593,7 +620,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'affirmative',
                                            [])])    
         
-        expected_result = ['* rdfs:label "Danny"',
+        expected_result = ['id_danny rdfs:label "Danny"',
                            '* rdf:type Drive',
                            '* performedBy *',
                            '* involves *',
@@ -850,17 +877,162 @@ class TestStatementBuilder(unittest.TestCase):
         
 
         return self.process(sentence, expected_resut, display_statement_result = True)
+    
+    
+    def test_9_this(self):
         
+        print "\n**** test_9_this  *** "
+        print "this is a blue cube"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['this'],
+                                            [],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present_simple',
+                                           [Nominal_Group(['a'],
+                                                          ['cube'],
+                                                          ['blue'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_resut = ['SPEAKER focusesOn *',
+                          '* hasColor blue',
+                          '* rdf:type Cube']
+        return self.process(sentence, expected_resut, display_statement_result = True)
+    
+    
+    
+    def test_10_this(self):
         
+        print "\n**** test_10_this  *** "
+        print "this is on the shelf1"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['this'],
+                                            [],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present_simple',
+                                           [],
+                                           [Indirect_Complement(['on'],
+                                                                [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_resut = ['SPEAKER focusesOn *',
+                          '* isOn shelf1']
+        return self.process(sentence, expected_resut, display_statement_result = True)
+    
+    
+    def test_11_this(self):
+        
+        print "\n**** test_11_this  *** "
+        print "this goes to the shelf1"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['this'],
+                                            [],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['go'],
+                                           [],
+                                           'present_simple',
+                                           [],
+                                           [Indirect_Complement(['to'],
+                                                                [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_resut = ['SPEAKER focusesOn *',
+                          '* rdf:type Go',
+                          '* performedBy *',
+                          '* hasGoal shelf1']
+        
+        return self.process(sentence, expected_resut, display_statement_result = True)
+    
+    
+    def test_12_this(self):
+        
+        print "\n**** test_12_this  *** "
+        print "this cube goes to the shelf1"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['this'],
+                                            ['cube'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['go'],
+                                           [],
+                                           'present_simple',
+                                           [],
+                                           [Indirect_Complement(['to'],
+                                                                [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_resut = ['SPEAKER focusesOn *',
+                          '* rdf:type Cube',
+                          '* rdf:type Go',
+                          '* performedBy *',
+                          '* hasGoal shelf1']
+        
+        return self.process(sentence, expected_resut, display_statement_result = True)
+    
+    
+    
+    def test_13_this(self):
+        
+        print "\n**** test_13_this  *** "
+        print "this cube is blue => this blue cube is"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['this'],
+                                            ['cube'],
+                                            ['blue'],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present_simple',
+                                           [],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_resut = ['SPEAKER focusesOn *',
+                          '* rdf:type Cube',
+                          '* hasColor blue']
+        
+        return self.process(sentence, expected_resut, display_statement_result = True)
+      
+    
+       
     def process(self, sentence, expected_result, display_statement_result = False):
          
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
-       
-        res = self.stmt.process_sentence(sentence)
+        res_stmt_builder = self.stmt.process_sentence(sentence)        
+        self.stmt_adder._statements = res_stmt_builder
+        self.stmt_adder._unresolved_ids = self.stmt._unresolved_ids
+        self.stmt_adder.process(sentence.resolved())
+        res = self.stmt_adder._statements
+        
+        
         if display_statement_result:
-            print "*** StatementBuilder result from " + inspect.stack()[1][3] + " ****"
-            str(res)
-        return self.assertTrue(self.check_results(res, expected_result))
+            logging.info( "*** StatementSafeAdder result from " + inspect.stack()[1][3] + " ****")
+            printer(res)
+        self.assertTrue(self.check_results(res, expected_result))
         
         
 
@@ -887,11 +1059,12 @@ class TestStatementBuilder(unittest.TestCase):
         return expected == res
         
  
- 
+    def tearDown(self):
+        self.oro.close()
         
 def unit_tests():
     """This function tests the main features of the class StatementBuilder"""
-    #logging.basicConfig(level=logging.DEBUG,format="%(message)s")
+    logging.basicConfig(level=logging.DEBUG,format="%(message)s")
     print("This is a test...")
     unittest.main()
      
@@ -899,39 +1072,5 @@ if __name__ == '__main__':
     unit_tests()
     
 
-
-"""Further test
-#I gave you the car of Martin
-objectInteraction = ObjectInteraction(Sentence("statement", "", [Nominal_Group([],['I'],[],[],None)], Verbal_Group(['give'],None,'past_simple',[Nominal_Group(['the'],['car'],[],[Nominal_Group([],['Martin'],[],[],None)],None)] , [Indirect_Complement([], [Nominal_Group([],  ['you'],[],[], None)])], [], [], 'affirmative', None )),"human_xyz", "myself", "2011-02-04", "12:11:34")
-responseList = server.dialog(objectInteraction)
-for response in responseList:
-    response.sentence.getString()
-
-
-
-#what did I give you?
-objectInteraction = ObjectInteraction(Sentence("w_question", "thing", [Nominal_Group([],['I'],[],[],None)], Verbal_Group(['give'],None,'past_simple',[] , [Indirect_Complement([], [Nominal_Group([],  ['you'],[],[], None)])], [], [], 'affirmative', None )),"human_xyz", "myself", "2011-02-04", "12:11:34")
-responseList = server.dialog(objectInteraction)
-for response in responseList:
-    response.sentence.getString()
-
-#who has a small car?
-objectInteraction = ObjectInteraction(Sentence("w_question", "person", [], Verbal_Group(['have'],None,'past_simple',[Nominal_Group(['a'],  ['car'],['small'],[], None)] , [], [], [], 'affirmative', None )),"human_xyz", "myself", "2011-02-04", "12:11:34")
-responseList = server.dialog(objectInteraction)
-for response in responseList:
-    response.sentence.getString()
-
-#how is my bottle?
-objectInteraction = ObjectInteraction(Sentence("w_question", "manner", [Nominal_Group(['my'],['bottle'],[],[],None)], Verbal_Group(['be'],None,'past_simple',[],[],[], [], 'affirmative', None)) ,"human_xyz", "myself", "2011-02-04", "12:11:34")
-responseList = server.dialog(objectInteraction)
-for response in responseList:
-    response.sentence.getString()
-
-#what does Danny drive?
-objectInteraction = ObjectInteraction(Sentence("w_question", "thing", [Nominal_Group([],['Danny'],[],[],None)], Verbal_Group(['drive'],None,'past_simple',[] , [], [], [], 'affirmative', None )),"human_xyz", "myself", "2011-02-04", "12:11:34")
-responseList = server.dialog(objectInteraction)
-for response in responseList:
-    response.sentence.getString()
-"""
     
 
