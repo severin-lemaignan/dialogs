@@ -288,10 +288,10 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="The man which talks has a new car. I play the guitar which I bought yesterday."
+        original_utterance="The man who talks, has a new car. I play the guitar which I bought yesterday."
         
         sentences=[Sentence('statement', '', 
-                [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', '', 
+                [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', 'who', 
                     [],  
                     [Verbal_Group(['talk'],[],'present simple', 
                         [], 
@@ -304,7 +304,7 @@ class TestVerbalization(unittest.TestCase):
             Sentence('statement', '', 
                 [Nominal_Group([],['I'],[],[],[])],  
                 [Verbal_Group(['play'], [],'present simple', 
-                    [Nominal_Group(['the'],['guitar'],[],[],[Sentence('relative', '', 
+                    [Nominal_Group(['the'],['guitar'],[],[],[Sentence('relative', 'which', 
                         [Nominal_Group([],['I'],[],[],[])],  
                         [Verbal_Group(['buy'],[],'past simple', 
                             [], 
@@ -327,18 +327,18 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="don't quickly give me the bottle which is on the table ; and the glass which I cleaned yesterday ; at my left"
+        original_utterance="Don't quickly give me the bottle which is on the table, and the glass which I cleaned yesterday, at my left."
         
         sentences=[Sentence('imperative', '', 
                 [],  
                 [Verbal_Group(['give'], [],'present simple', 
-                    [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', '', 
+                    [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
                         [],  
                         [Verbal_Group(['be'], [],'present simple', 
                             [],
                             [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                             [], [] ,'affirmative',[])])]),
-                    Nominal_Group(['the'],['glass'],[],[],[Sentence('relative', '', 
+                    Nominal_Group(['the'],['glass'],[],[],[Sentence('relative', 'which', 
                         [Nominal_Group([],['I'],[],[],[])],  
                         [Verbal_Group(['clean'], [],'past simple', 
                             [],
@@ -361,18 +361,18 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="The bottle which I bought from the store which is in the shopping centre ; ; is yours."
+        original_utterance="The bottle which I bought from the store which is in the shopping center, is yours."
         
         sentences=[Sentence('statement', '', 
-                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', '', 
+                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
                     [Nominal_Group([],['I'],[],[],[])],  
                     [Verbal_Group(['buy'], [],'past simple', 
                         [], 
-                        [Indirect_Complement(['from'],[Nominal_Group(['the'],['store'],[],[],[Sentence('relative', '', 
+                        [Indirect_Complement(['from'],[Nominal_Group(['the'],['store'],[],[],[Sentence('relative', 'which', 
                             [],  
                             [Verbal_Group(['be'], [],'present simple', 
                                 [], 
-                                [Indirect_Complement(['in'],[Nominal_Group(['the'],['centre'],['shopping'],[],[])])],
+                                [Indirect_Complement(['in'],[Nominal_Group(['the'],['center'],['shopping'],[],[])])],
                                 [], [] ,'affirmative',[])])])])],
                         [], [] ,'affirmative',[])])])],  
                 [Verbal_Group(['be'], [],'present simple', 
@@ -394,7 +394,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="When won't the planning session take place? when must you take the bus"
+        original_utterance="When won't the planning session take place? When must you take the bus?"
         
         sentences=[Sentence('w_question', 'date', 
                 [Nominal_Group(['the'],['session'],['planning'],[],[])], 
@@ -576,10 +576,10 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="What is the bigest bottle's color on your left. What does your brother do for a living?"
+        original_utterance="What is the biggest bottle's color on your left. What does your brother do for a living?"
         
         sentences=[Sentence('w_question', 'thing', 
-                [Nominal_Group(['the'],['color'],[],[Nominal_Group(['the'],['bottle'],['bigest'],[],[])],[])], 
+                [Nominal_Group(['the'],['color'],[],[Nominal_Group(['the'],['bottle'],['biggest'],[],[])],[])], 
                 [Verbal_Group(['be'], [],'present simple', 
                     [], 
                     [Indirect_Complement(['on'],[Nominal_Group(['your'],['left'],[],[],[])])],
@@ -634,10 +634,10 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="What kind of sport is your favourite? what is the problem with him? what is the matter with this person"
+        original_utterance="What kind of sport is your favorite? what is the problem with him? what is the matter with this person"
         
         sentences=[Sentence('w_question', 'classification+sport', 
-                [Nominal_Group(['your'],['favourite'],[],[],[])], 
+                [Nominal_Group(['your'],['favorite'],[],[],[])], 
                 [Verbal_Group(['be'], [],'present simple', 
                     [], 
                     [],
@@ -1114,10 +1114,10 @@ class TestVerbalization(unittest.TestCase):
         self.assertEquals(original_utterance, utterance)
     
     
-    """
-    def test_01(self):
+    
+    def test_32(self):
         print ''
-        print '######################## test 2.1 ##############################'
+        print '######################## test 1.32 ##############################'
         print '#################################################################'
         print ''
         
@@ -1141,10 +1141,10 @@ class TestVerbalization(unittest.TestCase):
         self.assertEquals(original_utterance, utterance)
     
         
-    def test_02(self):
+    def test_33(self):
         
         print ''
-        print '######################## test 2.2 ##############################'
+        print '######################## test 1.33 ##############################'
         print '#################################################################'
         print ''
         
@@ -1173,10 +1173,10 @@ class TestVerbalization(unittest.TestCase):
         
         self.assertEquals(original_utterance, utterance)
     
-    def test_03(self):
+    def test_34(self):
         
         print ''
-        print '######################## test 2.3 ##############################'
+        print '######################## test 1.34 ##############################'
         print '#################################################################'
         print ''
         
@@ -1199,10 +1199,10 @@ class TestVerbalization(unittest.TestCase):
         
         self.assertEquals(original_utterance, utterance)
     
-    def test_04(self):
+    def test_35(self):
         
         print ''
-        print '######################## test 2.4 ##############################'
+        print '######################## test 1.35 ##############################'
         print '#################################################################'
         print ''
         
@@ -1230,7 +1230,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
-    """
+    
         
     
 if __name__ == '__main__':
