@@ -231,7 +231,8 @@ class Verbal_Group:
                 res += 'vrb_sub_sentence:\n\t' + str(vrb_sub_s).replace("\n", "\n\t") + "\n"
         
         if self.sv_sec:
-                res += 'secondary verbal grp:\n\t' + str(self.sv_sec).replace("\n", "\n\t") + "\n"
+            for vrb_sec_s in self.sv_sec:
+                res += 'secondary verbal grp:\n\t' + str(vrb_sec_s).replace("\n", "\n\t") + "\n"
         
         res += colored_print(">resolved<", 'green') if self.resolved() else colored_print(">not resolved<", 'red')
         
