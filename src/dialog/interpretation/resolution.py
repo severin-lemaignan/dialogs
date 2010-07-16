@@ -63,8 +63,9 @@ class Resolver:
          
         resolved_sn = []
         for sn in array_sn:
-            onto = oro.lookup(sn.noun[0])
-            resolved_sn.append(self.resolve_references(sn, current_speaker, current_object, onto))
+            if sn.noun:
+                onto = oro.lookup(sn.noun[0])
+                resolved_sn.append(self.resolve_references(sn, current_speaker, current_object, onto))
 
         oro.close()
         return resolved_sn
