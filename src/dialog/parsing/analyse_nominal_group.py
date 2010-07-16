@@ -29,7 +29,7 @@ Statement of lists
 """
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there']
-proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by']
+proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind','behind+to','next+to','in+front+of']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 

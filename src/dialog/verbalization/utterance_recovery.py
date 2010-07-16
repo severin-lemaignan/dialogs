@@ -14,6 +14,8 @@
     and_case : to convert 'and' to ',' if it is necessary
     replace_tuple : to replace some tuples
     negation : to replace not
+    delete_plus : to delete '+' if there is
+    delete_comma : to delete ',' if there is at the end of sentence 
     verbalising : is the basic function of this module
 """
 from resources_manager import ResourcePool
@@ -66,15 +68,15 @@ def dispatching(analysis):
 
     #For start
     elif analysis.data_type=='start':
-        return ['hello']
+        return ['hello','.']
 
     #For agree
     elif analysis.data_type=='agree':
-        return ['OK']
+        return ['OK','.']
 
     #For disagree
     elif analysis.data_type=='disagree':
-        return ['no']
+        return ['no','.']
 
     #For w_question
     elif analysis.data_type=='w_question':
@@ -342,14 +344,51 @@ def negation(sentence):
     while i < len(sentence):
         
         if sentence[i]=='not':
-            sentence[i-1]=sentence[i-1]+"n't"
+            if sentence[i-1]=='will':
+                sentence[i-1]="won't"
+            else:
+                sentence[i-1]=sentence[i-1]+"n't"
+                
             sentence=sentence[:i]+sentence[i+1:]
         i=i+1
     
     return sentence
     
+
+
+def delete_plus(sentence):
+    """
+    This function to delete '+' if there is                                   
+    Input=sentence                                     Output=sentence               
+    """
     
+    #init
+    i=0
     
+    while i < len(sentence):
+        if other_functions.find_plus(sentence[i])==1:
+            sentence=sentence[:i]+other_functions.list_recovery(sentence[i])+sentence[i+1:]
+    
+        i=i+1
+    return sentence
+
+
+
+def delete_comma(sentence):
+    """
+    This function to delete ',' if there is at the end of sentence                                   
+    Input=sentence                                     Output=sentence               
+    """
+    
+    word = sentence[len(sentence)-2]
+    if word[len(word)-1]==',':
+        word=word[:len(word)-1]
+        sentence[len(sentence)-2]=word
+    
+    return sentence
+                
+                 
+        
 def verbalising(class_list):
     """
     This function is the basic function of this module                               
@@ -367,6 +406,8 @@ def verbalising(class_list):
         sentence=and_case(sentence)
         sentence=negation(sentence)
         sentence=replace_tuple(sentence)
+        sentence=delete_plus(sentence)
+        sentence=delete_comma(sentence)
         
         #To have the upper case and convert the list to string
         sentence[0]=sentence[0][0].upper()+sentence[0][1:]

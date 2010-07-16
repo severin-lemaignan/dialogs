@@ -34,6 +34,7 @@ apostrophe_s_to_is_list=["he's", "she's", "it's", "that's", "what's", "who's", "
 replacement_tuples=[("won't",['will', 'not']),("wanna",['want', 'to']),("gonna",['going', 'to'])]
 insertion_tuples=[("'m", 'am', 2),("'ve", 'have', 3),("'re", 'are', 3),("'ll", 'will', 3),("'d", 'would', 2),("n't", 'not', 3)]
 prep_list=['ago']
+prep_concat_list=[['next','to'],['behind','to'],['in','front','of']]
 
 
 
@@ -156,10 +157,22 @@ def prep_concat(sentence):
     Input=sentence                                     Output=sentence               
     """    
     
+    #init
+    i=0
+    
     #For the case of whom
     if sentence[0:2]==['To', 'whom']:
         sentence=['To+whom']+sentence[2:]
     
+    #For all other prepositions
+    while i < len(sentence):
+        
+        for j in prep_concat_list:
+            if i+len(j) < len(sentence) and sentence[i:i+len(j)]==j:
+                sentence=sentence[:i]+[other_functions.convert_to_string(j)]+sentence[i+len(j):]
+                break
+                
+        i=i+1
     return sentence
     
     

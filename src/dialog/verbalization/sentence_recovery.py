@@ -40,7 +40,9 @@ def statement(analysis):
     
     #If it is a relative form
     if analysis.data_type=='relative' or analysis.data_type=='subsentence':
-        return phrase+[';']
+        if phrase[len(phrase)-1][len(phrase[len(phrase)-1])-1]!=',':
+            phrase[len(phrase)-1]=phrase[len(phrase)-1]+','
+        return phrase
     
     return phrase+['.']
 
@@ -161,12 +163,29 @@ def quantity_ques(analysis):
         
             #Same processing with yes no question
             phrase=element_recovery.vrb_ques_recovery(analysis.sv[0].vrb_tense, analysis.sv[0].vrb_main, analysis.sv[0].vrb_adv, analysis.sn, analysis.sv[0].state)
-            phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].i_cmpl)
+            
+            for x in analysis.sv[0].i_cmpl:
+                phrase=phrase+element_recovery.indirect_compl_recovery(x)
+            
             phrase=phrase+analysis.sv[0].advrb
             if analysis.sv[0].sv_sec!=[]:
                 phrase=phrase+['to']+analysis.sv[0].sv_sec[0].vrb_adv+other_functions.list_recovery(analysis.sv[0].sv_sec[0].vrb_main[0])
-                phrase=phrase+element_recovery.nom_struc_recovery(analysis.sv[0].sv_sec[0].d_obj)
-                phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].sv_sec[0].i_cmpl)
+                
+                #We add the direct and indirect complement
+                if analysis.sv[0].sv_sec[0].i_cmpl!=[] and analysis.sv[0].sv_sec[0].i_cmpl[0].prep!=[]:
+                    phrase=phrase+element_recovery.nom_struc_recovery(analysis.sv[0].sv_sec[0].d_obj)
+                    for x in analysis.sv[0].sv_sec[0].i_cmpl:
+                        phrase=phrase+element_recovery.indirect_compl_recovery(x)
+                else:
+                    if analysis.sv[0].sv_sec[0].i_cmpl!=[]:
+                        phrase=phrase+element_recovery.indirect_compl_recovery(sv[0].sv_sec[0].i_cmpl[0])
+                    phrase=phrase+element_recovery.nom_struc_recovery(analysis.sv[0].sv_sec[0].d_obj)
+                    #init
+                    x=1
+                    while x < len(analysis.sv[0].sv_sec[0].i_cmpl):
+                        phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].sv_sec[0].i_cmpl[x])
+                        x=x+1
+                
                 phrase=phrase+analysis.sv[0].sv_sec[0].advrb
     
             for s in analysis.sv[0].vrb_sub_sentence:
