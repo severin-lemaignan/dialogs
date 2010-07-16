@@ -52,6 +52,12 @@ class Sentence:
         
         #res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
         return res
+    
+    def flatten(self):
+        return [self.data_type,
+                self.aim,
+                map(lambda x: x.flatten(), self.sn),
+                map(lambda x: x.flatten(), self.sv)]
 
 
 class Nominal_Group:
@@ -109,6 +115,15 @@ class Nominal_Group:
         return res
     
     
+    def flatten(self):
+        return [self.det,
+                self.noun,
+                self.adj,
+                map(lambda x: x.flatten(), self.noun_cmpl),
+                map(lambda x: x.flatten(), self.relative)]
+        
+        
+        
     
 class Indirect_Complement:
     """
@@ -135,7 +150,10 @@ class Indirect_Complement:
         
         return res
 
-
+    
+    def flatten(self):
+        return [self.prep,
+                map(lambda x: x.flatten(), self.nominal_group)]
 
 class Verbal_Group:
     """
@@ -215,9 +233,36 @@ class Verbal_Group:
         return res
 
 
+    def flatten(self):
+        return [self.vrb_main,
+                map(lambda x: x.flatten(), self.sv_sec),
+                self.vrb_tense,
+                map(lambda x: x.flatten(), self.d_obj),
+                map(lambda x: x.flatten(), self.i_cmpl),
+                self.vrb_adv,
+                self.advrb,
+                self.state,
+                map(lambda x: x.flatten(), self.vrb_sub_sentence)]
+
+
+
+class Comparator():
+    """
+    This class holds a single method that compares two objects and return True or False.
+    The objects should hold a method 'flatten', turning it into a list
+    
+    """    
+    def __init__(self):
+        pass
+    
+    def compare(self, obj1, obj2):
+        return obj1.__class__ == obj2.__class__ and \
+                obj1.flatten() == obj2.flatten()
+        
 
 def union (cl1, cl2, cl3):
     return cl1
+
 
 
 def unit_tests():
@@ -242,7 +287,7 @@ def unit_tests():
                         '', 
                         [Nominal_Group([],["Holmes"],[],[],[]), Nominal_Group([],["Sherlock"],[],[],[])], 
                         [Verbal_Group(["want"],
-                                    Verbal_Group(["eat"],[], 'infinitive',[],[],[],[],'affirmative', []), 
+                                    [Verbal_Group(["eat"],[], 'infinitive',[],[],[],[],'affirmative', [])], 
                                     'past simple',
                                     [],
                                     [],
@@ -277,6 +322,40 @@ def unit_tests():
                                     [sentence3])])
     print("*********************************")
     print(sentence4)
+    
+    
+    
+    sentence4bis = Sentence('statement',
+                        '',
+                        [Nominal_Group( ['the'],  
+                                        ['bottle'],
+                                        ['blue', 'gray'],
+                                        [Nominal_Group(['my'],  ['mother'],[],[], [sentence2]), Nominal_Group(['my'],  ['father'],[],[], [])], 
+                                        [])], 
+                        [Verbal_Group(['know'], 
+                                    [],
+                                    'present simple',
+                                    [Nominal_Group(['the'],  ["land"],['old'],[], []), Nominal_Group(['the'],  ["brand"],['lazy'],[], [])],
+                                    [
+                                        Indirect_Complement(['in'], 
+                                                            [Nominal_Group(['the'],  ['garden'],['green'],[], [])]), 
+                                        Indirect_Complement(['to'], 
+                                                            [Nominal_Group(['the'],  ['car'],['red'],[], [])])
+                                    ],
+                                    ["slowly"], 
+                                    ["now"], 
+                                    "affirmative", 
+                                    [sentence3])])
+    print("*********************************")
+    print(sentence4bis)
+    
+    
+    print "*************  Sentence Comparison ****************"
+    
+    cmp = Comparator()    
+    print "sentence4 == sentence4bis: ", cmp.compare(sentence4, sentence4bis)    
+    print "sentence3 == sentence4: ", cmp.compare(sentence3, sentence4)
+    
     
 if __name__ == '__main__':
     unit_tests()
