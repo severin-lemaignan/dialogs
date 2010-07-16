@@ -179,7 +179,7 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
             print "The sentence after the analyse utterance is :"
             print sentence_list[i]
             
-            display(utterance[i])
+            print (str(utterance[i]))
             
             flag=compare_sentence(utterance[i], rslt_utterance[i])
             if flag==1:
@@ -204,72 +204,6 @@ def display_ng(nom_str):
     for j in nom_str.relative:
         display (j)
         print ''
-
-
-
-def display(a):
-    """
-    Function to display class Sentence                                               
-    """
-    print ''
-    print a.data_type,a.aim
-    print ''
-
-    for i in a.sn:
-        print "subject:"
-        display_ng(i)
-        print ''
-
-    for b in a.sv:
-        print 'verb:'
-        print b.state
-        print b.vrb_adv
-        print b.vrb_main, b.vrb_tense
-        print ''
-        for x in b.d_obj:
-            print 'direct complement:'
-            display_ng(x)
-            print ''
-
-        for j in b.i_cmpl:
-            print 'indirect complement:'
-            print j.prep
-            for k in j.nominal_group:
-                display_ng(k)
-            print ''
-
-        if b.advrb!=[]:
-            print 'adverb of the sentence:'
-            print b.advrb
-            print ''
-
-        for m in b.sv_sec:
-            print 'the second verb:'
-            print m.state
-            print m.vrb_main
-                    
-            for x in m.d_obj:
-                print 'direct complement:'
-                display_ng(x)
-                print ''
-
-            for j in m.i_cmpl:
-                print 'indirect complement:'
-                print j.prep
-                for y in j.nominal_group:
-                    display_ng(y)
-                print ''
-
-            if m.advrb!=[]:
-                print 'adverb of the sentence:'
-                print m.advrb
-                print ''
-
-        for z in b.vrb_sub_sentence:
-            print 'the content of subsentence:'
-            display(z)
-
-   
 
 def unit_tests():
     """
