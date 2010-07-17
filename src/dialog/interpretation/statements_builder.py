@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import logging
+from helpers import colored_print
+
 import random
 import inspect
 import unittest
-from pyoro import Oro
 from resources_manager import ResourcePool
 from statements_safe_adder import StatementSafeAdder, generate_id, printer
 
@@ -139,9 +140,7 @@ class NominalGroupStatementBuilder:
             logging.debug("Found a noun phrase:\"" + noun + "\"")
                         
             # Case : existing ID
-            oro = Oro("localhost", 6969) #TODO: remove connection. Use a variable that will be set up for a single connection to ORO
-            onto = oro.lookup(noun)
-            oro.close()
+            onto = ResourcePool().ontology_server.lookup(noun)
             
             if onto and [noun,"INSTANCE"] in onto:
                 pass #Just to be checked. The Id has already been resolved
@@ -476,12 +475,10 @@ class VerbalGroupStatementBuilder:
 def dump_resolved(sentence, current_speaker, current_listener):
     def resolve_ng(ngs):
         #TODO: remove connection. Use a variable that will be set up for a single connection to ORO
-        oro = Oro("localhost", 6969)
-
 
         for ng in ngs:
             ng._resolved = False
-            onto_focus = oro.find('?concept', [current_speaker + ' focusesOn ?concept'])
+            onto_focus =  ResourcePool().ontology_server.find('?concept', [current_speaker + ' focusesOn ?concept'])
             
             if ng.noun in [['me'], ['Me'],['I']]:
                 ng.id = current_speaker
@@ -511,7 +508,6 @@ def dump_resolved(sentence, current_speaker, current_listener):
                 for rel in ng.relative:
                     rel = dump_resolved(rel, current_speaker, current_listener)
 
-        oro.close()
         return ngs
 
     if sentence.sn:
@@ -537,8 +533,7 @@ class TestStatementBuilder(unittest.TestCase):
 
     def setUp(self):
         
-        self.oro = Oro('localhost', 6969)
-        self.oro.add(['id_danny rdfs:label "Danny"',
+        ResourcePool().ontology_server.add(['id_danny rdfs:label "Danny"',
                       'id_danny rdf:type Human',
                       'blue_volvo hasColor blue', 
                       'blue_volvo rdf:type Car',
@@ -1058,9 +1053,6 @@ class TestStatementBuilder(unittest.TestCase):
                
         return expected == res
         
- 
-    def tearDown(self):
-        self.oro.close()
         
 def unit_tests():
     """This function tests the main features of the class StatementBuilder"""

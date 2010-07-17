@@ -8,9 +8,8 @@ from statements_builder import StatementBuilder
 from statements_builder import NominalGroupStatementBuilder
 from statements_builder import VerbalGroupStatementBuilder
 from sentence import *
-from pyoro import Oro
-from pyoro import OroServerError
 from resources_manager import ResourcePool
+from pyoro import OroServerError
 from dialog_exceptions import DialogError
 from dialog_exceptions import GrammaticalError
 
@@ -25,9 +24,6 @@ class QuestionHandler:
 		#This field takes the value True or False when processing a Yes-No-question 
 		#		and takes a list of returned values from the ontology when processing a w_question 
 		self._answer = False
-		
-		#This field handle the connection to Oro when required
-		self._oro = None
 	
 	
 	def clear_statements(self):
@@ -51,7 +47,7 @@ class QuestionHandler:
 			self._statements = self._resolve_action_verb_reference(self._statements)
 			logging.debug("Checking on the ontology: check(" + str(self._statements) + ")")
 			
-			self._answer = self._oro.check(self._statements)
+			self._answer = ResourcePool().ontology_server.check(self._statements)
 			
 		#Case the question is a w_question		
 		if sentence.data_type == 'w_question':
@@ -59,14 +55,14 @@ class QuestionHandler:
 			self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
 			logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
 			
-			self._answer = self._oro.find('?concept', self._statements)
+			self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
 		
 		return self._answer
 		
 	def _resolve_action_verb_reference(self, statements):
 		stmts = []
 		try: 
-			sit_id = self._oro.find('?event', statements)
+			sit_id = ResourcePool().ontology_server.find('?event', statements)
 			if sit_id:
 				logging.debug("\t/Found a staticSituation matching the yes_no_question query to be checked: "+ str(sit_id))
 				for s in statements:
@@ -206,8 +202,7 @@ class TestQuestionHandler(unittest.TestCase):
 		#how is my bottle?
 		#what does Danny drive?
 		"""
-		self.oro = Oro("localhost", 6969)
-		self.oro.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
+		ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
 				 
 				 'blue_cube rdf:type Cube',
 				 'blue_cube hasColor blue',
@@ -236,7 +231,6 @@ class TestQuestionHandler(unittest.TestCase):
 		
 		
 		self.qhandler = QuestionHandler("SPEAKER")
-		self.qhandler._oro = self.oro
 	
 	def test_1_w_question(self):
 		print "\n*************  test_1_w_question ******************"
@@ -506,11 +500,6 @@ class TestQuestionHandler(unittest.TestCase):
 		
 		self.qhandler.clear_statements()
 		self.assertEqual(res, expected_result)
-	
-	def tearDown(self):
-		self.oro.close()
-
-
 
 def dump_resolved(sentence, current_speaker, current_recipient = None):
 	resolver = Resolver()

@@ -3,10 +3,16 @@
 
 import os.path
 
+import logging
+
+from pyoro import Oro, OroServerError
+
 from dialog_exceptions import UnknownVerb
 
-#This value is overridden in dialog.py. Only useful to test parser.py alone.
+#These values are overridden in dialog.py. Only useful for unittesting alone.
 DATA_DIR = '../../share/dialog/'
+ORO_HOST = 'localhost'
+ORO_PORT = 6969
 
 def singleton(cls):
     instances = {}
@@ -157,8 +163,19 @@ class ThematicRolesDict:
 @singleton
 class ResourcePool:
     
-    def __init__(self, data_path = DATA_DIR):
+    def __init__(self, data_path = DATA_DIR, oro_host = ORO_HOST, oro_port = ORO_PORT):
         
+        self.ontology_server = None
+        
+        try:
+            if oro_host:
+                self.ontology_server = Oro(oro_host, oro_port)
+            else:
+                logging.info("Starting without ontology server. Resolution won't work")
+        except OroServerError:
+            logging.error("Error while trying to connect to ORO on " + oro_host + ":" + oro_port + \
+            ". Continuing without the ontology server. Resolution won't work")
+            
         self.adjectives = {}
         self.irregular_verbs_past = []
         self.irregular_verbs_present = []
@@ -224,6 +241,9 @@ class ResourcePool:
             if line.startswith("}"): #end of block
                 self.thematic_roles.add_verb(desc)
                 desc = ""
+    
+    def __del__(self):
+        self.ontology_server.close()
 
 
 if __name__ == '__main__':

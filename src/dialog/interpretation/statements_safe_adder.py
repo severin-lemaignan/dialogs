@@ -1,6 +1,7 @@
 import logging
 import random
-from pyoro import Oro           
+
+from resources_manager import ResourcePool
 
 class StatementSafeAdder():
     """ Add statement in the ontology, from statement with resolved ID"""
@@ -9,7 +10,6 @@ class StatementSafeAdder():
                  ids = None):        
         self._statements = statements
         self._unresolved_ids = ids
-        self.oro = Oro("localhost", 6969)
         
     def process(self, resolved):
         if not resolved:
@@ -51,8 +51,7 @@ class StatementSafeAdder():
             
             
     def safeAdd(self, statements):
-        self.oro.safeAdd(statements)
-        self.oro.close()
+        ResourcePool().ontology_server.safeAdd(statements)
 
 
 def generate_id(with_question_mark = True):

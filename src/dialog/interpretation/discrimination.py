@@ -9,22 +9,15 @@ information.
 
 import logging
 
-from pyoro import Oro
-from pyoro import OroServerError
-from dialog_exceptions import UnsufficientInputError
+from resources_manager import ResourcePool
 
-HOST = 'localhost'    # The remote host
-PORT = 6969           # The same port as used by the server
+from dialog_exceptions import UnsufficientInputError
 
  
 class Discrimination():
 
     def __init__(self):
-        try:
-            self.oro = Oro(HOST, PORT)
-        except OroServerError as ose:
-            print('Oups! An error occured!')
-            logging.debug(ose)
+        self.oro = ResourcePool().ontology_server
 
     # -- GET_ALL_OBJECTS_WITH_DESC ------------------------------------------------#
     # Returns all objects' ids with a given set of features (eg. green, big, etc).

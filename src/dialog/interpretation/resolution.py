@@ -7,7 +7,6 @@ from helpers import colored_print
 
 from dialog_exceptions import UnsufficientInputError, UnknownVerb
 from resources_manager import ResourcePool
-from pyoro import Oro #TODO: Remove this when Oro is shared with everyone
 from statements_builder import NominalGroupStatementBuilder #for nominal group discrimination
 from discrimination import Discrimination
 
@@ -128,17 +127,13 @@ class Resolver:
     def _resolve_groups_references(self, array_sn, current_speaker, current_object):
         #TODO: We should start with resolved_sn filled with sentence.sn and replace
         # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
-        
-        #TODO: remove connection. Use a variable that will be set up for a single connection to ORO
-        oro = Oro("localhost", 6969)
          
         resolved_sn = []
         for sn in array_sn:
             if sn.noun:
-                onto = oro.lookup(sn.noun[0])
+                onto = ResourcePool().ontology_server.lookup(sn.noun[0])
                 resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
 
-        oro.close()
         return resolved_sn
     
     def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):

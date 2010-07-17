@@ -6,7 +6,7 @@ import unittest
 
 from dialog import Dialog
 
-from pyoro import Oro
+from resources_manager import ResourcePool
 
 # raquel
 from sentence import *
@@ -58,7 +58,7 @@ class TestDialog(unittest.TestCase):
         self.dialog = Dialog()
         self.dialog.start()
         
-        self.oro = Oro('localhost', 6969)
+        self.oro = ResourcePool().ontology_server
         
         self.oro.add(['shelf1 rdf:type Shelf',
                     'table1 rdf:type Table', 
@@ -309,8 +309,6 @@ class TestDialog(unittest.TestCase):
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
-        
-        self.oro.close()
         
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
