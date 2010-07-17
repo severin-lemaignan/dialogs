@@ -3,6 +3,8 @@
 
 import logging
 
+from helpers import colored_print
+
 from dialog_exceptions import UnsufficientInputError, UnknownVerb
 from resources_manager import ResourcePool
 from pyoro import Oro #TODO: Remove this when Oro is shared with everyone
@@ -22,7 +24,76 @@ class Resolver:
     
     """
     
-    def resolve_references(self, nominal_group, current_speaker, current_object, onto = None):
+    def references_resolution(self, sentence, current_speaker, current_object):
+        logging.info(colored_print("-> Resolving references and anaphors...", 'green'))
+        
+        #sentence sn nominal groups reference resolution
+        if sentence.sn:
+            sentence.sn = self._resolve_groups_references(sentence.sn, current_speaker, current_object)
+        
+        
+        #sentence sv nominal groups reference resolution
+        for sv in sentence.sv:
+            if sv.d_obj:
+                sv.d_obj = self._resolve_groups_references(sv.d_obj,
+                                                               current_speaker,
+                                                               current_object)
+            if sv.i_cmpl:
+                resolved_i_cmpl = []
+                for i_cmpl in sv.i_cmpl:
+                    i_cmpl.nominal_group = self._resolve_groups_references(i_cmpl.nominal_group, 
+                                                                    current_speaker, 
+                                                                    current_object)
+                    resolved_i_cmpl.append(i_cmpl)
+                
+                sv.i_cmpl = resolved_i_cmpl
+
+        return sentence
+        
+    def noun_phrases_resolution(self, sentence, current_speaker):
+        logging.info(colored_print("-> Resolving noun phrases", 'green'))
+        #NominalGroupStatementBuilder
+        builder = NominalGroupStatementBuilder(None,current_speaker)
+        
+        #Discrimination
+        discriminator = Discrimination()
+        
+        #sentence.sn nominal groups nouns phrase resolution
+        if sentence.sn:
+            sentence.sn = self._resolve_groups_nouns(sentence.sn, 
+                                                    current_speaker,
+                                                    discriminator,
+                                                    builder)
+        
+        #sentence.sv nominal groups nouns phrase resolution
+        for sv in sentence.sv:
+            if sv.d_obj:
+                sv.d_obj = self._resolve_groups_nouns(sv.d_obj, 
+                                                     current_speaker,
+                                                     discriminator,
+                                                     builder)
+    
+            if sv.i_cmpl:
+                resolved_i_cmpl = []
+                for i_cmpl in sv.i_cmpl:
+                    i_cmpl.nominal_group = self._resolve_groups_nouns(i_cmpl.nominal_group, 
+                                                       current_speaker,
+                                                       discriminator,
+                                                       builder)
+                    resolved_i_cmpl.append(i_cmpl)
+                sv.i_cmpl = resolved_i_cmpl
+                        
+        return sentence
+        
+        
+    def verbal_phrases_resolution(self, sentence):
+        logging.info(colored_print("-> Resolving verbal groups", 'green'))
+        for sv in sentence.sv:
+            sv = self._resolve_verbs(sv)
+        
+        return sentence
+        
+    def _resolve_references(self, nominal_group, current_speaker, current_object, onto = None):
         
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
@@ -54,7 +125,7 @@ class Resolver:
 
         return nominal_group
     
-    def resolve_groups_references(self, array_sn, current_speaker, current_object):
+    def _resolve_groups_references(self, array_sn, current_speaker, current_object):
         #TODO: We should start with resolved_sn filled with sentence.sn and replace
         # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
         
@@ -65,38 +136,12 @@ class Resolver:
         for sn in array_sn:
             if sn.noun:
                 onto = oro.lookup(sn.noun[0])
-                resolved_sn.append(self.resolve_references(sn, current_speaker, current_object, onto))
+                resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
 
         oro.close()
         return resolved_sn
-            
-    def references_resolution(self, sentence, current_speaker, current_object):
-        logging.debug("Resolving references and anaphors...")
-        
-        #sentence sn nominal groups reference resolution
-        if sentence.sn:
-            sentence.sn = self.resolve_groups_references(sentence.sn, current_speaker, current_object)
-        
-        
-        #sentence sv nominal groups reference resolution
-        for sv in sentence.sv:
-            if sv.d_obj:
-                sv.d_obj = self.resolve_groups_references(sv.d_obj,
-                                                               current_speaker,
-                                                               current_object)
-            if sv.i_cmpl:
-                resolved_i_cmpl = []
-                for i_cmpl in sv.i_cmpl:
-                    i_cmpl.nominal_group = self.resolve_groups_references(i_cmpl.nominal_group, 
-                                                                    current_speaker, 
-                                                                    current_object)
-                    resolved_i_cmpl.append(i_cmpl)
-                
-                sv.i_cmpl = resolved_i_cmpl
-
-        return sentence
     
-    def resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
+    def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
         
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
@@ -128,49 +173,14 @@ class Resolver:
         
         return nominal_group
     
-    def resolve_groups_nouns(self, nominal_groups, current_speaker, discriminator, builder):
+    def _resolve_groups_nouns(self, nominal_groups, current_speaker, discriminator, builder):
         resolved_sn = []
         for ng in nominal_groups:
-            resolved_sn.append(self.resolve_nouns(ng, current_speaker, discriminator, builder))
+            resolved_sn.append(self._resolve_nouns(ng, current_speaker, discriminator, builder))
             
         return resolved_sn
-        
-    def noun_phrases_resolution(self, sentence, current_speaker):
-        #NominalGroupStatementBuilder
-        builder = NominalGroupStatementBuilder(None,current_speaker)
-        
-        #Discrimination
-        discriminator = Discrimination()
-        
-        #sentence.sn nominal groups nouns phrase resolution
-        if sentence.sn:
-            sentence.sn = self.resolve_groups_nouns(sentence.sn, 
-                                                    current_speaker,
-                                                    discriminator,
-                                                    builder)
-        
-        #sentence.sv nominal groups nouns phrase resolution
-        for sv in sentence.sv:
-            if sv.d_obj:
-                sv.d_obj = self.resolve_groups_nouns(sv.d_obj, 
-                                                     current_speaker,
-                                                     discriminator,
-                                                     builder)
     
-            if sv.i_cmpl:
-                resolved_i_cmpl = []
-                for i_cmpl in sv.i_cmpl:
-                    i_cmpl.nominal_group = self.resolve_groups_nouns(i_cmpl.nominal_group, 
-                                                       current_speaker,
-                                                       discriminator,
-                                                       builder)
-                    resolved_i_cmpl.append(i_cmpl)
-                sv.i_cmpl = resolved_i_cmpl
-                        
-        return sentence
-    
-    
-    def resolve_verbs(self, verbal_group):        
+    def _resolve_verbs(self, verbal_group):        
         if verbal_group.resolved(): #already resolved: possible after asking human for more details.
             return verbal_group
         
@@ -197,16 +207,9 @@ class Resolver:
         verbal_group.vrb_main = resolved_verbs
         
         if verbal_group.sv_sec:
-            verbal_group.sv_sec = self.resolve_verbs(verbal_group.sv_sec)
+            verbal_group.sv_sec = self._resolve_verbs(verbal_group.sv_sec)
             
         return verbal_group
-    
-    def verbal_phrases_resolution(self, sentence):
-        logging.debug("Resolving verbs...")
-        for sv in sentence.sv:
-            sv = self.resolve_verbs(sv)
-        
-        return sentence
 
 def unit_tests():
 	"""This function tests the main features of the class Resolver"""
