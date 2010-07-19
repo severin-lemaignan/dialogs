@@ -143,20 +143,20 @@ def recover_obj_iobj(phrase, vg):
         
                 #Recovering nominal group
                 gr_nom_list=gr_nom_list+[analyse_nominal_structure.fill_nom_gr(phrase, object, pos_object,conjunction)]
-
+                
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object,pos_object)
-
                 #We will take off the proposal
                 phrase=phrase[:phrase.index(proposal[0])]+phrase[phrase.index(proposal[0])+1:]
 
                 #If there is a relative
                 begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,rel_list)
-                end_pos_rel=other_functions.recover_end_pos_sub(phrase, rel_list)
+                
                 if begin_pos_rel!=-1:
+                    end_pos_rel=other_functions.recover_end_pos_sub(phrase, rel_list)
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
-
+                
                 #If there is 'and', we need to duplicate the information
                 if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or'):
                     
@@ -190,12 +190,12 @@ def recover_obj_iobj(phrase, vg):
                 
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object, pos_object)
+                
                 #If there is a relative
-
                 begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,rel_list)
-                end_pos_rel=other_functions.recover_end_pos_sub(phrase, rel_list)
                 
                 if begin_pos_rel!=-1:
+                    end_pos_rel=other_functions.recover_end_pos_sub(phrase, rel_list)
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
                     

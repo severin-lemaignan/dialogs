@@ -87,9 +87,12 @@ def find_sn_pos (phrase, begin_pos):
     Input=the sentence (list of strings) and the position of the nominal group       
     Output=the nominal group                                                         
     """
-
+    
+    if begin_pos>=len(phrase):
+        return []
+    
     end_pos = 1
-
+    
     #If it is a pronoun
     for i in pronoun_list:
         if phrase[begin_pos]==i:
@@ -312,3 +315,35 @@ def find_relative (nom_gr, phrase, position, propo_rel_list):
                 return position+len(nom_gr)
     
     return -1
+
+
+
+def complete_relative(phrase, sbj):
+    """
+    Function to find the position of the relative                                    
+    Input=sentence, nominal group and his position and the relative's proposal's list
+    Output=the position of the relative or -1 if there is no relative                                        
+    """
+    
+    #init
+    i=0
+    
+    #If there is a subject, the relative proposal refer to direct or indirect complement
+    if find_sn_pos(phrase, 0)!=[]:
+        
+        while i < len(phrase):
+            for j in proposal_list:
+                if j==phrase[i] and find_sn_pos(phrase, i+1)==[]:
+                    #It is an indirect complement
+                    phrase=phrase[:i+1]+sbj+phrase[i+1:]
+                    return phrase
+                elif j==phrase[i]:
+                    i=i+len(find_sn_pos(phrase, i+1))
+            i=i+1
+        
+        #It is a direct complement
+        phrase=phrase+sbj
+   
+    #Default case
+    return phrase               
+    

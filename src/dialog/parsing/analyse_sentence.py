@@ -471,7 +471,7 @@ def other_sentence(type, request, sentence):
         if analysis.sn==[]:
             #We recover the subject
             sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
-
+        
         #We have to know if there is a modal
         for m in modal_list:
             if sentence[0]==m:
@@ -546,13 +546,13 @@ def other_sentence(type, request, sentence):
         
         #We delete the verb
         sentence= sentence[sentence.index(verb[0])+len(verb):]
-
+    
     #We recover the conjunctive subsentence
     sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
     
     #We recover the subsentence
     sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
-    
+   
     #It verifies if there is a secondary verb
     sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
     if sec_vrb!=[]:

@@ -31,7 +31,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
 
     #init
     relative=[]
-    
+   
     #We start by recovering all information we need
     nom_gr_compl=analyse_nominal_group.find_nom_gr_compl (nom_gr, phrase, pos_nom_gr)
     det=analyse_nominal_group.return_det(nom_gr)
@@ -45,7 +45,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     #There is a relative
     if begin_pos_rel!=-1:
         relative_phrase=phrase[begin_pos_rel+1:begin_pos_rel+end_pos_rel-1]
-        
+        relative_phrase=analyse_nominal_group.complete_relative(relative_phrase,nom_gr)
         relative = relative+[analyse_sentence.other_sentence('relative',phrase[begin_pos_rel],relative_phrase)]
 
     #If there is a nom_gr_compl, we must make a recursive process for embedded complement

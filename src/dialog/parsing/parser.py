@@ -209,7 +209,7 @@ def unit_tests():
     """
     Function to perform unit tests                                                   
     """ 
-    
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -506,7 +506,7 @@ def unit_tests():
                 [Nominal_Group(['the'],['guitar'],[],[],[Sentence('relative', 'that', 
                     [Nominal_Group([],['I'],[],[],[])],  
                     [Verbal_Group(['buy'],[],'past simple', 
-                        [], 
+                        [Nominal_Group(['the'],['guitar'],[],[],[])], 
                         [],
                         [], ['yesterday'] ,'affirmative',[])])])],
                 [],
@@ -514,7 +514,7 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
     """
     """
@@ -543,7 +543,7 @@ def unit_tests():
                 Nominal_Group(['the'],['glass'],[],[],[Sentence('relative', 'which', 
                     [Nominal_Group([],['I'],[],[],[])],  
                     [Verbal_Group(['clean'], [],'past simple', 
-                        [],
+                        [Nominal_Group(['the'],['glass'],[],[],[])],
                         [],
                         [], ['yesterday'] ,'affirmative',[])])])],
             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]), Indirect_Complement(['at'],[Nominal_Group(['my'],['left'],[],[],[])])],
@@ -572,7 +572,7 @@ def unit_tests():
             [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'that', 
                 [Nominal_Group([],['I'],[],[],[])],  
                 [Verbal_Group(['buy'], [],'past simple', 
-                    [], 
+                    [Nominal_Group(['the'],['bottle'],[],[],[])], 
                     [Indirect_Complement(['from'],[Nominal_Group(['the'],['store'],[],[],[Sentence('relative', 'which', 
                         [],  
                         [Verbal_Group(['be'], [],'present simple', 
@@ -1125,8 +1125,8 @@ def unit_tests():
                 [Nominal_Group(['the'],['idea'],[],[],[Sentence('relative', 'that', 
                     [Nominal_Group([],['I'],[],[],[])], 
                     [Verbal_Group(['present'], [],'present simple', 
-                        [Nominal_Group([],['you'],[],[],[])], 
-                        [],
+                        [Nominal_Group(['the'],['idea'],[],[],[])], 
+                        [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
                         [], [] ,'affirmative',[])])])], 
                 [],
                 [], [] ,'affirmative',[])]),
@@ -1134,7 +1134,7 @@ def unit_tests():
             [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'that', 
                 [Nominal_Group([],['you'],[],[],[])], 
                 [Verbal_Group(['buy'], [],'past simple', 
-                    [], 
+                    [Nominal_Group(['the'],['bottle'],[],[],[])], 
                     [],
                     [], [] ,'affirmative',[])])])], 
             [Verbal_Group(['be'], [],'present simple', 
@@ -1167,7 +1167,7 @@ def unit_tests():
                 [Nominal_Group(['the'],['award'],[],[],[Sentence('relative', 'which', 
                     [Nominal_Group([],['we'],[],[],[])], 
                     [Verbal_Group(['win'], [],'past simple', 
-                        [], 
+                        [Nominal_Group(['the'],['award'],[],[],[])], 
                         [Indirect_Complement(['in'],[Nominal_Group(['the'],['years'],['last'],[],[])])],
                         [], [] ,'affirmative',[])])])], 
                 [],
@@ -1204,7 +1204,7 @@ def unit_tests():
                 [Nominal_Group(['the'],['novel'],['latest'],[],[Sentence('relative', 'which', 
                     [Nominal_Group([],['Jido'],[],[],[])], 
                     [Verbal_Group(['write'], [],'past simple', 
-                        [], 
+                        [Nominal_Group(['the'],['novel'],['latest'],[],[])], 
                         [],
                         [], [] ,'affirmative',[])])])], 
             [],
@@ -1408,7 +1408,7 @@ def unit_tests():
     print ''
     """
     
-    """
+    
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -1540,14 +1540,14 @@ def unit_tests():
                     [Nominal_Group([],['I'],[],[],[])],  
                     [Verbal_Group(['drink'],[],'present simple', 
                         [], 
-                        [],
+                        [Indirect_Complement(['in'],[Nominal_Group(['that'],['bottle'],[],[],[])])],
                         [], [] ,'affirmative',[])])])],
                 [],
                 [], [] ,'affirmative',[])])]
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    """
+    
     
     
     
