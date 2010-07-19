@@ -1525,7 +1525,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.4 ##############################')
 
-    utterance="I take that bottle that I drink in ; ."
+    utterance="Take the bottle carrefully. I take that bottle that I drink in ; ."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1533,7 +1533,13 @@ def unit_tests():
     sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
-    rslt=[Sentence('statement', '', 
+    rslt=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['take'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [],
+                ['carrefully'], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
             [Nominal_Group([],['I'],[],[],[])],  
             [Verbal_Group(['take'], [],'present simple', 
                 [Nominal_Group(['that'],['bottle'],[],[],[Sentence('relative', 'that', 

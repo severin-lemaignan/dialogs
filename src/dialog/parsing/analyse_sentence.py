@@ -430,7 +430,10 @@ def y_n_ques(type, request, sentence):
     #We perform the processing with the modal
     if modal!=[]:
         vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
-        
+    
+    #If there is a forgotten*
+    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+    
     analysis.sv=[vg]
     return analysis
 
@@ -563,6 +566,9 @@ def other_sentence(type, request, sentence):
     
     #We have to take off abverbs form the sentence
     sentence=analyse_verbal_structure.find_adv(sentence, vg)
+    
+    #If there is a forgotten*
+    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
     
     analysis.sv=[vg]
     return analysis

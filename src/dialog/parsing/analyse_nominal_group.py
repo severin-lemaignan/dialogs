@@ -9,7 +9,7 @@
  The package contains functions that affect the analysis of nominal groups        
  We return all elements of a nominal group                                        
  Functions:                                                                       
-    adjective_pos : to return the postion of the noun in the sentence             
+    adjective_pos : to return the position of the noun in the sentence             
     find_sn_pos : to return the nom_group in a given position with adjective_pos  
     find_sn : to return the first nominal group found in the sentence             
     refine_nom_gr : to refine the nominal group if there is a mistake             
@@ -19,6 +19,7 @@
     find_nom_gr_compl : to recover the complement noun of the nominal group       
     take_off_nom_gr : to take off a nominal group from the sentence               
     find_relative : to find the position of the relative                          
+    complete_relative : to complete the relative with her object 
 """
 from resources_manager import ResourcePool
 import other_functions
@@ -320,9 +321,9 @@ def find_relative (nom_gr, phrase, position, propo_rel_list):
 
 def complete_relative(phrase, sbj):
     """
-    Function to find the position of the relative                                    
-    Input=sentence, nominal group and his position and the relative's proposal's list
-    Output=the position of the relative or -1 if there is no relative                                        
+    Function to complete the relative with her object                                    
+    Input=relative, the object of the relative (his nominal group)
+    Output=relative concatenated to the nominal group                                        
     """
     
     #init
