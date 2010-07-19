@@ -82,18 +82,18 @@ def recover_ns(phrase, analysis, position):
         sbj=analyse_nominal_group.refine_nom_gr(sbj)
         
         analysis.sn=analysis.sn+[fill_nom_gr(phrase, sbj, position,conjunction)]
-    
+  
+        #Pre-processing to remove the relative
+        begin_pos_rel=analyse_nominal_group.find_relative(sbj, phrase, position, propo_rel_list)
+
+        if  begin_pos_rel!=-1:
+            end_pos_rel=other_functions.recover_end_pos_sub(phrase, propo_rel_list) 
+            #We remove the relative part of the phrase
+            phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
+           
         #We take off the nominal group
         phrase=analyse_nominal_group.take_off_nom_gr(phrase, sbj, phrase.index(sbj[0]))
         
-        #Pre-processing to remove the 
-        begin_pos_rel=analyse_nominal_group.find_relative(sbj, phrase, position, propo_rel_list)
-        end_pos_rel=other_functions.recover_end_pos_sub(phrase, propo_rel_list)
-        
-        if  begin_pos_rel!=-1:
-            #We remove the relative part of the phrase
-            phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
-            
         #If there is 'and', we need to duplicate the information
         if len(phrase)>position and (phrase[position]=='and' or phrase[position]=='or'):
             
@@ -111,7 +111,7 @@ def recover_ns(phrase, analysis, position):
             if sbj==[]:
                 phrase=['that']+phrase
                 sbj=analyse_nominal_group.find_sn_pos(phrase, position)
-               
+        
         else:
             sbj=[]
     

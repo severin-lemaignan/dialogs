@@ -209,7 +209,7 @@ def unit_tests():
     """
     Function to perform unit tests                                                   
     """ 
-    """
+    
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -514,7 +514,7 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    """
+    
     
     """
     """
@@ -1408,7 +1408,7 @@ def unit_tests():
     print ''
     """
     
-    
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -1516,6 +1516,38 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    
+    
+    
+    """
+    ## Aim of this test : Using relative with subject and object
+    """
+    print ''
+    print ('######################## test 5.4 ##############################')
+
+    utterance="I take that bottle that I drink in ; ."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])],  
+            [Verbal_Group(['take'], [],'present simple', 
+                [Nominal_Group(['that'],['bottle'],[],[],[Sentence('relative', 'that', 
+                    [Nominal_Group([],['I'],[],[],[])],  
+                    [Verbal_Group(['drink'],[],'present simple', 
+                        [], 
+                        [],
+                        [], [] ,'affirmative',[])])])],
+                [],
+                [], [] ,'affirmative',[])])]
+
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    """
     
     
     

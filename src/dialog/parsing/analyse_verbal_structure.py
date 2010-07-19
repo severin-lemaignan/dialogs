@@ -61,7 +61,7 @@ def find_vrb_adv(phrase):
 
 
 
-def find_adv(phrase):
+def find_adv(phrase,vg):
     """
     This function recovers the list of adverbs                                       
     Input=sentence                            Output=adverbs list                    
@@ -69,21 +69,28 @@ def find_adv(phrase):
 
     #If phrase is empty
     if phrase ==[]:
-        return []
+        vg.advrb= []
 
+    #init
+    i=0
+    
     #If the adverb is in the list
-    for i in phrase:
+    while i < len(phrase):
         for j in adv_list:
-            if j==i:
-                return [i]+find_adv(phrase[phrase.index(i)+1:])
+            if j==phrase[i]:
+                vg.advrb=[j]
+                phrase=phrase[:i]+phrase[i+1:]
+                phrase=find_adv(phrase,vg)
+                
+        #Using a rule of grammar
+        if phrase[i].startswith('every'):
+            vg.advrb= [phrase[i]]
+            phrase=phrase[:i]+phrase[i+1:]
+            phrase=find_adv(phrase,vg)
+        
+        i=i+1
 
-    #Using a rule of grammar
-    for k in phrase:
-        if k.startswith('every'):
-            return [k]+find_adv(phrase[phrase.index(k)+1:])
-
-    #Default case
-    return []
+    return phrase
 
 
 
@@ -115,7 +122,7 @@ def recover_obj_iobj(phrase, vg):
     
     #init
     conjunction='AND'
-    
+   
     #We search the first nominal group in sentence
     object= analyse_nominal_group.find_sn(phrase)
    
@@ -232,7 +239,7 @@ def find_scd_vrb(phrase):
         if i=='to':
 
             #It should not be followed by a noun or by an adverb
-            if analyse_nominal_group.find_sn_pos(phrase, phrase.index(i)+1)==[] and find_adv([phrase[phrase.index(i)+1]])==[]:
+            if analyse_nominal_group.find_sn_pos(phrase, phrase.index(i)+1)==[]:
 
                 #If there is a proposal after 'to'
                 for j in proposal_list:
@@ -267,9 +274,12 @@ def process_scd_sentence(phrase, vg, sec_vrb):
         vg.sv_sec=vg.sv_sec+[Verbal_Group(scd_verb, [], '', [], [], [], [], 'affirmative',[])]
         #We delete the verb
         scd_sentence= scd_sentence[scd_sentence.index(scd_sentence[0])+1:]
-
+    
+    #We recover the conjunctive subsentence
+    phrase=process_conjunctive_sub(phrase, vg.sv_sec[0])
+    
     #We process the end of the second sentence
-    vg.sv_sec[0].advrb=find_adv(scd_sentence)
+    scd_sentence=find_adv(scd_sentence,vg.sv_sec[0])
     scd_sentence=recover_obj_iobj(scd_sentence, vg.sv_sec[0])
 
     return phrase
@@ -324,11 +334,11 @@ def process_conjunctive_sub(phrase,vg):
     begin_pos=-1
     
     #We will find conjunctive subsentence if there is
-    if len(phrase)>0 and phrase[0]=='that':
+    if len(phrase)>0 and phrase[0]=='that' and analyse_nominal_group.find_sn_pos(phrase, 1)!=[]:
         begin_pos=0
         
     for i in pronoun_list:
-        if len(phrase)>1 and i==phrase[0] and phrase[1]=='that':
+        if len(phrase)>2 and i==phrase[0] and phrase[1]=='that' and analyse_nominal_group.find_sn_pos(phrase, 2)!=[]:
             begin_pos=1
         
     

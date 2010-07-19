@@ -371,7 +371,7 @@ def y_n_ques(type, request, sentence):
 
     #We delete the auxiliary
     sentence=sentence[1:]
-
+    
     #We recover the subject
     sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
     
@@ -380,6 +380,7 @@ def y_n_ques(type, request, sentence):
         vg.vrb_tense = analyse_verb.find_tense_statement(aux, vg.vrb_adv)
         vg.vrb_main=['be']
     else:
+        
         vg.vrb_adv=analyse_verbal_structure.find_vrb_adv(sentence)
         vg.vrb_tense = analyse_verb.find_tense_question(sentence, aux, vg.vrb_adv)
 
@@ -424,7 +425,7 @@ def y_n_ques(type, request, sentence):
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
     
         #We have to take off abverbs form the sentence
-        vg.advrb=analyse_verbal_structure.find_adv(sentence)
+        sentence=analyse_verbal_structure.find_adv(sentence, vg)
 
     #We perform the processing with the modal
     if modal!=[]:
@@ -476,7 +477,6 @@ def other_sentence(type, request, sentence):
             if sentence[0]==m:
                 modal=sentence[0]
                 
-        
         #We must take into account all possible cases to recover the sentence's tense
         if len(sentence)>1 and sentence[1]=='not':
             vg.state='negative'
@@ -546,7 +546,7 @@ def other_sentence(type, request, sentence):
         
         #We delete the verb
         sentence= sentence[sentence.index(verb[0])+len(verb):]
-    
+
     #We recover the conjunctive subsentence
     sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
     
@@ -560,10 +560,10 @@ def other_sentence(type, request, sentence):
     
     #We recover the direct, indirect complement and the adverbial
     sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
-
+    
     #We have to take off abverbs form the sentence
-    vg.advrb=analyse_verbal_structure.find_adv(sentence)
-
+    sentence=analyse_verbal_structure.find_adv(sentence, vg)
+    
     analysis.sv=[vg]
     return analysis
 

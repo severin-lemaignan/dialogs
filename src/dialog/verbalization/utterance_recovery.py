@@ -31,7 +31,7 @@ det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these'
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 wques_rules=[('date',['when']),('place',['where']),('origin',['where']),('time',['what','time']),('color',['what','color']),('size',['what','size']),
              ('people',['who']),('age',['how', 'old']),('duration',['how', 'long']),('frequency',['how', 'often']),('distance',['how', 'far']),
-             ('manner',['how']),('reason',['why'])]
+             ('manner',['how']),('reason',['why']), ('object',['object'])]
 insertion_tuples=[("'m", 'am'),("'ve", 'have'),("'re", 'are'),("'ll", 'will'),("'d", 'would'),("'s", 'is')]
 
 
