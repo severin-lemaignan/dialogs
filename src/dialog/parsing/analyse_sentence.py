@@ -432,7 +432,7 @@ def y_n_ques(type, request, sentence):
         vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
     
     #If there is a forgotten*
-    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+    vg.vrb_adv=vg.vrb_adv+analyse_verbal_structure.find_vrb_adv (sentence)
     
     analysis.sv=[vg]
     return analysis
@@ -568,7 +568,7 @@ def other_sentence(type, request, sentence):
     sentence=analyse_verbal_structure.find_adv(sentence, vg)
     
     #If there is a forgotten*
-    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+    vg.vrb_adv=vg.vrb_adv+analyse_verbal_structure.find_vrb_adv (sentence)
     
     analysis.sv=[vg]
     return analysis

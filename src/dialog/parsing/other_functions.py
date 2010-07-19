@@ -72,6 +72,9 @@ def recover_end_pos_sub(phrase, propo_sub_list):
             if nb_sub==0:
                 #The of the processing is here, when there is no 'sub'
                 return position
+        
+        if y=='.' or y=='!' or y=='?':
+            return position
 
     #Default case
     return 0

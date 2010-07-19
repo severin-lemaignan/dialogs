@@ -481,7 +481,7 @@ def unit_tests():
     print ''
     print ('######################## test 1.8 ##############################')
 
-    utterance="the man who talks ; has a new car. I play the guitar that I bought yesterday ; ."
+    utterance="the man who talks ; has a new car. I play the guitar that I bought yesterday."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1111,7 +1111,7 @@ def unit_tests():
     print ''
     print ('######################## test 4.1 ##############################')
 
-    utterance="What are you thinking about the idea that I present you ; ? what color is the bottle that you bought ;"
+    utterance="What are you thinking about the idea that I present you? what color is the bottle that you bought"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1153,7 +1153,7 @@ def unit_tests():
     print ''
     print ('######################## test 4.2 ##############################')
 
-    utterance="Which competition's salesperson won the award which we won in the last years ;."
+    utterance="Which competition's salesperson won the award which we won in the last years."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1221,7 +1221,7 @@ def unit_tests():
     print ''
     print ('######################## test 4.4 ##############################')
 
-    utterance="learn that I want you to give me the blue bottle ;. If you do your job ; you will be happy."
+    utterance="learn that I want you to give me the blue bottle. If you do your job ; you will be happy."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1457,7 +1457,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.2 ##############################')
 
-    utterance="learn that I want you to give me the blue bottle that is blue ; ;."
+    utterance="learn that I want you to give me the blue bottle that is blue."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1525,7 +1525,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.4 ##############################')
 
-    utterance="Take the bottle carrefully. I take that bottle that I drink in ; ."
+    utterance="Take the bottle carrefully. I take that bottle that I drink in."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
