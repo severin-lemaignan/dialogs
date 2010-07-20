@@ -4,6 +4,7 @@
 #SVN:rev202 + PythonTidy + rewrite 'toString' methods using Python __str__ + test cases
 
 from helpers import colored_print #to colorize the sentence output
+from parsing import *
 
 class Sentence:
     """
@@ -266,8 +267,16 @@ class Comparator():
                 obj1.flatten() == obj2.flatten()
         
 
-def union (cl1, cl2, cl3):
-    return cl1
+def sentence_remerge(utterance, flag , current_class):
+    
+    #We process the utterance
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+    if  flag=='FAILED':
+        return class_list
+    else:
+        return current_class
 
 
 
