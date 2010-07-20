@@ -146,6 +146,8 @@ class Dialog(Thread):
                 logging.debug(colored_print(answer, 'red'))
                 self.input(answer, speaker)
                 answer = None
+            elif self.waiting_for_more_info:
+                return None
             pass
         
         return self.last_stmts_set
