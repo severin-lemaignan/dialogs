@@ -1525,7 +1525,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.4 ##############################')
 
-    utterance="Take the bottle carrefully. I take that bottle that I drink in."
+    utterance="Take the bottle carrefully. I take that bottle that I drink in. I take twenty two bottles."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1548,6 +1548,12 @@ def unit_tests():
                         [], 
                         [Indirect_Complement(['in'],[Nominal_Group(['that'],['bottle'],[],[],[])])],
                         [], [] ,'affirmative',[])])])],
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])],  
+            [Verbal_Group(['take'], [],'present simple', 
+                [Nominal_Group(['that'],['bottle'],[],[],[])],
                 [],
                 [], [] ,'affirmative',[])])]
 

@@ -8,7 +8,9 @@
  The package contains functions which are important for the pre-parsing
  We return a list of all sentence in the utterance to do processing                    
  Functions:                                                                       
-    upper_to_lower : to process the uppcase at the baginning of the sentence        
+    delete_and_from_number : to delete 'and' between two numbers
+    concat_number : to concatenate numbers with '+'
+    upper_to_lower : to process the upp case at the beginning of the sentence        
     concatenate_pos : to concatenate an element in a position given               
     case_apostrophe_s_to_is : to know if there is this kind of "'s"               
     expand_contractions : to perform expand contraction using concatenate_pos     
@@ -19,6 +21,7 @@
     other_processing : to perform other processing                                 
     move_prep : to put the preposition before the nominal group
     or_processing : to create a nominal group before and after the 'or'
+    processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
 from resources_manager import ResourcePool
@@ -51,6 +54,47 @@ action_verb = ThematicRolesDict().get_all_verbs()
 
 
 
+def delete_and_from_number(sentence):
+    """
+    This function delete 'and' between two numbers                                 
+    Input=sentence                                     Output=sentence               
+    """
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        if sentence[i]=='and' and other_functions.number(sentence[i-1])==1 and other_functions.number(sentence[i+1])==1:
+            sentence=sentence[:i]+sentence[i+1:]
+        i=i+1
+            
+            
+def concat_number(sentence):
+    """
+    This function concatenate numbers with '+'                                 
+    Input=sentence                                     Output=sentence               
+    """
+    
+    #init
+    i=0
+    
+    sentence = delete_and_from_number(sentence)
+    
+    while i < len(sentence):
+        #There is a number
+        if other_functions.number(sentence[i])==1:
+            begin_pos=i
+                
+            while other_functions.number(sentence[i])==1:
+                i=i+1
+            end_pos=i
+            
+            sentence=sentence[:begin_pos]+[other_functions.convert_to_string(sentence[begin_pos:end_pos])]+sentence[end_pos:]
+            
+        i=i+1    
+    return sentence
+        
+        
 def upper_to_lower(sentence):
     """
     This function converts the upper case to lower case
@@ -75,7 +119,11 @@ def upper_to_lower(sentence):
         for v in frt_wd:
             if sentence[0]==v[0]:
                 return sentence
-
+            
+        #We find a number
+        if other_functions.number(sentence[0])==1:
+            return sentence
+        
         #If there is a nominal group
         if analyse_nominal_group.find_sn_pos (sentence, 0)!=[]:
             return sentence
@@ -395,6 +443,26 @@ def or_processing(sentence):
 
 
 
+def processing(sentence):
+    """ 
+    This function is used by process_sentence                  
+    Input=sentence                              Output=sentence                      
+    """ 
+
+    sentence = expand_contractions(sentence)
+    sentence = prep_concat(sentence)
+    sentence = upper_to_lower(sentence)
+    sentence = concat_number(sentence)
+    sentence = other_processing(sentence)
+    sentence = possesion_form(sentence)
+    sentence = comma(sentence)
+    sentence = move_prep(sentence)
+    sentence = or_processing(sentence)
+            
+    return sentence
+
+
+
 def process_sentence(utterance):
     """
     This function breaks the utterance (as a list) into sentences                        
@@ -412,27 +480,13 @@ def process_sentence(utterance):
         #If user put space between the last word and the punctuation
         if j=='.' or j=='?' or j=='!':
             sentence = sentence+[j]
-            sentence = expand_contractions(sentence)
-            sentence = prep_concat(sentence)
-            sentence = upper_to_lower(sentence)
-            sentence = other_processing(sentence)
-            sentence = possesion_form(sentence)
-            sentence = comma(sentence)
-            sentence = move_prep(sentence)
-            sentence = or_processing(sentence)
+            sentence = processing(sentence)
             sentence_list=sentence_list+[sentence]
             sentence=[]
 
         elif j.endswith('.') or j.endswith('?') or j.endswith('!'):
             sentence = sentence+[j[:len(j)-1]] + [j[len(j)-1]]
-            sentence = expand_contractions(sentence)
-            sentence = prep_concat(sentence)
-            sentence = upper_to_lower(sentence)
-            sentence = other_processing(sentence)
-            sentence = possesion_form(sentence)
-            sentence = comma(sentence)
-            sentence = move_prep(sentence)
-            sentence = or_processing(sentence)
+            sentence = processing(sentence)
             sentence_list=sentence_list+[sentence]
             sentence=[]
 
@@ -441,14 +495,7 @@ def process_sentence(utterance):
             
     #If the user forget the punctuation at the end
     if sentence!=[]:
-        sentence = expand_contractions(sentence)
-        sentence = prep_concat(sentence)
-        sentence = upper_to_lower(sentence)
-        sentence = other_processing(sentence)
-        sentence = possesion_form(sentence)
-        sentence = comma(sentence)
-        sentence = move_prep(sentence)
-        sentence = or_processing(sentence)
+        sentence = processing(sentence)
         sentence_list=sentence_list+[sentence]
 
     return sentence_list

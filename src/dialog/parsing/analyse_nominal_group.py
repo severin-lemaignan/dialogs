@@ -35,6 +35,7 @@ adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 
 
+
 """
 We have to read all irregular adjectives before the processing                    
 """
@@ -104,6 +105,11 @@ def find_sn_pos (phrase, begin_pos):
         if phrase[begin_pos]==j:
             end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
             return phrase[begin_pos : end_pos+begin_pos]
+        
+    #If there is a number, it will be the same with determinant
+    if other_functions.number(phrase[begin_pos])==1:
+        end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
+        return phrase[begin_pos : end_pos+begin_pos]
 
     #If it is a proper name
     counter=begin_pos
