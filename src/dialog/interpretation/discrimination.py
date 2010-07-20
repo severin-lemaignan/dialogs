@@ -10,9 +10,8 @@ information.
 import logging
 
 from resources_manager import ResourcePool
-
 from dialog_exceptions import UnsufficientInputError
-
+from sentence import *
  
 class Discrimination():
 
@@ -194,9 +193,9 @@ class Discrimination():
     # OUTPUT:
     # - objectID: ok
     # - UnsufficientInputError:
-    #   - "new info required": no match, new info required (forget previous description)
-    #   - "Which value? ..." user should indicate value for descriptor
-    #   - "additional info required": user should give additional info (mantain previous description)
+    #   - [FAILURE, "new info required"]: no match, new info required (forget previous description)
+    #   - [SUCCESS, "Which value? ..."]: user should indicate value for descriptor (mantain previous description)
+    #   - [SUCCESS, "additional info required"]: user should give additional info (mantain previous description)
     # -----------------------------------------------------------------------------#
     def clarify(self, description):
         objL = self.get_all_objects_with_desc(description)
@@ -204,10 +203,19 @@ class Discrimination():
         logging.debug('Clarify for objL = ' +  str(objL))
 
         if len(objL) == 0:
-            raise UnsufficientInputError("I don't know what object you are talkikng about. Tell me something about it.")
+            questions = [Sentence('imperative', '', 
+                        [], 
+                        [Verbal_Group(['give'], [],'present simple', 
+                        [Nominal_Group([],['information'],['new'],[],[])], 
+                        [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                        Indirect_Complement(['about'],[Nominal_Group(['the'],['object'],[],[],[])])],
+                        [], [] ,'affirmative',[])])]
+            raise UnsufficientInputError(['FAILURE',questions])
             #return "I don\'t know what object you are talkikng about. Tell me something about it."
+            
         elif len(objL) == 1:
             return objL[0]
+            
         else:
             agent, descriptor = self.get_descriptor(description)
             object = self.get_type_description(description)
@@ -218,8 +226,22 @@ class Discrimination():
                 if not object: object = 'object'
                 
                 if descriptor == 'hasColor'  or  descriptor == 'mainColorOfObject':
-                    question = 'Which color is the ' + object + ' ? '
                     
+                    #nominal_groupL = []
+                    #for val in values:
+                    #    nominal_group.append(Nominal_Group([],[],[val],[],[]))
+                    nominal_groupL = [Nominal_Group([],[],[val],[],[]) for val in values]
+                    
+                    questions = [Sentence('w_question', 'choice', 
+                                [Nominal_Group([],['color'],[],[],[])], 
+                                [Verbal_Group(['be'], [],'present simple', 
+                                    [Nominal_Group(['the'],[object],[],[],[])], 
+                                    [], [], [] ,'affirmative',[])]),
+                                Sentence('statement', '',nominal_groupL,[])]
+                    
+                    for i in range(len(values)-1):
+                        questions[1].sn[i+1]._conjunction = 'OR'
+                            
                 elif descriptor == 'hasShape':
                     question = 'Which shape has the ' + object + ' ? '
 
@@ -249,13 +271,18 @@ class Discrimination():
                 else:
                     question = "Give me the value for the " + descriptor + " "
 
-                question += ' or '.join(values) + ' ?'
-                raise UnsufficientInputError(question)
-                #return question
+                #question += ' or '.join(values) + ' ?'
+                raise UnsufficientInputError(['SUCCESS',questions])
+                #return questions
                     
             else:
-                question = "Tell me something about the " + object
-                raise UnsufficientInputError(question)
+                questions = [Sentence('imperative', '', [], 
+                            [Verbal_Group(['give'], [],'present simple', 
+                            [Nominal_Group([],['information'],['more'],[],[])], 
+                            [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                            Indirect_Complement(['about'],[Nominal_Group(['the'],[object],[],[],[])])],
+                            [], [] ,'affirmative',[])])]
+                raise UnsufficientInputError(['SUCCESS',questions])
                 #return "Tell me more about the the object."
 
     # -- ADD_DESCRIPTOR -----------------------------------------------------------#
@@ -327,70 +354,70 @@ def unit_tests():
 
     disc = Discrimination()
 
-    print "Test1: No ambiguity."
-    description = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj hasColor blue']]]
-    expected_result = "BLUE_BOTTLE"
-    res = disc.clarify(description)
-    print '\t expected res = ', expected_result
-    print '\t obtained res = ', res
-    print '\n*********************************'
+    #print "Test1: No ambiguity."
+    #description = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj hasColor blue']]]
+    #expected_result = "BLUE_BOTTLE"
+    #res = disc.clarify(description)
+    #print '\t expected res = ', expected_result
+    #print '\t obtained res = ', res
+    #print '\n*********************************'
     
-    print "\nTest2: Complete discriminant in robot model found."
-    description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
-    expected_result = "Which color is the object? blue or orange or yellow?"
-    res = disc.clarify(description)
-    print '\t expected res = ', expected_result
-    print '\t obtained res = ', res
-    print "\n*********************************"
+    #print "\nTest2: Complete discriminant in robot model found."
+    #description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
+    #expected_result = "Which color is the object? blue or orange or yellow?"
+    #res = disc.clarify(description)
+    #print '\t expected res = ', expected_result
+    #print '\t obtained res = ', res
+    #print "\n*********************************"
     
-    print "\nTest3: No complete discriminant in robot model found."
-    description = [['myself', '?obj', ['?obj rdf:type Box']]]
-    expected_result = "Tell me more about the the object."
-    res = disc.clarify(description)
-    print '\t expected res = ', expected_result
-    print '\t obtained res = ', res
-    print "\n*********************************"
+    #print "\nTest3: No complete discriminant in robot model found."
+    #description = [['myself', '?obj', ['?obj rdf:type Box']]]
+    #expected_result = "Tell me more about the the object."
+    #res = disc.clarify(description)
+    #print '\t expected res = ', expected_result
+    #print '\t obtained res = ', res
+    #print "\n*********************************"
     
-    print "\nTest4: Including visibility constraints"
-    description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
-    description.append(['raquel', '?obj', ['?obj isVisible true']])
-    expected_result = "Which color is the object? blue or orange?"
-    res = disc.clarify(description)
-    print '\t expected res = ', expected_result
-    print '\t obtained res = ', res
-    print "\n*********************************"
+    #print "\nTest4: Including visibility constraints"
+    #description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
+    #description.append(['raquel', '?obj', ['?obj isVisible true']])
+    #expected_result = "Which color is the object? blue or orange?"
+    #res = disc.clarify(description)
+    #print '\t expected res = ', expected_result
+    #print '\t obtained res = ', res
+    #print "\n*********************************"
     
-    print "\nTest5: Testing location"
-    description = [['myself', '?obj', ['?obj rdf:type Box', '?obj hasColor orange']]]
-    expected_result = "Is the object on ACCESSKIT or HRP2TABLE?"
-    res = disc.clarify(description)
-    print '\t expected res = ', expected_result
-    print '\t obtained res = ', res
-    print "\n*********************************"
+    #print "\nTest5: Testing location"
+    #description = [['myself', '?obj', ['?obj rdf:type Box', '?obj hasColor orange']]]
+    #expected_result = "Is the object on ACCESSKIT or HRP2TABLE?"
+    #res = disc.clarify(description)
+    #print '\t expected res = ', expected_result
+    #print '\t obtained res = ', res
+    #print "\n*********************************"
     
-    print "\nTest6: Generate unambiguous description"
-    objectID = 'BLUE_BOTTLE'
-    expected_result = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj mainColorOfObject blue']]]
-    res = disc.find_unambiguous_desc(objectID)
-    print '\t expected res = ', expected_result
-    print '\t obtained res = ', res
-    print "\n*********************************"
+    #print "\nTest6: Generate unambiguous description"
+    #objectID = 'BLUE_BOTTLE'
+    #expected_result = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj mainColorOfObject blue']]]
+    #res = disc.find_unambiguous_desc(objectID)
+    #print '\t expected res = ', expected_result
+    #print '\t obtained res = ', res
+    #print "\n*********************************"
 
-    print "\nTest7: Generate unambiguous description"
-    objectID = 'ACCESSKIT'
-    expected_result = [['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white', '?obj isUnder ORANGEBOX']]]
-    res = disc.find_unambiguous_desc(objectID)
-    print '\t expected res = ', expected_result
-    print '\t obtained res = ', res
-    print "\n*********************************"
+    #print "\nTest7: Generate unambiguous description"
+    #objectID = 'ACCESSKIT'
+    #expected_result = [['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white', '?obj isUnder ORANGEBOX']]]
+    #res = disc.find_unambiguous_desc(objectID)
+    #print '\t expected res = ', expected_result
+    #print '\t obtained res = ', res
+    #print "\n*********************************"
 
-    print "\nTest8: Generate unambiguous description"
-    objectID = 'SPACENAVBOX'
-    expected_result = ['SPACENAVBOX', ['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white']]]
-    res = disc.find_unambiguous_desc(objectID)
-    print '\t expected res = ', expected_result
-    print '\t obtained res = ', res
-    print "\n*********************************"
+    #print "\nTest8: Generate unambiguous description"
+    #objectID = 'SPACENAVBOX'
+    #expected_result = ['SPACENAVBOX', ['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white']]]
+    #res = disc.find_unambiguous_desc(objectID)
+    #print '\t expected res = ', expected_result
+    #print '\t obtained res = ', res
+    #print "\n*********************************"
 
 
 if __name__ == '__main__':
