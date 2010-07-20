@@ -31,7 +31,6 @@ class QuestionHandler:
 	
 	
 	def process_sentence(self, sentence):
-		
 		if not sentence.resolved():
 			raise DialogError("Trying to process an unresolved sentence!")	
 		
@@ -45,40 +44,25 @@ class QuestionHandler:
 		#Case the question is a y_n_question
 		if sentence.data_type == 'yes_no_question':
 			self._statements = self._resolve_action_verb_reference(self._statements)
+			logging.debug("Checking on the ontology: check(" + str(self._statements) + ")")
 			
-			try:
-				logging.debug("Checking on the ontology: check(" + str(self._statements) + ")")
-				self._answer = ResourcePool().ontology_server.check(self._statements)
-			except AttributeError: #the ontology server is not started of doesn't know the method
-				pass
+			self._answer = ResourcePool().ontology_server.check(self._statements)
 			
-		#Case the question is a w_question
+		#Case the question is a w_question		
 		if sentence.data_type == 'w_question':
+			#self._answer = self._statements
+			
 			self._statements = self._extend_statement_from_sentence_aim(self._statements)
 			self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
+			logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
+			self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
 			
-			try:
-				logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
-				self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
-			except AttributeError: #the ontology server is not started of doesn't know the method
-				pass
-		
 		return self._answer
 		
 	def _resolve_action_verb_reference(self, statements):
-		"""
-		TODO: doc!! I don't understand what this method is doing
-		"""
 		stmts = []
-		try:
-			
-			sit_id = []
-			
-			try:
-				sit_id = ResourcePool().ontology_server.find('?event', statements)
-			except AttributeError: #the ontology server is not started of doesn't know the method
-				pass
-				
+		try: 
+			sit_id = ResourcePool().ontology_server.find('?event', statements)
 			if sit_id:
 				logging.debug("\t/Found a staticSituation matching the yes_no_question query to be checked: "+ str(sit_id))
 				for s in statements:
@@ -137,7 +121,7 @@ class QuestionHandler:
 				   None:'receivedBy',
 				   'has_goal':'hasGoal'}
 		#Dictionary for sentence.aim = 'thing' 
-		dic_thing={'be':'rdf:type', 
+		dic_thing={'be':'owl:sameAs',
 				   None:'involves',
 				   'acts_on_object':'actsOnObject'}
 		
@@ -218,38 +202,36 @@ class TestQuestionHandler(unittest.TestCase):
 		#how is my bottle?
 		#what does Danny drive?
 		"""
+		ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
+				 
+				 'blue_cube rdf:type Cube',
+				 'blue_cube hasColor blue',
+				 'blue_cube isOn table1',
+				 'another_cube rdf:type Cube',
+				 'another_cube isOn shelf1',
+				 'another_cube belongsTo SPEAKER',
+				 'another_cube hasSize small',
+				 
+				 'shelf1 rdf:type Shelf',
+				 'table1 rdf:type Table',
+				 
+				 'see_shelf rdf:type See',
+				 'see_shelf performedBy myself',
+				 'see_shelf involves shelf1',
+				 
+				 'take_blue_cube performedBy myself',
+				 'take_blue_cube rdf:type Get',
+				 'take_blue_cube actsOnObject blue_cube',
+				 
+				 'take_my_cube canBePerformedBy SPEAKER',
+				 'take_my_cube involves another_cube',
+				 'take_my_cube rdf:type Take',
+				 
+				 'SPEAKER focusesOn another_cube'])
 		
-		try:
-			ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
-					 
-					 'blue_cube rdf:type Cube',
-					 'blue_cube hasColor blue',
-					 'blue_cube isOn table1',
-					 'another_cube rdf:type Cube',
-					 'another_cube isOn shelf1',
-					 'another_cube belongsTo SPEAKER',
-					 'another_cube hasSize small',
-					 
-					 'shelf1 rdf:type Shelf',
-					 'table1 rdf:type Table',
-					 
-					 'see_shelf rdf:type See',
-					 'see_shelf performedBy myself',
-					 'see_shelf involves shelf1',
-					 
-					 'take_blue_cube performedBy myself',
-					 'take_blue_cube rdf:type Get',
-					 'take_blue_cube actsOnObject blue_cube',
-					 
-					 'take_my_cube canBePerformedBy SPEAKER',
-					 'take_my_cube involves another_cube',
-					 'take_my_cube rdf:type Take',
-					 
-					 'SPEAKER focusesOn another_cube'])
-		except AttributeError: #the ontology server is not started of doesn't know the method
-				pass
 		
 		self.qhandler = QuestionHandler("SPEAKER")
+	
 	
 	def test_1_w_question(self):
 		print "\n*************  test_1_w_question ******************"
@@ -273,6 +255,7 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = ['table1']
 		self.process(sentence , statement_query, expected_result)
 		
+	 	
 	def test_2_w_question(self):
 		print "\n*************  test_2_w_question ******************"
 		print "Where is the small cube?"
@@ -303,7 +286,7 @@ class TestQuestionHandler(unittest.TestCase):
 		sentence = Sentence("w_question", "thing", 
 	                         [Nominal_Group([],
 	                                        ['you'],
-	                                        [''],
+	                                        [],
 	                                        [],
 	                                        [])],                                         
 	                         [Verbal_Group(['see'],
@@ -523,14 +506,17 @@ class TestQuestionHandler(unittest.TestCase):
 def dump_resolved(sentence, current_speaker, current_recipient = None):
 	resolver = Resolver()
 	#Resolution
-	sentence = resolver.references_resolution(sentence,
+	res_sentence = resolver.references_resolution(sentence,
                                               current_speaker, 
                                               None)
+    
 	
-	sentence = resolver.noun_phrases_resolution(sentence,
+	res_sentence = resolver.noun_phrases_resolution(res_sentence,
 											    current_speaker)
-	sentence = resolver.verbal_phrases_resolution(sentence)
-	return sentence
+	
+	res_sentence = resolver.verbal_phrases_resolution(res_sentence)
+	
+	return res_sentence
 
 
 def unit_tests():
