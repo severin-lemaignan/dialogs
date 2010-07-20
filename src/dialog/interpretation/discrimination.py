@@ -222,26 +222,14 @@ class Discrimination():
             object = self.get_type_description(description)
 
             if descriptor:
+                sentence_builder = SentenceFactory()
+                
                 question = None
                 values = self.get_values_for_descriptor(agent, descriptor, objL)
                 if not object: object = 'object'
                 
                 if descriptor == 'hasColor'  or  descriptor == 'mainColorOfObject':
-                    
-                    #nominal_groupL = []
-                    #for val in values:
-                    #    nominal_group.append(Nominal_Group([],[],[val],[],[]))
-                    nominal_groupL = [Nominal_Group([],[],[val],[],[]) for val in values]
-                    
-                    questions = [Sentence('w_question', 'choice', 
-                                [Nominal_Group([],['color'],[],[],[])], 
-                                [Verbal_Group(['be'], [],'present simple', 
-                                    [Nominal_Group(['the'],[object],[],[],[])], 
-                                    [], [], [] ,'affirmative',[])]),
-                                Sentence('statement', '',nominal_groupL,[])]
-                    
-                    for i in range(len(values)-1):
-                        questions[1].sn[i+1]._conjunction = 'OR'
+                    questions = sentence_builder.create_w_question_choice(object, 'color', values)
                             
                 elif descriptor == 'hasShape':
                     question = 'Which shape has the ' + object + ' ? '

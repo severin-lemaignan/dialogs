@@ -6,6 +6,24 @@
 from helpers import colored_print #to colorize the sentence output
 from parsing import *
 
+class SentenceFactory:
+    
+    def create_w_question_choice(self, obj_name, feature, values):
+        nominal_groupL = [Nominal_Group([],[],[val],[],[]) for val in values]
+        
+        sentence = [Sentence('w_question', 'choice', 
+                        [Nominal_Group([],[feature],[],[],[])], 
+                        [Verbal_Group(['be'], [],'present simple', 
+                            [Nominal_Group(['the'],[obj_name],[],[],[])], 
+                            [], [], [] ,'affirmative',[])]),
+                    Sentence('statement', '',nominal_groupL,[])]
+        
+                            
+        for i in range(len(values)-1):
+            sentence[1].sn[i+1]._conjunction = 'OR'
+        
+        return sentence
+    
 class Sentence:
     """
     A sentence is formed from:
