@@ -89,16 +89,23 @@ class Dialog(Thread):
             
             try:
                 output = self._sentence_output_queue.get(block = False)
+                self.current_output = output
                 self._logger.debug(colored_print("> Got output to verbalize: ", 'bold'))
                 
-                #TODO: Assuming here that 'output present = more info needed'. Not true in the general case
+                #TODO: Assuming here that the user is queried for info. Not true in the general case
                 self.waiting_for_more_info = True
+
+                # if it's a sentence class
                 if isinstance(output, Sentence):
-                    output = self._verbalizer.verbalize(output)
+                    output = self._verbalizer.verbalize([output])
+                # it's discrimination error ['FAILURE',[sentences...]]
+                elif isinstance(output, list) and isinstance(output[1][0], Sentence):
+                    output = self._verbalizer.verbalize(output[1])
+                # it's string
                 else:
                     output = colored_print(output, 'red')
+                    
                 sys.stdout.write(str(output) + "\n")
-                self.current_output = output
                   
             except Empty:
                 pass
@@ -118,8 +125,9 @@ class Dialog(Thread):
         #Here, we proceed a sentence that has not been resolved. It is saved in self.active_sentence.
         #The new input string is concatenated with the former one  
         if self.waiting_for_more_info:
-            prev_sentence = self._verbalizer.verbalize(self.active_sentence)
-            input_splited = self._parser.concatener(prev_sentence.split(), input.split(), self.current_output.lower().split())           
+            prev_sentence = self._verbalizer.verbalize([self.active_sentence])
+            # change to new function sentence_remerge
+            #input_splited = self._parser.concatener(prev_sentence.split(), input.split(), self.current_output.lower().split())           
             input = ' '.join(input_splited)    
         
         self._nl_input_queue.put(input)
