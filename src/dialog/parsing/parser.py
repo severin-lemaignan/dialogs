@@ -1553,7 +1553,7 @@ def unit_tests():
         Sentence('statement', '', 
             [Nominal_Group([],['I'],[],[],[])],  
             [Verbal_Group(['take'], [],'present simple', 
-                [Nominal_Group(['that'],['bottle'],[],[],[])],
+                [Nominal_Group(['twenty+two'],['bottles'],[],[],[])],
                 [],
                 [], [] ,'affirmative',[])])]
 

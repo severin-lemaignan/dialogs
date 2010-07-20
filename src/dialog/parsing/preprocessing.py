@@ -67,7 +67,9 @@ def delete_and_from_number(sentence):
         if sentence[i]=='and' and other_functions.number(sentence[i-1])==1 and other_functions.number(sentence[i+1])==1:
             sentence=sentence[:i]+sentence[i+1:]
         i=i+1
-            
+    return sentence
+
+
             
 def concat_number(sentence):
     """

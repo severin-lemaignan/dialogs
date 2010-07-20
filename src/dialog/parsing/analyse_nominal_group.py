@@ -150,6 +150,11 @@ def find_sn (phrase):
             if x==j:
                 nb_position= nb_position + adjective_pos(phrase, phrase.index(x)+1)
                 return phrase[phrase.index(x) : phrase.index(x)+nb_position]
+            
+        #If there is a number, it will be the same with determinant
+        if other_functions.number(x)==1:
+            nb_position= nb_position + adjective_pos(phrase, phrase.index(x)+1)
+            return phrase[phrase.index(x) : phrase.index(x)+nb_position]
 
         #If there is a proper name
         counter=phrase.index(x)
@@ -209,6 +214,11 @@ def return_det (nom_gr):
         #We return the first element of the list
         if nom_gr[0]==j:
             return [j]
+    
+    #If there is a number
+    if other_functions.number(nom_gr[0])==1:
+        return [nom_gr[0]]
+     
     #Default case
     return []
 
