@@ -144,27 +144,23 @@ class Resolver:
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
             
-        logging.debug("Resolving \"" + str(nominal_group) + "\"")
+        logging.debug(str(nominal_group))
         builder.process_nominal_group(nominal_group, '?concept')
         stmts = builder.get_statements()
         #TODO: See the problem below with current speaker.
         #logging.debug("Trying to identify this concept in "+ current_speaker + "'s model:")
         #For Question handler test ONLY, I have turned the above line into:
-        logging.debug("Trying to identify this concept in "+ 'myself' + "'s model:")
-        
-        for s in stmts:
-            logging.debug(s)
+        logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
         
         builder.clear_statements()
         #TODO: Problem with the following line when current_speaker holds a different value from  'myself'
         #In order to solve it, Try to catch an exception and report it to user
         #description = [[current_speaker, '?concept', stmts]]
         #For Question handler test ONLY, I have turned the above line into.
-        description = [['myself', '?concept', stmts]]
-        
-        logging.debug("with description: " + str(description))
+        description = [[current_speaker, '?concept', stmts]]
+
         id = discriminator.clarify(description)
-        logging.debug("Hurra! Found \"" + id + "\"")
+        logging.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
         
         nominal_group.id = id
         nominal_group._resolved = True

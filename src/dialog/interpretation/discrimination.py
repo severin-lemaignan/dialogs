@@ -70,7 +70,11 @@ class Discrimination():
         else:
             discriminants = self.oro.discriminateForAgent(agent, objL)
         
-        logging.debug('discriminants = ' + str(discriminants))
+        logging.debug(  '> Possible discriminants: ' +  \
+                        str(colored_print(discriminants[1], 'magenta')) + \
+                        " (complete discriminants: " + \
+                        str(colored_print(discriminants[0], 'magenta')) + ")")
+                        
         complete_disc = discriminants[0] 
         partial_disc = discriminants[1]
 
@@ -192,9 +196,9 @@ class Discrimination():
     #   - [SUCCESS, "additional info required"]: user should give additional info (mantain previous description)
     # -----------------------------------------------------------------------------#
     def clarify(self, description):
-        objL = self.get_all_objects_with_desc(description)
-        logging.debug('Clarify recieves description = ' +  str(description))
-        logging.debug('Clarify for objL = ' +  str(objL))
+        logging.debug("> Looking in " + description[0][0] + "'s model for concepts matching " +  str(description[0][2]))
+        objL = self.get_all_objects_with_desc(description)        
+        logging.debug('> Got this list of concepts: ' +  str(colored_print(objL, 'blue')))
 
         if not self.oro: #No ontology server
             return 'UNKNOWN_CONCEPT'
