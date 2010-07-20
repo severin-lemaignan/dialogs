@@ -10,6 +10,9 @@ from resources_manager import ResourcePool
 from statements_safe_adder import StatementSafeAdder, generate_id, printer
 
 from dialog_exceptions import DialogError, GrammaticalError, EmptyNominalGroupId
+
+
+
 from sentence import *
 
 """This module implements ...
@@ -37,9 +40,9 @@ class StatementBuilder:
             raise DialogError("Trying to process an unresolved sentence!")
         """
         self._sentence = sentence
-                
+        
         if sentence.sn:
-			self.process_nominal_groups(self._sentence.sn)
+            self.process_nominal_groups(self._sentence.sn)
         if sentence.sv:
             self.process_verbal_groups(self._sentence)
         
@@ -87,12 +90,15 @@ class NominalGroupStatementBuilder:
         
     def process(self):
         """ The following function builds a list of statement from a list of nominal group
-        A NominalGroupStatementBuilder needs to have been instantiated before"""        
+        A NominalGroupStatementBuilder needs to have been instantiated before"""
+        
         for ng in self._nominal_groups:
             if not ng.id:
                 ng.id = generate_id()
-                self._unresolved_ids.append(ng.id)
-                
+
+                print "GENERATE NominalGroupStatementBuilder process" , ng.id
+                self._unresolved_ids.append(ng.id)          
+            
             self.process_nominal_group(ng, ng.id)
                                     
         return self._statements
@@ -116,7 +122,7 @@ class NominalGroupStatementBuilder:
 
     def process_determiners(self, nominal_group, ng_id):
         for det in nominal_group.det:
-            logging.debug("Found determiner:\"" + det + "\"")
+            #logging.debug("Found determiner:\"" + det + "\"")
             # Case 1: definite article : the"""
             # Case 2: demonstratives : this, that, these, those"""
             if det in ['this', 'that', 'these', 'those']:
@@ -131,12 +137,16 @@ class NominalGroupStatementBuilder:
     
     def process_noun_phrases(self, nominal_group, ng_id):
         for noun in nominal_group.noun:
-            logging.debug("Found a noun phrase:\"" + noun + "\"")
+            #logging.debug("Found a noun phrase:\"" + noun + "\"")
                         
             # Case : existing ID
-            onto = ResourcePool().ontology_server.lookup(noun)
+            onto_id = ''
+            try:
+                onto_id = ResourcePool().ontology_server.lookup(noun)
+            except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
             
-            if onto and [noun,"INSTANCE"] in onto:
+            if onto_id and [noun,"INSTANCE"] in onto_id:
                 pass #Just to be checked. The Id has already been resolved
                 
             # Case : common noun
@@ -160,7 +170,7 @@ class NominalGroupStatementBuilder:
         adjectives list.
         """
         for adj in nominal_group.adj:
-            logging.debug("Found adjective:\"" + adj + "\"")
+            #logging.debug("Found adjective:\"" + adj + "\"")
             try:
                 self._statements.append(ng_id + " has" + ResourcePool().adjectives[adj] + " " + adj)
             except KeyError:
@@ -168,7 +178,7 @@ class NominalGroupStatementBuilder:
     
     
     def process_noun_cmpl(self, nominal_group, ng_id):
-        logging.debug("processing noun complement:")
+        #logging.debug("processing noun complement:")
         for noun_cmpl in nominal_group.noun_cmpl:
             if noun_cmpl.id:
                 noun_cmpl_id = noun_cmpl.id
@@ -192,7 +202,7 @@ class NominalGroupStatementBuilder:
                          => sn == []
         """
         for rel in nominal_group.relative:
-            logging.debug("processing relative:")    
+            #logging.debug("processing relative:")    
             #case 1   
             if rel.sn:
                 logging.warning("Don't know how to resolve a relative clause in this situation yet")
@@ -260,7 +270,8 @@ class VerbalGroupStatementBuilder:
             
         if not subject_id:
             subject_id = '?concept'       
-           
+        
+            
         self.process_verbal_groups(self._verbal_groups  , subject_id)                
         return self._statements
    
@@ -345,10 +356,11 @@ class VerbalGroupStatementBuilder:
             
     def process_vrb_sec(self, verbal_group):
         for verb in verbal_group.vrb_sec:
-            logging.debug("Found verb:\"" + verb + "\"")
+            #logging.debug("Found verb:\"" + verb + "\"")
+            pass
             
     def process_direct_object(self, d_objects, verb, id):
-        logging.debug("Processing direct object d_obj:")
+        #logging.debug("Processing direct object d_obj:")
         d_obj_stmt_builder = NominalGroupStatementBuilder(d_objects, self._current_speaker)
         
         #Thematic roles
@@ -394,7 +406,7 @@ class VerbalGroupStatementBuilder:
         thematic_roles = ResourcePool().thematic_roles
         
         for ic in indirect_cmpls:
-            logging.debug("Processing indirect complement i_cmpl:")
+            #logging.debug("Processing indirect complement i_cmpl:")
             
             # Case 1: if there is no preposition, the indirect complement is obviously an indirect object.
             #        Therefore, it receives the action
@@ -457,11 +469,13 @@ class VerbalGroupStatementBuilder:
         for sub in vrb_sub_sentence:
             logging.debug("Processing adverbial clauses:")
             
+            
 
         
 """
     The following functions are implemented for test purpose only
 """
+
 
 def dump_resolved(sentence, current_speaker, current_listener):
     def resolve_ng(ngs):
@@ -469,7 +483,12 @@ def dump_resolved(sentence, current_speaker, current_listener):
 
         for ng in ngs:
             ng._resolved = False
-            onto_focus =  ResourcePool().ontology_server.find('?concept', [current_speaker + ' focusesOn ?concept'])
+            
+            onto_focus = ''
+            try:
+                onto_focus =  ResourcePool().ontology_server.find('?concept', [current_speaker + ' focusesOn ?concept'])
+            except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
             
             if ng.noun in [['me'], ['Me'],['I']]:
                 ng.id = current_speaker
@@ -487,7 +506,7 @@ def dump_resolved(sentence, current_speaker, current_listener):
                 ng.id = 'id_tom'
             elif ng.noun == ['shelf1']:
                 ng.id = 'shelf1'
-            elif onto_focus and ng.det == ['this']:
+            elif onto_focus and ng.det in ['this', 'that']:
                 ng.id = onto_focus[0]
             else:
                 pass
@@ -524,24 +543,27 @@ class TestStatementBuilder(unittest.TestCase):
 
     def setUp(self):
         
-        ResourcePool().ontology_server.add(['id_danny rdfs:label "Danny"',
-                      'id_danny rdf:type Human',
-                      'blue_volvo hasColor blue', 
-                      'blue_volvo rdf:type Car',
-                      'blue_volvo belongsTo SPEAKER',
-                      'id_jido rdf:type Robot',
-                      'id_jido rdfs:label "Jido"',
-                      'twingo rdf:type Car',
-                      'twingo hasSize small',
-                      'a_man rdf:type Man',
-                      'fiat belongsTo id_tom',
-                      'fiat rdf:type Car',
-                      'id_tom rdfs:label "Tom"',
-                      'id_tom rdf:type Brother',
-                      'id_tom belongsTo id_danny',
-                      'id_toulouse rdfs:label "Toulouse"',
-                      'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
-                      'SPEAKER focusesOn another_cube'])
+        try:
+            ResourcePool().ontology_server.add(['id_danny rdfs:label "Danny"',
+                          'id_danny rdf:type Human',
+                          'blue_volvo hasColor blue', 
+                          'blue_volvo rdf:type Car',
+                          'blue_volvo belongsTo SPEAKER',
+                          'id_jido rdf:type Robot',
+                          'id_jido rdfs:label "Jido"',
+                          'twingo rdf:type Car',
+                          'twingo hasSize small',
+                          'a_man rdf:type Man',
+                          'fiat belongsTo id_tom',
+                          'fiat rdf:type Car',
+                          'id_tom rdfs:label "Tom"',
+                          'id_tom rdf:type Brother',
+                          'id_tom belongsTo id_danny',
+                          'id_toulouse rdfs:label "Toulouse"',
+                          'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
+                          'SPEAKER focusesOn another_cube'])
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
         
         self.stmt = StatementBuilder("SPEAKER")
         self.stmt_adder = StatementSafeAdder()
