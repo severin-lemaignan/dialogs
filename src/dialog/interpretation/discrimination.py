@@ -37,10 +37,7 @@ class Discrimination():
         objL = -1
         
         for agent_desc in description:
-            if agent_desc[0] == 'myself':
-                obj_tmp = self.oro.find(agent_desc[1], '[' + ', '.join(agent_desc[2]) + ']')
-            else:
-                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[' + ', '.join(agent_desc[2]) + ']')
+            obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[' + ', '.join(agent_desc[2]) + ']')
 
             # if no object found, no need to continue
             if not obj_tmp: 
@@ -145,10 +142,7 @@ class Discrimination():
             if descriptor == 'rdf:type':
                 val = self.oro.getDirectClassesOf(obj).keys()
             else:
-                if agent == "myself":
-                    val = self.oro.find('?val','[' + obj + ' ' + descriptor + ' ?val]')
-                else:
-                    val = self.oro.findForAgent(agent, '?val','[' + obj + ' ' + descriptor + ' ?val]')
+                val = self.oro.findForAgent(agent, '?val','[' + obj + ' ' + descriptor + ' ?val]')
 
             valL.append(val[0])
 
