@@ -140,9 +140,13 @@ class NominalGroupStatementBuilder:
             logging.debug("Found a noun phrase:\"" + noun + "\"")
                         
             # Case : existing ID
-            onto = ResourcePool().ontology_server.lookup(noun)
+            onto_id = ''
+            try:
+                onto_id = ResourcePool().ontology_server.lookup(noun)
+            except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
             
-            if onto and [noun,"INSTANCE"] in onto:
+            if onto_id and [noun,"INSTANCE"] in onto_id:
                 pass #Just to be checked. The Id has already been resolved
                 
             # Case : common noun
@@ -478,7 +482,12 @@ def dump_resolved(sentence, current_speaker, current_listener):
 
         for ng in ngs:
             ng._resolved = False
-            onto_focus =  ResourcePool().ontology_server.find('?concept', [current_speaker + ' focusesOn ?concept'])
+            
+            onto_focus = ''
+            try:
+                onto_focus =  ResourcePool().ontology_server.find('?concept', [current_speaker + ' focusesOn ?concept'])
+            except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
             
             if ng.noun in [['me'], ['Me'],['I']]:
                 ng.id = current_speaker
@@ -496,7 +505,7 @@ def dump_resolved(sentence, current_speaker, current_listener):
                 ng.id = 'id_tom'
             elif ng.noun == ['shelf1']:
                 ng.id = 'shelf1'
-            elif onto_focus and ng.det == ['this']:
+            elif onto_focus and ng.det in ['this', 'that']:
                 ng.id = onto_focus[0]
             else:
                 pass
@@ -533,24 +542,27 @@ class TestStatementBuilder(unittest.TestCase):
 
     def setUp(self):
         
-        ResourcePool().ontology_server.add(['id_danny rdfs:label "Danny"',
-                      'id_danny rdf:type Human',
-                      'blue_volvo hasColor blue', 
-                      'blue_volvo rdf:type Car',
-                      'blue_volvo belongsTo SPEAKER',
-                      'id_jido rdf:type Robot',
-                      'id_jido rdfs:label "Jido"',
-                      'twingo rdf:type Car',
-                      'twingo hasSize small',
-                      'a_man rdf:type Man',
-                      'fiat belongsTo id_tom',
-                      'fiat rdf:type Car',
-                      'id_tom rdfs:label "Tom"',
-                      'id_tom rdf:type Brother',
-                      'id_tom belongsTo id_danny',
-                      'id_toulouse rdfs:label "Toulouse"',
-                      'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
-                      'SPEAKER focusesOn another_cube'])
+        try:
+            ResourcePool().ontology_server.add(['id_danny rdfs:label "Danny"',
+                          'id_danny rdf:type Human',
+                          'blue_volvo hasColor blue', 
+                          'blue_volvo rdf:type Car',
+                          'blue_volvo belongsTo SPEAKER',
+                          'id_jido rdf:type Robot',
+                          'id_jido rdfs:label "Jido"',
+                          'twingo rdf:type Car',
+                          'twingo hasSize small',
+                          'a_man rdf:type Man',
+                          'fiat belongsTo id_tom',
+                          'fiat rdf:type Car',
+                          'id_tom rdfs:label "Tom"',
+                          'id_tom rdf:type Brother',
+                          'id_tom belongsTo id_danny',
+                          'id_toulouse rdfs:label "Toulouse"',
+                          'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
+                          'SPEAKER focusesOn another_cube'])
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
         
         self.stmt = StatementBuilder("SPEAKER")
         self.stmt_adder = StatementSafeAdder()

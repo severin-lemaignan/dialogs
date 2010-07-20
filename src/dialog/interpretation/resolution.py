@@ -131,8 +131,11 @@ class Resolver:
         resolved_sn = []
         for sn in array_sn:
             if sn.noun:
-                onto = ResourcePool().ontology_server.lookup(sn.noun[0])
-                resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
+                try:
+                    onto = ResourcePool().ontology_server.lookup(sn.noun[0])
+                    resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
+                except AttributeError: #the ontology server is not started of doesn't know the method
+                    pass
 
         return resolved_sn
     

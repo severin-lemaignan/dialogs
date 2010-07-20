@@ -173,8 +173,8 @@ class ResourcePool:
             else:
                 logging.info("Starting without ontology server. Resolution won't work")
         except OroServerError:
-            logging.error("Error while trying to connect to ORO on " + oro_host + ":" + oro_port + \
-            ". Continuing without the ontology server. Resolution won't work")
+            logging.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
+            ". Continuing without the ontology server. Amongst others, resolution won't work.")
             
         self.adjectives = {}
         self.irregular_verbs_past = []
@@ -243,7 +243,8 @@ class ResourcePool:
                 desc = ""
     
     def __del__(self):
-        self.ontology_server.close()
+        if self.ontology_server:
+            self.ontology_server.close()
 
 
 if __name__ == '__main__':

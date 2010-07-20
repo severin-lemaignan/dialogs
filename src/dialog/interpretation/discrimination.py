@@ -196,6 +196,9 @@ class Discrimination():
         logging.debug('Clarify recieves description = ' +  str(description))
         logging.debug('Clarify for objL = ' +  str(objL))
 
+        if not self.oro: #No ontology server
+            return 'UNKNOWN_CONCEPT'
+            
         if len(objL) == 0:
             questions = [Sentence('imperative', '', 
                         [], 

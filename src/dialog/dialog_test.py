@@ -60,22 +60,25 @@ class TestDialog(unittest.TestCase):
         
         self.oro = ResourcePool().ontology_server
         
-        self.oro.add(['shelf1 rdf:type Shelf',
-                    'table1 rdf:type Table', 
-                    'table2 rdf:type Table', 
-                    'table2 hasColor blue', 
-                    'Banana rdfs:subClassOf Plant',
-                    'y_banana rdf:type Banana',
-                    'y_banana hasColor yellow',
-                    'y_banana isOn shelf',
-                    'green_banana rdf:type Banana',
-                    'green_banana hasColor green',
-                    'green_banana isOn table2',
-                    'ACCESSKIT rdf:type Gamebox', 'ACCESSKIT hasColor white', 'ACCESSKIT hasSize big', 'ACCESSKIT isOn table1',
-                    'ORANGEBOX rdf:type Gamebox', 'ORANGEBOX hasColor orange', 'ORANGEBOX hasSize big', 'ORANGEBOX isOn ACCESSKIT',
-                    'MYBOX rdf:type Gamebox', 'MYBOX hasColor orange', 'MYBOX hasSize small', 'MYBOX isOn table1',
-                    'SPACENAVBOX rdf:type Gamebox', 'SPACENAVBOX hasColor white'
-                    ])
+        try:
+            self.oro.add(['shelf1 rdf:type Shelf',
+                        'table1 rdf:type Table', 
+                        'table2 rdf:type Table', 
+                        'table2 hasColor blue', 
+                        'Banana rdfs:subClassOf Plant',
+                        'y_banana rdf:type Banana',
+                        'y_banana hasColor yellow',
+                        'y_banana isOn shelf',
+                        'green_banana rdf:type Banana',
+                        'green_banana hasColor green',
+                        'green_banana isOn table2',
+                        'ACCESSKIT rdf:type Gamebox', 'ACCESSKIT hasColor white', 'ACCESSKIT hasSize big', 'ACCESSKIT isOn table1',
+                        'ORANGEBOX rdf:type Gamebox', 'ORANGEBOX hasColor orange', 'ORANGEBOX hasSize big', 'ORANGEBOX isOn ACCESSKIT',
+                        'MYBOX rdf:type Gamebox', 'MYBOX hasColor orange', 'MYBOX hasSize small', 'MYBOX isOn table1',
+                        'SPACENAVBOX rdf:type Gamebox', 'SPACENAVBOX hasColor white'
+                        ])
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
 
     def test_sentence1(self):
 

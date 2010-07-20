@@ -69,7 +69,7 @@ class Dialog(Thread):
         while self.go_on:
                   
             try:               
-                input = self._nl_input_queue.get(block = False).strip()                
+                input = self._nl_input_queue.get(block = False).strip()
                 self._logger.info(colored_print("###################################", 'green'))
                 self._logger.info(colored_print("#             NL INPUT            #", 'green'))
                 self._logger.info(colored_print("###################################\n", 'green'))

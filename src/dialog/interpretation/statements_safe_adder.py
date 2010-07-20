@@ -51,8 +51,10 @@ class StatementSafeAdder():
             
             
     def safeAdd(self, statements):
-        ResourcePool().ontology_server.safeAdd(statements)
-
+        try:
+            ResourcePool().ontology_server.safeAdd(statements)
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
 
 def generate_id(with_question_mark = True):
     sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

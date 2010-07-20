@@ -45,24 +45,40 @@ class QuestionHandler:
 		#Case the question is a y_n_question
 		if sentence.data_type == 'yes_no_question':
 			self._statements = self._resolve_action_verb_reference(self._statements)
-			logging.debug("Checking on the ontology: check(" + str(self._statements) + ")")
 			
-			self._answer = ResourcePool().ontology_server.check(self._statements)
+			try:
+				logging.debug("Checking on the ontology: check(" + str(self._statements) + ")")
+				self._answer = ResourcePool().ontology_server.check(self._statements)
+			except AttributeError: #the ontology server is not started of doesn't know the method
+				pass
 			
-		#Case the question is a w_question		
+		#Case the question is a w_question
 		if sentence.data_type == 'w_question':
 			self._statements = self._extend_statement_from_sentence_aim(self._statements)
 			self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
-			logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
 			
-			self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
+			try:
+				logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
+				self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
+			except AttributeError: #the ontology server is not started of doesn't know the method
+				pass
 		
 		return self._answer
 		
 	def _resolve_action_verb_reference(self, statements):
+		"""
+		TODO: doc!! I don't understand what this method is doing
+		"""
 		stmts = []
-		try: 
-			sit_id = ResourcePool().ontology_server.find('?event', statements)
+		try:
+			
+			sit_id = []
+			
+			try:
+				sit_id = ResourcePool().ontology_server.find('?event', statements)
+			except AttributeError: #the ontology server is not started of doesn't know the method
+				pass
+				
 			if sit_id:
 				logging.debug("\t/Found a staticSituation matching the yes_no_question query to be checked: "+ str(sit_id))
 				for s in statements:
@@ -202,33 +218,36 @@ class TestQuestionHandler(unittest.TestCase):
 		#how is my bottle?
 		#what does Danny drive?
 		"""
-		ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
-				 
-				 'blue_cube rdf:type Cube',
-				 'blue_cube hasColor blue',
-				 'blue_cube isOn table1',
-				 'another_cube rdf:type Cube',
-				 'another_cube isOn shelf1',
-				 'another_cube belongsTo SPEAKER',
-				 'another_cube hasSize small',
-				 
-				 'shelf1 rdf:type Shelf',
-				 'table1 rdf:type Table',
-				 
-				 'see_shelf rdf:type See',
-				 'see_shelf performedBy myself',
-				 'see_shelf involves shelf1',
-				 
-				 'take_blue_cube performedBy myself',
-				 'take_blue_cube rdf:type Get',
-				 'take_blue_cube actsOnObject blue_cube',
-				 
-				 'take_my_cube canBePerformedBy SPEAKER',
-				 'take_my_cube involves another_cube',
-				 'take_my_cube rdf:type Take',
-				 
-				 'SPEAKER focusesOn another_cube'])
 		
+		try:
+			ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
+					 
+					 'blue_cube rdf:type Cube',
+					 'blue_cube hasColor blue',
+					 'blue_cube isOn table1',
+					 'another_cube rdf:type Cube',
+					 'another_cube isOn shelf1',
+					 'another_cube belongsTo SPEAKER',
+					 'another_cube hasSize small',
+					 
+					 'shelf1 rdf:type Shelf',
+					 'table1 rdf:type Table',
+					 
+					 'see_shelf rdf:type See',
+					 'see_shelf performedBy myself',
+					 'see_shelf involves shelf1',
+					 
+					 'take_blue_cube performedBy myself',
+					 'take_blue_cube rdf:type Get',
+					 'take_blue_cube actsOnObject blue_cube',
+					 
+					 'take_my_cube canBePerformedBy SPEAKER',
+					 'take_my_cube involves another_cube',
+					 'take_my_cube rdf:type Take',
+					 
+					 'SPEAKER focusesOn another_cube'])
+		except AttributeError: #the ontology server is not started of doesn't know the method
+				pass
 		
 		self.qhandler = QuestionHandler("SPEAKER")
 	
