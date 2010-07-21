@@ -14,6 +14,7 @@ from helpers import colored_print
 from dialog_exceptions import UnsufficientInputError
 
 from sentence import Sentence
+import sentence
 
 from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser
@@ -125,10 +126,13 @@ class Dialog(Thread):
         #Here, we proceed a sentence that has not been resolved. It is saved in self.active_sentence.
         #The new input string is concatenated with the former one  
         if self.waiting_for_more_info:
-            prev_sentence = self._verbalizer.verbalize([self.active_sentence])
-            # change to new function sentence_remerge
-            #input_splited = self._parser.concatener(prev_sentence.split(), input.split(), self.current_output.lower().split())           
-            input = ' '.join(input_splited)    
+            #We process the input
+            input=self._parser.parse(input, None)
+            
+            #We make the merge in the nominal group
+            input = sentence.nom_gr_remerge(input._class_list, self.current_output[0], self.active_sentence)           
+            
+            input = ' '.join(input)    
         
         self._nl_input_queue.put(input)
         
