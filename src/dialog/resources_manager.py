@@ -241,10 +241,6 @@ class ResourcePool:
             if line.startswith("}"): #end of block
                 self.thematic_roles.add_verb(desc)
                 desc = ""
-    
-    def __del__(self):
-        if self.ontology_server:
-            self.ontology_server.close()
 
 
 if __name__ == '__main__':
