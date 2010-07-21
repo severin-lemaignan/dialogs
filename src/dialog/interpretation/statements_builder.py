@@ -136,6 +136,14 @@ class NominalGroupStatementBuilder:
             
     
     def process_noun_phrases(self, nominal_group, ng_id):
+        
+        def get_class_name(noun,conceptL):
+            """Simple function to obtain the exact class name"""
+            for c in conceptL:
+                if 'CLASS' in c: return c[0]
+                
+            return None
+            
         for noun in nominal_group.noun:
             #logging.debug("Found a noun phrase:\"" + noun + "\"")
                         
@@ -151,7 +159,9 @@ class NominalGroupStatementBuilder:
                 
             # Case : common noun
             elif nominal_group.det:
-                self._statements.append(ng_id + " rdf:type " + noun.capitalize())            
+                # get the exact class name (capitalized letters where needed)
+                class_name = get_class_name(noun, onto_id)
+                self._statements.append(ng_id + " rdf:type " + class_name)            
                 
             #Case : proper noun or personal pronoun
             else:
