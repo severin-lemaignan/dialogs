@@ -1562,6 +1562,33 @@ def unit_tests():
     
     
     
+    """
+    ## Aim of this test : To use the complement of the noun and the duplication with 'and'
+    """
+    print ''
+    print ('######################## test 5.5 ##############################')
+
+    utterance="I'll play Jido's guitar, a saxophone, a piano of the wife of my oncle and Patrick's violon."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['play'], [],'future simple', 
+                [Nominal_Group(['the'],['guitar'],[],[Nominal_Group([],['Jido'],[],[],[])],[]),
+                 Nominal_Group(['a'],['saxophone'],[],[],[]),
+                 Nominal_Group(['a'],['piano'],[],[Nominal_Group(['the'],['wife'],[],[Nominal_Group(['my'],['oncle'],[],[],[])],[])],[]),
+                 Nominal_Group(['the'],['violon'],[],[Nominal_Group([],['Patrick'],[],[],[])],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
     
 if __name__ == '__main__':
     unit_tests()

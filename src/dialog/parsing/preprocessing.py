@@ -14,7 +14,8 @@
     concatenate_pos : to concatenate an element in a position given               
     case_apostrophe_s_to_is : to know if there is this kind of "'s"               
     expand_contractions : to perform expand contraction using concatenate_pos     
-    comma : to replace ',' by 'and'                                               
+    determination_nom_gr : to return the nominal group with his complement
+    and_nom_group : to process the case when there is a comma between nominal groups                                               
     find_nom_gr_list : take off noun chain linked by 'of'                         
     create_possession_claus : to transform a noun chain to string's list with 'of'
     possesion_form : to exchange the "'s" to 'of' by using 2 lastest functions    
@@ -35,7 +36,7 @@ Statement of lists
 """
 apostrophe_s_to_is_list=["he's", "she's", "it's", "that's", "what's", "who's", "how's"]
 replacement_tuples=[("won't",['will', 'not']),("wanna",['want', 'to']),("gonna",['going', 'to'])]
-insertion_tuples=[("'m", 'am', 2),("'ve", 'have', 3),("'re", 'are', 3),("'ll", 'will', 3),("'d", 'would', 2),("n't", 'not', 3)]
+insertion_tuples=[(",", ',', 1),("'m", 'am', 2),("'ve", 'have', 3),("'re", 'are', 3),("'ll", 'will', 3),("'d", 'would', 2),("n't", 'not', 3)]
 prep_list=['ago']
 prep_concat_list=[['next','to'],['behind','to'],['in','front','of']]
 
@@ -226,22 +227,76 @@ def prep_concat(sentence):
     return sentence
     
     
-
-def comma(sentence):
+    
+def determination_nom_gr(sentence, position):
     """
-    This function process the case when there is a comma                              
+    This function return the nominal group with his complement                             
+    Input=sentence                             Output=nominal group               
+    """
+    
+    nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
+    list_nom_gr=nom_gr
+    
+    while position+len(nom_gr)<len(sentence) and sentence[position+len(nom_gr)] == 'of':
+        position=position+len(nom_gr)+1
+        nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
+        list_nom_gr=list_nom_gr+['of']+nom_gr
+        
+    return list_nom_gr
+        
+        
+
+def and_nom_group(sentence):
+    """
+    This function process the case when there is a comma between nominal groups                             
     Input=sentence                                     Output=sentence               
     """
     
-    #Replace ',' by 'and'
-    for i in sentence:
-        if i==',':
-            sentence = sentence[:sentence.index(i)] + ['and'] + sentence[sentence.index(i)+1:]
-        elif i.endswith(','):
-            sentence = concatenate_pos(sentence, sentence.index(i), ['and'], 1)
+    #init
+    i=0
+    flag=2
+    list_nom_gr=[]
+    
+    while i < len(sentence):
+        if sentence[i]==',':
+            nom_gr=determination_nom_gr(sentence, i+1)
+            end_pos=len(nom_gr)+i+1
+            
+            while nom_gr!=[] and sentence[end_pos]==',':
+                list_nom_gr=['and']+nom_gr
+                
+                nom_gr=determination_nom_gr(sentence, end_pos+1)
+               
+                end_pos=len(nom_gr)+end_pos+1
+                flag=2
+            
+            if nom_gr!=[] and sentence[end_pos]=='and':
+                list_nom_gr=list_nom_gr+['and']+nom_gr
+                nom_gr=determination_nom_gr(sentence, end_pos+1)
+                end_pos=len(nom_gr)+end_pos+1
+                list_nom_gr=list_nom_gr+['and']+nom_gr
+                flag=flag-1
+               
+            if flag==1:
+                begin_pos=i-1
+                nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
+                while nom_gr==[] and begin_pos>0:
+                    begin_pos=begin_pos-1
+                    nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
+                    
+                if nom_gr!=[] and begin_pos+len(nom_gr)==i:
+                    flag=flag-1
+                    list_nom_gr=nom_gr+list_nom_gr
+                    
+            
+            if flag==0:
+                sentence=sentence[:begin_pos]+list_nom_gr+sentence[end_pos:]
+        
+        i=i+1
+    
     return sentence
 
-
+       
 
 def find_nom_gr_list(phrase):
     """
@@ -457,7 +512,7 @@ def processing(sentence):
     sentence = concat_number(sentence)
     sentence = other_processing(sentence)
     sentence = possesion_form(sentence)
-    sentence = comma(sentence)
+    sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
     sentence = or_processing(sentence)
             
