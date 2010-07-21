@@ -9,6 +9,10 @@ from parsing import *
 class SentenceFactory:
     
     def create_w_question_choice(self, obj_name, feature, values):
+        """ Creates sentences of type: 
+            Which color is the bottle? Blue or yellow.
+        """
+        
         nominal_groupL = [Nominal_Group([],[],[val],[],[]) for val in values]
         
         sentence = [Sentence('w_question', 'choice', 
@@ -23,6 +27,60 @@ class SentenceFactory:
             sentence[1].sn[i+1]._conjunction = 'OR'
         
         return sentence
+        
+    def create_w_question_location(self, obj_name, feature, values):
+        """ Creates sentences of type: 
+                "Where is the box? On the table or on the shelf?"
+        """
+        indirect_complL = [Indirect_Complement([feature],[Nominal_Group(['the'],[val],[],[],[])]) \
+                            for val in values]
+                            
+        sentence = [Sentence('w_question', 'place',
+                        [Nominal_Group(['the'],[obj_name],[],[],[])], 
+                        [Verbal_Group(['be'], [],'present simple', 
+                        [], [], [], [] ,'affirmative',[])]),
+                    Sentence('yes_no_question', '', [], 
+                        [Verbal_Group([], [],'', 
+                            [], indirect_complL, [], [] ,'affirmative',[])])]
+                
+        for i in range(len(values)-1):
+            sentence[1].sv[0].i_cmpl[i+1].nominal_group[0]._conjunction = 'OR'
+            
+        return sentence
+
+    def create_w_question_location_PT(self, values, agent):
+        """ Creates sentences of type: 
+            "Is it on your left or in front of you?"
+        """
+        
+        indirect_complL = []
+        
+        for val in values:
+            
+            if 'right' in val.lower() or 'left' in val.lower():
+                if agent == 'myself': det = 'my'
+                else: det = 'your'
+                indirect_complL.append(Indirect_Complement(['on'],[Nominal_Group([det],[val],[],[],[])]))
+            else:
+                if agent == 'myself': det = 'me'
+                else: det = 'you'
+
+                if 'back' in val.lower(): prep = 'behind'
+                elif 'front' in val.lower(): prep = 'in front of'
+                else: prep = None
+                
+                indirect_complL.append(Indirect_Complement([prep],[Nominal_Group([],[det],[],[],[])]))
+
+        sentence = [Sentence('yes_no_question', '', 
+                        [Nominal_Group([],['it'],[],[],[])], 
+                        [Verbal_Group(['be'], [],'present simple', 
+                            [], indirect_complL, [], [] ,'affirmative',[])])]
+                    
+        for i in range(len(values)-1):
+            sentence[0].sv[0].i_cmpl[i+1].nominal_group[0]._conjunction = 'OR'
+            
+        return sentence
+
     
 class Sentence:
     """
