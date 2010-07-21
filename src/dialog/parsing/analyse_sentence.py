@@ -396,7 +396,7 @@ def y_n_ques(type, request, sentence):
         #In case there is a state verb followed by an adjective
         if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
             pos=analyse_nominal_group.adjective_pos(sentence,0)
-            analysis.sn[0].adj=analysis.sn[0].adj+sentence[:pos-1]
+            vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
             sentence=sentence[pos:]
         
         #Here we have special processing for different cases
@@ -516,13 +516,8 @@ def other_sentence(type, request, sentence):
         
         #In case there is a state verb followed by an adjective
         if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
-            
             pos=analyse_nominal_group.adjective_pos(sentence,0)
-            if analysis.sn!=[]:
-                analysis.sn[0].adj=analysis.sn[0].adj+sentence[:pos-1]
-            else:
-                analysis.sn=[Nominal_Group([],[],sentence[:pos-1],[],[])]
-                
+            vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
             sentence=sentence[pos:]
             
         #We perform the processing with the modal

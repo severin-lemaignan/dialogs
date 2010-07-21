@@ -209,7 +209,7 @@ def unit_tests():
     """
     Function to perform unit tests                                                   
     """ 
-    """
+    
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -231,9 +231,9 @@ def unit_tests():
                 [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                 [], [] ,'affirmative',[])]),
         Sentence('statement', '',
-            [Nominal_Group(['the'],['bottle'],['blue'],[],[])],
+            [Nominal_Group(['the'],['bottle'],[],[],[])],
             [Verbal_Group(['be'], [],'present simple',
-                [], 
+                [Nominal_Group([],[],['blue'],[],[])], 
                 [],
                 [], [] ,'affirmative',[])]),
         Sentence('statement', '',
@@ -514,7 +514,7 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    """
+
     
     """
     """
@@ -915,9 +915,9 @@ def unit_tests():
                 [],
                 [], ['tonight'] ,'affirmative',[])]),
         Sentence('w_question', 'duration', 
-            [Nominal_Group(['the'],['store'],['open'],[Nominal_Group(['your'],['uncle'],[],[],[])],[])],  
+            [Nominal_Group(['the'],['store'],[],[Nominal_Group(['your'],['uncle'],[],[],[])],[])],  
             [Verbal_Group(['be'], [],'present simple', 
-                [], 
+                [Nominal_Group([],[],['open'],[],[])], 
                 [],
                 [], [] ,'affirmative',[])])]
 
@@ -1244,9 +1244,9 @@ def unit_tests():
                         [],
                         [], [] ,'affirmative',[])])])]),
         Sentence('statement', '', 
-                [Nominal_Group([],['you'],['happy'],[],[])], 
+                [Nominal_Group([],['you'],[],[],[])], 
                 [Verbal_Group(['be'], [],'future simple', 
-                    [], 
+                    [Nominal_Group([],[],['happy'],[],[])], 
                     [],
                     [], [] ,'affirmative',[Sentence('subsentence', 'if', 
                         [Nominal_Group([],['you'],[],[],[])], 
@@ -1408,7 +1408,7 @@ def unit_tests():
     print ''
     """
     
-    
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -1538,7 +1538,7 @@ def unit_tests():
             [Verbal_Group(['take'], [],'present simple', 
                 [Nominal_Group(['the'],['bottle'],[],[],[])], 
                 [],
-                ['carrefully'], [] ,'affirmative',[])]),
+                ['carefully'], [] ,'affirmative',[])]),
         Sentence('statement', '', 
             [Nominal_Group([],['I'],[],[],[])],  
             [Verbal_Group(['take'], [],'present simple', 
@@ -1616,7 +1616,7 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
 if __name__ == '__main__':
     unit_tests()
