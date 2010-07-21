@@ -481,7 +481,7 @@ def unit_tests():
     print ''
     print ('######################## test 1.8 ##############################')
 
-    utterance="the man who talks ; has a new car. I play the guitar that I bought yesterday."
+    utterance="the man, who talks, has a new car. I play the guitar, that I bought yesterday,."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -523,7 +523,7 @@ def unit_tests():
     print ''
     print ('######################## test 2.1 ##############################')
 
-    utterance="don't quickly give me the bottle which is on the table ; and the glass which I cleaned yesterday ; at my left"
+    utterance="don't quickly give me the bottle which is on the table, and the glass which I cleaned yesterday, at my left"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -560,11 +560,12 @@ def unit_tests():
     print ''
     print ('######################## test 2.2 ##############################')
 
-    utterance="The bottle that I bought from the store which is in the shopping center ; ; is yours."
+    utterance="The bottle that I bought from the store which is in the shopping center, , is yours."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
     print ''
+    print 
     sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
@@ -1111,7 +1112,7 @@ def unit_tests():
     print ''
     print ('######################## test 4.1 ##############################')
 
-    utterance="What are you thinking about the idea that I present you? what color is the bottle that you bought"
+    utterance="What are you thinking about the idea that I present you? what color is the bottle that you bought,"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1153,7 +1154,7 @@ def unit_tests():
     print ''
     print ('######################## test 4.2 ##############################')
 
-    utterance="Which competition's salesperson won the award which we won in the last years."
+    utterance="Which competition's salesperson won the award which we won in the last years"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1184,7 +1185,7 @@ def unit_tests():
     print ''
     print ('######################## test 4.3 ##############################')
 
-    utterance="what'll your house look like? what do you think of the latest novel which Jido wrote ;"
+    utterance="what'll your house look like? what do you think of the latest novel which Jido wrote"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1221,7 +1222,7 @@ def unit_tests():
     print ''
     print ('######################## test 4.4 ##############################')
 
-    utterance="learn that I want you to give me the blue bottle. If you do your job ; you will be happy."
+    utterance="learn that I want you to give me the blue bottle,. If you do your job, you will be happy."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1474,9 +1475,9 @@ def unit_tests():
                     [Nominal_Group([],['I'],[],[],[])], 
                     [Verbal_Group(['want'], [Verbal_Group(['give'], [],'', 
                             [Nominal_Group(['the'],['bottle'],['blue'],[],[Sentence('relative', 'that', 
-                                [Nominal_Group([],[],['blue'],[],[])], 
+                                [], 
                                 [Verbal_Group(['be'], [],'present simple', 
-                                    [], 
+                                    [Nominal_Group([],[],['blue'],[],[])], 
                                     [],
                                     [], [] ,'affirmative',[])])])], 
                             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],

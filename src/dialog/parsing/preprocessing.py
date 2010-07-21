@@ -22,7 +22,9 @@
     other_processing : to perform other processing                                 
     move_prep : to put the preposition before the nominal group
     or_processing : to create a nominal group before and after the 'or'
-    reorganize_adj : to delete ',' and 'and' if it is between adjectives
+    reorganize_adj : to delete ',' and 'and' if it is between adjectives*
+    subsentence_comma : to delete ',' or changed on ';'
+    delete_empty : to delete '' from sentence
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
@@ -37,9 +39,12 @@ Statement of lists
 """
 apostrophe_s_to_is_list=["he's", "she's", "it's", "that's", "what's", "who's", "how's"]
 replacement_tuples=[("won't",['will', 'not']),("wanna",['want', 'to']),("gonna",['going', 'to'])]
-insertion_tuples=[(",", ',', 1),("'m", 'am', 2),("'ve", 'have', 3),("'re", 'are', 3),("'ll", 'will', 3),("'d", 'would', 2),("n't", 'not', 3)]
+insertion_tuples=[(";", ';', 1),(",", ',', 1),("'m", 'am', 2),("'ve", 'have', 3),
+                  ("'re", 'are', 3),("'ll", 'will', 3),("'d", 'would', 2),("n't", 'not', 3)]
 prep_list=['ago']
 prep_concat_list=[['next','to'],['behind','to'],['in','front','of']]
+rel_list=['which', 'who','that']
+sub_list=['while', 'but','where', 'when']
 
 
 
@@ -514,13 +519,57 @@ def reorganize_adj(sentence):
     #init
     i=0
     
-    while i < len(sentence):
+    while i < len(sentence)-1:
         if sentence[i] ==',' or sentence[i] =='and':
             if analyse_nominal_group.is_an_adj(sentence[i+1]) and analyse_nominal_group.is_an_adj(sentence[i-1]):
                 sentence=sentence[:i]+sentence[i+1:]
         
         i=i+1
     return sentence
+    
+    
+    
+def subsentence_comma(sentence):
+    """ 
+    This function delete ',' or changed on ';'                  
+    Input=sentence                              Output=sentence                      
+    """ 
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        if sentence[i]==',':
+            sentence[i]=';'
+            if i==len(sentence)-1:
+                sentence=sentence[:i]
+            elif sentence[i+1]=='?' or sentence[i+1]=='!' or sentence[i+1]=='.':
+                sentence=sentence[:i]+sentence[i+1:]
+            else:
+                for j in rel_list+sub_list:
+                    if  j==sentence[i+1]:
+                        sentence=sentence[:i]+sentence[i+1:]
+                        break
+        i=i+1
+    return sentence
+    
+    
+    
+def delete_empty(sentence):
+    """ 
+    This function delete '' from sentence                  
+    Input=sentence                              Output=sentence                      
+    """ 
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        if sentence[i]=='':
+            sentence=sentence[:i]+sentence[i+1:]
+        i=i+1
+        
+    return sentence   
     
     
     
@@ -531,6 +580,7 @@ def processing(sentence):
     """ 
 
     sentence = expand_contractions(sentence)
+    sentence = delete_empty(sentence)
     sentence = prep_concat(sentence)
     sentence = upper_to_lower(sentence)
     sentence = concat_number(sentence)
@@ -540,7 +590,7 @@ def processing(sentence):
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
     sentence = or_processing(sentence)
-            
+    sentence = subsentence_comma(sentence)        
     return sentence
 
 
