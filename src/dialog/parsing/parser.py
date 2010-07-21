@@ -1525,7 +1525,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.4 ##############################')
 
-    utterance="Take the bottle carrefully. I take that bottle that I drink in. I take twenty two bottles."
+    utterance="Take the bottle carefully. I take that bottle that I drink in. I take twenty two bottles."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1585,6 +1585,34 @@ def unit_tests():
                  Nominal_Group(['the'],['violon'],[],[Nominal_Group([],['Patrick'],[],[],[])],[])], 
                 [],
                 [], [] ,'affirmative',[])])]
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
+    
+    """
+    ## Aim of this test : To use the complement of the noun and the duplication with 'and'
+    """
+    print ''
+    print ('######################## test 5.5 ##############################')
+
+    utterance="Give me two or three bottles."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['two'],['bottles'],[],[],[]),
+                 Nominal_Group(['three'],['bottles'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+    
+    rslt[0].sv[0].d_obj[1]._conjunction="OR"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''

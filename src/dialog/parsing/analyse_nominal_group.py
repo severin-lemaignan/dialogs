@@ -105,7 +105,7 @@ def find_sn_pos (phrase, begin_pos):
         if phrase[begin_pos]==j:
             end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
             return phrase[begin_pos : end_pos+begin_pos]
-        
+       
     #If there is a number, it will be the same with determinant
     if other_functions.number(phrase[begin_pos])==1:
         end_pos= end_pos + adjective_pos(phrase, begin_pos+1)

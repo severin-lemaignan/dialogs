@@ -10,7 +10,7 @@
  Functions:                                                                       
     delete_and_from_number : to delete 'and' between two numbers
     concat_number : to concatenate numbers with '+'
-    upper_to_lower : to process the upp case at the beginning of the sentence        
+    upper_to_lower : to process the upper case at the beginning of the sentence        
     concatenate_pos : to concatenate an element in a position given               
     case_apostrophe_s_to_is : to know if there is this kind of "'s"               
     expand_contractions : to perform expand contraction using concatenate_pos     
@@ -18,7 +18,7 @@
     and_nom_group : to process the case when there is a comma between nominal groups                                               
     find_nom_gr_list : take off noun chain linked by 'of'                         
     create_possession_claus : to transform a noun chain to string's list with 'of'
-    possesion_form : to exchange the "'s" to 'of' by using 2 lastest functions    
+    possesion_form : to exchange the "'s" to 'of' by using 2 latest functions    
     other_processing : to perform other processing                                 
     move_prep : to put the preposition before the nominal group
     or_processing : to create a nominal group before and after the 'or'
@@ -257,38 +257,43 @@ def and_nom_group(sentence):
     flag=2
     list_nom_gr=[]
     
+    #If we find ','
     while i < len(sentence):
         if sentence[i]==',':
             nom_gr=determination_nom_gr(sentence, i+1)
             end_pos=len(nom_gr)+i+1
             
+            #First we recover the all nominal groups preceded by ','
             while nom_gr!=[] and sentence[end_pos]==',':
                 list_nom_gr=['and']+nom_gr
-                
                 nom_gr=determination_nom_gr(sentence, end_pos+1)
-               
                 end_pos=len(nom_gr)+end_pos+1
+                #Flag still 2 because this stage is not compulsory
                 flag=2
             
+            #We will find the last nominal group of this phrase
             if nom_gr!=[] and sentence[end_pos]=='and':
                 list_nom_gr=list_nom_gr+['and']+nom_gr
                 nom_gr=determination_nom_gr(sentence, end_pos+1)
                 end_pos=len(nom_gr)+end_pos+1
                 list_nom_gr=list_nom_gr+['and']+nom_gr
+                #Flag will be 1 because this stage is compulsory
                 flag=flag-1
-               
+            
+            #If flag=1 => we can have the and_nom_group case
             if flag==1:
+                #We have to find the first nominal group
                 begin_pos=i-1
                 nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
                 while nom_gr==[] and begin_pos>0:
                     begin_pos=begin_pos-1
                     nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
-                    
+                #If this nominal group preceded the first ',' => OK
                 if nom_gr!=[] and begin_pos+len(nom_gr)==i:
                     flag=flag-1
                     list_nom_gr=nom_gr+list_nom_gr
                     
-            
+            #We have an and_nom_group case 
             if flag==0:
                 sentence=sentence[:begin_pos]+list_nom_gr+sentence[end_pos:]
         
@@ -478,7 +483,7 @@ def or_processing(sentence):
             while fst_nom_gr==[]:
                 position=position-1
                 fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
-            
+        
             #We will find the second nominal group
             scd_nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
             
