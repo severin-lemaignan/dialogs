@@ -234,7 +234,6 @@ class TestVerbalizeDialog(unittest.TestCase):
         self.assertEquals(stmt, res)
 
 
-
     def test_verbalize5(self):
         
         print("\n##################### test_verbalize5 ########################\n")
@@ -246,6 +245,163 @@ class TestVerbalizeDialog(unittest.TestCase):
         print '>> input: ', stmt
         print '<< output:', res
         self.assertEquals(stmt, res)
+        
+    def test_verbalize6(self):
+        
+        print("\n##################### test_verbalize6 ########################\n")
+        myP = Parser()
+        stmt = "Give me more information about the bottle."
+        #stmt = "Give more information to me about the bottle."
+        sentences = [Sentence('imperative', '', 
+                    [], 
+                    [Verbal_Group(['give'], [],'present simple', 
+                    [Nominal_Group([],['information'],['more'],[],[])], 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                     Indirect_Complement(['about'],[Nominal_Group(['the'],['bottle'],[],[],[])])],
+                     [], [] ,'affirmative',[])])]
+
+        res = self.dialog._verbalizer.verbalize(sentences)
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+
+    def test_verbalize7(self):
+        
+        print("\n##################### test_verbalize7 ########################\n")
+        myP = Parser()
+        stmt = "Give me new information about the object."
+        #stmt = "Give new information to me about the object."
+        
+        sentences = [Sentence('imperative', '', 
+                    [], 
+                    [Verbal_Group(['give'], [],'present simple', 
+                    [Nominal_Group([],['information'],['new'],[],[])], 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                     Indirect_Complement(['about'],[Nominal_Group(['the'],['object'],[],[],[])])],
+                     [], [] ,'affirmative',[])])]
+
+        res = self.dialog._verbalizer.verbalize(sentences)
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+
+    def test_verbalize8(self):
+        
+        print("\n##################### test_verbalize8 ########################\n")
+        myP = Parser()
+        stmt = "Which color is the bottle? Blue or yellow."
+        sentences = [Sentence('w_question', 'choice', 
+                        [Nominal_Group([],['color'],[],[],[])], 
+                        [Verbal_Group(['be'], [],'present simple', 
+                        [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                        [], [], [] ,'affirmative',[])]),
+                    Sentence('statement', '',
+                        [Nominal_Group([],[],['blue'],[],[]), 
+                        Nominal_Group([],[],['yellow'],[],[])],
+                        [])
+                    ]
+                    
+        sentences[1].sn[1]._conjunction = 'OR'
+        
+
+        res = self.dialog._verbalizer.verbalize(sentences)
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+
+    def test_verbalize9(self):
+        
+        print("\n##################### test_verbalize9 ########################\n")
+        myP = Parser()
+        stmt = "Where is it? On the table or on the shelf?"
+        
+        sentences = [Sentence('w_question', 'place',
+                        [Nominal_Group([],['it'],[],[],[])], 
+                        [Verbal_Group(['be'], [],'present simple', 
+                        [], [], [], [] ,'affirmative',[])]),
+                    Sentence('yes_no_question', '', 
+                        [], 
+                        [Verbal_Group([], [],'', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])]),
+                        Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                        [], [] ,'affirmative',[])])]
+        
+        sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+
+        res = self.dialog._verbalizer.verbalize(sentences)
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+        
+    def test_verbalize10(self):
+        print("\n##################### test_verbalize10 ########################\n")
+        myP = Parser()
+        stmt = "Is it on the table or on the shelf?"
+
+        sentences = [Sentence('yes_no_question', '',
+                        [Nominal_Group([],['it'],[],[],[])],
+                        [Verbal_Group(['be'], [],'present simple',
+                            [],
+                            [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])]),
+                             Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                            [], [] ,'affirmative',[])])]
+        
+        sentences[0].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+
+        res = self.dialog._verbalizer.verbalize(sentences)
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)
+        
+    def test_verbalize11(self):
+        
+        print("\n##################### test_verbalize11 ########################\n")
+        myP = Parser()
+        stmt = "Is it on your left or on your right?"
+
+        sentences = [Sentence('yes_no_question', '', 
+                        [Nominal_Group([],['it'],[],[],[])], 
+                        [Verbal_Group(['be'], [],'present simple', 
+                            [], 
+                            [Indirect_Complement(['on'],[Nominal_Group(['your'],['left'],[],[],[])]),
+                             Indirect_Complement(['on'],[Nominal_Group(['your'],['right'],[],[],[])])],
+                        [], [] ,'affirmative',[])])]
+                    
+        sentences[0].sv[0].i_cmpl[1].nominal_group[0]._conjunction = 'OR'
+        
+        
+        res = self.dialog._verbalizer.verbalize(sentences)
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)    
+
+
+    def test_verbalize12(self):
+        
+        print("\n##################### test_verbalize12 ########################\n")
+        myP = Parser()
+
+        stmt = "Where is it? Is it on your left or in front of you?"
+        
+        sentences = [Sentence('w_question', 'place',
+                        [Nominal_Group([],['it'],[],[],[])], 
+                        [Verbal_Group(['be'], [],'present simple', 
+                        [], [], [], [] ,'affirmative',[])]),
+                    Sentence('yes_no_question', '',
+                        [Nominal_Group([],['it'],[],[],[])],
+                        [Verbal_Group(['be'], [],'present simple',
+                        [],
+                        [Indirect_Complement(['on'],[Nominal_Group(['your'],['left'],[],[],[])]),
+                        Indirect_Complement(['in+front+of'],[Nominal_Group([],['you'],[],[], [])])],
+                        [], [] ,'affirmative',[])])]
+        
+        sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+
+        res = self.dialog._verbalizer.verbalize(sentences)
+        print 'input: ', stmt
+        print 'output:', res
+        self.assertEquals(stmt, res)    
 
     def tearDown(self):
         self.dialog.stop()
@@ -282,24 +438,23 @@ class TestDiscriminateDialog(unittest.TestCase):
         try:
             self.oro.add(['shelf1 rdf:type Shelf',
                         'table1 rdf:type Table', 
-                        'table2 rdf:type Table', 
-                        'table2 hasColor blue', 
+                        'table2 rdf:type Table', 'table2 hasColor blue', 
                         'Banana rdfs:subClassOf Plant',
-                        'y_banana rdf:type Banana',
-                        'y_banana hasColor yellow',
-                        'y_banana isOn shelf',
-                        'green_banana rdf:type Banana',
-                        'green_banana hasColor green',
-                        'green_banana isOn table2',
+                        'y_banana rdf:type Banana','y_banana hasColor yellow','y_banana isOn shelf1',
+                        'green_banana rdf:type Banana','green_banana hasColor green','green_banana isOn table2',
                         'ACCESSKIT rdf:type Gamebox', 'ACCESSKIT hasColor white', 'ACCESSKIT hasSize big', 'ACCESSKIT isOn table1',
                         'ORANGEBOX rdf:type Gamebox', 'ORANGEBOX hasColor orange', 'ORANGEBOX hasSize big', 'ORANGEBOX isOn ACCESSKIT',
-                        'MYBOX rdf:type Gamebox', 'MYBOX hasColor orange', 'MYBOX hasSize small', 'MYBOX isOn table1',
-                        'SPACENAVBOX rdf:type Gamebox', 'SPACENAVBOX hasColor white'
+                        'MYBOX rdf:type Gamebox', 'MYBOX hasColor orange', 'MYBOX hasSize small', 'MYBOX isOn ACCESSKIT',
+                        'SPACENAVBOX rdf:type Gamebox', 'SPACENAVBOX hasColor white', 'SPACENAVBOX hasSize big', 'SPACENAVBOX isOn ACCESSKIT',
+                        'y_bottle rdf:type Bottle', 'y_bottle isLocated RIGHT',
+                        'r_bottle rdf:type Bottle', 'r_bottle isLocated FRONT',
+                        'b_bottle rdf:type Bottle', 'b_bottle isLocated BACK'
                         ])
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
 
     def test_discriminate1(self):
+        """ Color discriminant should be found"""
         
         print("\n##################### test_discriminate1 ########################\n")
         ####
@@ -307,11 +462,12 @@ class TestDiscriminateDialog(unittest.TestCase):
         answer = "the green one"
         ####
         res = self.dialog.test('myself', stmt, answer)
-        expected_result = [ 'green_banana hasFeature good']
+        expected_result = ['green_banana hasFeature good']
         self.assertTrue(self.check_results(res, expected_result))
     
 
     def test_discriminate2(self):
+        """ Color discriminant should be found"""
         
         print("\n##################### test_discriminate2 ########################\n")
         ####
@@ -319,10 +475,11 @@ class TestDiscriminateDialog(unittest.TestCase):
         answer = "the yellow one"
         ####
         res = self.dialog.test('myself', stmt, answer)
-        expected_result = [ 'y_banana hasFeature good']
+        expected_result = ['y_banana hasFeature good']
         self.assertTrue(self.check_results(res, expected_result))
         
     def test_discriminate3(self):
+        """ Color discriminant should be found"""
         
         print("\n##################### test_discriminate3 ########################\n")
         ####
@@ -341,11 +498,12 @@ class TestDiscriminateDialog(unittest.TestCase):
         
         
     def test_discriminate4(self):
+        """No ambiguity."""
         
         print("\n##################### test_discriminate4 ########################\n")
         ####
-        stmt = "get the gamebox which is on the table ;"
-        answer = "the orange one"
+        stmt = "get the gamebox which is on the table"
+        answer = None
         ####
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
@@ -358,11 +516,12 @@ class TestDiscriminateDialog(unittest.TestCase):
         self.assertTrue(self.check_results(res, expected_result))
         
     def test_discriminate5(self):
-        
+        """ Size discriminant should be found """
+
         print("\n##################### test_discriminate5 ########################\n")
         ####
         stmt = "get the orange gamebox"
-        answer = "the one that is on the ACCESSKIT ,"
+        answer = "the big one"
         ####
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
@@ -374,40 +533,56 @@ class TestDiscriminateDialog(unittest.TestCase):
         self.assertTrue(self.check_results(res, expected_result))
 
     def test_discriminate6(self):
+        """No complete discriminant found. More info required"""
         
         print("\n##################### test_discriminate6 ########################\n")
         ####
         stmt = "get the big gamebox"
-        answer = "the white one"
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Get',
-                            '* performedBy myself',
-                            '* actsOnObject ACCESSKIT']
-        ###
-        res = self.dialog.test('myself', stmt, answer)
-        print res
-        self.assertTrue(self.check_results(res, expected_result))
-
-
-    """
-    def test_discriminate7(self):
-        
-        print("\n##################### test_discriminate7 ########################\n")
-        ####
-        stmt = "get the gamebox which is on the ACCESSKIT ;"
+        answer = "the orange one"
         ####
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
                             '* performedBy myself',
                             '* actsOnObject ORANGEBOX']
         ###
+        res = self.dialog.test('myself', stmt, answer)
+        print res
+        self.assertTrue(self.check_results(res, expected_result))
+
+
+    def test_discriminate7(self):
+        """ Location discriminant should be found """
+        
+        print("\n##################### test_discriminate7 ########################\n")
+        ####
+        stmt = "get the white gamebox"
+        answer = "the one which is on the table1"
+        ####
+        expected_result = [ 'myself desires *',
+                            '* rdf:type Get',
+                            '* performedBy myself',
+                            '* actsOnObject ACCESSKIT']
+        ###
         res = self.dialog.test('myself', stmt)
         print res
         self.assertTrue(self.check_results(res, expected_result))
-    """
-
     
+    def test_discriminate8(self):
+        """ Location wrt robot discriminant should be found """
+        
+        print("\n##################### test_discriminate8 ########################\n")
+        ####
+        stmt = "get the bottle"
+        answer = "the one which is in front of you"
+        ####
+        expected_result = [ 'myself desires *',
+                            '* rdf:type Get',
+                            '* performedBy myself',
+                            '* actsOnObject r_bottle']
+        ###
+        res = self.dialog.test('myself', stmt)
+        print res
+        self.assertTrue(self.check_results(res, expected_result))
 
 
     def tearDown(self):
@@ -422,7 +597,6 @@ if __name__ == '__main__':
     #unittest.main()
     
     # executing only some tests
-
     suiteSimpleSentences = unittest.TestSuite()
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence1'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence2'))
@@ -435,16 +609,18 @@ if __name__ == '__main__':
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize3'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize4'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize5'))
+    suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize10'))
     
     suiteDiscriminate = unittest.TestSuite()
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate1'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate2'))
+#    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate1'))
+#    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate2'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate3'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate4'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate5'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate6'))
+    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate7'))
+    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate8'))
     
-    
-    unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
+    #unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
     #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
-    #unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
+    unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
