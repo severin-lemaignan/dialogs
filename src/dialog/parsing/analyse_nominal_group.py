@@ -8,7 +8,8 @@
  21/06/2010                                                                       
  The package contains functions that affect the analysis of nominal groups        
  We return all elements of a nominal group                                        
- Functions:                                                                       
+ Functions:   
+    is_an_adj : to know if a word is an adjective                                                                  
     adjective_pos : to return the position of the noun in the sentence             
     find_sn_pos : to return the nom_group in a given position with adjective_pos  
     find_sn : to return the first nominal group found in the sentence             
@@ -49,6 +50,31 @@ noun_list = ResourcePool().special_nouns
 
 
 
+def is_an_adj(word):
+    """
+    This function to know if a word is an adjective                                  
+    Input=word                Output=1 if it is an adjective and 0 if not                     
+    """
+    
+    #It is a noun so we have to return 1
+    for j in noun_list:
+        if word==j[0]:
+            return 0
+    
+    #For the regular adjectives
+    for k in adj_rules:
+        if word.endswith(k):
+            return 1
+    
+    #We use the irregular adjectives list to find it
+    for i in adjective_list:
+        if word==i:
+            return 1
+    
+    return 0
+
+    
+    
 def adjective_pos(phrase, word_pos):
     """
     This function return the position of the end of the nominal group                

@@ -22,6 +22,7 @@
     other_processing : to perform other processing                                 
     move_prep : to put the preposition before the nominal group
     or_processing : to create a nominal group before and after the 'or'
+    reorganize_adj : to delete ',' and 'and' if it is between adjectives
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
@@ -504,7 +505,25 @@ def or_processing(sentence):
     return sentence
 
 
-
+def reorganize_adj(sentence):
+    """ 
+    This function delete ',' and 'and' if it is between adjectives                  
+    Input=sentence                              Output=sentence                      
+    """ 
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        if sentence[i] ==',' or sentence[i] =='and':
+            if analyse_nominal_group.is_an_adj(sentence[i+1]) and analyse_nominal_group.is_an_adj(sentence[i-1]):
+                sentence=sentence[:i]+sentence[i+1:]
+        
+        i=i+1
+    return sentence
+    
+    
+    
 def processing(sentence):
     """ 
     This function is used by process_sentence                  
@@ -516,6 +535,7 @@ def processing(sentence):
     sentence = upper_to_lower(sentence)
     sentence = concat_number(sentence)
     sentence = other_processing(sentence)
+    sentence = reorganize_adj(sentence)
     sentence = possesion_form(sentence)
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)

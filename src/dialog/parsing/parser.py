@@ -209,7 +209,7 @@ def unit_tests():
     """
     Function to perform unit tests                                                   
     """ 
-    
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -514,7 +514,7 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-
+    """
     
     """
     """
@@ -1408,7 +1408,7 @@ def unit_tests():
     print ''
     """
     
-    """
+    
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -1594,9 +1594,9 @@ def unit_tests():
     ## Aim of this test : To use the complement of the noun and the duplication with 'and'
     """
     print ''
-    print ('######################## test 5.5 ##############################')
+    print ('######################## test 5.6 ##############################')
 
-    utterance="Give me two or three bottles."
+    utterance="Give me two or three bottles. the bottle is blue, big and fanny"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1610,13 +1610,19 @@ def unit_tests():
                 [Nominal_Group(['two'],['bottles'],[],[],[]),
                  Nominal_Group(['three'],['bottles'],[],[],[])], 
                 [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue', 'big', 'fanny'],[],[])], 
+                [],
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sv[0].d_obj[1]._conjunction="OR"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    """
+    
     
 if __name__ == '__main__':
     unit_tests()
