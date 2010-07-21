@@ -212,7 +212,7 @@ class Discrimination():
                         Indirect_Complement(['about'],[Nominal_Group(['the'],['object'],[],[],[])])],
                         [], [] ,'affirmative',[])])]
             raise UnsufficientInputError(['FAILURE',questions])
-            #return "I don\'t know what object you are talkikng about. Tell me something about it."
+            #return "Give me knew information about the object"
             
         elif len(objL) == 1:
             return objL[0]
@@ -232,35 +232,29 @@ class Discrimination():
                     questions = sentence_builder.create_w_question_choice(object, 'color', values)
                             
                 elif descriptor == 'hasShape':
-                    question = 'Which shape has the ' + object + ' ? '
+                    questions = sentence_builder.create_w_question_choice(object, 'shape', values)
 
                 elif descriptor == 'hasSize':
-                    question = 'Which size is the ' + object + ' ? '
+                    questions = sentence_builder.create_w_question_choice(object, 'size', values)
 
                 elif descriptor == 'isOn':
-                    question = 'Is the ' + object + ' on '
+                    questions = sentence_builder.create_w_question_location(object, 'on', values)
 
                 elif descriptor == 'isIn':
-                    question = 'Is the ' + object + ' in '
+                    questions = sentence_builder.create_w_question_location(object, 'in', values)
                     
                 elif descriptor == 'isNexto':
-                    question = 'Is the ' + object + ' next to '
+                    questions = sentence_builder.create_w_question_location(object, 'next to', values)
 
                 elif descriptor == 'isAt':
-                    question = 'Is the ' + object + ' at '
+                    questions = sentence_builder.create_w_question_location(object, 'at', values)
 
-                elif descriptor == 'isLocated'  or  descriptor == 'isAt':
-                    question = 'Where is the ' + object + ' placed wrt to'
-                                        
-                    if agent == 'myself':
-                        question += ' me ? '
-                    else:
-                        question += ' you ? '
+                elif descriptor == 'isLocated':
+                    questions = sentence_builder.create_w_question_location_PT(values, agent)
                 
                 else:
-                    question = "Give me the value for the " + descriptor + " "
+                    questions = sentence_builder.create_w_question_choice(object, descriptor, values)
 
-                #question += ' or '.join(values) + ' ?'
                 raise UnsufficientInputError(['SUCCESS',questions])
                 #return questions
                     
@@ -272,7 +266,7 @@ class Discrimination():
                             Indirect_Complement(['about'],[Nominal_Group(['the'],[object],[],[],[])])],
                             [], [] ,'affirmative',[])])]
                 raise UnsufficientInputError(['SUCCESS',questions])
-                #return "Tell me more about the the object."
+                #return "Give me more information about the object"
 
     # -- ADD_DESCRIPTOR -----------------------------------------------------------#
     # Includes descriptor in description list.
