@@ -160,8 +160,8 @@ class Resolver:
         #For Question handler test ONLY, I have turned the above line into.
         
         description = [[current_speaker, '?concept', stmts]]
-        #id = discriminator.clarify(description)
-        id = 'yellow_banana'
+        id = discriminator.clarify(description)
+        
         logging.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
         
         nominal_group.id = id
