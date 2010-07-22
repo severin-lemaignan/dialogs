@@ -101,7 +101,7 @@ def nom_gr_remerge(utterance, flag , current_class):
                 flg=1
                 break
         if flg==0:
-            nom_gr_list=nom_gr_list+[adver_list[index1].nominal_group]
+            nom_gr_list=nom_gr_list+adver_list[index1].nominal_group
             adver_list=adver_list[:index1]+adver_list[index1+1:]
             index1=index1-1
         else:
@@ -110,10 +110,14 @@ def nom_gr_remerge(utterance, flag , current_class):
     
     for i in nom_gr_list:
         print i.noun
-      
+        
+    print "zerzerzer"
+    
     for i in adver_list:
         print i.nominal_group[0].noun
-            
+    
+    print len(adver_list)
+     
     #We will delete all nominal groups composed from pronoun
     while index2 < len(nom_gr_list):
         for i in pronoun_list:
@@ -132,11 +136,7 @@ def nom_gr_remerge(utterance, flag , current_class):
                 break
         index3=index3+1
     
-    for i in nom_gr_list:
-        print i.noun
-        
-    for i in adver_list:
-        print i.nominal_group.noun              
+                 
 
 def compare_nom_gr(ng,rslt_ng):
     """
