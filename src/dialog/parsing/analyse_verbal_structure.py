@@ -16,6 +16,7 @@
     find_scd_vrb : to recover the second verb in a sentence                       
     process_scd_sentence : to process the second sentence found
     process_subsentence : to process the subsentence
+    correct_i_compl : to transform indirect complement to relative
 """
 from sentence import *
 import analyse_nominal_group
@@ -32,8 +33,10 @@ aux_list=['have', 'has', 'had', 'is', 'are', 'am', 'was', 'were', 'will']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind','behind+to','next+to','in+front+of']
 rel_list=['which', 'who','that']
-sub_list=['while', 'but','where', 'when']
+sub_list=['while', 'but','where', 'when', 'if']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
+direct_trans_verb_list=['give']
+adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of']
 
 
 
@@ -274,9 +277,20 @@ def process_scd_sentence(phrase, vg, sec_vrb):
         vg.sv_sec=vg.sv_sec+[Verbal_Group(scd_verb, [], '', [], [], [], [], 'affirmative',[])]
         #We delete the verb
         scd_sentence= scd_sentence[scd_sentence.index(scd_sentence[0])+1:]
-    
+
     #We recover the conjunctive subsentence
-    phrase=process_conjunctive_sub(phrase, vg.sv_sec[0])
+    scd_sentence=process_conjunctive_sub(scd_sentence, vg.sv_sec[0])
+    
+    #It verifies if there is a secondary verb
+    sec_sec_vrb=find_scd_vrb(scd_sentence)
+    if sec_sec_vrb!=[]:
+        scd_sentence=process_scd_sentence(scd_sentence, vg.sv_sec, sec_sec_vrb)
+    
+    #We recover the subsentence
+    scd_sentence=process_subsentence(scd_sentence, vg)
+    
+    #Process relative changes
+    scd_sentence=correct_i_compl(scd_sentence,scd_verb)
     
     #We process the end of the second sentence
     scd_sentence=find_adv(scd_sentence,vg.sv_sec[0])
@@ -358,4 +372,37 @@ def process_conjunctive_sub(phrase,vg):
         phrase=phrase[end_pos:]
                 
     return phrase
+
+
+
+def correct_i_compl(phrase,verb):
+    """
+    This function transform indirect complement to relative
+    Input=sentence and verbal class         Output=sentence and verbal class         
+    """
+    
+    for i in direct_trans_verb_list:
+        #If we have a direct transitive verb
+        if i==verb:
         
+            #init
+            x=0
+            while x<len(phrase):
+                for y in adverbial_list:
+
+                    #If there is a proposal with an adverbial
+                    if x+1<len(phrase)-1 and phrase[x]==y and analyse_nominal_group.find_sn_pos(phrase, x+1)!=[]:
+                        adverbial=analyse_nominal_group.find_sn_pos(phrase, x+1)
+                        begin_pos=x-1
+                        
+                        #We will find the subject of the relative
+                        while analyse_nominal_group.find_sn_pos(phrase, begin_pos)==[]:
+                            begin_pos=begin_pos-1
+                        nom_gr=analyse_nominal_group.find_sn_pos(phrase, begin_pos)
+                        
+                        #If there nominal group is just before the adverbial
+                        if begin_pos+len(nom_gr)==x:
+                            phrase=phrase[:x]+['which','is']+[phrase[x]]+adverbial+[';']+phrase[x+len(adverbial)+1:]
+                            break
+                x=x+1
+    return phrase

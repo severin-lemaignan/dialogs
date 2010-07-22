@@ -33,7 +33,8 @@ Statement of lists
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
 det_dem_list=['this', 'there', 'these']
-
+what_ques_list=[('time','time',2),('color','color',2),('size','size',2),('object','object',2)]
+how_ques_list=[('old','age',2),('long','duration',2),('often','frequency',2),('far','distance',2),('soon','time',2)]
 
 """
 We have to read all words that sentence can begin with                           
@@ -81,20 +82,12 @@ def dispatching(sentence):
                     elif x[2]=='3':
 
                         #We have different type of question with 'what'
-                        if sentence[1]=='time':
-                            return y_n_ques('w_question', 'time', sentence[2:])
-
-                        elif sentence[1]=='color':
-                            return y_n_ques('w_question', 'color', sentence[2:])
-                            
-                        elif sentence[1]=='size':
-                            return y_n_ques('w_question', 'size', sentence[2:])
-                        
-                        elif sentence[1]=='object':
-                            return y_n_ques('w_question', 'object', sentence[2:])
+                        for z in what_ques_list:
+                            if sentence[1]==z[0]:
+                                return y_n_ques('w_question', z[1], sentence[z[2]:])
 
                         #Here we have to use a specific processing for 'type' and 'kind'
-                        elif sentence[1]=='type' or sentence[1]=='kind':
+                        if sentence[1]=='type' or sentence[1]=='kind':
                             #We start by processing the end of the sentence like a y_n_question
                             return y_n_ques('w_question', 'classification'+'+'+sentence[3],sentence[4:])
 
@@ -104,24 +97,15 @@ def dispatching(sentence):
 
                     #For 'how'
                     elif x[2]=='4':
-                        if sentence[1]== 'old':
-                            return y_n_ques('w_question', 'age', sentence[2:])
+                        
+                        #We have different type of question with 'how'
+                        for z in how_ques_list:
+                            if sentence[1]==z[0]:
+                                return y_n_ques('w_question', z[1], sentence[z[2]:])
 
-                        elif sentence[1]== 'long':
-                            return y_n_ques('w_question', 'duration', sentence[2:])
-
-                        elif sentence[1]=='often':
-                            return y_n_ques('w_question', 'frequency', sentence[2:])
-
-                        elif sentence[1]=='many' or sentence[1]=='much' :
+                        if sentence[1]=='many' or sentence[1]=='much' :
                             return w_quest_quant('w_question', 'quantity', sentence)
-
-                        elif sentence[1]=='far':
-                            return y_n_ques('w_question', 'distance', sentence[2:])
-
-                        elif sentence[1]=='soon':
-                            return y_n_ques('w_question', 'time', sentence[2:])
-
+                        
                         elif sentence[1]=='about':
                             #We replace 'about' by 'is' to have a y_n_question
                             sentence[1]='is'
@@ -409,22 +393,25 @@ def y_n_ques(type, request, sentence):
             #For 'how' questions with often
             elif sentence[0].endswith('ing'):
                 vg.vrb_main[0]=vg.vrb_main[0]+'+'+sentence[0]
-
+    
+        #We recover the conjunctive subsentence
+        sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
+        
         #It verifies if there is a secondary verb
         sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
         if sec_vrb!=[]:
             sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
-        
-        #We recover the conjunctive subsentence
-        sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
-        
+            
         #We recover the subsentence
         sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
+        
+        #Process relative changes
+        sentence=analyse_verbal_structure.correct_i_compl(sentence,vg.vrb_main[0])
         
         #We recover the direct, indirect complement and the adverbial
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
     
-        #We have to take off abverbs form the sentence
+        #We have to take off adverbs form the sentence
         sentence=analyse_verbal_structure.find_adv(sentence, vg)
 
     #We perform the processing with the modal
@@ -548,14 +535,17 @@ def other_sentence(type, request, sentence):
     #We recover the conjunctive subsentence
     sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
     
-    #We recover the subsentence
-    sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
-   
     #It verifies if there is a secondary verb
     sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
     if sec_vrb!=[]:
         sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
-    
+        
+    #We recover the subsentence
+    sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
+        
+    #Process relative changes
+    sentence=analyse_verbal_structure.correct_i_compl(sentence,vg.vrb_main[0])
+        
     #We recover the direct, indirect complement and the adverbial
     sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
     

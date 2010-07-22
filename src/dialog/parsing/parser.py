@@ -1597,7 +1597,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.6 ##############################')
 
-    utterance="Give me two or three bottles. the bottle is blue, big and fanny"
+    utterance="Give me two or three bottles. the bottle is blue, big and fanny. give me the bottle on the table"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1617,6 +1617,17 @@ def unit_tests():
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],[],['blue', 'big', 'fanny'],[],[])], 
                 [],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sv[0].d_obj[1]._conjunction="OR"
