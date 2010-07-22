@@ -93,15 +93,6 @@ def nom_gr_remerge(utterance, flag , current_class):
     nom_gr_list=find_nom_gr_sentence(utterance, nom_gr_list)
     adver_list=find_adverbial_sentence(utterance, adver_list)
     
-    print len(nom_gr_list)
-    
-    print len(adver_list)
-    
-    for i in nom_gr_list:
-        print i.noun
-      
-    for i in adver_list:
-        print i.nominal_group[0].noun
     
     #We will arrange the adverbial list
     while index1 < len(adver_list):
@@ -116,7 +107,13 @@ def nom_gr_remerge(utterance, flag , current_class):
         else:
             flg=0
         index1=index1+1
-        
+    
+    for i in nom_gr_list:
+        print i.noun
+      
+    for i in adver_list:
+        print i.nominal_group[0].noun
+            
     #We will delete all nominal groups composed from pronoun
     while index2 < len(nom_gr_list):
         for i in pronoun_list:
