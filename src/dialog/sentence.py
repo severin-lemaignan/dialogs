@@ -4,7 +4,7 @@
 #SVN:rev202 + PythonTidy + rewrite 'toString' methods using Python __str__ + test cases
 
 from helpers import colored_print #to colorize the sentence output
-from parsing import *
+
 
 
 """
