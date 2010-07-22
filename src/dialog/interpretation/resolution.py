@@ -127,16 +127,17 @@ class Resolver:
     def _resolve_groups_references(self, array_sn, current_speaker, current_object):
         #TODO: We should start with resolved_sn filled with sentence.sn and replace
         # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
-         
         resolved_sn = []
         for sn in array_sn:
-            if sn.noun:
-                try:
-                    onto = ResourcePool().ontology_server.lookup(sn.noun[0])
-                    resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
-
+			onto = None
+			if sn.noun:
+				try:
+					onto = ResourcePool().ontology_server.lookup(sn.noun[0])
+				except AttributeError: #the ontology server is not started or doesn't know the method
+					pass
+            
+			resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
+           
         return resolved_sn
     
     def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
@@ -157,9 +158,10 @@ class Resolver:
         #In order to solve it, Try to catch an exception and report it to user
         #description = [[current_speaker, '?concept', stmts]]
         #For Question handler test ONLY, I have turned the above line into.
+        
         description = [[current_speaker, '?concept', stmts]]
-
-        id = discriminator.clarify(description)
+        #id = discriminator.clarify(description)
+        id = 'yellow_banana'
         logging.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
         
         nominal_group.id = id
