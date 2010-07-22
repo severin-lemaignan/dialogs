@@ -6,6 +6,14 @@
 from helpers import colored_print #to colorize the sentence output
 from parsing import *
 
+
+"""
+Statement of lists
+"""
+pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
+
+
+
 class SentenceFactory:
     
     def create_w_question_choice(self, obj_name, feature, values):
@@ -341,19 +349,71 @@ class Comparator():
     def compare(self, obj1, obj2):
         return obj1.__class__ == obj2.__class__ and \
                 obj1.flatten() == obj2.flatten()
+      
         
+                
+def concat_gn(current_class, new_class):       
+    if current_class.adj!=new_class.adj:
+        current_class.adj=current_class.adj+new_class.adj
+    if current_class.det!=new_class.det:
+        current_class.det=new_class.det
+    if current_class.noun!=new_class.noun and new_class.noun!='one':
+        current_class.noun=current_class.noun+new_class.noun
+    current_class.noun_cmpl=current_class.noun_cmpl+new_class.noun_cmpl
+    current_class.relative=current_class.relative+new_class.relative
+    return current_class 
 
-def sentence_remerge(utterance, flag , current_class):
+
+
+def process_vg_part(vg,current_class):   
+    if vg.i_cmpl!=[]:
+        rltv=Sentence('relative', 'which',[],[vg])
+        current_class.relative=current_class.relative+[rltv]
+                        
+    for object in vg.d_obj:
+        current_class=concat_gn(current_class, object)
+    return current_class
+ 
+ 
     
-    #We process the utterance
-    sentence_list=preprocessing.process_sentence(utterance)
-    class_list= analyse_sentence.sentences_analyzer(sentence_list)
-        
-    if  flag=='FAILED':
-        return class_list
-    else:
+def nom_gr_remerge(utterance, flag , current_class):
+    
+    flg=0
+    
+    if  flag=='FAILURE':
+        for i in utterance:
+            if i.data_type=='statement':
+                #treatment with sv
+                for v in i.sv: 
+                    if v.vrb_sub_sentence==[]:
+                        current_class=process_vg_part(v,current_class)
+                            
         return current_class
-
+    
+    elif flag=='SUCCESS':
+        for i in utterance:
+            if i.data_type=='statement':
+                if i.sv==[]:
+                    for k in i.sn:
+                        concat_gn(current_class, k)
+                else:
+                    for k in i.sn:
+                        for p in pronoun_list:
+                            if k.noun[0]==p:
+                                flg=1
+                                break
+                        if flg==1:
+                            flg=0
+                        else:
+                            concat_gn(current_class, k)
+                    for v in i.sv:
+                        current_class=process_vg_part(v,current_class)
+                        
+        return current_class
+    
+    return current_class
+    
+    
 
 
 def unit_tests():

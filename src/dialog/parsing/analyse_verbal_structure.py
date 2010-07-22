@@ -35,7 +35,7 @@ proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', '
 rel_list=['which', 'who','that']
 sub_list=['while', 'but','where', 'when', 'if']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-direct_trans_verb_list=['give']
+direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean']
 adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of']
 
 
