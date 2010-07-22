@@ -257,14 +257,16 @@ def main():
 
     dialog.start()
 
-    try:
-        data = sys.stdin.readline()
-        dialog.input(data)
-        
-        dialog.stop()
-    except KeyboardInterrupt:
-        logging.info("Leaving now.")
-        dialog.stop()
+    running = True
+    while running:
+        try:
+            data = sys.stdin.readline()
+            dialog.input(data)
+            
+        except KeyboardInterrupt:
+            logging.info("Leaving now.")
+            running = False
+            dialog.stop()
 
     dialog.join()
     sys.exit()
