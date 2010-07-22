@@ -20,7 +20,8 @@ from sentence import *
 import logging
 import preprocessing
 import analyse_sentence
-
+adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of']
+pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 
 class Parser:
     def __init__(self):
@@ -40,7 +41,105 @@ class Parser:
         
         return self._class_list
              
-              
+def find_nom_gr_verbale(vg, nom_gr_list):
+    
+    if vg.d_obj!=[]:
+        nom_gr_list=nom_gr_list+vg.d_obj
+    for w in vg.sv_sec:
+        nom_gr_list=nom_gr_list+find_nom_gr_verbale(w, nom_gr_list)
+    for z in vg.vrb_sub_sentence:
+        nom_gr_list=nom_gr_list+find_nom_gr_sentence(z, nom_gr_list)
+    return nom_gr_list
+
+def find_nom_gr_sentence(utterance, nom_gr_list):
+    
+    for i in utterance:
+        if i.sn!=[]:
+            nom_gr_list=nom_gr_list+i.sn
+        for y in i.sv:
+            nom_gr_list=find_nom_gr_verbale(y, nom_gr_list)    
+    return nom_gr_list
+          
+          
+                
+def find_adverbial_verbale(vg, adver_list):
+    
+    if vg.i_cmpl!=[]:
+        adver_list=adver_list+vg.i_cmpl
+    for w in vg.sv_sec:
+        adver_list=adver_list+find_adverbial_verbale(w,adver_list)
+    for z in vg.vrb_sub_sentence:
+        adver_list=adver_list+find_adverbial_sentence(z, adver_list)   
+    return adver_list
+
+    
+def find_adverbial_sentence(utterance, adver_list):
+    
+    for i in utterance:
+        for y in i.sv:
+            adver_list=find_adverbial_verbale(y, adver_list)    
+    return adver_list
+
+            
+def nom_gr_remerge(utterance, flag , current_class):
+    
+    #init
+    flg=0
+    index1=index2=index3=0
+    
+    #We take off all nominal groups
+    nom_gr_list=adver_list=[]
+
+    nom_gr_list=find_nom_gr_sentence(utterance, nom_gr_list)
+    adver_list=find_adverbial_sentence(utterance, adver_list)
+    
+    print len(nom_gr_list)
+    
+    print len(adver_list)
+    
+    for i in nom_gr_list:
+        print i.noun
+      
+    for i in adver_list:
+        print i.nominal_group[0].noun
+    
+    #We will arrange the adverbial list
+    while index1 < len(adver_list):
+        for i in adverbial_list:
+            if adver_list[index1].prep==i:
+                flg=1
+                break
+        if flg==0:
+            nom_gr_list=nom_gr_list+[adver_list[index1].nominal_group]
+            adver_list=adver_list[:index1]+adver_list[index1+1:]
+            index1=index1-1
+        else:
+            flg=0
+        index1=index1+1
+        
+    #We will delete all nominal groups composed from pronoun
+    while index2 < len(nom_gr_list):
+        for i in pronoun_list:
+            if i==nom_gr_list[index2].noun:
+                nom_gr_list=nom_gr_list[:index2]+nom_gr_list[index2+1:]
+                index2=index2-1
+                break
+        index2=index2+1
+            
+    #We will delete all adverbial composed from pronoun
+    while index3 < len(adver_list):
+        for i in pronoun_list:
+            if i==adver_list[index3].nominal_group.noun:
+                adver_list=adver_list[:index3]+adver_list[index3+1:]
+                index3=index3-1
+                break
+        index3=index3+1
+    
+    for i in nom_gr_list:
+        print i.noun
+        
+    for i in adver_list:
+        print i.nominal_group.noun              
 
 def compare_nom_gr(ng,rslt_ng):
     """
@@ -1409,7 +1508,7 @@ def unit_tests():
     print ''
     """
     
-    
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -1589,7 +1688,7 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
     """
     ## Aim of this test : To use the complement of the noun and the duplication with 'and'
@@ -1631,7 +1730,7 @@ def unit_tests():
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sv[0].d_obj[1]._conjunction="OR"
-    
+    nom_gr_remerge(rslt, '' , '')
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
