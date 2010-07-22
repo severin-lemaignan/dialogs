@@ -16,10 +16,8 @@ class StatementSafeAdder():
             logging.info("Found unresolved Sentence.")        
             self._statements = self.clarify(self._statements, self._unresolved_ids)
         logging.info("Adding statement in the Ontology/")
-        #self.safeAdd(self._statements)
-        #print "Statement Safe Adder:  List of unresolved Ids:", self._unresolved_ids
-        
-        
+        self.safeAdd(self._statements)
+          
         
         
     def clarify(self, statements, ids):
