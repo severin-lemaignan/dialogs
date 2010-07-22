@@ -317,11 +317,7 @@ class Discrimination():
             logging.debug('ObjL: ' + str(objL))
 
             agent, descriptor = self.get_descriptor(description,1)
-            
-            if agent == "myself":
-                val = self.oro.find('?val','[' + objectID + ' ' + descriptor + ' ?val]')
-            else:
-                val = self.oro.findForAgent(agent, '?val','[' + objectID + ' ' + descriptor + ' ?val]')            
+            val = self.oro.findForAgent(agent, '?val','[' + objectID + ' ' + descriptor + ' ?val]')            
             
             if not val: 
                 description.insert(0,objectID)
