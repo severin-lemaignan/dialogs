@@ -95,8 +95,6 @@ class NominalGroupStatementBuilder:
         for ng in self._nominal_groups:
             if not ng.id:
                 ng.id = generate_id()
-
-                print "GENERATE NominalGroupStatementBuilder process" , ng.id
                 self._unresolved_ids.append(ng.id)          
             
             self.process_nominal_group(ng, ng.id)
@@ -108,10 +106,10 @@ class NominalGroupStatementBuilder:
     
     def process_nominal_group(self, ng, ng_id):
         """ The following function processes a single nominal_group"""
-        if ng.det:
-            self.process_determiners(ng, ng_id)
         if ng.noun:
             self.process_noun_phrases(ng, ng_id)
+        if ng.det:
+			self.process_determiners(ng, ng_id)
         if ng.adj:
             self.process_adjectives(ng, ng_id)
         if ng.noun_cmpl:
@@ -142,7 +140,7 @@ class NominalGroupStatementBuilder:
             for c in conceptL:
                 if 'CLASS' in c: return c[0]
                 
-            return None
+            return noun.capitalize()
             
         for noun in nominal_group.noun:
             #logging.debug("Found a noun phrase:\"" + noun + "\"")
@@ -155,8 +153,10 @@ class NominalGroupStatementBuilder:
                 pass
             
             if onto_id and [noun,"INSTANCE"] in onto_id:
-                pass #Just to be checked. The Id has already been resolved
-                
+				pass
+				"""
+				self._statements.append(ng_id + " owl:sameAs " + noun)
+                """                
             # Case : common noun
             elif nominal_group.det:
                 # get the exact class name (capitalized letters where needed)
@@ -503,11 +503,13 @@ def dump_resolved(sentence, current_speaker, current_listener):
             if ng.noun in [['me'], ['Me'],['I']]:
                 ng.id = current_speaker
             elif ng.noun in [['you'], ['You']]:
-                ng.id = current_listener
-                       
+                ng.id = current_listener                       
             elif ng.noun == ['Danny']:
-                ng.id = 'id_danny'
-                
+                ng.id = 'id_danny'                
+            elif [ng.noun, ng.det] == [['car'], ['my']]:
+                ng.id = 'blue_volvo'                
+            elif [ng.noun, ng.det] == [['bottle'], ['the']]:
+                ng.id = 'a_bottle'
             elif [ng.noun, ng.adj] == [['car'], ['blue']]:
                 ng.id = 'blue_car'
             elif [ng.noun, ng.adj] == [['car'], ['small']]:
@@ -619,6 +621,7 @@ class TestStatementBuilder(unittest.TestCase):
     
                         
     """
+    
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives a blue car"  
@@ -652,6 +655,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_2(self):
         print "\n**** Test 2  *** "
         print "my car is blue"
+        """
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['my'],
                                             ['car'],
@@ -662,6 +666,27 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'present_simple',
                                            [],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        """
+        #TODO: Temporary solution for examples like: the yellow banana is big
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['my'],
+                                            ['car'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present_simple',
+                                           [Nominal_Group([],
+														  [],
+														  ['blue'],
+														  [],
+														  [])],
                                            [],
                                            [],
                                            [],
@@ -896,7 +921,49 @@ class TestStatementBuilder(unittest.TestCase):
 
         return self.process(sentence, expected_resut, display_statement_result = True)
     
-    
+    """
+    def test_8_relative(self):
+        print "\n**** Test 8 relative *** "
+        print "give me the bottle that is in the twingo"
+        relative8 = Sentence("statement", "", 
+                            [], 
+                            [Verbal_Group(['be'],
+                                          [],
+                                          'past_simple',
+                                          [],
+                                          [Indirect_Complement(['in'],
+                                                                [Nominal_Group(['the'],['twingo'],[],[],[])]) ],
+                                          [],
+                                          [],
+                                          'affirmative',
+                                          [])])
+        sentence = Sentence("imperative", "", 
+                             [],                                         
+                             [Verbal_Group(['give'],
+                                           [],
+                                           'present_simple',
+                                           [Nominal_Group(['the'],
+														  ['bottle'],
+														  [],
+														  [],
+														  [relative8])],
+                                           [Indirect_Complement([],
+                                                                [Nominal_Group([],['me'],[],[],[])]) ],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_resut = ['SPEAKER desires *',
+                          '* rdf:type Put',
+                          '* performedBy myself',
+                          '* actsOnObject *',
+                          '* rdf:type Bottle',
+                          '* isIn *',
+                          '* rdf:type Cardbox']  
+        
+
+        return self.process(sentence, expected_resut, display_statement_result = True)
+    """
     def test_9_this(self):
         
         print "\n**** test_9_this  *** "
