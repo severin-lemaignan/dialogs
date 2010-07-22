@@ -88,6 +88,17 @@ class SentenceFactory:
             sentence[0].sv[0].i_cmpl[i+1].nominal_group[0]._conjunction = 'OR'
             
         return sentence
+    
+    def create_w_question_reference(self, agent):
+        """ Creates sentences of type: 
+            "The bottle? What do you mean?"
+        """
+        
+        sentence = [Sentence('yes_no_question', '', [agent], []),
+                    Sentence('w_question', 'thing', 
+                        [Nominal_Group([],['you'],[],[],[])], 
+                        [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,'affirmative',[])])]
+        return sentence
 
     
 class Sentence:
