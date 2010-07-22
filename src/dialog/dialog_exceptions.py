@@ -11,15 +11,12 @@ class UnsufficientInputError(DialogError):
     information from the user to actually find out the ID of the concept being
     resolved.
     
-    It can take 3 kind of parameters:
-    - (recommended) ['SUCCESS'|'FAILURE', [Sentence]]
-            -> 'SUCCESS' if the discrimination could find candidates but need
+    The expected value of the exception is a map containing 3 informations:
+     - status: 'SUCCESS' if the discrimination could find candidates but need
             more details, 'FAILURE' if no candidates have been found.
-            -> list of instances of the Sentence class to be verbalized, containing 
-            the question to be asked to the user
-    - Sentence -> a instance of the Sentence class to be verbalized, containing 
-        the question to be asked to the user
-    - String -> the text to be send to the human, in natural language
+     - object: the object (for instance, a nomnial group) that was being resolved
+     - question: a question (as a set of instance of Sentence class) to be asked 
+     to the user
     """
     def __init__(self, value):
         self.value = value

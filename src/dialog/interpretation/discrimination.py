@@ -211,7 +211,7 @@ class Discrimination():
                         [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                         Indirect_Complement(['about'],[Nominal_Group(['the'],['object'],[],[],[])])],
                         [], [] ,'affirmative',[])])]
-            raise UnsufficientInputError(['FAILURE',questions])
+            raise UnsufficientInputError({'status':'FAILURE', 'question':questions})
             #return "Give me knew information about the object"
             
         elif len(objL) == 1:
@@ -255,7 +255,7 @@ class Discrimination():
                 else:
                     questions = sentence_builder.create_w_question_choice(object, descriptor, values)
 
-                raise UnsufficientInputError(['SUCCESS',questions])
+                raise UnsufficientInputError({'status':'SUCCESS','question':questions})
                 #return questions
                     
             else:
@@ -265,7 +265,7 @@ class Discrimination():
                             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                             Indirect_Complement(['about'],[Nominal_Group(['the'],[object],[],[],[])])],
                             [], [] ,'affirmative',[])])]
-                raise UnsufficientInputError(['SUCCESS',questions])
+                raise UnsufficientInputError({'status':'SUCCESS','question':questions})
                 #return "Give me more information about the object"
 
     # -- ADD_DESCRIPTOR -----------------------------------------------------------#

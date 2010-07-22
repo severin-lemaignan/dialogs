@@ -89,12 +89,12 @@ class SentenceFactory:
             
         return sentence
     
-    def create_w_question_reference(self, agent):
+    def create_what_do_you_mean_reference(self, object):
         """ Creates sentences of type: 
             "The bottle? What do you mean?"
         """
         
-        sentence = [Sentence('yes_no_question', '', [agent], []),
+        sentence = [Sentence('yes_no_question', '', [object], []),
                     Sentence('w_question', 'thing', 
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,'affirmative',[])])]

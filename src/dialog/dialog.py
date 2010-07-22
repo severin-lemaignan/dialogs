@@ -53,7 +53,10 @@ class Dialog(Thread):
         
         #true when, during an interaction, more infos is needed.
         self.waiting_for_more_info = False
-        self.current_output = None
+        
+        #contains the last result of a failed resolution (including the object 
+        #that could not be resolved. Cf doc of UnsufficientInputError for details.
+        self._last_output = None
         
         #the object currently discussed. Used to resolve anaphors (like 'this 
         # one').
@@ -84,29 +87,24 @@ class Dialog(Thread):
                     self._logger.info(colored_print("##########################################", 'green'))
                     self._logger.info(colored_print("#  Missing content! Going back to human  #", 'green'))
                     self._logger.info(colored_print("##########################################", 'green'))
-                    self._sentence_output_queue.put(uie.value)
+                    self._sentence_output_queue.put(uie.value['question'])
+                    
+                    self._last_output = uie.value
+
             except Empty:
                 pass
             
             try:
                 output = self._sentence_output_queue.get(block = False)
-                self.current_output = output
+
                 self._logger.debug(colored_print("> Got output to verbalize: ", 'bold'))
                 
                 #TODO: Assuming here that the user is queried for info. Not true in the general case
                 self.waiting_for_more_info = True
 
-                # if it's a sentence class
-                if isinstance(output, Sentence):
-                    output = self._verbalizer.verbalize([output])
-                # it's discrimination error ['FAILURE',[sentences...]]
-                elif isinstance(output, list) and isinstance(output[1][0], Sentence):
-                    output = self._verbalizer.verbalize(output[1])
-                # it's string
-                else:
-                    output = colored_print(output, 'red')
-                    
-                sys.stdout.write(str(output) + "\n")
+                sys.stdout.write(colored_print( \
+                            self._verbalizer.verbalize(output), \
+                            'red') + "\n")
                   
             except Empty:
                 pass
@@ -124,13 +122,14 @@ class Dialog(Thread):
             self.current_speaker = self._speaker.get_current_speaker_id()
         
         #Here, we proceed a sentence that has not been resolved. It is saved in self.active_sentence.
-        #The new input string is concatenated with the former one  
+        #The new input string is concatenated with the former one.
+        #
         if self.waiting_for_more_info:
             #We process the input
             input=self._parser.parse(input, None)
             
             #We make the merge in the nominal group
-            input = sentence.nom_gr_remerge(input._class_list, self.current_output[0], self.active_sentence)           
+            input = sentence.nom_gr_remerge(input._class_list, self._last_output, self.active_sentence)           
             
             input = ' '.join(input)    
         

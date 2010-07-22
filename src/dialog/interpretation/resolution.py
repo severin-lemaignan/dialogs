@@ -9,6 +9,7 @@ from dialog_exceptions import UnsufficientInputError, UnknownVerb
 from resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder #for nominal group discrimination
 from discrimination import Discrimination
+from sentence import SentenceFactory
 
 class Resolver:
     """Implements the concept resolution mechanisms.
@@ -160,7 +161,14 @@ class Resolver:
         #For Question handler test ONLY, I have turned the above line into.
         
         description = [[current_speaker, '?concept', stmts]]
-        id = discriminator.clarify(description)
+        
+        try:
+            id = discriminator.clarify(description)
+        except UnsufficientInputError as uie:
+            sf = SentenceFactory()
+            uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
+            uie.value['object'] = nominal_group
+            raise uie
         
         logging.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
         
