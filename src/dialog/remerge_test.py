@@ -511,9 +511,9 @@ def remerge_unit_tests():
         print ''
         
         
-    """
+    
     print ''
-    print ('######################## test 1.5 ##############################')
+    print ('######################## test 1.6 ##############################')
 
     utterance="He mean that he want the bottle of Jido"
     print 'The speaker said :'
@@ -532,12 +532,7 @@ def remerge_unit_tests():
     print 'the nominal group after processing'
     print (str(nom_gr_struc))
     
-    rslt=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
-                    [],  
-                    [Verbal_Group(['be'],[],'present simple', 
-                        [], 
-                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
-                        [], [] ,'affirmative',[])])])
+    rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group([],['Jido'],[],[],[])],[])
     
     if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
         print "############### Parsing is OK ###############"
@@ -545,48 +540,8 @@ def remerge_unit_tests():
     else:
         print "There is a problem with parsing this sentence"
         print ''
-        
-        
-        
-    
-    
-    
-    
-    
-    print ''
-    print ('######################## test 1.1 ##############################')
+           
 
-    utterance="it is the best one"
-    print 'The speaker said :'
-    print utterance
-    print '#################################################################'
-    print ''
-    sentence_list=preprocessing.process_sentence(utterance)
-    class_list=analyse_sentence.sentences_analyzer(sentence_list)
-    flag='FAILURE'
-    
-    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[])
-    print 'the nominal group of the last out put'
-    print (str(nom_gr_struc))
-    
-    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
-    print 'the nominal group after processing'
-    print (str(nom_gr_struc))
-    
-    rslt=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
-                    [],  
-                    [Verbal_Group(['be'],[],'present simple', 
-                        [], 
-                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
-                        [], [] ,'affirmative',[])])])
-    
-    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
-        print "############### Parsing is OK ###############"
-        print ''
-    else:
-        print "There is a problem with parsing this sentence"
-        print ''    
-    """
 
 if __name__ == '__main__':
     remerge_unit_tests()

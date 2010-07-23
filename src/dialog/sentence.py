@@ -422,6 +422,10 @@ def process_vg_part(vg,nom_gr_struc, flag):
     
     for i in vg.sv_sec:
         process_vg_part(i,nom_gr_struc, flag)
+    
+    #For the subsentences
+    nom_gr_remerge(vg.vrb_sub_sentence, flag , nom_gr_struc)
+    
     return nom_gr_struc
 
 
@@ -469,7 +473,7 @@ def nom_gr_remerge(utterance, flag , nom_gr_struc):
     
     flg=0
     for i in utterance: 
-        if i.data_type=='statement':
+        if i.data_type=='statement' or i.data_type=='subsentence':
             
             if  flag=='FAILURE':
                 #We can have just the subject
@@ -480,9 +484,7 @@ def nom_gr_remerge(utterance, flag , nom_gr_struc):
                     return nom_gr_struc
                 #Else there is no subject and the information is on the verbal structure
                 for v in i.sv:
-                    #Here we process sentences without subsentences
-                    if v.vrb_sub_sentence==[]:
-                        nom_gr_struc=process_vg_part(v,nom_gr_struc, flag)
+                    nom_gr_struc=process_vg_part(v,nom_gr_struc, flag)
     
             elif flag=='SUCCESS':
                 #We can have just the subject
