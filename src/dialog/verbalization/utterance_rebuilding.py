@@ -20,7 +20,7 @@
 """
 from resources_manager import ResourcePool
 import other_functions
-import sentence_recovery
+import sentence_rebuilding
 
 
 """
@@ -56,15 +56,15 @@ def dispatching(analysis):
 
     #For statement
     if analysis.data_type=='statement':
-        return sentence_recovery.statement(analysis)
+        return sentence_rebuilding.statement(analysis)
 
     #For imperative
     elif analysis.data_type=='imperative':
-        return sentence_recovery.imperative(analysis)
+        return sentence_rebuilding.imperative(analysis)
 
     #For yes no question
     elif analysis.data_type=='yes_no_question':
-        return sentence_recovery.y_o_question(analysis)
+        return sentence_rebuilding.y_o_question(analysis)
 
     #For start
     elif analysis.data_type=='start':
@@ -82,20 +82,20 @@ def dispatching(analysis):
     elif analysis.data_type=='w_question':
         for x in wques_rules:
             if x[0]==analysis.aim:
-                return x[1]+sentence_recovery.y_o_question(analysis)
+                return x[1]+sentence_rebuilding.y_o_question(analysis)
 
         if analysis.aim=='quantity':
-            return sentence_recovery.quantity_ques(analysis)
+            return sentence_rebuilding.quantity_ques(analysis)
 
         elif analysis.aim=='choice':
-            return ['which']+sentence_recovery.statement(analysis)
+            return ['which']+sentence_rebuilding.statement(analysis)
 
         elif analysis.aim=='owner':
-            return sentence_recovery.possession_ques(analysis)
+            return sentence_rebuilding.possession_ques(analysis)
         
         #All other cases of w_question
         else:
-            return sentence_recovery.w_question(analysis)
+            return sentence_rebuilding.w_question(analysis)
 
     #Default case
     return ''
@@ -367,7 +367,7 @@ def delete_plus(sentence):
     
     while i < len(sentence):
         if other_functions.find_plus(sentence[i])==1:
-            sentence=sentence[:i]+other_functions.list_recovery(sentence[i])+sentence[i+1:]
+            sentence=sentence[:i]+other_functions.list_rebuilding(sentence[i])+sentence[i+1:]
     
         i=i+1
     return sentence

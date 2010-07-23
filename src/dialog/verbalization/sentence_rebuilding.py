@@ -13,7 +13,7 @@
     possession_ques : to verbalise a question about possession                    
     sub_process : to verbalises a subsentence                                      
 """
-import element_recovery
+import element_rebuilding
 import other_functions
 
 
@@ -25,11 +25,11 @@ def statement(analysis):
     """
 
     #Recovering the subject
-    phrase=element_recovery.nom_struc_recovery(analysis.sn)
+    phrase=element_rebuilding.nom_struc_rebuilding(analysis.sn)
     
     if analysis.sv!=[]:
         #Recovering the end of the sentence
-        phrase=element_recovery.end_statement_recovery(phrase, analysis.sv, analysis.sn, analysis.data_type)
+        phrase=element_rebuilding.end_statement_rebuilding(phrase, analysis.sv, analysis.sn, analysis.data_type)
         
         #Recovering subsentences
         for s in analysis.sv[0].vrb_sub_sentence:
@@ -59,7 +59,7 @@ def imperative(analysis):
     
     if analysis.sv!=[]:
         #Recovering the basic part of the sentence
-        phrase=element_recovery.end_statement_recovery(phrase, analysis.sv, analysis.sn, analysis.data_type)
+        phrase=element_rebuilding.end_statement_rebuilding(phrase, analysis.sv, analysis.sn, analysis.data_type)
     
         #Recovering subsentences
         for s in analysis.sv[0].vrb_sub_sentence:
@@ -81,11 +81,11 @@ def y_o_question(analysis):
     phrase=[]
     
     #Recovering the subject
-    subject=element_recovery.nom_struc_recovery(analysis.sn)
+    subject=element_rebuilding.nom_struc_rebuilding(analysis.sn)
     
     if analysis.sv!=[]:
         #Recovering the end of the sentence
-        phrase=element_recovery.end_question_recovery(phrase, analysis.sv, analysis.sn)
+        phrase=element_rebuilding.end_question_rebuilding(phrase, analysis.sv, analysis.sn)
     
         #We need special processing to find the position of the subject
         if analysis.sv[0].state=='negative':
@@ -130,7 +130,7 @@ def w_question(analysis):
 
     #Specific processing for classification
     if analysis.aim.startswith('classification'):
-        aim_question=other_functions.list_recovery(analysis.aim)
+        aim_question=other_functions.list_rebuilding(analysis.aim)
         return ['what','kind','of']+aim_question[1:]+phrase
 
     return ['what']+phrase
@@ -147,7 +147,7 @@ def quantity_ques(analysis):
     phrase=[]
     
     #We have to memorise the verb
-    verb=other_functions.list_recovery(analysis.sv[0].vrb_main[0])
+    verb=other_functions.list_rebuilding(analysis.sv[0].vrb_main[0])
 
     if analysis.sv!=[]:
     #First case : aim is the subject with verb be
@@ -161,31 +161,31 @@ def quantity_ques(analysis):
     
         #Third case : as yes no question without the direct complement
         else:
-            subject=element_recovery.nom_struc_recovery(analysis.sn)
+            subject=element_rebuilding.nom_struc_rebuilding(analysis.sn)
         
             #Same processing with yes no question
-            phrase=element_recovery.vrb_ques_recovery(analysis.sv[0].vrb_tense, analysis.sv[0].vrb_main, analysis.sv[0].vrb_adv, analysis.sn, analysis.sv[0].state)
+            phrase=element_rebuilding.vrb_ques_rebuilding(analysis.sv[0].vrb_tense, analysis.sv[0].vrb_main, analysis.sv[0].vrb_adv, analysis.sn, analysis.sv[0].state)
             
             for x in analysis.sv[0].i_cmpl:
-                phrase=phrase+element_recovery.indirect_compl_recovery(x)
+                phrase=phrase+element_rebuilding.indirect_compl_rebuilding(x)
             
             phrase=phrase+analysis.sv[0].advrb
             if analysis.sv[0].sv_sec!=[]:
-                phrase=phrase+['to']+analysis.sv[0].sv_sec[0].vrb_adv+other_functions.list_recovery(analysis.sv[0].sv_sec[0].vrb_main[0])
+                phrase=phrase+['to']+analysis.sv[0].sv_sec[0].vrb_adv+other_functions.list_rebuilding(analysis.sv[0].sv_sec[0].vrb_main[0])
                 
                 #We add the direct and indirect complement
                 if analysis.sv[0].sv_sec[0].i_cmpl!=[] and analysis.sv[0].sv_sec[0].i_cmpl[0].prep!=[]:
-                    phrase=phrase+element_recovery.nom_struc_recovery(analysis.sv[0].sv_sec[0].d_obj)
+                    phrase=phrase+element_rebuilding.nom_struc_rebuilding(analysis.sv[0].sv_sec[0].d_obj)
                     for x in analysis.sv[0].sv_sec[0].i_cmpl:
-                        phrase=phrase+element_recovery.indirect_compl_recovery(x)
+                        phrase=phrase+element_rebuilding.indirect_compl_rebuilding(x)
                 else:
                     if analysis.sv[0].sv_sec[0].i_cmpl!=[]:
-                        phrase=phrase+element_recovery.indirect_compl_recovery(sv[0].sv_sec[0].i_cmpl[0])
-                    phrase=phrase+element_recovery.nom_struc_recovery(analysis.sv[0].sv_sec[0].d_obj)
+                        phrase=phrase+element_rebuilding.indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[0])
+                    phrase=phrase+element_rebuilding.nom_struc_rebuilding(analysis.sv[0].sv_sec[0].d_obj)
                     #init
                     x=1
                     while x < len(analysis.sv[0].sv_sec[0].i_cmpl):
-                        phrase=phrase+element_recovery.indirect_compl_recovery(analysis.sv[0].sv_sec[0].i_cmpl[x])
+                        phrase=phrase+element_rebuilding.indirect_compl_rebuilding(analysis.sv[0].sv_sec[0].i_cmpl[x])
                         x=x+1
                 
                 phrase=phrase+analysis.sv[0].sv_sec[0].advrb

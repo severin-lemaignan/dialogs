@@ -6,7 +6,7 @@
  Functions:   
     find_cap_lettre : to return 1 if the word starts with upper case letter     
     find_plus : to return 1 if the word containe '+'                                                           
-    list_recovery : to return the list of strings without '+'                     
+    list_rebuilding : to return the list of strings without '+'                     
     eliminate_redundancy : to eliminate redundancy in the phrase                  
     convert_string : to return concatenate token to have a string (sentence)      
 """
@@ -45,7 +45,7 @@ def find_plus(word):
 
 
 
-def list_recovery(string):
+def list_rebuilding(string):
     """
     This function returns the list of strings without '+'                            
     Input=the string           Output=the list of strng corresponding                
@@ -53,7 +53,7 @@ def list_recovery(string):
 
     for i in string:
         if i=='+':
-            return [string[:string.index(i)]] + list_recovery(string[string.index(i)+1:])
+            return [string[:string.index(i)]] + list_rebuilding(string[string.index(i)+1:])
     return [string]
 
 

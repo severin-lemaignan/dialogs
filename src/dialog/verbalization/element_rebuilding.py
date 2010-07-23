@@ -5,17 +5,17 @@
  The package contains functions that recovering all elements of the class sentence
  We return all elements of a nominal group                                        
  Functions:                                                                       
-    nom_struc_recovery : to recover nominal structure                             
-    indirect_compl_recovery : to recover the indirect object                      
+    nom_struc_rebuilding : to recover nominal structure                             
+    indirect_compl_rebuilding : to recover the indirect object                      
     conjugate_vrb : to conjugate the verb                                         
-    vrb_stat_recovery : to recover the verb part of a statement                   
-    vrb_ques_recovery : to recover the verb part of a question                    
-    end_statement_recovery : to recover the end of the statement                  
-    end_question_recovery : to recover the end of the question                    
+    vrb_stat_rebuilding : to recover the verb part of a statement                   
+    vrb_ques_rebuilding : to recover the verb part of a question                    
+    end_statement_rebuilding : to recover the end of the statement                  
+    end_question_rebuilding : to recover the end of the question                    
 """
 from resources_manager import ResourcePool
 from sentence import *
-import sentence_recovery
+import sentence_rebuilding
 import other_functions
 
 
@@ -40,7 +40,7 @@ present_irreg_vrb = ResourcePool().irregular_verbs_present
 
 
 
-def nom_struc_recovery(nom_struc):
+def nom_struc_rebuilding(nom_struc):
     """
     This function recovers nominal structure                                         
     Input=class nominal structure                                                    
@@ -67,11 +67,11 @@ def nom_struc_recovery(nom_struc):
         nominal_structure = nominal_structure + nom_struc[i].det + nom_struc[i].adj + nom_struc[i].noun
         if nom_struc[i].noun_cmpl!=[]:
             nominal_structure = nominal_structure + ['of']
-            nominal_structure=nominal_structure+nom_struc_recovery(nom_struc[i].noun_cmpl)
+            nominal_structure=nominal_structure+nom_struc_rebuilding(nom_struc[i].noun_cmpl)
 
         #We recover the relative
         for j in nom_struc[i].relative:
-            nominal_structure=nominal_structure+[j.aim]+sentence_recovery.statement(j)
+            nominal_structure=nominal_structure+[j.aim]+sentence_rebuilding.statement(j)
 
         i=i+1
 
@@ -79,7 +79,7 @@ def nom_struc_recovery(nom_struc):
 
 
 
-def indirect_compl_recovery(indirect_compl):
+def indirect_compl_rebuilding(indirect_compl):
     """
     This function recovers the indirect object                                       
     Input=class indirect object                                                      
@@ -91,7 +91,7 @@ def indirect_compl_recovery(indirect_compl):
 
     #We have 2 cases : with preposal and without
     if indirect_compl.prep!=[]:
-        nom_gr= nom_struc_recovery(indirect_compl.nominal_group)
+        nom_gr= nom_struc_rebuilding(indirect_compl.nominal_group)
         
         if nom_gr[0]=='and' or nom_gr[0]=='or':
             nom_gr=[nom_gr[0]]+indirect_compl.prep+nom_gr[1:]
@@ -104,7 +104,7 @@ def indirect_compl_recovery(indirect_compl):
             gr_ind_cmpl=gr_ind_cmpl+gr_nominal(i.nominal_group)
         else:
         """
-        nom_gr= indirect_compl.prep + nom_struc_recovery(indirect_compl.nominal_group)
+        nom_gr= indirect_compl.prep + nom_struc_rebuilding(indirect_compl.nominal_group)
             
     ind_cmpl=ind_cmpl+nom_gr
     return ind_cmpl
@@ -222,7 +222,7 @@ def conjugate_vrb(tense, verb, sn, type):
 
 
 
-def vrb_stat_recovery(tense, verb, adv, sn, state, type):
+def vrb_stat_rebuilding(tense, verb, adv, sn, state, type):
     """
     This function recovers the verb part of a statement                              
     Input=tense, verb in infinitive form, his state, the adverb and subject          
@@ -237,7 +237,7 @@ def vrb_stat_recovery(tense, verb, adv, sn, state, type):
         return []
     
     #We take of the '+'
-    vrb=other_functions.list_recovery(verb[0])
+    vrb=other_functions.list_rebuilding(verb[0])
 
     #If there is modal => no processing
     for i in modal_list:
@@ -270,7 +270,7 @@ def vrb_stat_recovery(tense, verb, adv, sn, state, type):
 
 
 
-def vrb_ques_recovery(tense, verb, adverb, sn, state):
+def vrb_ques_rebuilding(tense, verb, adverb, sn, state):
     """
     This function recovers the verb part of a question                               
     Input=tense, verb in infinitive form, his state, the adverb and subject          
@@ -281,7 +281,7 @@ def vrb_ques_recovery(tense, verb, adverb, sn, state):
         return []
     
     #We take of the '+'
-    vrb=other_functions.list_recovery(verb[0])
+    vrb=other_functions.list_rebuilding(verb[0])
 
     #If there is be or have : it is ok
     if vrb[0]=='be' or vrb[0]=='have':
@@ -311,7 +311,7 @@ def vrb_ques_recovery(tense, verb, adverb, sn, state):
     
 
 
-def end_statement_recovery(sentence, sv ,sn, type):
+def end_statement_rebuilding(sentence, sv ,sn, type):
     """
     This function recovers the end of the statement                                   
     Input=class sentence, subject and the verbal structure                           
@@ -319,21 +319,21 @@ def end_statement_recovery(sentence, sv ,sn, type):
     """
 
     #Recovering the verb in the correct form
-    phrase=vrb_stat_recovery(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state, type)
+    phrase=vrb_stat_rebuilding(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state, type)
 
     #We add the direct and indirect complement
     if sv[0].i_cmpl!=[] and sv[0].i_cmpl[0].prep!=[]:
-        phrase=phrase+nom_struc_recovery(sv[0].d_obj)
+        phrase=phrase+nom_struc_rebuilding(sv[0].d_obj)
         for x in sv[0].i_cmpl:
-            phrase=phrase+indirect_compl_recovery(x)
+            phrase=phrase+indirect_compl_rebuilding(x)
     else:
         if sv[0].i_cmpl!= []:
-            phrase=phrase+indirect_compl_recovery(sv[0].i_cmpl[0])
-        phrase=phrase+nom_struc_recovery(sv[0].d_obj)
+            phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[0])
+        phrase=phrase+nom_struc_rebuilding(sv[0].d_obj)
         #init
         x=1
         while x < len(sv[0].i_cmpl):
-            phrase=phrase+indirect_compl_recovery(sv[0].i_cmpl[x])
+            phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[x])
             x=x+1
 
     #We add the adverb of the sentence
@@ -342,21 +342,21 @@ def end_statement_recovery(sentence, sv ,sn, type):
     #If there is a second verb
     if sv[0].sv_sec!=[]:
         #Add this verb with 'to'
-        phrase=phrase+['to']+sv[0].sv_sec[0].vrb_adv+other_functions.list_recovery(sv[0].sv_sec[0].vrb_main[0])
+        phrase=phrase+['to']+sv[0].sv_sec[0].vrb_adv+other_functions.list_rebuilding(sv[0].sv_sec[0].vrb_main[0])
         
         #We add the direct and indirect complement
         if sv[0].sv_sec[0].i_cmpl!=[] and sv[0].sv_sec[0].i_cmpl[0].prep!=[]:
-            phrase=phrase+nom_struc_recovery(sv[0].sv_sec[0].d_obj)
+            phrase=phrase+nom_struc_rebuilding(sv[0].sv_sec[0].d_obj)
             for x in sv[0].sv_sec[0].i_cmpl:
-                phrase=phrase+indirect_compl_recovery(x)
+                phrase=phrase+indirect_compl_rebuilding(x)
         else:
             if sv[0].sv_sec[0].i_cmpl!=[]:
-                phrase=phrase+indirect_compl_recovery(sv[0].sv_sec[0].i_cmpl[0])
-            phrase=phrase+nom_struc_recovery(sv[0].sv_sec[0].d_obj)
+                phrase=phrase+indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[0])
+            phrase=phrase+nom_struc_rebuilding(sv[0].sv_sec[0].d_obj)
             #init
             x=1
             while x < len(sv[0].sv_sec[0].i_cmpl):
-                phrase=phrase+indirect_compl_recovery(sv[0].sv_sec[0].i_cmpl[x])
+                phrase=phrase+indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[x])
                 x=x+1
 
         #We add the adverb of the sentence
@@ -366,7 +366,7 @@ def end_statement_recovery(sentence, sv ,sn, type):
 
 
 
-def end_question_recovery(sentence, sv ,sn):
+def end_question_rebuilding(sentence, sv ,sn):
     """
     This function recovers the end of the question                                   
     Input=class sentence, subject and the verbal structure                           
@@ -374,22 +374,22 @@ def end_question_recovery(sentence, sv ,sn):
     """
 
     #Recovering the verb in the correct form
-    phrase=vrb_ques_recovery(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state)
+    phrase=vrb_ques_rebuilding(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state)
 
     #We add the direct and indirect complement
     if sv[0].i_cmpl!=[] and sv[0].i_cmpl[0].prep!=[]:
-        phrase=phrase+nom_struc_recovery(sv[0].d_obj)
+        phrase=phrase+nom_struc_rebuilding(sv[0].d_obj)
         for x in sv[0].i_cmpl:
-            phrase=phrase+indirect_compl_recovery(x)
+            phrase=phrase+indirect_compl_rebuilding(x)
     else:
         if sv[0].i_cmpl!= []:
-            phrase=phrase+indirect_compl_recovery(sv[0].i_cmpl[0])
-        phrase=phrase+nom_struc_recovery(sv[0].d_obj)
+            phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[0])
+        phrase=phrase+nom_struc_rebuilding(sv[0].d_obj)
         
         #init
         x=1
         while x < x < len(sv[0].i_cmpl):
-            phrase=phrase+indirect_compl_recovery(sv[0].i_cmpl[x])
+            phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[x])
             x=x+1
             
             
@@ -399,21 +399,21 @@ def end_question_recovery(sentence, sv ,sn):
     #If there is a second verb
     if sv[0].sv_sec!=[]:
         #Add this verb with 'to'
-        phrase=phrase+['to']+sv[0].sv_sec[0].vrb_adv+other_functions.list_recovery(sv[0].sv_sec[0].vrb_main[0])
+        phrase=phrase+['to']+sv[0].sv_sec[0].vrb_adv+other_functions.list_rebuilding(sv[0].sv_sec[0].vrb_main[0])
 
         #We add the direct and indirect complement
         if sv[0].sv_sec[0].i_cmpl!=[] and sv[0].sv_sec[0].i_cmpl[0].prep!=[]:
-            phrase=phrase+nom_struc_recovery(sv[0].sv_sec[0].d_obj)
+            phrase=phrase+nom_struc_rebuilding(sv[0].sv_sec[0].d_obj)
             for x in sv[0].sv_sec[0].i_cmpl:
-                phrase=phrase+indirect_compl_recovery(x)
+                phrase=phrase+indirect_compl_rebuilding(x)
         else:
             if sv[0].sv_sec[0].i_cmpl!=[]:
-                phrase=phrase+indirect_compl_recovery(sv[0].sv_sec[0].i_cmpl[0])
-            phrase=phrase+nom_struc_recovery(sv[0].sv_sec[0].d_obj)
+                phrase=phrase+indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[0])
+            phrase=phrase+nom_struc_rebuilding(sv[0].sv_sec[0].d_obj)
             #init
             x=1
             while x < len(sv[0].sv_sec[0].i_cmpl):
-                phrase=phrase+indirect_compl_recovery(sv[0].sv_sec[0].i_cmpl[x])
+                phrase=phrase+indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[x])
                 x=x+1
 
         #We add the adverb of the sentence

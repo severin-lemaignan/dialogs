@@ -16,7 +16,7 @@ import unittest
 
 from sentence import *
 
-import utterance_recovery
+import utterance_rebuilding
 
 class Verbalizer:
     """Implements the verbalization module: Verbalizer.verbalize() takes as
@@ -24,7 +24,7 @@ class Verbalizer:
     """
     def verbalize(self, sentence):
         logging.debug("Verbalizing now...")
-        nl_sentence = utterance_recovery.verbalising(sentence)
+        nl_sentence = utterance_rebuilding.verbalising(sentence)
         logging.debug("Rebuild sentence to: \"" + nl_sentence + "\"")
         return nl_sentence
 
@@ -35,7 +35,7 @@ class TestVerbalization(unittest.TestCase):
     Function to compare 2 nominal groups                                            
     """
     
-    """
+    
     def test_01(self):
         print ''
         print '######################## test 1.1 ##############################'
@@ -63,7 +63,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -92,7 +92,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -134,7 +134,7 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['to'],[Nominal_Group([],['you'],[],[],[])])],
                     [], [] ,'negative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -163,7 +163,7 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['in'],[Nominal_Group(['your'],['right'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -198,7 +198,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -229,7 +229,7 @@ class TestVerbalization(unittest.TestCase):
                     [], [] ,'negative',[])]),
             Sentence('start', '', [], [])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -274,7 +274,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -313,7 +313,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -347,7 +347,7 @@ class TestVerbalization(unittest.TestCase):
                 [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]), Indirect_Complement(['at'],[Nominal_Group(['my'],['left'],[],[],[])])],
                 ['quickly'], [] ,'negative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -380,7 +380,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -409,7 +409,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -444,7 +444,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -485,7 +485,7 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['to'],[Nominal_Group(['the'],['Laas'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -525,7 +525,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'negative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -562,7 +562,7 @@ class TestVerbalization(unittest.TestCase):
             Sentence('disagree', '', [], []),
             Sentence('disagree', '', [], [])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -591,7 +591,7 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -620,7 +620,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], ['everyday'] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -655,7 +655,7 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['with'],[Nominal_Group(['this'],['person'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -690,7 +690,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -725,7 +725,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -760,7 +760,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -790,7 +790,7 @@ class TestVerbalization(unittest.TestCase):
                     [], [] ,'negative',[])]),
             Sentence('agree', '',[],[])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -819,7 +819,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], ['here'] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -854,7 +854,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -893,7 +893,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -921,7 +921,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -955,7 +955,7 @@ class TestVerbalization(unittest.TestCase):
                 [],
                 [], [] ,'affirmative',[])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -997,7 +997,7 @@ class TestVerbalization(unittest.TestCase):
                             [],
                             [], [] ,'affirmative',[])])])])]
 
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -1034,7 +1034,7 @@ class TestVerbalization(unittest.TestCase):
 
         sentences[1].sv[0].d_obj[1]._conjunction="OR"
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -1070,7 +1070,7 @@ class TestVerbalization(unittest.TestCase):
                 [],
                 [], [] ,'affirmative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -1106,7 +1106,7 @@ class TestVerbalization(unittest.TestCase):
                 [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),Indirect_Complement(['about'],[Nominal_Group(['the'],['bottle'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -1133,7 +1133,7 @@ class TestVerbalization(unittest.TestCase):
         
         sentences[0].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -1166,7 +1166,7 @@ class TestVerbalization(unittest.TestCase):
         
         sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -1192,7 +1192,7 @@ class TestVerbalization(unittest.TestCase):
         
         sentences[0].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
@@ -1224,13 +1224,13 @@ class TestVerbalization(unittest.TestCase):
         
         sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
-    """
+    
     
     def test_36(self):
         
@@ -1239,7 +1239,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="Where is it? On your left or in front of you?"
+        original_utterance="The blue bottle? What do you mean?"
         
         sentences=[Sentence('yes_no_question', '', 
                         [Nominal_Group(['the'],['bottle'],['blue'],[],[])], 
@@ -1248,7 +1248,7 @@ class TestVerbalization(unittest.TestCase):
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,'affirmative',[])])]
         
-        utterance=utterance_recovery.verbalising(sentences)
+        utterance=utterance_rebuilding.verbalising(sentences)
         
         print "The original utterance is : ", original_utterance
         print "The result obtained is :    ", utterance
