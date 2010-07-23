@@ -191,26 +191,13 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
                 print ''
             
             i=i+1
-        
-       
-
-def display_ng(nom_str):
-    """
-    Function to display nominal group                                               
-    """
-    print  nom_str.det,   nom_str.adj,  nom_str.noun
-    for i in nom_str.noun_cmpl:
-        display_ng(i)
-
-    for j in nom_str.relative:
-        display (j)
-        print ''
+                   
 
 def unit_tests():
     """
     Function to perform unit tests                                                   
     """ 
-    """
+    
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -515,7 +502,7 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    """
+    
     
     """
     """
@@ -1410,7 +1397,7 @@ def unit_tests():
     print ''
     """
     
-    
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -1635,7 +1622,7 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
 if __name__ == '__main__':
     unit_tests()
