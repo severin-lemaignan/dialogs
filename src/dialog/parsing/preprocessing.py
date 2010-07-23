@@ -25,6 +25,7 @@
     reorganize_adj : to delete ',' and 'and' if it is between adjectives*
     subsentence_comma : to delete ',' or changed on ';'
     delete_empty : to delete '' from sentence
+    remerge_sentences : to transform some sentences of the remerge part
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
@@ -45,6 +46,7 @@ prep_list=['ago']
 prep_concat_list=[['next','to'],['behind','to'],['in','front','of']]
 rel_list=['which', 'who','that']
 sub_list=['while', 'but','where', 'when']
+adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of']
 
 
 
@@ -94,7 +96,7 @@ def concat_number(sentence):
         if other_functions.number(sentence[i])==1:
             begin_pos=i
                 
-            while other_functions.number(sentence[i])==1:
+            while i<len(sentence) and other_functions.number(sentence[i])==1:
                 i=i+1
             end_pos=i
             
@@ -573,6 +575,25 @@ def delete_empty(sentence):
     
     
     
+def remerge_sentences(sentence):
+    """ 
+    This function transform some sentences of the remerge part                  
+    Input=sentence                              Output=sentence                      
+    """ 
+    
+    gr=determination_nom_gr(sentence, 0)
+    if gr!=[] and len(gr)<len(sentence):
+        
+        #Case of 'the bottle on the table'
+        for i in adverbial_list:
+            if i==sentence[len(gr)]:
+                if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
+                    sentence=gr+['is']+sentence[sentence.index(i):]
+                    
+    return sentence    
+    
+    
+    
 def processing(sentence):
     """ 
     This function is used by process_sentence                  
@@ -590,7 +611,8 @@ def processing(sentence):
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
     sentence = or_processing(sentence)
-    sentence = subsentence_comma(sentence)        
+    sentence = subsentence_comma(sentence)
+    sentence = remerge_sentences(sentence)        
     return sentence
 
 
