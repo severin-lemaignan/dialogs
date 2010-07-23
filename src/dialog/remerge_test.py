@@ -17,7 +17,8 @@ def unit_tests():
     print ('######################## test 1.1 ##############################')
 
     utterance="sorry"
-    print 'The object of our test is this utterance :'
+    print 'It is an empty test with SUCCESS'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -48,7 +49,8 @@ def unit_tests():
     print ('######################## test 1.2 ##############################')
 
     utterance="sorry"
-    print 'The object of our test is this utterance :'
+    print 'It is an empty test with FAILURE'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -79,7 +81,8 @@ def unit_tests():
     print ('######################## test 1.3 ##############################')
 
     utterance="the blue one"
-    print 'The object of our test is this utterance :'
+    print 'Add adjectives if we have SUCCESS'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -87,7 +90,7 @@ def unit_tests():
     class_list=analyse_sentence.sentences_analyzer(sentence_list)
     flag='SUCCESS'
     
-    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[])
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],['big'],[],[])
     print 'the nominal group of the last out put'
     print (str(nom_gr_struc))
     
@@ -95,7 +98,7 @@ def unit_tests():
     print 'the nominal group after processing'
     print (str(nom_gr_struc))
     
-    rslt=Nominal_Group(['the'],['bottle'],['blue'],[],[])
+    rslt=Nominal_Group(['the'],['bottle'],['big','blue'],[],[])
     
     if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
         print "############### Parsing is OK ###############"
@@ -109,7 +112,8 @@ def unit_tests():
     print ('######################## test 1.4 ##############################')
 
     utterance="the blue one. I mean"
-    print 'The object of our test is this utterance :'
+    print 'Add adjectives if we have FAILURE'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -140,7 +144,8 @@ def unit_tests():
     print ('######################## test 1.5 ##############################')
 
     utterance="it is on the table"
-    print 'The object of our test is this utterance :'
+    print 'Add adverbial as a relative this case is only for SUCCESS'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -176,7 +181,8 @@ def unit_tests():
     print ('######################## test 1.6 ##############################')
 
     utterance="the bottle on the table"
-    print 'The object of our test is this utterance :'
+    print 'Add adverbial as a relative this case is only for SUCCESS'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -212,7 +218,8 @@ def unit_tests():
     print ('######################## test 1.7 ##############################')
 
     utterance="I'm talking about the green bottle"
-    print 'The object of our test is this utterance :'
+    print 'Correct adjective this case is only for FAILURE'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -243,7 +250,8 @@ def unit_tests():
     print ('######################## test 1.8 ##############################')
 
     utterance="sorry. I mean the green one"
-    print 'The object of our test is this utterance :'
+    print 'Correct adjective this case is only for FAILURE'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -268,16 +276,14 @@ def unit_tests():
         print "There is a problem with parsing this sentence"
         print ''
         
-    """
     
-    """
-    ## Aim of this test : To use different cases with a state's verb 
-    """
+    
     print ''
-    print ('######################## test 1.2 ##############################')
+    print ('######################## test 1.9 ##############################')
 
     utterance="sorry. I want to say the dark one"
-    print 'The object of our test is this utterance :'
+    print 'Correct adjective this case is only for FAILURE'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -293,7 +299,7 @@ def unit_tests():
     print 'the nominal group after processing'
     print (str(nom_gr_struc))
     
-    rslt=Nominal_Group(['the'],['bottle'],[],[],[])
+    rslt=Nominal_Group(['the'],['bottle'],['dark'],[],[])
     
     if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
         print "############### Parsing is OK ###############"
@@ -304,7 +310,39 @@ def unit_tests():
     
     
     
+    print ''
+    print ('######################## test 1.10 ##############################')
+
+    utterance="sorry. I want to say this plush"
+    print 'Correct noun this case is only for FAILURE'
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='FAILURE'
     
+    nom_gr_struc=Nominal_Group(['the'],['bear'],[],[],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['this'],['plush'],[],[],[])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print ''
+        
+        
+        
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -312,7 +350,7 @@ def unit_tests():
     print ('######################## test 1.3 ##############################')
 
     utterance="No. He means the one which he bought yesterday."
-    print 'The object of our test is this utterance :'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -345,7 +383,7 @@ def unit_tests():
     print ('######################## test 1.4 ##############################')
 
     utterance="I mean the bottle of Jido"
-    print 'The object of our test is this utterance :'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -378,7 +416,7 @@ def unit_tests():
     print ('######################## test 1.5 ##############################')
 
     utterance="He mean that he want the bottle of Jido"
-    print 'The object of our test is this utterance :'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -417,7 +455,7 @@ def unit_tests():
     print ('######################## test 1.1 ##############################')
 
     utterance="it is the best one"
-    print 'The object of our test is this utterance :'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
@@ -455,7 +493,7 @@ def unit_tests():
     print ('######################## test 1.1 ##############################')
 
     utterance="it is the best one"
-    print 'The object of our test is this utterance :'
+    print 'The speaker said :'
     print utterance
     print '#################################################################'
     print ''
