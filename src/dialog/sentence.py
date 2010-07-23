@@ -422,10 +422,44 @@ def process_vg_part(vg,nom_gr_struc, flag):
     
     for i in vg.sv_sec:
         process_vg_part(i,nom_gr_struc, flag)
-                
     return nom_gr_struc
- 
- 
+
+
+
+def refine_nom_group_relative_sv (vs,nom_gr):
+    """
+    This function replace one by the noun in verbal part of relative                                      
+    Input=nominal groups and verbal part          Output= nominal group                   
+    """
+    
+    for object in vs.d_obj:
+        if object.noun==['one']:
+            object.noun=nom_gr.noun
+        refine_nom_group_relative(object)
+    for i_object in vs.i_cmpl:
+        for ng in i_object.nominal_group:
+            if ng.noun==['one']:
+                ng.noun=nom_gr.noun
+            refine_nom_group_relative(ng)
+    for second_vrb in vs.sv_sec:
+            refine_nom_group_relative_sv(second_vrb,nom_gr)
+
+
+def refine_nom_group_relative(nom_gr):
+    """
+    This function replace one by the noun in relative                                      
+    Input=nominal groups                      Output= nominal group                   
+    """
+    
+    for i in nom_gr.relative:
+        for ns in i.sn:
+            if ns.noun==['one']:
+                ns.noun=nom_gr.noun
+            refine_nom_group_relative(ns)
+        for vs in i.sv:
+            refine_nom_group_relative_sv(vs,nom_gr)
+            
+            
     
 def nom_gr_remerge(utterance, flag , nom_gr_struc):
     """
@@ -442,6 +476,7 @@ def nom_gr_remerge(utterance, flag , nom_gr_struc):
                 if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                     for k in i.sn:
                         concat_gn(nom_gr_struc, k, flag)
+                    refine_nom_group_relative(nom_gr_struc)
                     return nom_gr_struc
                 #Else there is no subject and the information is on the verbal structure
                 for v in i.sv:
@@ -454,6 +489,8 @@ def nom_gr_remerge(utterance, flag , nom_gr_struc):
                 if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                     for k in i.sn:
                         concat_gn(nom_gr_struc, k, flag)
+                    
+                    refine_nom_group_relative(nom_gr_struc)
                     return nom_gr_struc
                 
                 for k in i.sn:
@@ -466,11 +503,13 @@ def nom_gr_remerge(utterance, flag , nom_gr_struc):
                         flg=0
                     else:
                         concat_gn(nom_gr_struc, k, flag)
+                
                 #We finish the process with the verbal part
                 for v in i.sv:
                     #Usually in this case we don't have a subsentence
                     nom_gr_struc=process_vg_part(v,nom_gr_struc, flag)        
-     
+    
+    refine_nom_group_relative(nom_gr_struc)
     return nom_gr_struc
 
 
