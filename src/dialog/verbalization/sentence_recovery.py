@@ -96,7 +96,9 @@ def y_o_question(analysis):
         #Recovering subsentences
         for s in analysis.sv[0].vrb_sub_sentence:
             phrase=phrase+sub_process(s)
-
+    else:
+        phrase=subject
+        
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
     

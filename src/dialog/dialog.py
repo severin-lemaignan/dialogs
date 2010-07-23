@@ -129,7 +129,7 @@ class Dialog(Thread):
             input=self._parser.parse(input, None)
             
             #We make the merge in the nominal group
-            input = sentence.nom_gr_remerge(input._class_list, self._last_output, self.active_sentence)           
+            input = sentence.nom_gr_remerge(input._class_list, self._last_output['status'],self._last_output['object'])           
             
             input = ' '.join(input)    
         

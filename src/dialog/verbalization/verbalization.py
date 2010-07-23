@@ -35,7 +35,7 @@ class TestVerbalization(unittest.TestCase):
     Function to compare 2 nominal groups                                            
     """
     
-    
+    """
     def test_01(self):
         print ''
         print '######################## test 1.1 ##############################'
@@ -1230,6 +1230,31 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
+    """
+    
+    def test_36(self):
+        
+        print ''
+        print '######################## test 1.36 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Where is it? On your left or in front of you?"
+        
+        sentences=[Sentence('yes_no_question', '', 
+                        [Nominal_Group(['the'],['bottle'],['blue'],[],[])], 
+                        []),
+                    Sentence('w_question', 'thing', 
+                        [Nominal_Group([],['you'],[],[],[])], 
+                        [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_recovery.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)    
+    
     
         
     
