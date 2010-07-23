@@ -11,7 +11,7 @@ from helpers import colored_print #to colorize the sentence output
 Statement of lists
 """
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-
+adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of']
 
 
 class SentenceFactory:
@@ -363,50 +363,92 @@ class Comparator():
       
         
                 
-def concat_gn(current_class, new_class):       
-    if current_class.adj!=new_class.adj:
-        current_class.adj=current_class.adj+new_class.adj
-    if current_class.det!=new_class.det:
-        current_class.det=new_class.det
-    if current_class.noun!=new_class.noun and new_class.noun!='one':
-        current_class.noun=current_class.noun+new_class.noun
-    current_class.noun_cmpl=current_class.noun_cmpl+new_class.noun_cmpl
-    current_class.relative=current_class.relative+new_class.relative
-    return current_class 
-
-
-
-def process_vg_part(vg,current_class):   
-    if vg.i_cmpl!=[]:
-        rltv=Sentence('relative', 'which',[],[vg])
-        current_class.relative=current_class.relative+[rltv]
-                        
-    for object in vg.d_obj:
-        current_class=concat_gn(current_class, object)
-    return current_class
- 
- 
+def concat_gn(nom_gr_struc, new_class, flag):      
+    """
+    This function concatenate 2 nominal groups                                      
+    Input=2 nominal groups and the flag           Output= nominal group                   
+    """
     
-def nom_gr_remerge(utterance, flag , current_class):
+    #If failure we need to change information else we add 
+    if nom_gr_struc.adj!=new_class.adj:
+        if flag=='FAILURE':
+            nom_gr_struc.adj=new_class.adj
+        elif flag=='SUCCESS':
+            nom_gr_struc.adj=nom_gr_struc.adj+new_class.adj
     
+    #If there is a difference may be it can from 'a' to  'the' or 'this'        
+    if nom_gr_struc.det!=new_class.det:
+        nom_gr_struc.det=new_class.det
+    
+    #We make change if there is 'one' or difference
+    if nom_gr_struc.noun!=new_class.noun and new_class.noun!=['one']:
+        nom_gr_struc.noun=nom_gr_struc.noun+new_class.noun
+    
+    #For all other information, we perform an addition
+    nom_gr_struc.noun_cmpl=nom_gr_struc.noun_cmpl+new_class.noun_cmpl
+    nom_gr_struc.relative=nom_gr_struc.relative+new_class.relative
+    return nom_gr_struc 
+
+
+
+def process_vg_part(vg,nom_gr_struc, flag):  
+    """
+    This function process merge in the verbal part                                      
+    Input=nominal groups, the verbal part and the flag      Output= nominal group                   
+    """
+    
+    #init 
     flg=0
     
-    if  flag=='FAILURE':
-        for i in utterance:
-            if i.data_type=='statement':
+    #The direct complement is a nominal group
+    for object in vg.d_obj:
+        nom_gr_struc=concat_gn(nom_gr_struc, object, flag)
+    
+    #For indirect complement
+    for i in vg.i_cmpl:
+        #If it is an adverbial related to the noun, we have to add it like a relative
+        for j in adverbial_list:
+            if j==i.prep[0]:
+                rltv=Sentence('relative', 'which',[],[vg])
+                nom_gr_struc.relative=nom_gr_struc.relative+[rltv]
+                flg=1
+                break
+        
+        #Else we process the concatenate with the nominal part of the indirect complement    
+        if flg==1:
+            flg=0
+        else:
+            for k in i.nominal_group:
+                concat_gn(nom_gr_struc, k, flag)
+                
+    return nom_gr_struc
+ 
+ 
+    
+def nom_gr_remerge(utterance, flag , nom_gr_struc):
+    """
+    This function process merge                                      
+    Input=nominal groups, the use utterance and the flag      Output= nominal group                   
+    """
+    
+    flg=0
+    for i in utterance: 
+        if i.data_type=='statement':
+            
+            if  flag=='FAILURE':
                 #treatment with sv
+                if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
+                    for k in i.sn:
+                        concat_gn(nom_gr_struc, k, flag)
+                    return nom_gr_struc
                 for v in i.sv: 
                     if v.vrb_sub_sentence==[]:
-                        current_class=process_vg_part(v,current_class)
-                            
-        return current_class
+                        nom_gr_struc=process_vg_part(v,nom_gr_struc, flag)
     
-    elif flag=='SUCCESS':
-        for i in utterance:
-            if i.data_type=='statement':
-                if i.sv==[]:
+            elif flag=='SUCCESS':
+                if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                     for k in i.sn:
-                        concat_gn(current_class, k)
+                        concat_gn(nom_gr_struc, k, flag)
                 else:
                     for k in i.sn:
                         for p in pronoun_list:
@@ -416,15 +458,12 @@ def nom_gr_remerge(utterance, flag , current_class):
                         if flg==1:
                             flg=0
                         else:
-                            concat_gn(current_class, k)
+                            concat_gn(nom_gr_struc, k, flag)
                     for v in i.sv:
-                        current_class=process_vg_part(v,current_class)
-                        
-        return current_class
-    
-    return current_class
-    
-    
+                        nom_gr_struc=process_vg_part(v,nom_gr_struc, flag)        
+     
+    return nom_gr_struc
+
 
 
 def unit_tests():
@@ -517,6 +556,8 @@ def unit_tests():
     cmp = Comparator()    
     print "sentence4 == sentence4bis: ", cmp.compare(sentence4, sentence4bis)    
     print "sentence3 == sentence4: ", cmp.compare(sentence3, sentence4)
+    
+    
     
     
 if __name__ == '__main__':
