@@ -437,7 +437,7 @@ def remerge_unit_tests():
     print 'the nominal group after processing'
     print (str(nom_gr_struc))
     
-    rslt=Nominal_Group(['the'],['bottle'],['blue'],[],[])
+    rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group([],['Jido'],[],[],[])],[])
     
     if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
         print "############### Parsing is OK ###############"
@@ -469,7 +469,7 @@ def remerge_unit_tests():
     print 'the nominal group after processing'
     print (str(nom_gr_struc))
     
-    rslt=Nominal_Group(['the'],['bottle'],['blue'],[],[])
+    rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group([],['Jido'],[],[],[])],[])
     
     if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
         print "############### Parsing is OK ###############"
