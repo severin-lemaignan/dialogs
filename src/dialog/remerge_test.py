@@ -415,11 +415,12 @@ def remerge_unit_tests():
         print ''
         
         
-    """
+        
     print ''
-    print ('######################## test 1.4 ##############################')
+    print ('######################## test 1.13 ##############################')
 
     utterance="I mean the bottle of Jido"
+    print 'Add noun complement if we have SUCCESS'
     print 'The speaker said :'
     print utterance
     print '#################################################################'
@@ -444,9 +445,41 @@ def remerge_unit_tests():
     else:
         print "There is a problem with parsing this sentence"
         print ''
+        
+        
+        
+    print ''
+    print ('######################## test 1.14 ##############################')
+
+    utterance="I mean the bottle of Jido"
+    print 'Add noun complement if we have FAILURE'
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='FAILURE'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],['blue'],[],[])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print ''
     
     
-    
+    """
     print ''
     print ('######################## test 1.5 ##############################')
 

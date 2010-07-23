@@ -489,7 +489,6 @@ def nom_gr_remerge(utterance, flag , nom_gr_struc):
                 if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                     for k in i.sn:
                         concat_gn(nom_gr_struc, k, flag)
-                    
                     refine_nom_group_relative(nom_gr_struc)
                     return nom_gr_struc
                 
