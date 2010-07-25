@@ -98,6 +98,11 @@ class Resolver:
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
         
+        if nominal_group.adjectives_only():#E.g, 'big' in 'the yellow banana is big'.
+			nominal_group.id = '*'
+			nominal_group._resolved = True
+			return nominal_group
+			
         if not nominal_group.noun:
             return nominal_group
         
