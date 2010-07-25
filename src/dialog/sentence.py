@@ -224,6 +224,19 @@ class Nominal_Group:
                 map(lambda x: x.flatten(), self.relative)]
         
         
+    def adjectives_only(self):
+        """This method returns True when this nominal group holds only a set of adjectives.
+        E.g: the banana is yellow. The parser provides an object sentence with two nominal groups:
+        - Nominal_Group(['the'], ['banana'], [], [],[]) and adjectives_only returns False
+        - Nominal_Group([], [], ['yellow'], [],[]) and adjectives_only returns True
+        """
+        if self.adj and \
+                not self.noun and \
+                not self.noun_cmpl and \
+                not self.relative:
+            return True
+        else:
+            return False
         
     
 class Indirect_Complement:
@@ -606,8 +619,9 @@ def unit_tests():
     print "sentence4 == sentence4bis: ", cmp.compare(sentence4, sentence4bis)    
     print "sentence3 == sentence4: ", cmp.compare(sentence3, sentence4)
     
-    
-    
+    print "*************  Nominal group adjective only ****************"
+    print "Nominal_Group(['the'],['man'],[],[],[]) is adjective only: ", Nominal_Group(['the'],['man'],[],[],[]).adjectives_only()
+    print "Nominal_Group([],[],['blue'],[],[]) is adjective only: ", Nominal_Group([],[],['bluels'],[],[]).adjectives_only()
     
 if __name__ == '__main__':
     unit_tests()
