@@ -327,7 +327,7 @@ def find_nom_gr_list(phrase):
     nom_gr_lent=len(nom_gr)
 
     #We loop until there is no more nominal group
-    while nom_gr!=[] and (nom_gr[len(nom_gr)-1].endswith("'s") or nom_gr[len(nom_gr)-1].endswith("s'"):
+    while nom_gr!=[] and (nom_gr[len(nom_gr)-1].endswith("'s") or nom_gr[len(nom_gr)-1].endswith("s'")):
 
         list=[nom_gr]+list
         nb_element=nb_element+nom_gr_lent

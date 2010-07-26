@@ -410,7 +410,7 @@ def y_n_ques(type, request, sentence):
         
         #We recover the direct, indirect complement and the adverbial
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
-    
+        
         #We have to take off adverbs form the sentence
         sentence=analyse_verbal_structure.find_adv(sentence, vg)
 

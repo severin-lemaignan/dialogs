@@ -215,9 +215,13 @@ def recover_obj_iobj(phrase, vg):
                     
                 else:
                     object=[]
-
-            #In a sentence there is just one direct complement
-            if vg.d_obj==[]:
+            
+            #If there is a second verb there is no direct complement
+            if vg.sv_sec!=[]:
+                vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([],gr_nom_list)]
+            
+            #In a sentence there is just one direct complement if there is no second verb
+            elif vg.d_obj==[]:
                 vg.d_obj=gr_nom_list
             else:
                 #Else the first nominal group found is indirect and this one is direct complement

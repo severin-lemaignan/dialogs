@@ -197,7 +197,7 @@ def unit_tests():
     """
     Function to perform unit tests                                                   
     """ 
-    
+    """
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
@@ -502,7 +502,7 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
     """
     """
@@ -805,14 +805,14 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    """
     
-    """
+    
+    
     """
     ## Aim of this test : Using different cases of what questions
     """
     print ''
-    print ('######################## test 3.1 ##############################')
+    print ('######################## test 2.9 ##############################')
 
     utterance="What type of people don't read this magazine? what kind of music must he listen to everyday"
     print 'The object of our test is this utterance :'
@@ -843,7 +843,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of what questions
     """
     print ''
-    print ('######################## test 3.2 ##############################')
+    print ('######################## test 2.10 ##############################')
 
     utterance="What kind of sport is your favorite? what is the problem with him? what is the matter with this person"
     print 'The object of our test is this utterance :'
@@ -874,14 +874,14 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    """
     
-    
-    
+    """
     """
     ## Aim of this test : Using different cases of how questions
     """
     print ''
-    print ('######################## test 3.3 ##############################')
+    print ('######################## test 3.1 ##############################')
 
     utterance="How old are you? how long is your uncle's store opened tonight? how long is your uncle's store open tonight?"
     print 'The object of our test is this utterance :'
@@ -919,7 +919,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of how questions
     """
     print ''
-    print ('######################## test 3.4 ##############################')
+    print ('######################## test 3.2 ##############################')
 
     utterance="how far is it from the hotel to the restaurant? how soon can you be here? How often does Jido go skiing?"
     print 'The object of our test is this utterance :'
@@ -957,7 +957,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of how questions of quantity
     """
     print ''
-    print ('######################## test 3.5 ##############################')
+    print ('######################## test 3.3 ##############################')
 
     utterance="how much water should they transport? how many guests weren't at the party? how much does the motocycle cost"
     print 'The object of our test is this utterance :'
@@ -995,7 +995,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of how questions and agree
     """
     print ''
-    print ('######################## test 3.6 ##############################')
+    print ('######################## test 3.4 ##############################')
 
     utterance="How about going to the cinema? how have not they gotten a loan for their business? OK"
     print 'The object of our test is this utterance :'
@@ -1028,7 +1028,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of how questions 
     """
     print ''
-    print ('######################## test 3.7 ##############################')
+    print ('######################## test 3.5 ##############################')
 
     utterance="How did you like Steven Spilburg's new movie. how could I get to the restaurant from here"
     print 'The object of our test is this utterance :'
@@ -1060,7 +1060,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of why, who and Whose questions 
     """
     print ''
-    print ('######################## test 3.8 ##############################')
+    print ('######################## test 3.6 ##############################')
 
     utterance="Why should she go to Toulouse? who could you talk to on the phone. Whose blue bottle and red glass are these."
     print 'The object of our test is this utterance :'
@@ -1098,7 +1098,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of what question with relative 
     """
     print ''
-    print ('######################## test 4.1 ##############################')
+    print ('######################## test 3.7 ##############################')
 
     utterance="What are you thinking about the idea that I present you? what color is the bottle that you bought,"
     print 'The object of our test is this utterance :'
@@ -1140,7 +1140,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of what question with relative 
     """
     print ''
-    print ('######################## test 4.2 ##############################')
+    print ('######################## test 3.8 ##############################')
 
     utterance="Which competition's salesperson won the award which we won in the last years"
     print 'The object of our test is this utterance :'
@@ -1171,7 +1171,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of what question with relative 
     """
     print ''
-    print ('######################## test 4.3 ##############################')
+    print ('######################## test 3.9 ##############################')
 
     utterance="what'll your house look like? what do you think of the latest novel which Jido wrote"
     print 'The object of our test is this utterance :'
@@ -1201,14 +1201,14 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    """
     
-    
-    
+    """
     """
     ## Aim of this test : Using different cases of what question with relative 
     """
     print ''
-    print ('######################## test 4.4 ##############################')
+    print ('######################## test 4.1 ##############################')
 
     utterance="learn that I want you to give me the blue bottle,. If you do your job, you will be happy."
     print 'The object of our test is this utterance :'
@@ -1229,8 +1229,8 @@ def unit_tests():
                             [Nominal_Group(['the'],['bottle'],['blue'],[],[])], 
                             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                             [], [] ,'affirmative',[])],'present simple', 
-                        [Nominal_Group([],['you'],[],[],[])], 
-                        [],
+                        [], 
+                        [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
                         [], [] ,'affirmative',[])])])]),
         Sentence('statement', '', 
                 [Nominal_Group([],['you'],[],[],[])], 
@@ -1246,14 +1246,14 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-
+    
     
     
     """
     ## Aim of this test : Using wrong in the what questions, using the 'or' and moving preposition like 'ago'
     """
     print ''
-    print ('######################## test 4.5 ##############################')
+    print ('######################## test 4.2 ##############################')
 
     utterance="what is wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago."
     print 'The object of our test is this utterance :'
@@ -1293,7 +1293,7 @@ def unit_tests():
     ## Aim of this test : To use different cases with a state's verb 
     """
     print ''
-    print ('######################## test 4.6 ##############################')
+    print ('######################## test 4.3 ##############################')
 
     utterance="this is a bottle. There is a bottle on the table"
     print 'The object of our test is this utterance :'
@@ -1325,7 +1325,7 @@ def unit_tests():
     ## Aim of this test : To use different cases with a state's verb 
     """
     print ''
-    print ('######################## test 4.7 ##############################')
+    print ('######################## test 4.4 ##############################')
 
     utterance="What do you do for a living in this building? What does your brother do for a living here"
     print 'The object of our test is this utterance :'
@@ -1358,7 +1358,7 @@ def unit_tests():
     ## Aim of this test : To use different cases with a state's verb 
     """
     print ''
-    print ('######################## test 4.8 ##############################')
+    print ('######################## test 4.5 ##############################')
 
     utterance="To whom are you talking? you should have the bottle. would you have played a guitar. you would have played a guitar"
     print 'The object of our test is this utterance :'
@@ -1395,14 +1395,14 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    """
     
-    """
+    
+    
     """
     ## Aim of this test : To use different cases with a state's verb 
     """
     print ''
-    print ('######################## test 5.1 ##############################')
+    print ('######################## test 4.6 ##############################')
 
     utterance="you'd like the blue bottle or the glass? the green or blue bottle is on the table. the green or the blue glass is mine?"
     print 'The object of our test is this utterance :'
@@ -1444,7 +1444,7 @@ def unit_tests():
     ## Aim of this test : Using different cases of what question with relative 
     """
     print ''
-    print ('######################## test 5.2 ##############################')
+    print ('######################## test 4.7 ##############################')
 
     utterance="learn that I want you to give me the blue bottle that is blue."
     print 'The object of our test is this utterance :'
@@ -1470,8 +1470,8 @@ def unit_tests():
                                     [], [] ,'affirmative',[])])])], 
                             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                             [], [] ,'affirmative',[])],'present simple', 
-                        [Nominal_Group([],['you'],[],[],[])], 
-                        [],
+                        [], 
+                        [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
                         [], [] ,'affirmative',[])])])])]
 
     compare_utterance(class_list,rslt,sentence_list)
@@ -1479,7 +1479,7 @@ def unit_tests():
     
     
     print ''
-    print ('######################## test 5.3 ##############################')
+    print ('######################## test 4.8 ##############################')
 
     utterance="The bottle is behind to me. The bottle is next to the table in front of the kitchen."
     print 'The object of our test is this utterance :'
@@ -1512,7 +1512,7 @@ def unit_tests():
     ## Aim of this test : Using relative with subject and object
     """
     print ''
-    print ('######################## test 5.4 ##############################')
+    print ('######################## test 4.9 ##############################')
 
     utterance="Take the bottle carefully. I take that bottle that I drink in. I take twenty two bottles."
     print 'The object of our test is this utterance :'
@@ -1548,14 +1548,14 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
     
     """
     ## Aim of this test : To use the complement of the noun and the duplication with 'and'
     """
     print ''
-    print ('######################## test 5.5 ##############################')
+    print ('######################## test 5.1 ##############################')
 
     utterance="I'll play Jido's guitar, a saxophone, a piano of the wife of my oncle and Patrick's violon."
     print 'The object of our test is this utterance :'
@@ -1583,7 +1583,7 @@ def unit_tests():
     ## Aim of this test : To use the complement of the noun and the duplication with 'and'
     """
     print ''
-    print ('######################## test 5.6 ##############################')
+    print ('######################## test 5.2 ##############################')
 
     utterance="Give me two or three bottles. the bottle is blue, big and fanny. give me the bottle on the table"
     print 'The object of our test is this utterance :'
@@ -1622,7 +1622,41 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    
+    
+    
     """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
+    print ''
+    print ('######################## test 5.3 ##############################')
+
+    utterance="the boys' ball is blue. He ask me to do my homework."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['ball'],[],[Nominal_Group(['the'],['boys'],[],[],[])],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['he'],[],[],[])], 
+            [Verbal_Group(['ask'], [Verbal_Group(['do'], [],'', 
+                [Nominal_Group(['my'],['homework'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])],'present simple', 
+            [], 
+            [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+            [], [] ,'affirmative',[])])]
+
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
     
 if __name__ == '__main__':
     unit_tests()
