@@ -327,7 +327,7 @@ def find_nom_gr_list(phrase):
     nom_gr_lent=len(nom_gr)
 
     #We loop until there is no more nominal group
-    while nom_gr!=[] and nom_gr[len(nom_gr)-1].endswith("'s"):
+    while nom_gr!=[] and (nom_gr[len(nom_gr)-1].endswith("'s") or nom_gr[len(nom_gr)-1].endswith("s'"):
 
         list=[nom_gr]+list
         nb_element=nb_element+nom_gr_lent
@@ -373,6 +373,9 @@ def create_possession_claus(list):
         if j.endswith("'s"):
             word= phrase[phrase.index(j)]
             phrase[phrase.index(j)]= word[:len(word)-2]
+        if j.endswith("s'"):
+            word= phrase[phrase.index(j)]
+            phrase[phrase.index(j)]= word[:len(word)-1]
 
     return phrase
 
@@ -392,7 +395,7 @@ def possesion_form(sentence):
     while (begin_pos<len(sentence)):
 
         #We found a posssession case
-        if sentence[begin_pos].endswith("'s"):
+        if sentence[begin_pos].endswith("'s") or sentence[begin_pos].endswith("s'"):
 
             #We have to find the first nominal group
             nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
