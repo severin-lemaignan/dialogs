@@ -2,6 +2,7 @@ import logging
 import random
 
 from resources_manager import ResourcePool
+from dialog_exceptions import UnsufficientInputError
 
 class StatementSafeAdder():
     """ Add statement in the ontology, from statement with resolved ID"""
@@ -49,10 +50,12 @@ class StatementSafeAdder():
             
             
     def safeAdd(self, statements):
-        try:
-            ResourcePool().ontology_server.safeAdd(statements)
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            pass
+		if not statements:
+			raise UnsufficientInputError("Trying to add an empty statement in the ontology!")
+		try:
+			ResourcePool().ontology_server.safeAdd(statements)
+		except AttributeError: #the ontology server is not started of doesn't know the method
+			pass
 
 def generate_id(with_question_mark = True):
     sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
