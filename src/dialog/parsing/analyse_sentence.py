@@ -6,7 +6,8 @@
  Created by Chouayakh Mahdi                                                       
  25/06/2010                                                                       
  The package contains functions to analyse all sentence of a utterance            
- Functions:                                                                       
+ Functions:                                 
+    recover_aux_list : to recover the auxiliary list  
     dispatching : to distribute the sentence                                      
     w_quest_where : to process many different type of where question                
     w_quest_what  : to process many different type of what question                 
@@ -33,13 +34,27 @@ Statement of lists
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
 det_dem_list=['this', 'there', 'these']
-what_ques_list=[('time','time',2),('color','color',2),('size','size',2),('object','object',2)]
-how_ques_list=[('old','age',2),('long','duration',2),('often','frequency',2),('far','distance',2),('soon','time',2)]
+
+
 
 """
 We have to read all words that sentence can begin with                           
 """
 frt_wd = ResourcePool().sentence_starts
+
+
+
+def recover_aux_list():
+    """
+    This function recovers the auxiliary list                             
+    Output=the auxiliary list          
+    """
+    
+    aux_list=[]
+    for x in frt_wd:
+        if x[1]=='2':
+            aux_list=aux_list+[x[0]]
+    return aux_list
 
 
 
@@ -61,7 +76,6 @@ def dispatching(sentence):
             #If we find a knowing case
             if sentence[0]==x[0]:
 
-
                 #For
                 if x[1] == '0':
                     return Sentence('start', '', [], [])
@@ -80,12 +94,6 @@ def dispatching(sentence):
 
                     #For 'what'
                     elif x[2]=='3':
-
-                        #We have different type of question with 'what'
-                        for z in what_ques_list:
-                            if sentence[1]==z[0]:
-                                return y_n_ques('w_question', z[1], sentence[z[2]:])
-
                         #Here we have to use a specific processing for 'type' and 'kind'
                         if sentence[1]=='type' or sentence[1]=='kind':
                             #We start by processing the end of the sentence like a y_n_question
@@ -93,15 +101,10 @@ def dispatching(sentence):
 
                         #For other type of 'what' question
                         else:
-                            return w_quest_what('w_question', sentence, 2)
+                            return w_quest_what('w_question', sentence)
 
                     #For 'how'
                     elif x[2]=='4':
-                        
-                        #We have different type of question with 'how'
-                        for z in how_ques_list:
-                            if sentence[1]==z[0]:
-                                return y_n_ques('w_question', z[1], sentence[z[2]:])
 
                         if sentence[1]=='many' or sentence[1]=='much' :
                             return w_quest_quant('w_question', 'quantity', sentence)
@@ -182,33 +185,39 @@ def w_quest_where(type, request, stc):
         return y_n_ques(type, request, stc[1:])
 
 
-
-def w_quest_what(type, sentence,sbj_pos):
+def w_quest_what(type, sentence):
     """
     This function process many different type of what question                        
     Input=type of sentence, the sentence and position of subject                      
     Output=class Sentence                                                            
     """
     
-    #We start with a processing with the function of y_n_question's case
-    analysis=y_n_ques(type, 'thing',sentence[sbj_pos-1:])
+    aux_list = recover_aux_list()
+    for l in aux_list:
+        if sentence[1]==l:
+            #We start with a processing with the function of y_n_question's case
+            analysis=y_n_ques(type, 'thing',sentence[1:])
+            
+            vg=analysis.sv[0]
+            #The case when we have 'happen'
+            if analysis.sv[0].vrb_main[0].endswith('happen'):
+                analysis.aim='situation'
+
+            #The case when we have 'think'
+            elif analysis.sv[0].vrb_main[0].endswith('think+of') or analysis.sv[0].vrb_main[0].endswith('think+about'):
+                analysis.aim='opinion'
+
+            #The case when we have 'like' + conditional
+            elif analysis.sv[0].vrb_main[0].endswith('like') and not(analysis.sv[0].vrb_tense.endswith('conditional')):
+                analysis.aim='description'
+
+            #The case when we have 'do' + ing form
+            elif vg.vrb_main[0].endswith('do') and vg.i_cmpl!=[] and vg.i_cmpl[0].nominal_group[0].adj!=[] and vg.i_cmpl[0].nominal_group[0].adj[0].endswith('ing'):
+                analysis.aim='explication'
+            
+            return analysis
     
-    #The case when we have 'happen'
-    if analysis.sv[0].vrb_main[0].endswith('happen'):
-        analysis.aim='situation'
-
-    #The case when we have 'think'
-    elif analysis.sv[0].vrb_main[0].endswith('think+of') or analysis.sv[0].vrb_main[0].endswith('think+about'):
-        analysis.aim='opinion'
-
-    #The case when we have 'like' + conditional
-    elif analysis.sv[0].vrb_main[0].endswith('like') and not(analysis.sv[0].vrb_tense.endswith('conditional')):
-        analysis.aim='description'
-
-    #The case when we have 'do' + ing form
-    elif analysis.sv[0].vrb_main[0].endswith('do') and analysis.sv[0].i_cmpl!=[] and analysis.sv[0].i_cmpl[0].nominal_group[0].noun[0].endswith('ing'):
-        analysis.aim='explication'
-
+    analysis=y_n_ques(type, sentence[1],sentence[2:])
     return analysis
 
 
@@ -246,11 +255,17 @@ def w_quest_how(type, sentence):
     Input=type of sentence, the sentence      Output=class Sentence                  
     """
     
-    analysis=y_n_ques(type, 'manner', sentence[1:])
-
-    #The case when we have 'do' + ing form
-    if analysis.sv[0].vrb_main[0].endswith('like'):
-        analysis.aim='opinion'
+    aux_list = recover_aux_list()
+    for l in aux_list:    
+        if sentence[1]==l:
+            analysis=y_n_ques(type, 'manner', sentence[1:])
+        
+            #The case when we have 'do' + ing form
+            if analysis.sv[0].vrb_main[0].endswith('like'):
+                analysis.aim='opinion'
+            return analysis
+        
+    analysis=y_n_ques(type, sentence[1],sentence[2:])
     return analysis
 
 

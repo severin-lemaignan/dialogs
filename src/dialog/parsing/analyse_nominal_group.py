@@ -266,7 +266,11 @@ def return_adj (nom_gr):
     This function returns adjectives of the nominal group                            
     Input=nominal group                              Output=the adjective            
     """
-
+    
+    #init
+    k=1
+    adj_list=[]
+    
     #If nom_gr is empty
     if nom_gr==[]:
         return []
@@ -274,10 +278,11 @@ def return_adj (nom_gr):
     #We assumed that the noun represented by 1 element at the end
     for j in det_list:
         if nom_gr[0]==j:
-            return nom_gr[1:len(nom_gr)-1]
-
-    #Default case
-    return []
+            while k < len(nom_gr):
+                if is_an_adj(nom_gr[k])==1:
+                    adj_list=adj_list+[nom_gr[k]]
+                k=k+1
+    return adj_list
 
 
 

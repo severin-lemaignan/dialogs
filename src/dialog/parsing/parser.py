@@ -800,7 +800,7 @@ def unit_tests():
             [Nominal_Group(['your'],['brother'],[],[],[])], 
             [Verbal_Group(['do'], [],'present simple', 
                 [], 
-                [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])])],
+                [Indirect_Complement(['for'],[Nominal_Group(['a'],[],['living'],[],[])])],
                 [], [] ,'affirmative',[])])]
 
     compare_utterance(class_list,rslt,sentence_list)
@@ -854,7 +854,7 @@ def unit_tests():
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'classification+sport', 
-            [Nominal_Group(['your'],['favorite'],[],[],[])], 
+            [Nominal_Group(['your'],[],['favorite'],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [], 
                 [],
@@ -891,19 +891,19 @@ def unit_tests():
     sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
-    rslt=[Sentence('w_question', 'age', 
+    rslt=[Sentence('w_question', 'old', 
             [Nominal_Group([],['you'],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [], 
                 [],
                 [], [] ,'affirmative',[])]),
-        Sentence('w_question', 'duration', 
+        Sentence('w_question', 'long', 
             [Nominal_Group(['the'],['store'],[],[Nominal_Group(['your'],['uncle'],[],[],[])],[])], 
             [Verbal_Group(['open'], [],'present passive', 
                 [], 
                 [],
                 [], ['tonight'] ,'affirmative',[])]),
-        Sentence('w_question', 'duration', 
+        Sentence('w_question', 'long', 
             [Nominal_Group(['the'],['store'],[],[Nominal_Group(['your'],['uncle'],[],[],[])],[])],  
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],[],['open'],[],[])], 
@@ -929,19 +929,19 @@ def unit_tests():
     sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
-    rslt=[Sentence('w_question', 'distance', 
+    rslt=[Sentence('w_question', 'far', 
             [Nominal_Group([],['it'],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [], 
                 [Indirect_Complement(['from'],[Nominal_Group(['the'],['hotel'],[],[],[])]),Indirect_Complement(['to'],[Nominal_Group(['the'],['restaurant'],[],[],[])])],
                 [], [] ,'affirmative',[])]),
-        Sentence('w_question', 'time', 
+        Sentence('w_question', 'soon', 
             [Nominal_Group([],['you'],[],[],[])], 
             [Verbal_Group(['can+be'], [],'present simple', 
                 [], 
                 [],
                 [], ['here'] ,'affirmative',[])]),
-        Sentence('w_question', 'frequency', 
+        Sentence('w_question', 'often', 
             [Nominal_Group([],['Jido'],[],[],[])],  
             [Verbal_Group(['go+skiing'], [],'present simple', 
                 [], 
@@ -1339,14 +1339,14 @@ def unit_tests():
             [Nominal_Group([],['you'],[],[],[])], 
             [Verbal_Group(['do'], [],'present simple', 
                 [], 
-                [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])]),
+                [Indirect_Complement(['for'],[Nominal_Group(['a'],[],['living'],[],[])]),
                  Indirect_Complement(['in'],[Nominal_Group(['this'],['building'],[],[],[])])],
                 [], [] ,'affirmative',[])]),
         Sentence('w_question', 'explication', 
             [Nominal_Group(['your'],['brother'],[],[],[])], 
             [Verbal_Group(['do'], [],'present simple', 
                 [], 
-                [Indirect_Complement(['for'],[Nominal_Group(['a'],['living'],[],[],[])])],
+                [Indirect_Complement(['for'],[Nominal_Group(['a'],[],['living'],[],[])])],
                 [], ['here'] ,'affirmative',[])])]
     
     compare_utterance(class_list,rslt,sentence_list)
@@ -1549,7 +1549,7 @@ def unit_tests():
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     """
-    
+
     
     """
     ## Aim of this test : To use the complement of the noun and the duplication with 'and'
@@ -1707,6 +1707,46 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    
+    
+    
+    """
+    ## Aim of this test : Using different cases of what questions and disagree
+    """
+    print ''
+    print ('######################## test 5.5 ##############################')
+
+    utterance="what size is the best one? What object is blue? How good is this"
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('w_question', 'size', 
+            [Nominal_Group(['the'],['one'],['best'],[],[])],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'object', 
+            [],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'good', 
+            [Nominal_Group(['this'],[],[],[],[])],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])])]
+
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
+    
     
     
 if __name__ == '__main__':
