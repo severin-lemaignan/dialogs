@@ -466,6 +466,8 @@ def other_sentence(type, request, sentence):
         for m in modal_list:
             if sentence[0]==m:
                 modal=sentence[0]
+                if modal=='can' or modal=='must' or modal=='shall' or modal=='may':
+                    sentence=sentence[1:]
                 
         #We must take into account all possible cases to recover the sentence's tense
         if len(sentence)>1 and sentence[1]=='not':

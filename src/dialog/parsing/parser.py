@@ -908,7 +908,7 @@ def unit_tests():
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],[],['open'],[],[])], 
                 [],
-                [], [] ,'affirmative',[])])]
+                [], ['tonight'] ,'affirmative',[])])]
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
@@ -1663,6 +1663,51 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    
+    
+    
+    """
+    ## Aim of this test : Using different cases of what questions and disagree
+    """
+    print ''
+    print ('######################## test 5.4 ##############################')
+
+    utterance="What must be happened in the company today? The building shouldn't be built fastly. You can be here. It can be played by twenty players"
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('w_question', 'situation', 
+            [],  
+            [Verbal_Group(['must+happen'], [],'present passive', 
+                [], 
+                [Indirect_Complement(['in'],[Nominal_Group(['the'],['company'],[],[],[])])],
+                [], ['today'] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['building'],[],[],[])],  
+            [Verbal_Group(['should+build'],[],'passive conditional', 
+                [], 
+                [],
+                ['fastly'], [] ,'negative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['you'],[],[],[])],  
+            [Verbal_Group(['can+be'],[],'present simple', 
+                [], 
+                [],
+                [], ['here'] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])],  
+            [Verbal_Group(['can+play'],[],'present passive', 
+                [], 
+                [Indirect_Complement(['by'],[Nominal_Group(['twenty'],['players'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
     
 if __name__ == '__main__':
     unit_tests()
