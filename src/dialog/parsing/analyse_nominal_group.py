@@ -30,10 +30,11 @@ import other_functions
 Statement of lists
 """
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-det_list=['that','the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there']
+det_list=['that','the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there', 'some', 'any']
 proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind','behind+to','next+to','in+front+of','as']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
+composed_noun=['some', 'any']
 
 
 
@@ -131,6 +132,11 @@ def find_sn_pos (phrase, begin_pos):
         if phrase[begin_pos]==j:
             end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
             return phrase[begin_pos : end_pos+begin_pos]
+    
+    #If we have 'something'
+    for k in composed_noun:
+        if phrase[begin_pos].startswith(k):
+            return [phrase[begin_pos]]    
        
     #If there is a number, it will be the same with determinant
     if other_functions.number(phrase[begin_pos])==1:
@@ -176,7 +182,12 @@ def find_sn (phrase):
             if x==j:
                 nb_position= nb_position + adjective_pos(phrase, phrase.index(x)+1)
                 return phrase[phrase.index(x) : phrase.index(x)+nb_position]
-            
+        
+        #If we have 'something'
+        for k in composed_noun:
+            if x.startswith(k):
+                return [phrase[phrase.index(x)]]
+        
         #If there is a number, it will be the same with determinant
         if other_functions.number(x)==1:
             nb_position= nb_position + adjective_pos(phrase, phrase.index(x)+1)

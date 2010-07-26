@@ -1631,7 +1631,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.3 ##############################')
 
-    utterance="the boys' ball is blue. He ask me to do my homework."
+    utterance="the boys' ball is blue. He ask me to do something. is any person courageous on the laboratory"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1648,12 +1648,18 @@ def unit_tests():
         Sentence('statement', '', 
             [Nominal_Group([],['he'],[],[],[])], 
             [Verbal_Group(['ask'], [Verbal_Group(['do'], [],'', 
-                [Nominal_Group(['my'],['homework'],[],[],[])], 
+                [Nominal_Group([],['something'],[],[],[])], 
                 [],
                 [], [] ,'affirmative',[])],'present simple', 
             [], 
             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
-            [], [] ,'affirmative',[])])]
+            [], [] ,'affirmative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group(['any'],['person'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['courageous'],[],[])], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['laboratory'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''

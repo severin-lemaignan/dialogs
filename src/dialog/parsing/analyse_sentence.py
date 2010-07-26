@@ -381,7 +381,7 @@ def y_n_ques(type, request, sentence):
         if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
             pos=analyse_nominal_group.adjective_pos(sentence,0)
             vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
-            sentence=sentence[pos:]
+            sentence=sentence[pos-1:]
         
         #Here we have special processing for different cases
         if sentence!=[]:
@@ -505,7 +505,7 @@ def other_sentence(type, request, sentence):
         if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
             pos=analyse_nominal_group.adjective_pos(sentence,0)
             vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
-            sentence=sentence[pos:]
+            sentence=sentence[pos-1:]
             
         #We perform the processing with the modal
         if modal!=[]:
