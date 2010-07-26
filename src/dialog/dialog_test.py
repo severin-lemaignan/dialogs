@@ -72,7 +72,9 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'y_banana isOn shelf',
                         'green_banana rdf:type Banana',
                         'green_banana hasColor green',
-                        'green_banana isOn table2'
+                        'green_banana isOn table2',
+                        'Fruit rdfs:subClassOf Thing',
+                        'myself focusesOn y_banana'
                         ])
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
@@ -114,20 +116,17 @@ class TestBaseSentenceDialog(unittest.TestCase):
 
     def test_sentence3(self):
         
-        print("\n##################### test_sentence3 ########################\n")              
+        print("\n##################### Simple statements ########################\n")              
                 
         ####
-        stmt = "the yellow banana is big"
+        stmt = "the yellow banana is green"
         ####
-        expected_result = ['y_banana hasSize big']
+        expected_result = ['y_banana hasColor green']
         ###
         res = self.dialog.test('myself', stmt)
         self.assertTrue(self.check_results(res, expected_result))
+        self.assertFalse(oro.safeAdd(res)) #Check that we enforce consistency
     
-    
-    def test_sentence4(self):
-        
-        print("\n##################### test_sentence4 ########################\n")
         ####
         stmt = "the green banana is good"
         ####
@@ -135,6 +134,50 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ###
         expected_result = ['green_banana hasFeature good']
         self.assertTrue(self.check_results(res, expected_result))
+    
+    def test_sentence4(self):
+        
+        print("\n##################### Subclasses ########################\n")
+        ####
+        stmt = "bananas are fruits"
+        ####
+        res = self.dialog.test('myself', stmt)
+        ###
+        expected_result = ['Banana rdfs:subClassOf Fruit']
+        self.assertTrue(self.check_results(res, expected_result))
+        
+        ####
+        stmt = "A banana is a fruit"
+        ####
+        res = self.dialog.test('myself', stmt)
+        ###
+        expected_result = ['Banana rdfs:subClassOf Fruit']
+        self.assertTrue(self.check_results(res, expected_result))
+        
+    def test_sentence5(self):
+        
+        print("\n##################### test_sentence5 - THIS ########################\n")
+        ####
+        stmt = "This is my banana"
+        ####
+        res = self.dialog.test('myself', stmt)
+        ###
+        expected_result = ['y_banana belongsTo myself']
+        self.assertTrue(self.check_results(res, expected_result))
+        
+        stmt = "This is a green banana" ## ERROR -> y_banana can not be green
+        ####
+        res = self.dialog.test('myself', stmt)
+        ###
+        self.assertFalse(oro.safeAdd(res))
+        
+        stmt = "This is a fruit" ## ERROR -> y_banana can not be green
+        ####
+        res = self.dialog.test('myself', stmt)
+        ###
+        expected_result = ['y_banana rdf:type Fruit']
+        self.assertTrue(self.check_results(res, expected_result))
+        
 
     def tearDown(self):
         self.dialog.stop()
@@ -584,6 +627,16 @@ class TestDiscriminateDialog(unittest.TestCase):
         print res
         self.assertTrue(self.check_results(res, expected_result))
 
+    def test_discriminate9(self):
+        print("\n##################### Class grounding ########################\n")
+        ####
+        stmt = "a fruit is a plant"
+        answer = "a kind of thing"
+        ####
+        expected_result = [ 'Plant rdfs:subClassOf Thing', 'Fruit rdfs:subClassOf Plant' ]
+        ###
+        res = self.dialog.test('myself', stmt)
+        self.assertTrue(self.check_results(res, expected_result))
 
     def tearDown(self):
         self.dialog.stop()
@@ -602,6 +655,7 @@ if __name__ == '__main__':
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence2'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence3'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence4'))
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence5'))
     
     suiteVerbalization = unittest.TestSuite()
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize1'))
@@ -612,15 +666,16 @@ if __name__ == '__main__':
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize10'))
     
     suiteDiscriminate = unittest.TestSuite()
-#    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate1'))
-#    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate2'))
+    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate1'))
+    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate2'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate3'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate4'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate5'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate6'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate7'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate8'))
+    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate9'))
     
-    #unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
+    unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
     #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
-    unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
+    #unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
