@@ -35,7 +35,6 @@ class StatementBuilder:
 		self._current_speaker = current_speaker
 	
 	def process_sentence(self, sentence):
-		
 		if not sentence.resolved():
 			raise DialogError("Trying to process an unresolved sentence!")
 		
@@ -141,8 +140,10 @@ class NominalGroupStatementBuilder:
 			if ng.relative:
 				self.process_relative(ng, ng_id)
 				
-		if ng.adjectives_only():
+		elif ng.adjectives_only():
 			self.process_adjectives(ng, ng_id)
+		else:
+			pass
 
 	def process_determiners(self, nominal_group, ng_id):
 		for det in nominal_group.det:
@@ -180,25 +181,21 @@ class NominalGroupStatementBuilder:
 			
 			if onto_id and [noun,"INSTANCE"] in onto_id:
 				pass
-				"""
-				self._statements.append(ng_id + " owl:sameAs " + noun)
-				"""				
-			# Case : common noun
-			elif nominal_group.det:
+			
+			# Case : Personal pronoun
+			if not nominal_group.det and noun in ["I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "their"]:
+				pass
+			
+			#Case : proper noun (Always Capitalized in sentence, and never follows a determiner) 
+			elif not nominal_group.det and noun.istitle():
+				self._statements.append(ng_id + " rdfs:label \"" + noun + "\"")
+			
+			# Case : common noun	
+			else:			
 				# get the exact class name (capitalized letters where needed)
 				class_name = get_class_name(noun, onto_id)
 				self._statements.append(ng_id + " rdf:type " + class_name)			
-				
-			#Case : proper noun or personal pronoun
-			else:
-				#TODO: the list ["I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "their"] needs to be inserted in ResourcePool
-				"""
-				if not noun in ResourcePool().personal_determiner
-				"""
-				if not noun in ["I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "their"]:
-					self._statements.append(ng_id + " rdfs:label \"" + noun + "\"")
-				
-					
+			
 	
 	def process_adjectives(self, nominal_group, ng_id):
 		"""For any adjectives, we add it in the ontology with the objectProperty 
@@ -524,7 +521,7 @@ def dump_resolved(sentence, current_speaker, current_listener):
 	def resolve_ng(ngs, builder):		
 		for ng in ngs:
 			#Statement for resolution
-			logging.info("Statements set as sended to Resolution for discrmination for this nominal group...")
+			logging.info("Statements sended to Resolution for discrmination for this nominal group...")
 			print(ng)
 			builder.process_nominal_group(ng, '?concept')
 			stmts = builder.get_statements()
