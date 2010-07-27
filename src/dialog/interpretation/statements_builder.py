@@ -183,7 +183,7 @@ class NominalGroupStatementBuilder:
 				pass
 			
 			# Case : Personal pronoun
-			if not nominal_group.det and noun in ["I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "their"]:
+			elif not nominal_group.det and noun in ["I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "their"]:
 				pass
 			
 			#Case : proper noun (Always Capitalized in sentence, and never follows a determiner) 
