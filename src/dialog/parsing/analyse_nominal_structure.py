@@ -95,7 +95,7 @@ def recover_ns(phrase, analysis, position):
         phrase=analyse_nominal_group.take_off_nom_gr(phrase, sbj, phrase.index(sbj[0]))
         
         #If there is 'and', we need to duplicate the information
-        if len(phrase)>position and (phrase[position]=='and' or phrase[position]=='or'):
+        if len(phrase)>position and (phrase[position]=='and' or phrase[position]=='or' or phrase[position]==':but'):
             
             #Reperform the 'and' or 'or' processing
             sbj=analyse_nominal_group.find_sn_pos(phrase[1:], position)
@@ -103,6 +103,8 @@ def recover_ns(phrase, analysis, position):
             #We process the 'or' like the 'and' and remove it
             if phrase[position]=='or':
                 conjunction='OR'
+            elif phrase[position]==':but':
+                conjunction='BUT'
             else:
                 conjunction='AND'
             phrase=phrase[1:]

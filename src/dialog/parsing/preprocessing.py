@@ -21,7 +21,7 @@
     possesion_form : to exchange the "'s" to 'of' by using 2 latest functions    
     other_processing : to perform other processing                                 
     move_prep : to put the preposition before the nominal group
-    or_processing : to create a nominal group before and after the 'or'
+    conjunction_processing : to create a nominal group before and after the 'or'
     reorganize_adj : to delete ',' and 'and' if it is between adjectives*
     subsentence_comma : to delete ',' or changed on ';'
     take_off_comma : to delete ';' if it is before relative or subsentence
@@ -478,17 +478,17 @@ def move_prep(sentence):
 
                 
 
-def or_processing(sentence):
+def conjunction_processing(sentence, cjt):
     """ 
     This function creates a nominal group before and after the 'or'                  
-    Input=sentence                              Output=sentence                      
+    Input=sentence and the conjunction                     Output=sentence                      
     """ 
     #init
     i=0
     
     while i < len(sentence):
         
-        if sentence[i]=='or':
+        if sentence[i]==cjt:
             #We have to find the first and the second nominal group in the sentence
             position=i
             fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
@@ -501,21 +501,21 @@ def or_processing(sentence):
             #We will find the second nominal group
             scd_nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
             
-            if fst_nom_gr[len(fst_nom_gr)-1]=='or' and scd_nom_gr==[]:
+            if fst_nom_gr[len(fst_nom_gr)-1]==cjt and scd_nom_gr==[]:
                 #We have to know the second nominal group
                 sentence=sentence[:i+1]+[fst_nom_gr[0]]+sentence[i+1:]
                 scd_nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
                 
                 #We insert word to have 2 nominal groups in the sentence
-                sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+['or']+sentence[i+1:]
+                sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+[cjt]+sentence[i+1:]
             
-            elif fst_nom_gr[len(fst_nom_gr)-1]=='or':
+            elif fst_nom_gr[len(fst_nom_gr)-1]==cjt:
                 #We insert word to have 1 nominal group in the sentence
                 sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+sentence[i:]
     
         i=i+1
-    
     return sentence
+
 
 
 def reorganize_adj(sentence):
@@ -669,7 +669,8 @@ def processing(sentence):
     sentence = possesion_form(sentence)
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
-    sentence = or_processing(sentence)
+    sentence = conjunction_processing(sentence,'or')
+    sentence = conjunction_processing(sentence,':but')
     sentence = subsentence_comma(sentence)
     sentence = remerge_sentences(sentence)
     sentence = take_off_comma(sentence) 

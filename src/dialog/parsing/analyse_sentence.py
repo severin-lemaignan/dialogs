@@ -405,6 +405,13 @@ def y_n_ques(type, request, sentence):
             pos=analyse_nominal_group.adjective_pos(sentence,0)
             vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
             sentence=sentence[pos-1:]
+            while sentence[0]=='or':
+                conjunction='OR'
+                sentence=sentence[1:]
+                pos=analyse_nominal_group.adjective_pos(sentence,0)
+                vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
+                sentence=sentence[pos-1:]
         
         #Here we have special processing for different cases
         if sentence!=[]:
@@ -531,6 +538,13 @@ def other_sentence(type, request, sentence):
             pos=analyse_nominal_group.adjective_pos(sentence,0)
             vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
             sentence=sentence[pos-1:]
+            while sentence[0]=='or':
+                conjunction='OR'
+                sentence=sentence[1:]
+                pos=analyse_nominal_group.adjective_pos(sentence,0)
+                vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
+                sentence=sentence[pos-1:]
             
         #We perform the processing with the modal
         if modal!=[]:

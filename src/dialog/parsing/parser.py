@@ -1832,7 +1832,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.8 ##############################')
 
-    utterance="The bottle is not blue but it is red."
+    utterance="The bottle is not blue but it is red. It is not the glass :but the bottle. it is blue or red"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1841,6 +1841,28 @@ def unit_tests():
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'negative',[Sentence('subsentence', 'but', 
+                    [Nominal_Group([],['it'],[],[],[])], 
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [Nominal_Group([],[],['red'],[],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'negative',[Sentence('subsentence', 'but', 
+                    [Nominal_Group([],['it'],[],[],[])], 
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [Nominal_Group([],[],['red'],[],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])]),
+        Sentence('statement', '', 
             [Nominal_Group(['the'],['bottle'],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],[],['blue'],[],[])], 

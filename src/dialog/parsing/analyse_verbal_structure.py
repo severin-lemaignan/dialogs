@@ -161,13 +161,15 @@ def recover_obj_iobj(phrase, vg):
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
                 
                 #If there is 'and', we need to duplicate the information
-                if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or'):
+                if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or' or phrase[0]==':but'):
                     
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
                     
                     #We process the 'or' like the 'and' and remove it
                     if phrase[0]=='or':
                         conjunction='OR'
+                    elif phrase[0]==':but':
+                        conjunction='BUT'
                     else:
                         conjunction='AND'
                     phrase=phrase[1:]
@@ -202,13 +204,15 @@ def recover_obj_iobj(phrase, vg):
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
                     
-                if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or'):
+                if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or' or phrase[0]==':but'):
                     
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
                     
                     #We process the 'or' like the 'and' and remove it
                     if phrase[0]=='or':
                         conjunction='OR'
+                    elif phrase[0]==':but':
+                        conjunction='BUT'
                     else:
                         conjunction='AND'
                     phrase=phrase[1:]
