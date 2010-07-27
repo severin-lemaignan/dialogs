@@ -51,20 +51,20 @@ def dispatching(sentence):
     Their functionality and their type                                               
     Input=sentence, beginning sentence list          Output=class Sentence           
     """
-
+    
     if len(sentence)>0:
-
+        
         #When others
         for x in frt_wd:
             #If we find a knowing case
             if sentence[0]==x[0]:
 
                 #For
-                if x[1] == '0':
+                if x[1] == '1':
                     return Sentence('start', '', [], [])
 
                 #It's a w_question
-                if x[1] == '1':
+                if x[1] == '2':
 
                     #For 'when'
                     if x[2]=='1':
@@ -122,23 +122,23 @@ def dispatching(sentence):
                         return w_quest_whom('w_question', 'people', sentence[1:])
 
                 #It's a y_n_question
-                elif x[1] == '2':
+                elif x[1] == '3':
                     return y_n_ques('yes_no_question', '', sentence)
 
                 #It's a conditional sentence
-                elif x[1]=='3':
+                elif x[1]=='4':
                     return condi_sentence(sentence)
 
                 #Agree
-                elif x[1]=='4':
+                elif x[1]=='5':
                     return Sentence('agree', '', [], [])
 
                 #Disagree
-                elif x[1]=='5':
+                elif x[1]=='6':
                     return Sentence('disagree', '', [], [])
 
                 #It's a y_n_question
-                elif x[1]=='6':
+                elif x[1]=='7':
                     return Sentence('gratulation', '', [], [])
                 
         #For exclamatively
@@ -162,13 +162,18 @@ def exclama_sentence(sentence):
     Input=the sentence                                   Output=class Sentence   
     """
     
+    #init
+    analysis=Sentence('interjection', '', [], [])
+    
     for i in frt_wd:
         if i[0]==sentence[0]:
-            return other_sentence('interjection', '', sentence[1:])
+            #We recover the subject
+            sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 1)
+            return analysis
         elif i[1]>0:
-            break
-    
-    return other_sentence('interjection', '', sentence)
+            #We recover the subject
+            sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
+            return analysis
      
 
 
@@ -234,7 +239,7 @@ def w_quest_quant(type, request, sentence):
 
     for j in frt_wd :
         if sentence[2]==j[0]:
-            if j[1]=='2':
+            if j[1]=='3':
                 #This case is the same with y_n_question
                 return y_n_ques(type, request,sentence[2:])
 
@@ -258,7 +263,7 @@ def w_quest_how(type, sentence):
     Input=type of sentence, the sentence      Output=class Sentence                  
     """
     
-    aux_list = recover_aux_list()
+    aux_list = other_functions.recover_aux_list()
     for l in aux_list:    
         if sentence[1]==l:
             analysis=y_n_ques(type, 'manner', sentence[1:])

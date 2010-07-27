@@ -22,6 +22,7 @@ import preprocessing
 import analyse_sentence
 
 
+
 class Parser:
     def __init__(self):
         pass
@@ -1745,6 +1746,83 @@ def unit_tests():
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
+    
+    """
+    ## Aim of this test : Using different cases of what questions and disagree
+    """
+    print ''
+    print ('######################## test 5.6 ##############################')
+
+    utterance="He Patrick, the bottle is on the table. give it to me"
+    print 'The object of our test is this utterance : '
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('interjection', '', 
+            [Nominal_Group([],['Patrick'],[],[],[])],  
+            []),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [Nominal_Group([],['Patrick'],[],[],[])],  
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Indirect_Complement(['to'],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
+    
+    
+    """
+    ## Aim of this test : Using different cases of what questions and disagree
+    """
+    print ''
+    print ('######################## test 5.7 ##############################')
+
+    utterance="Jido, give me the bottle. Jido, Patrick and you will go to the cinema. Jido, Patrick and you, give me the bottle"
+    print 'The object of our test is this utterance : '
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('interjection', '', 
+            [Nominal_Group([],['Jido'],[],[],[])],  
+            []),
+        Sentence('imperative', '', 
+            [Nominal_Group([],['Jido'],[],[],[])],  
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['Patrick'],[],[],[]),Nominal_Group([],['you'],[],[],[])],  
+            [Verbal_Group(['go'], [],'future simple', 
+                [], 
+                [Indirect_Complement(['to'],[Nominal_Group(['the'],['cinema'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('interjection', '', 
+            [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['Patrick'],[],[],[]),Nominal_Group([],['you'],[],[],[])],  
+            []),
+        Sentence('imperative', '', 
+            [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['Patrick'],[],[],[]),Nominal_Group([],['you'],[],[],[])],  
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
     
     
     

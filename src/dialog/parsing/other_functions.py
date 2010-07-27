@@ -10,6 +10,7 @@
     recover_end_pos_sub : to find the end position of the subsentence             
     number : to return 1 if the word is a number
 """
+from resources_manager import ResourcePool
 
 
 """

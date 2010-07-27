@@ -24,6 +24,7 @@
     or_processing : to create a nominal group before and after the 'or'
     reorganize_adj : to delete ',' and 'and' if it is between adjectives*
     subsentence_comma : to delete ',' or changed on ';'
+    take_off_comma : to delete ';' if it is before relative or subsentence
     delete_empty : to delete '' from sentence
     remerge_sentences : to transform some sentences of the remerge part
     interjection : to find and create interjections
@@ -301,11 +302,12 @@ def and_nom_group(sentence):
                 if nom_gr!=[] and begin_pos+len(nom_gr)==i:
                     flag=flag-1
                     list_nom_gr=nom_gr+list_nom_gr
-                    
+                   
             #We have an and_nom_group case 
             if flag==0:
                 sentence=sentence[:begin_pos]+list_nom_gr+sentence[end_pos:]
-        
+                i=end_pos
+    
         i=i+1
     
     return sentence
@@ -543,7 +545,6 @@ def subsentence_comma(sentence):
     
     #init
     i=0
-    
     while i < len(sentence):
         if sentence[i]==',':
             sentence[i]=';'
@@ -551,16 +552,29 @@ def subsentence_comma(sentence):
                 sentence=sentence[:i]
             elif sentence[i+1]=='?' or sentence[i+1]=='!' or sentence[i+1]=='.':
                 sentence=sentence[:i]+sentence[i+1:]
-            else:
-                for j in rel_list+sub_list:
-                    if  j==sentence[i+1]:
-                        sentence=sentence[:i]+sentence[i+1:]
-                        break
         i=i+1
     return sentence
     
     
+def take_off_comma(sentence):
+    """ 
+    This function delete ';' if it is before relative or subsentence                  
+    Input=sentence                              Output=sentence                      
+    """ 
     
+    #init
+    i=0
+    while i < len(sentence):
+        if sentence[i]==';':
+            for j in rel_list+sub_list:
+                if  j==sentence[i+1]:
+                    sentence=sentence[:i]+sentence[i+1:]
+                    break
+        i=i+1
+    return sentence
+          
+    
+                        
 def delete_empty(sentence):
     """ 
     This function delete '' from sentence                  
@@ -603,13 +617,13 @@ def interjection(sentence):
     This function finds and creates interjections                 
     Input=sentence                     Output=list of sentence                      
     """ 
-    
+   
     #init
     i=pos=0
     
     #We will find the position of the first ','
     while i < len(sentence) and pos==0:
-        if sentence[i]==',':
+        if sentence[i]==';':
             pos=i
         i=i+1
     
@@ -621,18 +635,19 @@ def interjection(sentence):
             for x in rel_list+sub_list:
                 if k==x:
                     return [sentence]
-                
+          
         #If we have an interjection we replace ',' by '!'
         for m in  frt_wd:
             #We identify the interjection with the beginning of the sentence
-            if sentence[0]==m[0] and m[1]==0:
+            if sentence[0]==m[0] and m[1]=='0':
                 sentence[pos]='!'
-                return [sentence[:pos-1], sentence[pos-1:]]
+                return [sentence[:pos+1], sentence[pos+1:]]
+        
         #We have to know if there is just a nominal group before
         nom_gr=determination_nom_gr(sentence, 0,'and')
         if nom_gr==sentence[:pos]:
             sentence[pos]='!'
-            return [sentence[:pos-1], sentence[pos-1:]]
+            return [sentence[:pos+1], sentence[pos+1:]]
         
     return [sentence]
    
@@ -643,9 +658,6 @@ def processing(sentence):
     This function is used by process_sentence                  
     Input=sentence                              Output=sentence                      
     """ 
-    
-    #init 
-    sentences=[]
     
     sentence = expand_contractions(sentence)
     sentence = delete_empty(sentence)
@@ -658,12 +670,11 @@ def processing(sentence):
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
     sentence = or_processing(sentence)
-    our_list = interjection(sentence)
-    for i in our_list:    
-        sentence = subsentence_comma(i)
-        sentence = remerge_sentences(i)  
-        sentences = sentences + [sentence]    
-    return sentences
+    sentence = subsentence_comma(sentence)
+    sentence = remerge_sentences(sentence)
+    sentence = take_off_comma(sentence) 
+    sentence = interjection(sentence)
+    return sentence
 
 
 
@@ -685,13 +696,13 @@ def process_sentence(utterance):
         if j=='.' or j=='?' or j=='!':
             sentence = sentence+[j]
             sentence = processing(sentence)
-            sentence_list=sentence_list+[sentence]
+            sentence_list=sentence_list+sentence
             sentence=[]
 
         elif j.endswith('.') or j.endswith('?') or j.endswith('!'):
             sentence = sentence+[j[:len(j)-1]] + [j[len(j)-1]]
             sentence = processing(sentence)
-            sentence_list=sentence_list+[sentence]
+            sentence_list=sentence_list+sentence
             sentence=[]
 
         else:
