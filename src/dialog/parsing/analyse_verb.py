@@ -20,6 +20,12 @@ from resources_manager import ResourcePool
 
 
 """
+Statement of lists
+"""
+adj_ed_list=['red']
+
+
+"""
 We have to read all past irregular verb forms       
 """
 past_irreg_vrb = ResourcePool().irregular_verbs_past
@@ -80,6 +86,10 @@ def find_tense_statement (phrase, adverb):
             return 'present progressive'
         #Passive form in the present
         elif find_tense_statement(['have']+phrase[1:], adverb)=='present perfect':
+            #If there is an adjective and not a verb
+            for x in adj_ed_list:
+                if x==phrase[len(adverb)+1]:
+                    return  'present simple'
             return 'present passive'
     
     #processing for the progressive form and passive form (in past)
@@ -88,6 +98,10 @@ def find_tense_statement (phrase, adverb):
         if len(phrase)!=1 and phrase[1+len(adverb)].endswith('ing'):
             return 'past progressive'
         elif find_tense_statement(['have']+phrase[1:], adverb)=='present perfect':
+            #If there is an adjective and not a verb
+            for x in adj_ed_list:
+                if x==phrase[len(adverb)+1]:
+                    return  'past simple'
             return 'past passive'
         
     #For using modal
@@ -178,6 +192,10 @@ def find_tense_question (phrase, aux, adverb):
         if phrase[len(adverb)].endswith('ing'):
             return 'present progressive'
         elif phrase[len(adverb)].endswith('ed'):
+            #If there is an adjective and not a verb
+            for x in adj_ed_list:
+                if x==phrase[len(adverb)+1]:
+                    return  'present simple'
             return 'present passive'
         for i in past_irreg_vrb:
             if phrase[len(adverb)]==i[2]:
@@ -190,6 +208,10 @@ def find_tense_question (phrase, aux, adverb):
         if phrase[len(adverb)].endswith('ing'):
             return 'past progressive'
         elif phrase[len(adverb)].endswith('ed'):
+            #If there is an adjective and not a verb
+            for x in adj_ed_list:
+                if x==phrase[len(adverb)+1]:
+                    return  'past simple'
             return 'past passive'
         for i in past_irreg_vrb:
             if phrase[len(adverb)]==i[2]:
