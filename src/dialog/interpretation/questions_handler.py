@@ -24,7 +24,7 @@ class QuestionHandler:
 		#		and takes a list of returned values from the ontology when processing a w_question 
 		self._answer = False
 	
-	
+		
 	def clear_statements(self):
 		self._statements = []
 	
@@ -48,6 +48,9 @@ class QuestionHandler:
 			
 		#Case the question is a w_question : find the concept the concept that answers the question
 		if sentence.data_type == 'w_question':
+			
+			#
+			
 			self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
 			self._statements = self._extend_statement_from_sentence_aim(self._statements)
 			
@@ -91,20 +94,57 @@ class QuestionHandler:
 		for s in current_statements:
 			if '?concept' in s.split():
 				return current_statements
-		#case: the statement is partially build from; statement builder
+		#case: the statement is partially build from statement builder
+		
 		stmts = []
+		query_on_field = None
+					
 		for sn in self._sentence.sn:
-			for sv in self._sentence.sv:	
+			for sv in self._sentence.sv:
+				if not sv.i_cmpl:
+					query_on_field = 'query_on_indirect_object'
+				if not sv.d_obj:					
+					query_on_field = 'query_on_direct_object'
+					
 				for verb in sv.vrb_main:
-					role = self.get_role_from_sentence_aim(verb)
+					role = self.get_role_from_sentence_aim(query_on_field, verb)
 					if verb.lower() == 'be':
 						stmts.append(sn.id + ' '+ role + ' ?concept')
 					else:
 						stmts.append('?event ' + role + ' ?concept')
+		
+		"""
+		query_on_field = None
+		if not sentence.sn:
+			query_on_field = 'query_on_subject'
+			for sv in self._sentence.sv:	
+				for verb in sv.vrb_main:
+					role = self.get_role_from_sentence_aim(query_on_field, verb)
+					if verb.lower() == 'be':
+						stmts.append(sn.id + ' '+ role + ' ?concept')
+					else:
+						stmts.append('?event ' + role + ' ?concept')
+		
+		else:		
+			for sn in self._sentence.sn:
+				for sv in self._sentence.sv:	
+					for verb in sv.vrb_main:
+						
+						if not sv.d_ob:
+							query_on_field = 'query_on_subject'
+						else:
+							query_on_field = 'query_on_indirect_object'
+						
+						role = self.get_role_from_sentence_aim(query_on_field, verb)
+						if verb.lower() == 'be':
+							stmts.append(sn.id + ' '+ role + ' ?concept')
+						else:
+							stmts.append('?event ' + role + ' ?concept')
+		"""
 		return current_statements + stmts
 	
 	
-	def get_role_from_sentence_aim(self, verb):
+	def get_role_from_sentence_aim(self, query_on_field, verb):
 		"""
 		Info:
 			(A): A is optional
@@ -152,89 +192,88 @@ class QuestionHandler:
 				e.g: who does the man give a cube
 				append in statement [* receivedBy ?concept] 		
 		"""
-		
-		
-		
-		#TODO:See how to use resourcePool in order to perform the line below
-		#has_goal = get_all_verb_from_resource_pool_where(object_property = 'hasGoal')
-		has_goal = ['go','put']#TODO: Replace this line by the above one, when complete
-		
-		#TODO:See how to use resourcePool in order to perform the line below
-		#acts_on_object = get_all_verb_from_resource_pool_where(object_property = 'acts_on_object')
-		acts_on_object = ['put', 'give', 'show']#TODO: Replace this line by the above one, when complete
-		
 		#TODO in resource pool: Create dictionary files
+		dic_on_indirect_obj = {'be':None,
+							'put':'hasGoal',
+							'give':'hasGoal',
+							'show':'hasGoal', 
+							None:'receivedBy'}
+							
+		dic_on_direct_obj = {'be':None,
+							'put':'actsOnObject',
+							'give':'actsOnObject',
+							'show':'actsOnObject', 
+							None:'involves'}
+	
 		#Dictionary for sentence.aim = 'place' 
-		dic_place={'be':'isAt',  
-				   None:'receivedBy',
-				   'has_goal':'hasGoal'}
+		dic_place={None:dic_on_indirect_obj}
+		dic_place[None]['be'] = 'isAt'
+						
 		#Dictionary for sentence.aim = 'thing' 
-		dic_thing={	'be':'owl:sameAs',
-					None:'involves',
-				   'acts_on_object':'actsOnObject'}
-				   
-		dic_thing={'query_on_subject':{None:'performedBy'}
-										  
-					'query_on_direct_object': {'be':'rdfs:label',
-												 'put':'actsOnObject',
-												 'give':'actsOnObject',
-												 'show':'actsOnObject',
-												 None:'involves'}
-												 
-					'query_on_indirect_object':{'go':'hasGoal',
-												  'put':'hasGoal',
-												  None:'receivedBy'}					
-					}
-					
-					
-		#Dictionary for sentence.aim = 'aim' 
+		dic_thing={None:dic_on_direct_obj}					
+		dic_thing[None]['be'] = 'owl:sameAs'
+				
+		#Dictionary for sentence.aim = 'manner' 
 		dic_manner={'be':'?sub_feature'}
 		
 		#Dictionary for sentence.aim = 'people'
-		dic_people={'query_on_subject':{None:'performedBy'}
-										  
-					'query_on_direct_object': {  'be':'rdfs:label',
-												 'put':'actsOnObject',
-												 'give':'actsOnObject',
-												 'show':'actsOnObject',
-												 None:'involves'}
-												 
-					'query_on_indirect_object':{  'go':'hasGoal',
-												  'put':'hasGoal',
-												  None:'receivedBy'}					
-					}
-		#TODO:With dictionary from resource pool
-		#dic_aim = resourcePool.Dictionary(dic_aim)
+		dic_people={'query_on_direct_object':dic_on_direct_obj,												 											 
+					'query_on_indirect_object':dic_on_indirect_obj}
+		dic_people['query_on_direct_object']['be'] = 'rdfs:label'										  
+		
 		#Dictionary for all
+		#dic_aim = resourcePool.Dictionary(dic_aim)
 		dic_aim = {
 				   #What-question
 				   'thing':dic_thing,
-				   'color':	{'be':'hasColor'},
-				   'size':	{'be':'hasSize'},
+				   'color':	{None:{'be':'hasColor'}},
+				   'size':{None:{'be':'hasSize'}},
 				   
 				   #Who-question
-				   'people':
+				   'people':dic_people,
 				   
 				   #Where-question
 				   'place':dic_place,
 				   
 				   #How-Question
-				   'manner':dic_manner,
-				   
+				   'manner':dic_manner				   
 				   }
 		
-		if verb in has_goal:
-			role = dic_aim[self._sentence.aim]['has_goal']
-			
-		elif verb in acts_on_object:
-			role = dic_aim[self._sentence.aim]['acts_on_object']
-			
-		elif verb.lower() == 'be':
-			role = dic_aim[self._sentence.aim][verb.lower()]
-		else:
-			role = dic_aim[self._sentence.aim][None]
-			
 		
+		try:
+			if verb.lower() in dic_aim[self._sentence.aim][query_on_field]:
+				role = dic_aim[self._sentence.aim][query_on_field][verb.lower()]
+			else:
+				role = dic_aim[self._sentence.aim][query_on_field][None]
+		except KeyError:
+			if verb.lower() in dic_aim[self._sentence.aim][None]:
+				role = dic_aim[self._sentence.aim][None][verb.lower()]
+			else:
+				role = dic_aim[self._sentence.aim][None][None]
+		
+		"""
+		if query_on_field and verb:
+			role = dic_aim[self._sentence.aim][query_on_field][verb.lower()]
+		elif verb:
+			role = dic_aim[self._sentence.aim][None][verb.lower()]
+		elif query_on_field:
+			role = dic_aim[self._sentence.aim][query_on_field][None]
+		else:
+			role = dic_aim[self._sentence.aim][query_on_field][None]
+		
+		try:
+			if query_on_field and verb:
+				role = dic_aim[self._sentence.aim][query_on_field][verb.lower()]
+			elif verb:
+				role = dic_aim[self._sentence.aim][None][verb.lower()]
+			elif query_on_field:
+				role = dic_aim[self._sentence.aim][query_on_field][None]
+			else:
+				role = dic_aim[self._sentence.aim][query_on_field][None]
+		except KeyError:
+			logging.debug("ooops !!! Dictionary Keys not found!")
+			pass
+		"""
 		return role
 	
 	
@@ -322,14 +361,14 @@ class TestQuestionHandler(unittest.TestCase):
 					 
 					 'id_danny rdfs:label "Danny"',
 					 
-					 'give_another_cube rdf:type Give'
+					 'give_another_cube rdf:type Give',
 					 'give_another_cube performedBy SPEAKER',
 					 'give_another_cube receivedBy id_danny',
 					 'give_another_cube actsOnObject another_cube',
 					 
 					 'see_some_one rdf:Type See',
 					 'see_some_one performedBy id_danny',
-					 'see_some_one involves SPEAKER',
+					 'see_some_one actsOnObject SPEAKER',
 					 ])
 		except AttributeError: #the ontology server is not started of doesn't know the method
 				pass
