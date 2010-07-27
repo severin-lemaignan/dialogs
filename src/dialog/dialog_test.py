@@ -254,7 +254,24 @@ class TestVerbalizeDialog(unittest.TestCase):
         print '<< output:', res
         self.assertEquals(stmt, res)
 
+        print "\n####\n"
         
+        stmt = "Get the box which is on the table."
+        sentence = myP.parse(stmt)
+        res = self.dialog._verbalizer.verbalize(sentence)
+        print '>> input: ', stmt
+        print '<< output:', res
+        self.assertEquals(stmt, res)
+        
+        print "\n####\n"
+
+        stmt = "Get the box which is in the trashbin."
+        sentence = myP.parse(stmt)
+        res = self.dialog._verbalizer.verbalize(sentence)
+        print '>> input: ', stmt
+        print '<< output:', res
+        self.assertEquals(stmt, res)
+
     def test_verbalize4(self):
         
         print("\n##################### test_verbalize4: W questions ########################\n")
@@ -641,6 +658,75 @@ class TestDiscriminateDialog(unittest.TestCase):
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
+
+
+class TestISUDialog(unittest.TestCase):
+    """Tests the differents features of the Dialog module.
+    This must be tested with oro-server using the testsuite.oro.owl ontology.
+    """
+
+    def check_results(self, res, expected):
+        def check_triplets(tr , te):
+            tr_split = tr.split()
+            te_split = te.split()
+            
+            return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
+                    (tr_split[1] == te_split[1]) and\
+                    (tr_split[2] == te_split[2] or te_split[2] == '*')       
+        while res:
+            r = res.pop()
+            for e in expected:
+                if check_triplets(r, e):
+                    expected.remove(e)
+        return expected == res
+    
+    
+    def setUp(self):
+        self.dialog = Dialog()
+        self.dialog.start()
+        
+        self.oro = ResourcePool().ontology_server
+        
+        try:
+            
+            self.oro.add(['ACHILE_HUMAN1 rdf:type Human', 'HRP2TABLE rdf:type Table',
+                        'BLUE_TRASHBIN rdf:type Trashbin',
+                        'PINK_TRASHBIN rdf:type Trashbin',
+                        'BLACK_TAPE rdf:type VideoTape', 'BLACK_TAPE isIn BLUE_TRASHBIN',
+                        'GREY_TAPE rdf:type VideoTape', 'GREY_TAPE isOn HRP2TABLE'])
+                        
+            self.oro.addForAgent('ACHILE_HUMAN1',
+                        ['BLUE_TRASHBIN rdf:type Trashbin',
+                        'PINK_TRASHBIN rdf:type Trashbin',
+                        'BLACK_TAPE rdf:type VideoTape', 'BLACK_TAPE isIn PINK_TRASHBIN',
+                        'GREY_TAPE rdf:type VideoTape', 'GREY_TAPE isOn HRP2TABLE'])
+                        
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
+
+    def test_ISU1(self):
+        """"""
+        
+        print("\n##################### test_discriminate1 ########################\n")
+        ####
+        stmt = "give me the videotape which is in the PINK_TRASHBIN."
+        answer = None
+        ####
+        res = self.dialog.test('ACHILE_HUMAN1', stmt, answer)
+         
+        expected_result = ['* rdf:type Give',
+                            '* performedBy myself',
+                            'ACHILE_HUMAN1 desires *',
+                            '* actsOnObject BLACK_TAPE'
+                            '* receivedBy ACHILE_HUMAN1']
+
+        self.assertTrue(self.check_results(res, expected_result))
+    
+
+    def tearDown(self):
+        self.dialog.stop()
+        self.dialog.join()
+
         
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
@@ -676,6 +762,11 @@ if __name__ == '__main__':
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate8'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate9'))
     
-    unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
+    suiteISU = unittest.TestSuite()
+    suiteISU.addTest(TestISUDialog('test_ISU1'))
+
+    #unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
     #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
     #unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
+    unittest.TextTestRunner(verbosity=2).run(suiteISU)
+
