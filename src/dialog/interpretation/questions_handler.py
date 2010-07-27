@@ -49,8 +49,7 @@ class QuestionHandler:
 		#Case the question is a w_question : find the concept the concept that answers the question
 		if sentence.data_type == 'w_question':
 			
-			#
-			
+			#			
 			self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
 			self._statements = self._extend_statement_from_sentence_aim(self._statements)
 			
@@ -69,7 +68,7 @@ class QuestionHandler:
 	def _set_situation_id(self, statements):
 		stmts = []
 		try:
-			
+
 			sit_id = []
 			
 			try:
@@ -102,9 +101,9 @@ class QuestionHandler:
 		for sn in self._sentence.sn:
 			for sv in self._sentence.sv:
 				if not sv.i_cmpl:
-					query_on_field = 'query_on_indirect_object'
+					query_on_field = 'QUERY_ON_INDIRECT_OBJ'
 				if not sv.d_obj:					
-					query_on_field = 'query_on_direct_object'
+					query_on_field = 'QUERY_ON_DIRECT_OBJ'
 					
 				for verb in sv.vrb_main:
 					role = self.get_role_from_sentence_aim(query_on_field, verb)
@@ -113,34 +112,6 @@ class QuestionHandler:
 					else:
 						stmts.append('?event ' + role + ' ?concept')
 		
-		"""
-		query_on_field = None
-		if not sentence.sn:
-			query_on_field = 'query_on_subject'
-			for sv in self._sentence.sv:	
-				for verb in sv.vrb_main:
-					role = self.get_role_from_sentence_aim(query_on_field, verb)
-					if verb.lower() == 'be':
-						stmts.append(sn.id + ' '+ role + ' ?concept')
-					else:
-						stmts.append('?event ' + role + ' ?concept')
-		
-		else:		
-			for sn in self._sentence.sn:
-				for sv in self._sentence.sv:	
-					for verb in sv.vrb_main:
-						
-						if not sv.d_ob:
-							query_on_field = 'query_on_subject'
-						else:
-							query_on_field = 'query_on_indirect_object'
-						
-						role = self.get_role_from_sentence_aim(query_on_field, verb)
-						if verb.lower() == 'be':
-							stmts.append(sn.id + ' '+ role + ' ?concept')
-						else:
-							stmts.append('?event ' + role + ' ?concept')
-		"""
 		return current_statements + stmts
 	
 	
@@ -206,20 +177,20 @@ class QuestionHandler:
 							None:'involves'}
 	
 		#Dictionary for sentence.aim = 'place' 
-		dic_place={None:dic_on_indirect_obj}
+		dic_place={None:dic_on_indirect_obj.copy()}
 		dic_place[None]['be'] = 'isAt'
 						
 		#Dictionary for sentence.aim = 'thing' 
-		dic_thing={None:dic_on_direct_obj}					
+		dic_thing={None:dic_on_direct_obj.copy()}					
 		dic_thing[None]['be'] = 'owl:sameAs'
 				
 		#Dictionary for sentence.aim = 'manner' 
 		dic_manner={'be':'?sub_feature'}
 		
 		#Dictionary for sentence.aim = 'people'
-		dic_people={'query_on_direct_object':dic_on_direct_obj,												 											 
-					'query_on_indirect_object':dic_on_indirect_obj}
-		dic_people['query_on_direct_object']['be'] = 'rdfs:label'										  
+		dic_people={'QUERY_ON_DIRECT_OBJ':dic_on_direct_obj.copy(),												 											 
+					'QUERY_ON_INDIRECT_OBJ':dic_on_indirect_obj.copy()}
+		dic_people['QUERY_ON_DIRECT_OBJ']['be'] = 'rdfs:label'
 		
 		#Dictionary for all
 		#dic_aim = resourcePool.Dictionary(dic_aim)
@@ -362,11 +333,11 @@ class TestQuestionHandler(unittest.TestCase):
 					 'id_danny rdfs:label "Danny"',
 					 
 					 'give_another_cube rdf:type Give',
-					 'give_another_cube performedBy SPEAKER',
-					 'give_another_cube receivedBy id_danny',
+					 'give_another_cube performedBy id_danny',
+					 'give_another_cube hasGoal SPEAKER',
 					 'give_another_cube actsOnObject another_cube',
 					 
-					 'see_some_one rdf:Type See',
+					 'see_some_one rdf:type See',
 					 'see_some_one performedBy id_danny',
 					 'see_some_one actsOnObject SPEAKER',
 					 ])
@@ -375,8 +346,8 @@ class TestQuestionHandler(unittest.TestCase):
 		
 		self.qhandler = QuestionHandler("SPEAKER")
 	
-	def test_1_w_question(self):
-		print "\n*************  test_1_w_question ******************"
+	def test_1_where_question(self):
+		print "\n*************  test_1_where_question ******************"
 		print "Where is the blue cube?"
 		sentence = Sentence("w_question", "place", 
 	                         [Nominal_Group(['the'],
@@ -397,8 +368,8 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = ['table1']
 		self.process(sentence , statement_query, expected_result)
 		
-	def test_2_w_question(self):
-		print "\n*************  test_2_w_question ******************"
+	def test_2_where_question(self):
+		print "\n*************  test_2_where_question ******************"
 		print "Where is the small cube?"
 		sentence = Sentence("w_question", "place", 
 	                         [Nominal_Group(['the'],
@@ -421,8 +392,8 @@ class TestQuestionHandler(unittest.TestCase):
 		self.process(sentence , statement_query, expected_result)
 	
 	
-	def test_3_w_question(self):
-		print "\n*************  test_3_w_question ******************"
+	def test_3_what_question(self):
+		print "\n*************  test_3_what_question ******************"
 		print "What do you see?"
 		sentence = Sentence("w_question", "thing", 
 	                         [Nominal_Group([],
@@ -448,8 +419,8 @@ class TestQuestionHandler(unittest.TestCase):
 		
 		self.process(sentence , statement_query, expected_result)
 	
-	def test_8_w_question(self):
-		print "\n*************  test_8_w_question ******************"
+	def test_8_what_question(self):
+		print "\n*************  test_8_what_question ******************"
 		print "what is blue?"
 		sentence = Sentence("w_question", "thing", 
 	                         [],                                         
@@ -472,8 +443,8 @@ class TestQuestionHandler(unittest.TestCase):
 	
 
 	
-	def test_9_w_question_this(self):
-		print "\n*************  test_9_w_question_this ******************"
+	def test_9_what_question_this(self):
+		print "\n*************  test_9_what_question_this ******************"
 		print "what is this?"
 		sentence = Sentence("w_question", "thing", 
 	                         [Nominal_Group(['this'],
@@ -494,7 +465,7 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = ['another_cube']		
 		self.process(sentence , statement_query, expected_result) 
 	
-	def test_10_w_question(self):
+	def test_10_what_question(self):
 		print "\n*************  test_10_w_question ******************"
 		print "what object is blue?"
 		sentence = Sentence("w_question", "object", 
@@ -516,7 +487,7 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = ['blue_cube']		
 		self.process(sentence , statement_query, expected_result)
 	
-	def test_11_w_question(self):
+	def test_11_what_question(self):
 		print "\n*************  test_11_w_question ******************"
 		print "what size is this?"
 		sentence = Sentence("w_question", "size", 
@@ -538,8 +509,8 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = ['small']		
 		self.process(sentence , statement_query, expected_result)
 	
-	def test_12_w_question(self):
-		print "\n*************  test_12_w_question ******************"
+	def test_12_what_question(self):
+		print "\n*************  test_12_what_question ******************"
 		print "what color is the blue_cube?"
 		sentence = Sentence("w_question", "color", 
 	                         [Nominal_Group(['the'],
@@ -579,7 +550,7 @@ class TestQuestionHandler(unittest.TestCase):
 	                                       'affirmative',
 	                                       [])])
 		statement_query = ['SPEAKER rdfs:label ?concept']
-		expected_result = ['"Patrick"']		
+		expected_result = ['Patrick']		
 		self.process(sentence , statement_query, expected_result)
 
 	def test_14_who_question(self):
@@ -606,7 +577,7 @@ class TestQuestionHandler(unittest.TestCase):
 						   
 		expected_result = ['id_danny']		
 		self.process(sentence , statement_query, expected_result)
-		
+	
 	def test_15_who_question(self):
 		print "\n*************  test_15_who_question ******************"
 		print "who does Danny give the small cube?"
@@ -631,9 +602,9 @@ class TestQuestionHandler(unittest.TestCase):
 	                                       [])])
 		statement_query = ['* performedBy id_danny',
 						   '* rdf:type Give',
-						   '* receivedBy ?concept'
-						   '* involves another_cube']
-						   
+						   '* hasGoal ?concept'
+						   '* actsOnObject another_cube']
+							
 		expected_result = ['SPEAKER']		
 		self.process(sentence , statement_query, expected_result)
 				
@@ -669,7 +640,7 @@ class TestQuestionHandler(unittest.TestCase):
 		
 	def test_5_y_n_question(self):
 		print "\n*************  test_5_y_n_question verb to be followed by complement******************"
-		print "Is the blue cube on the table?"
+		  "Is the blue cube on the table?"
 		sentence = Sentence("yes_no_question", "", 
 	                         [Nominal_Group(['the'],
 	                                        ['cube'],
@@ -748,10 +719,10 @@ class TestQuestionHandler(unittest.TestCase):
 	
 	
 	
-		
 	
-	def test_9_w_question(self):
-		print "\n*************  test_9_w_question ******************"
+	
+	def test_9_how_question(self):
+		print "\n*************  test_9_how_question ******************"
 		print "How is my car?"
 		sentence = Sentence("w_question", "manner", 
 	                         [Nominal_Group(['my'],
@@ -778,9 +749,13 @@ class TestQuestionHandler(unittest.TestCase):
 		res = self.qhandler.process_sentence(sentence)
 		logging.debug("Result: " + str(res))
 		
-		print "Query Statement:", str(self.qhandler._statements)
-		print "Expected Result:", expected_result
-		print "Result Found: ", str(self.qhandler._answer)
+		logging.info("Query Statement ...")
+		for s in self.qhandler._statements:
+			logging.info("\t>>" + s)
+		logging.info("--------------- >>\n")
+		
+		logging.info("Expected Result:" + str(expected_result))
+		logging.info("Result Found: " + str(self.qhandler._answer))
 		
 		self.qhandler.clear_statements()
 		self.assertEqual(res, expected_result)
