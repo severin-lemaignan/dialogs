@@ -31,12 +31,12 @@ Statement of lists
 """
 aux_list=['have', 'has', 'had', 'is', 'are', 'am', 'was', 'were', 'will']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
-proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind','behind+to','next+to','in+front+of','as']
+proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind','behind+to','next+to','in+front+of','as', 'into']
 rel_list=['which', 'who','that']
 sub_list=['while', 'but','where', 'when', 'if']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean']
-adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of']
+adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of', 'into']
 
 
 

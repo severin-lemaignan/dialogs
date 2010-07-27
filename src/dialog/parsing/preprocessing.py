@@ -47,7 +47,7 @@ prep_list=['ago']
 prep_concat_list=[['next','to'],['behind','to'],['in','front','of']]
 rel_list=['which', 'who','that']
 sub_list=['while', 'but','where', 'when']
-adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of']
+adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of', 'into']
 
 
 

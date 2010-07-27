@@ -20,8 +20,7 @@ from sentence import *
 import logging
 import preprocessing
 import analyse_sentence
-adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of']
-pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
+
 
 class Parser:
     def __init__(self):
