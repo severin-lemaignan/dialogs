@@ -47,7 +47,7 @@ insertion_tuples=[(";", ';', 1),(",", ',', 1),("'m", 'am', 2),("'ve", 'have', 3)
 prep_list=['ago']
 prep_concat_list=[['next','to'],['behind','to'],['in','front','of']]
 rel_list=['which', 'who','that']
-sub_list=['while', 'but','where', 'when']
+sub_list=['while', 'but','where', 'when', 'if']
 adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of', 'into']
 
 
