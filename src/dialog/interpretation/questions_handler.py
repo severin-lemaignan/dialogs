@@ -105,17 +105,53 @@ class QuestionHandler:
 	
 	
 	def get_role_from_sentence_aim(self, verb):
-		#'What-question':
-		#	Case 
-		#		e.g: what do you see? 
-		#		append in statement [?event involves ?concept]
-		#	Case
-		#		e.g: what is a cube?
-		#		append in statement [id_cube rdf:type ?concept]
-		#	Case
-		#		e.g: what is 'in' the blue cube?
-		#		append in statement []
+		"""
+		Info:
+			(A): A is optional
+			<A|B>: either A or B
+			{A}: A may be replaced
 		
+		'What-question': 
+			Case  # query on a direct object
+				e.g: what do you see? 
+				append in statement [?event involves ?concept]
+								
+				e.g: what(<object|thing>) is <this|the small cube>?
+				append in statement [* owl:sameAs ?concept]
+				
+				e.g: what <feature|color|size> is <the small cube|this>? #Feature or subClassOf Feature
+				append in statement [* hasFeature ?concept]
+				
+			Case # query on the subject
+				e.g: what is 'in' <the blue cube|this>?
+				append in statement [] # query completed from statementBuilder
+				 
+				e.g: what(<object|thing>) is blue?
+				append in statement [* hasFeature ?concept]
+				
+			Case # query on the a direct object but answer replacing subject
+				e.g: what(object) is a cube? 			
+				append in statement [* {rdf:type} ?concept]
+				
+			
+		'Who-question':
+			
+			Case # query on the subject
+				e.g: who sees the man?
+				append in statement [* performedBy ?concept] 
+			
+			Case # query on a direct object with state verb
+				e.g: who is the man?
+				append in statement [* rdfs:label ?concept] 
+				
+			Case # query on a direct object with action verb
+				e.g: who does the man see?
+				append in statement [* actsOnObject ?concept]
+			
+			Case # query on an indirect object
+				e.g: who does the man give a cube
+				append in statement [* receivedBy ?concept] 		
+		"""
 		
 		
 		
@@ -136,19 +172,55 @@ class QuestionHandler:
 		dic_thing={	'be':'owl:sameAs',
 					None:'involves',
 				   'acts_on_object':'actsOnObject'}
-		
+				   
+		dic_thing={'query_on_subject':{None:'performedBy'}
+										  
+					'query_on_direct_object': {'be':'rdfs:label',
+												 'put':'actsOnObject',
+												 'give':'actsOnObject',
+												 'show':'actsOnObject',
+												 None:'involves'}
+												 
+					'query_on_indirect_object':{'go':'hasGoal',
+												  'put':'hasGoal',
+												  None:'receivedBy'}					
+					}
+					
+					
 		#Dictionary for sentence.aim = 'aim' 
 		dic_manner={'be':'?sub_feature'}
 		
-		
+		#Dictionary for sentence.aim = 'people'
+		dic_people={'query_on_subject':{None:'performedBy'}
+										  
+					'query_on_direct_object': {  'be':'rdfs:label',
+												 'put':'actsOnObject',
+												 'give':'actsOnObject',
+												 'show':'actsOnObject',
+												 None:'involves'}
+												 
+					'query_on_indirect_object':{  'go':'hasGoal',
+												  'put':'hasGoal',
+												  None:'receivedBy'}					
+					}
 		#TODO:With dictionary from resource pool
 		#dic_aim = resourcePool.Dictionary(dic_aim)
 		#Dictionary for all
-		dic_aim = {'thing':dic_thing,
-				   'place':dic_place,
-				   'manner':dic_manner,
+		dic_aim = {
+				   #What-question
+				   'thing':dic_thing,
 				   'color':	{'be':'hasColor'},
 				   'size':	{'be':'hasSize'},
+				   
+				   #Who-question
+				   'people':
+				   
+				   #Where-question
+				   'place':dic_place,
+				   
+				   #How-Question
+				   'manner':dic_manner,
+				   
 				   }
 		
 		if verb in has_goal:
@@ -246,7 +318,19 @@ class TestQuestionHandler(unittest.TestCase):
 					 'take_my_cube involves another_cube',
 					 'take_my_cube rdf:type Take',
 					 
-					 'SPEAKER focusesOn another_cube'])
+					 'SPEAKER focusesOn another_cube',
+					 
+					 'id_danny rdfs:label "Danny"',
+					 
+					 'give_another_cube rdf:type Give'
+					 'give_another_cube performedBy SPEAKER',
+					 'give_another_cube receivedBy id_danny',
+					 'give_another_cube actsOnObject another_cube',
+					 
+					 'see_some_one rdf:Type See',
+					 'see_some_one performedBy id_danny',
+					 'see_some_one involves SPEAKER',
+					 ])
 		except AttributeError: #the ontology server is not started of doesn't know the method
 				pass
 		
@@ -329,15 +413,15 @@ class TestQuestionHandler(unittest.TestCase):
 		print "\n*************  test_8_w_question ******************"
 		print "what is blue?"
 		sentence = Sentence("w_question", "thing", 
-	                         [Nominal_Group([],
-	                                        [],
-	                                        ['blue'],
-	                                        [],
-	                                        [])],                                         
+	                         [],                                         
 	                         [Verbal_Group(['be'],
 	                                       [],
 	                                       'present simple',
-	                                       [],
+	                                       [Nominal_Group([],
+														  [],
+	                                                      ['blue'],
+	                                                      [],
+														  [])],
 	                                       [],
 	                                       [],
 	                                       [],
@@ -437,7 +521,83 @@ class TestQuestionHandler(unittest.TestCase):
 		expected_result = ['blue']		
 		self.process(sentence , statement_query, expected_result)
 		
-	
+	def test_13_who_question(self):
+		print "\n*************  test_13_who_question ******************"
+		print "who is the SPEAKER?"
+		sentence = Sentence("w_question", "people", 
+	                         [Nominal_Group(['the'],
+	                                        ['SPEAKER'],
+	                                        [],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['be'],
+	                                       [],
+	                                       'present simple',
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['SPEAKER rdfs:label ?concept']
+		expected_result = ['"Patrick"']		
+		self.process(sentence , statement_query, expected_result)
+
+	def test_14_who_question(self):
+		print "\n*************  test_14_who_question ******************"
+		print "who sees Patrick?"
+		sentence = Sentence("w_question", "people", 
+	                         [],                                         
+	                         [Verbal_Group(['see'],
+	                                       [],
+	                                       'present simple',
+	                                       [Nominal_Group([],
+														  ['Patrick'],
+														  [],
+														  [],
+														  [])],
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['* performedBy ?concept',
+						   '* rdf:type See',
+						   '* involves SPEAKER']
+						   
+		expected_result = ['id_danny']		
+		self.process(sentence , statement_query, expected_result)
+		
+	def test_15_who_question(self):
+		print "\n*************  test_15_who_question ******************"
+		print "who does Danny give the small cube?"
+		sentence = Sentence("w_question", "people", 
+	                         [Nominal_Group([],
+	                                        ['Danny'],
+	                                        [],
+	                                        [],
+	                                        [])],                                         
+	                         [Verbal_Group(['give'],
+	                                       [],
+	                                       'present simple',
+	                                       [Nominal_Group(['a'],
+														  ['cube'],
+														  ['small'],
+														  [],
+														  [])],
+	                                       [],
+	                                       [],
+	                                       [],
+	                                       'affirmative',
+	                                       [])])
+		statement_query = ['* performedBy id_danny',
+						   '* rdf:type Give',
+						   '* receivedBy ?concept'
+						   '* involves another_cube']
+						   
+		expected_result = ['SPEAKER']		
+		self.process(sentence , statement_query, expected_result)
+				
 	"""
 	def test_4_y_n_question(self):
 		print "\n*************  test_4_y_n_question action verb******************"
