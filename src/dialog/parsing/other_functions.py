@@ -19,6 +19,12 @@ cap_let_list=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q
 number_list=['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','twent','thirt','fift','hundred','thousand','million']
 
 
+"""
+We have to read all words that sentence can begin with                           
+"""
+frt_wd = ResourcePool().sentence_starts
+
+
 
 def find_cap_lettre(word):
     """
@@ -93,3 +99,17 @@ def number(word):
         if word.startswith(n):
             return 1
     return 0
+
+
+
+def recover_aux_list():
+    """
+    This function recovers the auxiliary list                             
+    Output=the auxiliary list          
+    """
+    
+    aux_list=[]
+    for x in frt_wd:
+        if x[1]=='3':
+            aux_list=aux_list+[x[0]]
+    return aux_list

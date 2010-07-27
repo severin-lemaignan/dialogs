@@ -26,6 +26,7 @@
     subsentence_comma : to delete ',' or changed on ';'
     delete_empty : to delete '' from sentence
     remerge_sentences : to transform some sentences of the remerge part
+    interjection : to find and create interjections
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
@@ -236,7 +237,7 @@ def prep_concat(sentence):
     
     
     
-def determination_nom_gr(sentence, position):
+def determination_nom_gr(sentence, position,prop):
     """
     This function return the nominal group with his complement                             
     Input=sentence                             Output=nominal group               
@@ -245,10 +246,10 @@ def determination_nom_gr(sentence, position):
     nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
     list_nom_gr=nom_gr
     
-    while position+len(nom_gr)<len(sentence) and sentence[position+len(nom_gr)] == 'of':
+    while position+len(nom_gr)<len(sentence) and sentence[position+len(nom_gr)] == prop:
         position=position+len(nom_gr)+1
         nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
-        list_nom_gr=list_nom_gr+['of']+nom_gr
+        list_nom_gr=list_nom_gr+[prop]+nom_gr
         
     return list_nom_gr
         
@@ -268,13 +269,13 @@ def and_nom_group(sentence):
     #If we find ','
     while i < len(sentence):
         if sentence[i]==',':
-            nom_gr=determination_nom_gr(sentence, i+1)
+            nom_gr=determination_nom_gr(sentence, i+1, 'of')
             end_pos=len(nom_gr)+i+1
             
             #First we recover the all nominal groups preceded by ','
             while nom_gr!=[] and sentence[end_pos]==',':
                 list_nom_gr=['and']+nom_gr
-                nom_gr=determination_nom_gr(sentence, end_pos+1)
+                nom_gr=determination_nom_gr(sentence, end_pos+1,'of')
                 end_pos=len(nom_gr)+end_pos+1
                 #Flag still 2 because this stage is not compulsory
                 flag=2
@@ -282,7 +283,7 @@ def and_nom_group(sentence):
             #We will find the last nominal group of this phrase
             if nom_gr!=[] and sentence[end_pos]=='and':
                 list_nom_gr=list_nom_gr+['and']+nom_gr
-                nom_gr=determination_nom_gr(sentence, end_pos+1)
+                nom_gr=determination_nom_gr(sentence, end_pos+1,'of')
                 end_pos=len(nom_gr)+end_pos+1
                 list_nom_gr=list_nom_gr+['and']+nom_gr
                 #Flag will be 1 because this stage is compulsory
@@ -584,7 +585,7 @@ def remerge_sentences(sentence):
     Input=sentence                              Output=sentence                      
     """ 
     
-    gr=determination_nom_gr(sentence, 0)
+    gr=determination_nom_gr(sentence, 0,'of')
     if gr!=[] and len(gr)<len(sentence):
         
         #Case of 'the bottle on the table'
@@ -592,17 +593,60 @@ def remerge_sentences(sentence):
             if i==sentence[len(gr)]:
                 if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
                     sentence=gr+['is']+sentence[sentence.index(i):]
-                    
+        
     return sentence    
+   
+   
     
+def interjection(sentence):
+    """ 
+    This function finds and creates interjections                 
+    Input=sentence                     Output=list of sentence                      
+    """ 
     
+    #init
+    i=pos=0
+    
+    #We will find the position of the first ','
+    while i < len(sentence) and pos==0:
+        if sentence[i]==',':
+            pos=i
+        i=i+1
+    
+    if pos==0:
+        return [sentence]
+    else:
+        #If the comma is for relative or subsentence
+        for k in sentence[:pos]:
+            for x in rel_list+sub_list:
+                if k==x:
+                    return [sentence]
+                
+        #If we have an interjection we replace ',' by '!'
+        for m in  frt_wd:
+            #We identify the interjection with the beginning of the sentence
+            if sentence[0]==m[0] and m[1]==0:
+                sentence[pos]='!'
+                return [sentence[:pos-1], sentence[pos-1:]]
+        #We have to know if there is just a nominal group before
+        nom_gr=determination_nom_gr(sentence, 0,'and')
+        if nom_gr==sentence[:pos]:
+            sentence[pos]='!'
+            return [sentence[:pos-1], sentence[pos-1:]]
+        
+    return [sentence]
+   
+   
     
 def processing(sentence):
     """ 
     This function is used by process_sentence                  
     Input=sentence                              Output=sentence                      
     """ 
-
+    
+    #init 
+    sentences=[]
+    
     sentence = expand_contractions(sentence)
     sentence = delete_empty(sentence)
     sentence = prep_concat(sentence)
@@ -614,9 +658,12 @@ def processing(sentence):
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
     sentence = or_processing(sentence)
-    sentence = subsentence_comma(sentence)
-    sentence = remerge_sentences(sentence)        
-    return sentence
+    our_list = interjection(sentence)
+    for i in our_list:    
+        sentence = subsentence_comma(i)
+        sentence = remerge_sentences(i)  
+        sentences = sentences + [sentence]    
+    return sentences
 
 
 
@@ -653,6 +700,6 @@ def process_sentence(utterance):
     #If the user forget the punctuation at the end
     if sentence!=[]:
         sentence = processing(sentence)
-        sentence_list=sentence_list+[sentence]
+        sentence_list=sentence_list+sentence
 
     return sentence_list

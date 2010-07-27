@@ -8,7 +8,8 @@
  The package contains functions to analyse all sentence of a utterance            
  Functions:                                 
     recover_aux_list : to recover the auxiliary list  
-    dispatching : to distribute the sentence                                      
+    dispatching : to distribute the sentence           
+    exclama_sentence : to process exclamatively sentence                     
     w_quest_where : to process many different type of where question                
     w_quest_what  : to process many different type of what question                 
     w_quest_quant : to process many different type of how question
@@ -44,20 +45,6 @@ frt_wd = ResourcePool().sentence_starts
 
 
 
-def recover_aux_list():
-    """
-    This function recovers the auxiliary list                             
-    Output=the auxiliary list          
-    """
-    
-    aux_list=[]
-    for x in frt_wd:
-        if x[1]=='2':
-            aux_list=aux_list+[x[0]]
-    return aux_list
-
-
-
 def dispatching(sentence):
     """
     This function distributes the sentence according to:                             
@@ -66,10 +53,6 @@ def dispatching(sentence):
     """
 
     if len(sentence)>0:
-        
-        #For interjection
-        if sentence[len(sentence)-1]=='!':
-            return Sentence('interjection', '', [], [])
 
         #When others
         for x in frt_wd:
@@ -157,7 +140,11 @@ def dispatching(sentence):
                 #It's a y_n_question
                 elif x[1]=='6':
                     return Sentence('gratulation', '', [], [])
-
+                
+        #For exclamatively
+        if sentence[len(sentence)-1]=='!':
+            return exclama_sentence(sentence)
+        
         #It's a statement or an imperative sentence
         if sentence[len(sentence)-1]=='?':
             return other_sentence('yes_no_question', '', sentence)
@@ -167,6 +154,22 @@ def dispatching(sentence):
     #Default case
     return []
 
+
+
+def exclama_sentence(sentence):
+    """
+    This function process exclamatively sentence                       
+    Input=the sentence                                   Output=class Sentence   
+    """
+    
+    for i in frt_wd:
+        if i[0]==sentence[0]:
+            return other_sentence('interjection', '', sentence[1:])
+        elif i[1]>0:
+            break
+    
+    return other_sentence('interjection', '', sentence)
+     
 
 
 def w_quest_where(type, request, stc):
@@ -192,7 +195,7 @@ def w_quest_what(type, sentence):
     Output=class Sentence                                                            
     """
     
-    aux_list = recover_aux_list()
+    aux_list = other_functions.recover_aux_list()
     for l in aux_list:
         if sentence[1]==l:
             #We start with a processing with the function of y_n_question's case
@@ -586,6 +589,8 @@ def sentences_analyzer(sentences):
 
     #init
     class_sentence_list=[]
+    nom_gr=[]
+    y=0
 
     #We process all sentences of the list
     for i in sentences:
@@ -595,5 +600,14 @@ def sentences_analyzer(sentences):
             i=i+['.']
         
         class_sentence_list=class_sentence_list+[dispatching(i)]
-
+    
+    while y < len(class_sentence_list):
+        #If there is an interjection we have to take the nominal group
+        if class_sentence_list[y].data_type=='interjection':
+            nom_gr=class_sentence_list[y].sn
+        #If there is an imperative sentence, we put the nominal group of interjection in the subject
+        if nom_gr!=[] and class_sentence_list[y].data_type=='imperative':
+            class_sentence_list[y].sn=class_sentence_list[y].sn+nom_gr
+        y=y+1
+        
     return class_sentence_list
