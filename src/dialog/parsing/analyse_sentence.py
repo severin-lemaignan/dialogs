@@ -405,8 +405,11 @@ def y_n_ques(type, request, sentence):
             pos=analyse_nominal_group.adjective_pos(sentence,0)
             vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
             sentence=sentence[pos-1:]
-            while sentence[0]=='or':
-                conjunction='OR'
+            while sentence[0]=='or' or sentence[0]==':but':
+                if sentence[0]=='or':
+                    conjunction='OR'
+                elif sentence[0]==':but':
+                    conjunction='BUT'
                 sentence=sentence[1:]
                 pos=analyse_nominal_group.adjective_pos(sentence,0)
                 vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
@@ -539,8 +542,11 @@ def other_sentence(type, request, sentence):
                 pos=analyse_nominal_group.adjective_pos(sentence,0)
                 vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
                 sentence=sentence[pos-1:]
-                while sentence[0]=='or':
-                    conjunction='OR'
+                while sentence[0]=='or' or sentence[0]==':but':
+                    if sentence[0]=='or':
+                        conjunction='OR'
+                    elif sentence[0]==':but':
+                        conjunction='BUT'
                     sentence=sentence[1:]
                     pos=analyse_nominal_group.adjective_pos(sentence,0)
                     vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]

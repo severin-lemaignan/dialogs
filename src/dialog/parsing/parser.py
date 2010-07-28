@@ -1553,7 +1553,7 @@ def unit_tests():
     print ''
     """
 
-    
+    """
     """
     ## Aim of this test : To use the complement of the noun and the duplication with 'and'
     """
@@ -1855,6 +1855,39 @@ def unit_tests():
                         [],
                         [], [] ,'affirmative',[])])])]),
         Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['the'],['glass'],[],[],[]),Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [],
+                [], [] ,'negative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[]),Nominal_Group([],[],['red'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+    
+    rslt[1].sv[0].d_obj[1]._conjunction="BUT"
+    rslt[2].sv[0].d_obj[1]._conjunction="OR"
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    """
+    
+    
+    
+    print ''
+    print ('######################## test 6.1 ##############################')
+
+    utterance="a kind of thing. It is not red :but blue."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
             [Nominal_Group(['the'],['bottle'],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],[],['blue'],[],[])], 
@@ -1866,19 +1899,17 @@ def unit_tests():
                         [],
                         [], [] ,'affirmative',[])])])]),
         Sentence('statement', '', 
-            [Nominal_Group(['the'],['bottle'],[],[],[])], 
+            [Nominal_Group([],['it'],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
-                [Nominal_Group([],[],['blue'],[],[])], 
+                [Nominal_Group([],[],['red'],[],[]),Nominal_Group([],[],['blue'],[],[])], 
                 [],
-                [], [] ,'negative',[Sentence('subsentence', 'but', 
-                    [Nominal_Group([],['it'],[],[],[])], 
-                    [Verbal_Group(['be'], [],'present simple', 
-                        [Nominal_Group([],[],['red'],[],[])], 
-                        [],
-                        [], [] ,'affirmative',[])])])])]
-
+                [], [] ,'negative',[])])]
+    
+    rslt[1].sv[0].d_obj[1]._conjunction="BUT"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    
     
     
     
