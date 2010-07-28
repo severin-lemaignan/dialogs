@@ -4,61 +4,131 @@ Dialog TODO list for release 1.0
 
 Bugs
 ----
+[TODO] method 'check(Set)' on server always returns 'True'
+    Useful for questionHandler for processing Yes-No question
 
-- sentence pre-processing (punctuation, term expansion, capital letters...)
-- Turn everything to English
-[DONE]- Clarify which members of sentence are list, which are single element. 
-	Everything is a list, except 
-	sentence.data_type, 
-	sentence.aim, 
-	sentence.sv.state,
-	sentence.sv,vrb_tense,
-	nominal_group.id
-	nominal_group._resolved
-	nominal_group._and_or
+[ONGOING] "close the loop" -> parser should be able to complete a previously, partially resolved, sentence.
+    with method remerge in sentence.py
+    
+[DONE] sentence pre-processing (punctuation, term expansion, capital letters...)
+[DONE] Turn everything to English
+[DONE] Clarify which members of sentence are list, which are single element. 
+    map: [A] means list of A
+	Sentence (data_type, aim, sn, sv):
+		data_type:	string	
+		aim:		string
+		sn: 		[Nominal_Group]
+		sv:	    	[Nominal_Group]
 	
-	If we have several nouns, e.g "toto" and "tata", we create a new nominal group, even though this results to several single-element lists.
+	Nominal_Group(det, noun, adj, noun_cmpl, relative):
+		det:		[string]
+		noun:		[string]
+		adj:		[string]
+		noun_cmpl:	[Nominal_Group]
+        relative:   [sentence]
+        
+    Verbal_Group(vrb_main, sv_sec, vrb_tense, d_obj, i_cmpl, advrb, vrb_adv, vrb_sub_sentence, state):
+        state:              string
+        vrb_tense:          string
+        vrb_main:           [string]
+        advrb:              [string]
+        vrb_adv:            [string]
+        d_obj:              [Nominal_Group]
+        i_cmpl:             [Indirect_Object([string], [Nominal_Group])]
+        sv_sec:             [Verbal_Group]
+        vrb_sub_sentence:   [sentence]
+        
 
-[ON GOING]- Sort out the "flags": at least, convert it to a map, maybe, remove it.
-	In the new version of statement builder, the parameter "flags" has been removed.
-	After implementing Question Handler, we'll probably remove them all.
 	
-- "close the loop" -> parser should be able to complete a previously, partially 
-resolved, sentence.
-- "this bottle is blue" <- what to do with blue? (see unit-test test_sentence3)
-		The adjectives blue, will be sent to the nominal group that
-- "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
+	Also: If we have several nouns, e.g "toto" and "tata", we create a new nominal group, even though this results to several single-element lists.
+
+[DONE] Sort out the "flags": at least, convert it to a map, maybe, remove it.
+	Removed.
+        
+[DONE] "this bottle is blue" <- what to do with blue? 
+		The adjectives 'blue', is kept in the d_obj as a single element of the nominal group.
+        Method 'adjectives_only()' in sentence.py in class Nominal_Group' returns True in this case.
+
+[DONE] "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
+[DONE]{Complete By End July}: Running dialog even if ORO is off. Need an exception raised when a connection to ORO is required.
+
 
 Features
 --------
+[TODO]{prioritized - Complete By End July}: Resolving anaphora "it" "one"
+[TODO]{prioritized - Complete By End July}: Statement to represent disjunction 'or' and conjunction 'and'?
+[TODO]{Complete By End July}: Return a sentence towards verbalization
+    possibly create add features in sentenceFactory in sentence.py
+    
+[TODO] Verb Tense. 
+[TODO] Negation
+[TODO] Process adverbs
+    "Take the bottle 'carefully'", what to do with 'carefully'
 
-[DONE] - input/output module to chat with the robot
-[DONE] - parsing module for English natural language (NL)
-[PARTIALLY DONE]- verbalizing module to reconstruct a NL sentence
-[DONE] - resolution of personal references + anaphors
-[DONE] - resolution noun phrases (= identification of concepts)
-[DONE BASED ON thematic_roles] - resolution action verbs
-[DONE FOR IMPERATIVE SENTENCES] - content analysis (is the sentence a question? a statement?...)
-[ON GOING] - statement builder (convert a parsed sentence into RDF statements)
-- question handler (for question, try to answer them with ORO)
-[DONE] - glue-ing parsing + resolution + analysis + handling
-- input/output module for supervision
-- speech synthesis -> stdout | festival
-- speech recognition -> sphinx?? in simple cases?? pfff...
-- pre content-analysis -> "what color is the tape?" -> don't use the color to 
-discriminate
-- handling of "or" :)
+[TODO] input/output module for supervision
+[TODO]{Start Early August} speech synthesis -> stdout | festival
+[TODO]{Start Early August} speech recognition -> sphinx?? in simple cases?? pfff...
+
+
+[ONGOING] verbalizing module to reconstruct a NL sentence
+[ONGOING] statement builder (convert a parsed sentence into RDF statements)
+[ONGOING] question handler (for question, try to answer them with ORO)
+
+[DONE] input/output module to chat with the robot
+[DONE] parsing module for English natural language (NL)
+[DONE] resolution of personal references + anaphors
+[DONE] resolution noun phrases (= identification of concepts)
+[DONE] resolution action verbs
+        based on thematic roles
+        
+[DONE] content analysis (is the sentence a question? a statement?...)
+        Done for imperative and statements.
+        On process for question
+[DONE] glue-ing parsing + resolution + analysis + handling
+[DONE] handling of "or" :)
+
+[DONE] pre content-analysis -> "what color is the tape?" -> don't use the color to discriminate
+        Actually done from Parser.
+        E.g: 'what color is the tape?' provides the following sentence with 'color' held in the field 'aim':
+            Sentence("w_question", "color", 
+                    [Nominal_Group(['the'],
+                                ['tape'],
+                                [],
+                                [],
+                                [])],                                         
+                    [Verbal_Group(['be'],
+                                [],
+                                'present simple',
+                                [],
+                                [],
+                                [],
+                                [],
+                                'affirmative',
+                                [])])
+                                
+            Statements provided for discrimation:
+                ?concept rdf:type Tape .
+   
+
+[DONE] Add statement in the ontology: use 'safeAdd' method to avoid the inconsistency 
+    see 'http://homepages.laas.fr/slemaign/doc/oro-server/laas/openrobots/ontology/modules/base/BaseModule.html#safeAdd%28java.util.Set%29'
+    Create new Module 'Statement_Safe_adder' aiming to add statements in the ontology. 
+    It may possibly handle unresolved sentence, and force statement_builder to build additionnal information.
+    E.g: 'Jido is a robot'. Here, Jido might be discriminate, but not Robot.
+    Although statement_builder can easily provide [id_jido rdf:type Robot], this would not be done as the sentence in unresolved yet.
+
+
+[DONE] Processing the demonstrative 'this' 
+
 
 
 Interface
 ---------
 
-- Improve the output of the dialog module (including colors) to make clear
-what append (especially for demos):
+[ONGOING] Improve the output of the dialog module (including colors) to make clear what append (especially for demos):
   * First parsing
   * Resolution *relying on perspective taking* + symbolic knowledge
   * Back interaction with the human
   * Re-parsing
   * Generation of final statements
-- Add the possibility to pause the processing to explain step by step what
-happen
+[TODO] Add the possibility to pause the processing to explain step by step what happen
