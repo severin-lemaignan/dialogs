@@ -623,7 +623,7 @@ class TestDiscriminateDialog(unittest.TestCase):
                             '* performedBy myself',
                             '* actsOnObject ACCESSKIT']
         ###
-        res = self.dialog.test('myself', stmt)
+        res = self.dialog.test('myself', stmt, answer)
         print res
         self.assertTrue(self.check_results(res, expected_result))
     
@@ -640,7 +640,7 @@ class TestDiscriminateDialog(unittest.TestCase):
                             '* performedBy myself',
                             '* actsOnObject r_bottle']
         ###
-        res = self.dialog.test('myself', stmt)
+        res = self.dialog.test('myself', stmt, answer)
         print res
         self.assertTrue(self.check_results(res, expected_result))
 
@@ -652,7 +652,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         ####
         expected_result = [ 'Plant rdfs:subClassOf Thing', 'Fruit rdfs:subClassOf Plant' ]
         ###
-        res = self.dialog.test('myself', stmt)
+        res = self.dialog.test('myself', stmt, answer)
         self.assertTrue(self.check_results(res, expected_result))
 
     def tearDown(self):
@@ -734,23 +734,23 @@ if __name__ == '__main__':
     
     # all tests
     #unittest.main()
-    
+    """
     # executing only some tests
     suiteSimpleSentences = unittest.TestSuite()
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence1'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence2'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence3'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence4'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence5'))
+    #suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence4'))
+    #suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence5'))
     
     suiteVerbalization = unittest.TestSuite()
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize1'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize2'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize3'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize4'))
-    suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize5'))
+    #suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize5'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize10'))
-    
+    """
     suiteDiscriminate = unittest.TestSuite()
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate1'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate2'))
@@ -760,13 +760,13 @@ if __name__ == '__main__':
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate6'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate7'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate8'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate9'))
-    
+    #suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate9'))
+    """
     suiteISU = unittest.TestSuite()
     suiteISU.addTest(TestISUDialog('test_ISU1'))
-
+    """
     #unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
     #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
-    #unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
-    unittest.TextTestRunner(verbosity=2).run(suiteISU)
+    unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
+    #unittest.TextTestRunner(verbosity=2).run(suiteISU)
 

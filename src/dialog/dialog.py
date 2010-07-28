@@ -125,13 +125,14 @@ class Dialog(Thread):
         #The new input string is concatenated with the former one.
         #
         if self.waiting_for_more_info:
+            
             #We process the input
             input=self._parser.parse(input, None)
             
             #We make the merge in the nominal group
-            input = sentence.nom_gr_remerge(input._class_list, self._last_output['status'],self._last_output['object'])           
+            nom_gr = sentence.nom_gr_remerge(input, self._last_output['status'],self._last_output['object'])           
+            self._last_output['object']=nom_gr
             
-            input = ' '.join(input)    
         
         self._nl_input_queue.put(input)
         

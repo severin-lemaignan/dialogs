@@ -492,63 +492,64 @@ def other_sentence(type, request, sentence):
             #We recover the subject
             sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
         
-        #We have to know if there is a modal
-        for m in modal_list:
-            if sentence[0]==m:
-                modal=sentence[0]
-                if modal=='can' or modal=='must' or modal=='shall' or modal=='may':
-                    sentence=sentence[1:]
+        if sentence!=[]:
+            #We have to know if there is a modal
+            for m in modal_list:
+                if sentence[0]==m:
+                    modal=sentence[0]
+                    if modal=='can' or modal=='must' or modal=='shall' or modal=='may':
+                        sentence=sentence[1:]
+                    
+            #We must take into account all possible cases to recover the sentence's tense
+            if len(sentence)>1 and sentence[1]=='not':
+                vg.state='negative'
+    
+                #Before the negative form we have an auxiliary for the negation
+                if sentence[0]=='do' or sentence[0]=='does' or sentence[0]=='did' :
+                    vg.vrb_tense = analyse_verb.find_tense_statement([sentence[0]], [])
+                    sentence=sentence[2:]
+                    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
                 
-        #We must take into account all possible cases to recover the sentence's tense
-        if len(sentence)>1 and sentence[1]=='not':
-            vg.state='negative'
-
-            #Before the negative form we have an auxiliary for the negation
-            if sentence[0]=='do' or sentence[0]=='does' or sentence[0]=='did' :
-                vg.vrb_tense = analyse_verb.find_tense_statement([sentence[0]], [])
-                sentence=sentence[2:]
-                vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+                #There is a modal
+                elif modal!=[]:
+                    sentence=[sentence[0]]+sentence[2:]
+                    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+                    vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
+    
+                else:
+                    #We remove 'not' and find the tense
+                    sentence=sentence[:1]+ sentence[2:]
+                    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+                    vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
             
-            #There is a modal
-            elif modal!=[]:
-                sentence=[sentence[0]]+sentence[2:]
-                vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
-                vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
-
+            #For the affirmative processing
             else:
-                #We remove 'not' and find the tense
-                sentence=sentence[:1]+ sentence[2:]
                 vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
                 vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
-        
-        #For the affirmative processing
-        else:
-            vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
-            vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
-        
-        verb=analyse_verb.find_verb_statement(sentence,vg.vrb_adv, vg.vrb_tense)
-        verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
-        vg.vrb_main=[other_functions.convert_to_string(verb_main)]
-        
-        #We delete the verb
-        sentence= sentence[sentence.index(verb[0])+len(verb_main):]
-        
-        #In case there is a state verb followed by an adjective
-        if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
-            pos=analyse_nominal_group.adjective_pos(sentence,0)
-            vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
-            sentence=sentence[pos-1:]
-            while sentence[0]=='or':
-                conjunction='OR'
-                sentence=sentence[1:]
-                pos=analyse_nominal_group.adjective_pos(sentence,0)
-                vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
-                vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
-                sentence=sentence[pos-1:]
             
-        #We perform the processing with the modal
-        if modal!=[]:
-            vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
+            verb=analyse_verb.find_verb_statement(sentence,vg.vrb_adv, vg.vrb_tense)
+            verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
+            vg.vrb_main=[other_functions.convert_to_string(verb_main)]
+            
+            #We delete the verb
+            sentence= sentence[sentence.index(verb[0])+len(verb_main):]
+            
+            #In case there is a state verb followed by an adjective
+            if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
+                pos=analyse_nominal_group.adjective_pos(sentence,0)
+                vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                sentence=sentence[pos-1:]
+                while sentence[0]=='or':
+                    conjunction='OR'
+                    sentence=sentence[1:]
+                    pos=analyse_nominal_group.adjective_pos(sentence,0)
+                    vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                    vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
+                    sentence=sentence[pos-1:]
+                
+            #We perform the processing with the modal
+            if modal!=[]:
+                vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
 
     #This is a imperative form
     else:
@@ -581,9 +582,10 @@ def other_sentence(type, request, sentence):
         
     #We recover the subsentence
     sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
-        
-    #Process relative changes
-    sentence=analyse_verbal_structure.correct_i_compl(sentence,vg.vrb_main[0])
+    
+    if sentence!=[] and vg.vrb_main!=[]:
+        #Process relative changes
+        sentence=analyse_verbal_structure.correct_i_compl(sentence,vg.vrb_main[0])
         
     #We recover the direct, indirect complement and the adverbial
     sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
