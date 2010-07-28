@@ -437,6 +437,24 @@ def possesion_form(sentence):
 
 
 
+def refine_possesion_form(sentence):
+    """
+    This function add determinant after 'of' if there is not                              
+    Input=sentence                                     Output=sentence               
+    """
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        if sentence[i]=='of' and analyse_nominal_group.find_sn_pos(sentence, i+1)==[]:
+            sentence=sentence[:i+1]+['a']+sentence[i+1:]
+        i=i+1
+        
+    return sentence
+
+
+
 def other_processing(sentence):
     """
     This function performs processing to facilitate the analysis that comes after    
@@ -667,6 +685,7 @@ def processing(sentence):
     sentence = other_processing(sentence)
     sentence = reorganize_adj(sentence)
     sentence = possesion_form(sentence)
+    sentence = refine_possesion_form(sentence)
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
     sentence = conjunction_processing(sentence,'or')

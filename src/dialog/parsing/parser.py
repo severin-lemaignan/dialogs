@@ -1879,7 +1879,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.1 ##############################')
 
-    utterance="a kind of thing. It is not red :but blue."
+    utterance="It is not red :but blue. a kind of thing"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1888,24 +1888,19 @@ def unit_tests():
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
-            [Nominal_Group(['the'],['bottle'],[],[],[])], 
-            [Verbal_Group(['be'], [],'present simple', 
-                [Nominal_Group([],[],['blue'],[],[])], 
-                [],
-                [], [] ,'negative',[Sentence('subsentence', 'but', 
-                    [Nominal_Group([],['it'],[],[],[])], 
-                    [Verbal_Group(['be'], [],'present simple', 
-                        [Nominal_Group([],[],['red'],[],[])], 
-                        [],
-                        [], [] ,'affirmative',[])])])]),
-        Sentence('statement', '', 
             [Nominal_Group([],['it'],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],[],['red'],[],[]),Nominal_Group([],[],['blue'],[],[])], 
                 [],
-                [], [] ,'negative',[])])]
+                [], [] ,'negative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
+            [Verbal_Group(['.'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])])]
     
-    rslt[1].sv[0].d_obj[1]._conjunction="BUT"
+    rslt[0].sv[0].d_obj[1]._conjunction="BUT"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
