@@ -56,24 +56,45 @@ Bugs
 Features
 --------
 [TODO]{prioritized - Complete By End July}: Resolving anaphora "it" "one"
-[TODO]{prioritized - Complete By End July}: Statement to represent disjunction 'or' and conjunction 'and'?
 [TODO]{Complete By End July}: Return a sentence towards verbalization
     possibly create add features in sentenceFactory in sentence.py
+
+[TODO]{Complete By mid-August} subclassOf:
+    E.g: Apples are Fruits
     
-[TODO] Verb Tense. 
-[TODO] Negation
-[TODO] Process adverbs
+[TODO]{Complete By mid-August} Nombre    
+[TODO]{Complete By mid-August} Verb Tense. 
+[TODO]{Complete By mid-August} Negation
+    differentOf
+    complementOf
+    
+[TODO]{Complete By mid-August} Process adverbs
+    
+[TODO]{Complete By mid-August} Quantifier
+    add quantifier
+	any - 
+	some - 
+	all - 
+	a digit - 
+	None E.g Negation on nominal group differents from sv.state
+    if determiner is 'a' do not resolve. E.g Jido is a robot => id_jido rdf:type Robot
     "Take the bottle 'carefully'", what to do with 'carefully'
 
+[TODO] Processing the demonstrative 'this' 
+    'this is a blue table'
+    Use quantifier 'a' to complete statement
+    
 [TODO] input/output module for supervision
-[TODO]{Start Early August} speech synthesis -> stdout | festival
-[TODO]{Start Early August} speech recognition -> sphinx?? in simple cases?? pfff...
+[TODO]{Start by mid-August} speech synthesis -> stdout | festival
+[TODO]{Start by mid-August} speech recognition -> sphinx?? in simple cases?? pfff... sphinx version 4
+    see Anthony for installation
 
 
 [ONGOING] verbalizing module to reconstruct a NL sentence
 [ONGOING] statement builder (convert a parsed sentence into RDF statements)
 [ONGOING] question handler (for question, try to answer them with ORO)
-
+    what to do with how long/big/small => nothing
+    forget How-question
 [DONE] input/output module to chat with the robot
 [DONE] parsing module for English natural language (NL)
 [DONE] resolution of personal references + anaphors
@@ -109,17 +130,18 @@ Features
             Statements provided for discrimation:
                 ?concept rdf:type Tape .
    
-
+[DONE] Statement to represent disjunction 'or' and conjunction 'and'?
+    specify the process of 'or' as a limit of the input of Dialog module
+    
 [DONE] Add statement in the ontology: use 'safeAdd' method to avoid the inconsistency 
     see 'http://homepages.laas.fr/slemaign/doc/oro-server/laas/openrobots/ontology/modules/base/BaseModule.html#safeAdd%28java.util.Set%29'
     Create new Module 'Statement_Safe_adder' aiming to add statements in the ontology. 
     It may possibly handle unresolved sentence, and force statement_builder to build additionnal information.
     E.g: 'Jido is a robot'. Here, Jido might be discriminate, but not Robot.
     Although statement_builder can easily provide [id_jido rdf:type Robot], this would not be done as the sentence in unresolved yet.
-
-
-[DONE] Processing the demonstrative 'this' 
-
+    
+    - safeAddForAgent??
+	not on statementBuilder
 
 
 Interface
@@ -131,4 +153,18 @@ Interface
   * Back interaction with the human
   * Re-parsing
   * Generation of final statements
+  
+  * simple GUI
 [TODO] Add the possibility to pause the processing to explain step by step what happen
+  see 
+
+Report
+--------------
+[TODO]{Start Early August} write report on trac wiki
+    write in wiki syntax in TXT file, add in folder doc
+    * analyse general module
+    * Input, output
+    * Formal description of features
+    * How: - No lines of code
+    A good formalized draft should be done by mi-august
+
