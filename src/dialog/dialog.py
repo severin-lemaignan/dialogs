@@ -58,8 +58,6 @@ class Dialog(Thread):
         #that could not be resolved. Cf doc of UnsufficientInputError for details.
         self._last_output = None
         
-        
-        self._last_nl_input = ''
         #the object currently discussed. Used to resolve anaphors (like 'this 
         # one').
         self.current_object = None
@@ -90,8 +88,8 @@ class Dialog(Thread):
                     self._logger.info(colored_print("#  Missing content! Going back to human  #", 'green'))
                     self._logger.info(colored_print("##########################################", 'green'))
                     self._last_output = uie.value
-                    self._last_nl_input = input
                     
+                    #Waiting for more info to solve content
                     self.waiting_for_more_info = True
 
             except Empty:
@@ -122,11 +120,16 @@ class Dialog(Thread):
             self.current_speaker = self._speaker.get_current_speaker_id()
         
         if self.waiting_for_more_info and self._last_output:
-            logging.info("# New NL content " + colored_print(input + "\n", 'yellow'))
-            self._last_output['object'] = sentence.nom_gr_remerge(self._parser.parse(input, None),
+            self._logger.info(colored_print("##########################################", 'green'))
+            self._logger.info(colored_print("#   New content provided by human!       #", 'green'))
+            self._logger.info(colored_print("##########################################", 'green'))            
+            self._logger.info(colored_print(input + "\n", 'blue'))
+            
+            self._last_output['object_with_more_info'] = sentence.nom_gr_remerge(self._parser.parse(input, None),
                                                                 self._last_output['status'],
                                                                 self._last_output['object'])
-            input = self._last_nl_input
+            #No more info needed
+            self.waiting_for_more_info = False
             
         self._nl_input_queue.put(input)    
         
@@ -157,8 +160,10 @@ class Dialog(Thread):
         self._logger.info(colored_print("###################################", 'green'))
         self._logger.info(colored_print("#             PARSING             #", 'green'))
         self._logger.info(colored_print("###################################", 'green'))
-                
-        self.sentences.appendleft(self._parser.parse(nl_input, self.active_sentence)[0]) # TODO: what is the use of self.active_sentence here ???
+        
+        uie_sentence = self._last_output['sentence'] if self._last_output else None
+        
+        self.sentences.appendleft(self._parser.parse(nl_input, uie_sentence)[0])
         
         for s in range(len(self.sentences)): #sentences is a deque. Cannot do a simple [:] to iterate over a copy
             self.active_sentence = self.sentences.popleft()
@@ -169,13 +174,15 @@ class Dialog(Thread):
             self._logger.info(colored_print("###################################", 'green'))
             
             uie_object = self._last_output['object'] if self._last_output else None
-            
+            uie_object_with_more_info = self._last_output['object_with_more_info'] if uie_object else None
+            self._last_output = None # No Needed no more
             self.active_sentence = self._resolver.references_resolution(self.active_sentence,
                                                                         self.current_speaker, 
                                                                         self.current_object)
             self.active_sentence = self._resolver.noun_phrases_resolution(self.active_sentence,
                                                                           self.current_speaker,
-                                                                          uie_object)
+                                                                          uie_object,
+                                                                          uie_object_with_more_info)
             self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
             
             self._logger.debug(colored_print("###################################", 'green'))

@@ -9,7 +9,7 @@ from dialog_exceptions import UnsufficientInputError, UnknownVerb
 from resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder #for nominal group discrimination
 from discrimination import Discrimination
-from sentence import SentenceFactory
+from sentence import SentenceFactory, Comparator
 
 class Resolver:
     """Implements the concept resolution mechanisms.
@@ -22,10 +22,15 @@ class Resolver:
      robot, by looking for the semantically closest one). This is done by the
      action_matcher module.
     
-    """        
+    """
+    def __init__(self):
+        self._current_sentence = None
+        
     def references_resolution(self, sentence, current_speaker, current_object):
               
         logging.info(colored_print("-> Resolving references and anaphors...", 'green'))
+        #Record of current sentence
+        self._current_sentence = sentence
         
         #sentence sn nominal groups reference resolution
         if sentence.sn:
@@ -50,8 +55,18 @@ class Resolver:
 
         return sentence
         
-    def noun_phrases_resolution(self, sentence, current_speaker, uie_object):
+    def noun_phrases_resolution(self, sentence, current_speaker, uie_object, uie_object_with_more_info):
         logging.info(colored_print("-> Resolving noun phrases", 'green'))
+        
+        #Nominal group replacement possibly after uie_object and uie_object_with_more_info are sent from Dialog to resolve missing content
+        if uie_object and uie_object_with_more_info:
+            sentence = self.noun_phrases_replace_with_ui_exception(sentence, uie_object, uie_object_with_more_info)
+            #No uie_objects needed after replacement
+            uie_object = None
+            uie_object_with_more_info = None
+        
+        #Record of current sentence
+        self._current_sentence = sentence
         
         #NominalGroupStatementBuilder
         builder = NominalGroupStatementBuilder(None,current_speaker)
@@ -64,37 +79,60 @@ class Resolver:
             sentence.sn = self._resolve_groups_nouns(sentence.sn, 
                                                     current_speaker,
                                                     discriminator,
-                                                    builder,
-                                                    uie_object)
-        
+                                                    builder)
         #sentence.sv nominal groups nouns phrase resolution
         for sv in sentence.sv:
             if sv.d_obj:
                 sv.d_obj = self._resolve_groups_nouns(sv.d_obj, 
                                                      current_speaker,
                                                      discriminator,
-                                                     builder,
-                                                     uie_object)
-    
+                                                     builder)  
             if sv.i_cmpl:
                 resolved_i_cmpl = []
                 for i_cmpl in sv.i_cmpl:
                     i_cmpl.nominal_group = self._resolve_groups_nouns(i_cmpl.nominal_group, 
                                                        current_speaker,
                                                        discriminator,
-                                                       builder,
-                                                       uie_object)
+                                                       builder)
                     resolved_i_cmpl.append(i_cmpl)
                 sv.i_cmpl = resolved_i_cmpl
                         
         return sentence
         
         
+    def noun_phrases_replace_with_ui_exception(self, sentence, uie_object, uie_object_with_more_info):
+        
+        #Comparator
+        cmp = Comparator()
+        
+        #Trying to replace in sentence sn
+        if sentence.sn:
+            for sn in sentence.sn:
+                if cmp.compare(sn, uie_object):
+                    sn = uie_object_with_more_info
+                    return sentence
+                            
+        #Trying to replace in sentence sv nomina groups
+        for sv in sentence.sv:
+            for d_obj in sv.d_obj:
+                if cmp.compare(d_obj, uie_object):
+                    d_obj = uie_object_with_more_info                    
+                    return sentence                    
+            
+            for i_cmpl in sv.i_cmpl:
+                for ng in i_cmpl.nominal_group:
+                    if cmp.compare(ng , uie_object):
+                        ng = uie_object_with_more_info                        
+                        return sentence       
+        
+        return sentence
+
+        
     def verbal_phrases_resolution(self, sentence):
         logging.info(colored_print("-> Resolving verbal groups", 'green'))
         for sv in sentence.sv:
             sv = self._resolve_verbs(sv)
-        
+                    
         return sentence
         
     def _resolve_references(self, nominal_group, current_speaker, current_object, onto = None):
@@ -150,46 +188,29 @@ class Resolver:
            
         return resolved_sn
     
-    def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder, uie_object):
-        
-        def build_description_for_discrimination(nom_group, stmt_builder):
-            logging.debug(str(nom_group))
-            stmt_builder.process_nominal_group(nom_group, '?concept')
-            stmts = stmt_builder.get_statements()
-            stmt_builder.clear_statements()
-            logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
-            
-            return [[current_speaker, '?concept', stmts]] #description
-            
-        resolve_on_uie_object = False
-        
+    def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
+
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
         
+        
+        logging.debug(str(nominal_group))
+        builder.process_nominal_group(nominal_group, '?concept')
+        stmts = builder.get_statements()
+        builder.clear_statements()
+        logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
+        
         #Trying to discriminate 
-        description = build_description_for_discrimination(nominal_group, builder)
-        try:            
+        description = [[current_speaker, '?concept', stmts]]
+        try:
             id = discriminator.clarify(description)
         except UnsufficientInputError as uie:
-            if not uie_object:
-                sf = SentenceFactory()
-                uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
-                uie.value['object'] = nominal_group            
-                raise uie        
-            else:
-                resolve_on_uie_object = True
-        
-        if resolve_on_uie_object:
-            
-            description = build_description_for_discrimination(uie_object, builder)
-            try:
-                id = discriminator.clarify(description)
-            except UnsufficientInputError as uie:
-                sf = SentenceFactory()
-                uie.value['question'][:0] = sf.create_what_do_you_mean_reference(uie_object)
-                uie.value['object'] = nominal_group
-                raise uie
-                       
+            sf = SentenceFactory()
+            uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
+            uie.value['object'] = nominal_group
+            uie.value['sentence'] = self._current_sentence
+            uie.value['object_with_more_info'] = None
+            raise uie
         
         logging.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
         
@@ -198,10 +219,10 @@ class Resolver:
         
         return nominal_group
     
-    def _resolve_groups_nouns(self, nominal_groups, current_speaker, discriminator, builder, uie_object):
+    def _resolve_groups_nouns(self, nominal_groups, current_speaker, discriminator, builder):
         resolved_sn = []
         for ng in nominal_groups:
-            resolved_sn.append(self._resolve_nouns(ng, current_speaker, discriminator, builder, uie_object))
+            resolved_sn.append(self._resolve_nouns(ng, current_speaker, discriminator, builder))
             
         return resolved_sn
     

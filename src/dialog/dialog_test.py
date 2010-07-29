@@ -522,6 +522,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         answer = "the green one"
         ####
         res = self.dialog.test('myself', stmt, answer)
+        print(res)
         expected_result = ['green_banana hasFeature good']
         self.assertTrue(self.check_results(res, expected_result))
     
@@ -535,6 +536,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         answer = "the yellow one"
         ####
         res = self.dialog.test('myself', stmt, answer)
+        print(res)
         expected_result = ['y_banana hasFeature good']
         self.assertTrue(self.check_results(res, expected_result))
         
@@ -568,10 +570,9 @@ class TestDiscriminateDialog(unittest.TestCase):
         expected_result = [ 'myself desires *',
                             '* rdf:type Get',
                             '* performedBy myself',
-                            '* actsOnObject MYBOX',
-                            '* receivedBy myself']
+                            '* actsOnObject ACCESSKIT']
         ###
-        res = self.dialog.test('myself', stmt, answer)
+        res = self.dialog.test('myself', stmt)
         print res
         self.assertTrue(self.check_results(res, expected_result))
         
@@ -734,10 +735,11 @@ if __name__ == '__main__':
     
     # all tests
     #unittest.main()
-    """
+    
     # executing only some tests
     suiteSimpleSentences = unittest.TestSuite()
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence1'))
+    
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence2'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence3'))
     #suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence4'))
@@ -750,9 +752,10 @@ if __name__ == '__main__':
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize4'))
     #suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize5'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize10'))
-    """
+    
     suiteDiscriminate = unittest.TestSuite()
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate1'))
+    
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate2'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate3'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate4'))
@@ -761,12 +764,12 @@ if __name__ == '__main__':
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate7'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate8'))
     #suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate9'))
-    """
+    
     suiteISU = unittest.TestSuite()
     suiteISU.addTest(TestISUDialog('test_ISU1'))
-    """
-    #unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
-    #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
+    
+    unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
+    unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
     unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
     #unittest.TextTestRunner(verbosity=2).run(suiteISU)
 
