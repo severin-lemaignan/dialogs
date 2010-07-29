@@ -12,7 +12,8 @@
     is_an_adj : to know if a word is an adjective                                                                  
     adjective_pos : to return the position of the noun in the sentence             
     find_sn_pos : to return the nom_group in a given position with adjective_pos  
-    find_sn : to return the first nominal group found in the sentence             
+    find_sn : to return the first nominal group found in the sentence  
+    find_plural : to find if there is a plural and add 'a'    
     refine_nom_gr : to refine the nominal group if there is a mistake             
     return_det : to recover the determinant of the nominal group                  
     return_adj : to recover the adjectives of the nominal group                   
@@ -212,6 +213,18 @@ def find_sn (phrase):
 
     #Default case
     return []
+
+
+
+def find_plural(phrase, position):
+    """
+    This function find if there is a plural and add 'a'                     
+    Input=sentence and position of nominal group         Output=sentence            
+    """ 
+    
+    if find_sn_pos(phrase, position)==[] and phrase[position].endswith('s'):
+        #It can not be a verb
+        phrase=['a']+phrase
 
 
 

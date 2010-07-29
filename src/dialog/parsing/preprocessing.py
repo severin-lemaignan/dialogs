@@ -140,13 +140,18 @@ def upper_to_lower(sentence):
         #If there is a nominal group
         if analyse_nominal_group.find_sn_pos (sentence, 0)!=[]:
             return sentence
-
-        #It a proper name, we convert lower case to upper case
-        sentence[0]=sentence[0][0].upper()+sentence[0][1:]
-        return sentence
-
+        
+        #if We have plural we need to add determinant
+        if sentence[0].endswith('s'):
+            #It can not be a verb
+            sentence=['a']+sentence
+            
+        sentence=analyse_nominal_group.find_plural(sentence,0)
+    
     #If the sentence begins with lower case
-    return sentence
+    else:
+        sentence=analyse_nominal_group.find_plural(sentence,0)
+        return sentence
 
 
 
