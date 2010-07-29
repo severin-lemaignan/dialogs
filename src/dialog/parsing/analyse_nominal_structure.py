@@ -6,7 +6,8 @@
  21/06/2010                                                                       
  The package contains functions that affect nominal structure                     
  It is more used for the subject                                                  
- Functions:                                                                       
+ Functions:                                      
+    recover_quantifier : to recover the quantifier and put the noun in singular form if it's in plural
     fill_nom_gr : to fulfill a structure Nominal_Group
     recover_ns : to recovers the nominal structure of the sentence                
 """
@@ -20,14 +21,67 @@ import analyse_sentence
 Statement of lists
 """
 propo_rel_list=['who', 'which', 'that']
+quantifier_list=[('a','SOME'),('an','SOME'),('no','NONE'),('those','SOME'),('these','SOME'),('any','SOME'),('all','ALL'),('some','SOME'),
+       ('every','ALL'),('their','ALL')]
+noun_end_s_sing=['news','glass']
+irreg_plur_noun=[('glasses','glass')]
 
 
-"""
-This function fulfills a structure Nominal_Group with given information          
-Input=sentence, nominal group with his position                                  
-Output=the nominal group class                                                   
-"""
+def recover_quantifier(nom_gr):
+    """
+    This function recover the quantifier and put the noun in singular form if it's in plural          
+    Input=nominal group class                     Output=nominal group class                                                   
+    """
+    
+    #init
+    flg=0
+    
+    #The default case is 'ONE'
+    if nom_gr.det==[]:
+        #If the noun starts with 'any' => we have 'all'
+        if nom_gr.noun[0].startswith('any'):
+            nom_gr._quantifier='ALL'
+    
+    else:
+        #If we have a plural
+        if nom_gr.noun!=[] and nom_gr.noun[0].endswith('s'):
+            for x in noun_end_s_sing:
+                if x==nom_gr.noun[0]:
+                    #It is a noun singular with 's' at the end
+                    flg=1
+                    break
+            if flg==0:
+                nom_gr._quantifier='ALL'
+                #We have to put the noun in singular form
+                for y in irreg_plur_noun:
+                    #We delete determinant added in processing
+                    if nom_gr.det[0]=='a':
+                        nom_gr.det=[]
+                    #If it is an irregular noun
+                    if y[0]==nom_gr.noun[0]:
+                        nom_gr.noun[0]=y[1]
+                        return nom_gr
+                    #Else
+                    nom_gr.noun[0]=nom_gr.noun[0][:len(nom_gr.noun[0])-1]
+                    return nom_gr
+        #Here we will use the quantifier list
+        for i in quantifier_list:
+            if i[0]==nom_gr.det[0]:
+                nom_gr._quantifier=i[1]
+                return nom_gr
+        #If it is a number
+        if other_functions.number(nom_gr.det[0])==1:
+            nom_gr._quantifier='DIGIT'
+            return nom_gr
+                
+
+
 def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
+    """
+    This function fulfills a structure Nominal_Group with given information          
+    Input=sentence, nominal group with his position                                  
+    Output=the nominal group class                                                   
+    """
 
     #init
     relative=[]
@@ -57,6 +111,9 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
         
     #We recover the conjunction    
     gn._conjunction=conjunction
+    
+    #We recover the quantifier
+    recover_quantifier(gn)
             
     return gn
 
