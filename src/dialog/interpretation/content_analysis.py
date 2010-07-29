@@ -4,7 +4,7 @@
 import logging
 from helpers import colored_print
 
-from interpretation.statements_builder import StatementBuilder
+from interpretation.statements_builder import StatementBuilder, StatementSafeAdder
 
 """This module implements ...
 
@@ -13,13 +13,14 @@ from interpretation.statements_builder import StatementBuilder
 class ContentAnalyser:
     def __init__(self):
         self.builder = StatementBuilder()
+        self.safeAdder = StatementSafeAdder()
         
     def analyse(self, sentence, current_speaker):
         """analyse an imperative or statement data_type sentence"""
         if sentence.data_type in ['imperative', 'statement']:
             logging.debug("Processing the content of an imperative or statement data_type sentence")
             return self.process_sentence(sentence, current_speaker)
-
+        
 
             
     def process_sentence(self, sentence, current_speaker):
@@ -29,6 +30,9 @@ class ContentAnalyser:
         logging.info("Generated statements: ")
         for s in stmts:
             logging.info(">> " + colored_print(s, None, 'magenta'))
+        
+        logging.info("Adding New statements in Ontology")
+        self.safeAdder.safeAdd(stmts)
         
         return stmts
 
