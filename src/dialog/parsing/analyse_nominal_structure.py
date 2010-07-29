@@ -22,9 +22,9 @@ Statement of lists
 """
 propo_rel_list=['who', 'which', 'that']
 quantifier_list=[('a','SOME'),('an','SOME'),('no','NONE'),('those','SOME'),('these','SOME'),('any','SOME'),('all','ALL'),('some','SOME'),
-       ('every','ALL'),('their','ALL'),('more','SOME'),('less','SOME')]
-noun_end_s_sing=['news','glass']
-irreg_plur_noun=[('glasses','glass')]
+       ('every','ALL'),('more','SOME'),('less','SOME')]
+noun_end_s_sing=['news','glass', 'bus','Laas','business']
+irreg_plur_noun=[('glasses','glass'),('busses','bus')]
 
 
 def recover_quantifier(nom_gr):
@@ -43,6 +43,15 @@ def recover_quantifier(nom_gr):
             nom_gr._quantifier='ALL'
     
     else:
+        #If it is a number
+        if other_functions.number(nom_gr.det[0])==1:
+            nom_gr._quantifier='DIGIT'
+            
+        #Here we will use the quantifier list
+        for i in quantifier_list:
+            if i[0]==nom_gr.det[0]:
+                nom_gr._quantifier=i[1] 
+                    
         #If we have a plural
         if nom_gr.noun!=[] and nom_gr.noun[0].endswith('s'):
             for x in noun_end_s_sing:
@@ -51,30 +60,28 @@ def recover_quantifier(nom_gr):
                     flg=1
                     break
             if flg==0:
-                nom_gr._quantifier='ALL'
+                #We delete determinant added in processing with his quantifier
+                if nom_gr.det[0]=='a':
+                    nom_gr.det=[]
+                    nom_gr._quantifier='ONE'
+                
                 #We have to put the noun in singular form
                 for y in irreg_plur_noun:
-                    #We delete determinant added in processing
-                    if nom_gr.det[0]=='a':
-                        nom_gr.det=[]
                     #If it is an irregular noun
                     if y[0]==nom_gr.noun[0]:
                         nom_gr.noun[0]=y[1]
+                        if nom_gr._quantifier=='ONE':
+                            nom_gr._quantifier='ALL'
                         return nom_gr
-                    #Else
-                    nom_gr.noun[0]=nom_gr.noun[0][:len(nom_gr.noun[0])-1]
-                    return nom_gr
-        #Here we will use the quantifier list
-        for i in quantifier_list:
-            if i[0]==nom_gr.det[0]:
-                nom_gr._quantifier=i[1]
-                return nom_gr
-        #If it is a number
-        if other_functions.number(nom_gr.det[0])==1:
-            nom_gr._quantifier='DIGIT'
-            return nom_gr
+                #Else
+                nom_gr.noun[0]=nom_gr.noun[0][:len(nom_gr.noun[0])-1]
+                if nom_gr._quantifier=='ONE':
+                    nom_gr._quantifier='ALL'
+                return nom_gr   
+        
+        return nom_gr
+        
                 
-
 
 def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     """

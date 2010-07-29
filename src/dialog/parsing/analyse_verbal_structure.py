@@ -249,7 +249,7 @@ def state_adjective(sentence, vg):
     """
     
     #In case there is a state verb followed by an adjective
-    if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
+    if sentence!=[] and vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
         pos=analyse_nominal_group.adjective_pos(sentence,0)
         vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
         sentence=sentence[pos-1:]
@@ -367,7 +367,7 @@ def process_subsentence(phrase,vg):
             
                 #We delete the subsentence
                 phrase=phrase[:phrase.index(i)]
-                phrase=phrase+phrase[end_pos:]
+                phrase=phrase+phrase[end_pos:]+['.']
                 
                 return phrase
 
@@ -406,7 +406,7 @@ def process_conjunctive_sub(phrase,vg):
         
         #We delete the subsentence
         phrase=phrase[:phrase.index('that')]
-        phrase=phrase[end_pos:]
+        phrase=phrase+phrase[end_pos:]+['.']
                 
     return phrase
 

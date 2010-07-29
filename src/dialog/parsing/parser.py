@@ -82,6 +82,8 @@ def compare_nom_gr(ng,rslt_ng):
             #We compare the flag (if there is an 'or' or an 'and')
             if rslt_ng[i]._conjunction!=ng[i]._conjunction:
                 return 1
+            if rslt_ng[i]._quantifier!=ng[i]._quantifier:
+                return 1
             i=i+1
         return 0
     
@@ -266,6 +268,10 @@ def unit_tests():
                 [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
                 [],
                 [], [] ,'affirmative',[])])]
+    
+    rslt[1].sv[0].d_obj[0]._quantifier="SOME"
+    rslt[1].sv[0].d_obj[1]._quantifier="SOME"
+    rslt[1].sv[0].d_obj[2]._quantifier="SOME"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
@@ -503,7 +509,9 @@ def unit_tests():
                         [], ['yesterday'] ,'affirmative',[])])])],
                 [],
                 [], [] ,'affirmative',[])])]
-
+    
+    rslt[0].sv[0].d_obj[0]._quantifier="SOME"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     """
@@ -806,7 +814,9 @@ def unit_tests():
                 [], 
                 [Indirect_Complement(['for'],[Nominal_Group(['a'],[],['living'],[],[])])],
                 [], [] ,'affirmative',[])])]
-
+    
+    rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
@@ -1022,7 +1032,9 @@ def unit_tests():
                 [Indirect_Complement(['for'],[Nominal_Group(['their'],['business'],[],[],[])])],
                 [], [] ,'negative',[])]),
         Sentence('agree', '',[],[])]
-
+    
+    rslt[1].sv[0].d_obj[0]._quantifier="SOME"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
@@ -1095,9 +1107,9 @@ def unit_tests():
 
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    """
     
-    """
+    
+    
     """
     ## Aim of this test : Using different cases of what question with relative 
     """
@@ -1146,7 +1158,7 @@ def unit_tests():
     print ''
     print ('######################## test 3.8 ##############################')
 
-    utterance="Which competition's salesperson won the award which we won in the last years"
+    utterance="Which salesperson's competition won the award which we won in the last years"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1155,17 +1167,19 @@ def unit_tests():
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('w_question', 'choice', 
-            [Nominal_Group(['the'],['salesperson'],[],[Nominal_Group(['the'],['competition'],[],[],[])],[])], 
+            [Nominal_Group(['the'],['competition'],[],[Nominal_Group(['the'],['salesperson'],[],[],[])],[])], 
             [Verbal_Group(['win'], [],'past simple', 
                 [Nominal_Group(['the'],['award'],[],[],[Sentence('relative', 'which', 
                     [Nominal_Group([],['we'],[],[],[])], 
                     [Verbal_Group(['win'], [],'past simple', 
                         [Nominal_Group(['the'],['award'],[],[],[])], 
-                        [Indirect_Complement(['in'],[Nominal_Group(['the'],['years'],['last'],[],[])])],
+                        [Indirect_Complement(['in'],[Nominal_Group(['the'],['year'],['last'],[],[])])],
                         [], [] ,'affirmative',[])])])], 
                 [],
                 [], [] ,'affirmative',[])])]
-
+    
+    rslt[0].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
@@ -1287,6 +1301,11 @@ def unit_tests():
                 [], [] ,'affirmative',[])])]
 
     rslt[1].sv[0].d_obj[1]._conjunction="OR"
+    rslt[1].sv[0].d_obj[0]._quantifier="SOME"
+    rslt[1].sv[0].d_obj[1]._quantifier="SOME"
+    rslt[1].sv[0].d_obj[2]._quantifier="SOME"
+    rslt[2].sv[0].d_obj[0]._quantifier="SOME"
+    rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
@@ -1320,6 +1339,9 @@ def unit_tests():
                 [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
     
+    rslt[0].sv[0].d_obj[0]._quantifier="SOME"
+    rslt[1].sv[0].d_obj[0]._quantifier="SOME"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
@@ -1352,6 +1374,9 @@ def unit_tests():
                 [], 
                 [Indirect_Complement(['for'],[Nominal_Group(['a'],[],['living'],[],[])])],
                 [], ['here'] ,'affirmative',[])])]
+    
+    rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+    rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
@@ -1396,6 +1421,9 @@ def unit_tests():
                 [Nominal_Group(['a'],['guitar'],[],[],[])], 
                 [],
                 [], [] ,'affirmative',[])])]
+    
+    rslt[2].sv[0].d_obj[0]._quantifier="SOME"
+    rslt[3].sv[0].d_obj[0]._quantifier="SOME"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
@@ -1546,10 +1574,12 @@ def unit_tests():
         Sentence('statement', '', 
             [Nominal_Group([],['I'],[],[],[])],  
             [Verbal_Group(['take'], [],'present simple', 
-                [Nominal_Group(['twenty+two'],['bottles'],[],[],[])],
+                [Nominal_Group(['twenty+two'],['bottle'],[],[],[])],
                 [],
                 [], [] ,'affirmative',[])])]
-
+    
+    rslt[2].sv[0].d_obj[0]._quantifier="DIGIT"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     """
@@ -1579,6 +1609,9 @@ def unit_tests():
                 [],
                 [], [] ,'affirmative',[])])]
     
+    rslt[0].sv[0].d_obj[1]._quantifier="SOME"
+    rslt[0].sv[0].d_obj[2]._quantifier="SOME"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
@@ -1600,8 +1633,8 @@ def unit_tests():
     rslt=[Sentence('imperative', '', 
             [], 
             [Verbal_Group(['give'], [],'present simple', 
-                [Nominal_Group(['two'],['bottles'],[],[],[]),
-                 Nominal_Group(['three'],['bottles'],[],[],[])], 
+                [Nominal_Group(['two'],['bottle'],[],[],[]),
+                 Nominal_Group(['three'],['bottle'],[],[],[])], 
                 [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                 [], [] ,'affirmative',[])]),
         Sentence('statement', '', 
@@ -1623,6 +1656,8 @@ def unit_tests():
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sv[0].d_obj[1]._conjunction="OR"
+    rslt[0].sv[0].d_obj[0]._quantifier="DIGIT"
+    rslt[0].sv[0].d_obj[1]._quantifier="DIGIT"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
@@ -1644,7 +1679,7 @@ def unit_tests():
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
     rslt=[Sentence('statement', '', 
-            [Nominal_Group(['the'],['ball'],[],[Nominal_Group(['the'],['boys'],[],[],[])],[])], 
+            [Nominal_Group(['the'],['ball'],[],[Nominal_Group(['the'],['boy'],[],[],[])],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],[],['blue'],[],[])], 
                 [],
@@ -1664,7 +1699,10 @@ def unit_tests():
                 [Nominal_Group([],[],['courageous'],[],[])], 
                 [Indirect_Complement(['on'],[Nominal_Group(['the'],['laboratory'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
-
+    
+    rslt[0].sn[0].noun_cmpl[0]._quantifier="ALL"
+    rslt[2].sn[0]._quantifier="SOME"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
@@ -1706,9 +1744,11 @@ def unit_tests():
             [Nominal_Group([],['it'],[],[],[])],  
             [Verbal_Group(['can+play'],[],'present passive', 
                 [], 
-                [Indirect_Complement(['by'],[Nominal_Group(['twenty'],['players'],[],[],[])])],
+                [Indirect_Complement(['by'],[Nominal_Group(['twenty'],['player'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
-
+    
+    rslt[3].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+    
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
@@ -1914,6 +1954,10 @@ def unit_tests():
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sv[0].d_obj[1]._conjunction="BUT"
+    rslt[1].sn[0]._quantifier="SOME"
+    rslt[1].sn[0].noun_cmpl[0]._quantifier="SOME"
+    rslt[3].sn[0]._quantifier="ALL"
+    rslt[3].sv[0].d_obj[0]._quantifier="ALL"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
@@ -1923,7 +1967,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.2 ##############################')
 
-    utterance="there is no banana. All bananas are here. give me more information about the bottle."
+    utterance="there are no bananas. All bananas are here. give me more information about the bottle."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1950,6 +1994,11 @@ def unit_tests():
                 [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                  Indirect_Complement(['about'],[Nominal_Group(['the'],['bottle'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
+    
+    rslt[0].sn[0]._quantifier="SOME"
+    rslt[0].sv[0].d_obj[0]._quantifier="NONE"
+    rslt[1].sn[0]._quantifier="ALL"
+    rslt[2].sv[0].d_obj[0]._quantifier="SOME"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''

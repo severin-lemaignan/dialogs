@@ -34,7 +34,7 @@ import other_functions
 Statement of lists
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
-det_dem_list=['this', 'there', 'these']
+det_dem_list=['this', 'there', 'these' , 'that', 'those']
 
 
 
@@ -80,7 +80,7 @@ def dispatching(sentence):
                         #Here we have to use a specific processing for 'type' and 'kind'
                         if sentence[1]=='type' or sentence[1]=='kind':
                             #We start by processing the end of the sentence like a y_n_question
-                            return y_n_ques('w_question', 'classification'+'+'+sentence[3],sentence[4:])
+                            return y_n_ques('w_question', 'classification'+'+'+sentence[4],sentence[5:])
 
                         #For other type of 'what' question
                         else:
@@ -479,6 +479,8 @@ def other_sentence(type, request, sentence):
             if p==sentence[0] and analyse_verb.infinitive([sentence[1]], 'present simple')==['be']:
                 #We recover this information and remove it
                 analysis.sn=[Nominal_Group([p],[],[],[],[])]
+                if p=='there' and sentence[1]=='are':
+                    analysis.sn[0]._quantifier='SOME'
                 sentence=sentence[1:]
         
         if analysis.sn==[]:

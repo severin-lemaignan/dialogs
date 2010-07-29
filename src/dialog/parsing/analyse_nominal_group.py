@@ -229,7 +229,10 @@ def find_plural(phrase, position):
     for i in end_s_list:
         if i==phrase[position]:
             return phrase
-        
+    
+    if phrase[position].endswith("'s") or phrase[position].endswith("ous"):
+        return phrase
+    
     if find_sn_pos(phrase, position)==[] and phrase[position].endswith('s'):
         #It can not be a verb
         phrase=['a']+phrase

@@ -41,7 +41,7 @@ import other_functions
 Statement of lists
 """
 apostrophe_s_to_is_list=["he's", "she's", "it's", "that's", "what's", "who's", "how's"]
-replacement_tuples=[("won't",['will', 'not']),("wanna",['want', 'to']),("gonna",['going', 'to'])]
+replacement_tuples=[("won't",['will', 'not']),("wanna",['want', 'to']),("gonna",['going', 'to']),("can't",['can', 'not'])]
 insertion_tuples=[(";", ';', 1),(",", ',', 1),("'m", 'am', 2),("'ve", 'have', 3),
                   ("'re", 'are', 3),("'ll", 'will', 3),("'d", 'would', 2),("n't", 'not', 3)]
 prep_list=['ago']
@@ -119,9 +119,12 @@ def upper_to_lower(sentence):
 
         #We convert upper case to lower case if it is not 'I'
         if sentence[0]=='I':
+            sentence=expand_contractions(sentence)
             return sentence
         else:
             sentence[0]=sentence[0][0].lower()+sentence[0][1:]
+        
+        sentence=expand_contractions(sentence)
         
         #We find an action verb => it is an imperative sentence        
         for i in action_verb:
@@ -147,6 +150,7 @@ def upper_to_lower(sentence):
         
     #If the sentence begins with lower case
     else:
+        sentence=expand_contractions(sentence)
         sentence=analyse_nominal_group.find_plural(sentence,0)
     
     return sentence
@@ -681,10 +685,9 @@ def processing(sentence):
     Input=sentence                              Output=sentence                      
     """ 
     
-    sentence = expand_contractions(sentence)
-    sentence = delete_empty(sentence)
     sentence = prep_concat(sentence)
     sentence = upper_to_lower(sentence)
+    sentence = delete_empty(sentence)
     sentence = concat_number(sentence)
     sentence = other_processing(sentence)
     sentence = reorganize_adj(sentence)
