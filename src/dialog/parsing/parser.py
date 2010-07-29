@@ -28,11 +28,12 @@ class Parser:
         pass
     
     def parse(self, nl_input, active_sentence = None):
+
         #Return active_sentence if not empty, possibly send from Dialog.
         if active_sentence:
             return [active_sentence]
-            
-        #Do all basic replacements (like capitals, n't -> not, etc) + splits in several 
+	
+	#Do all basic replacements (like capitals, n't -> not, etc) + splits in several 
         #sentence with points.
         self._sentence_list = preprocessing.process_sentence(nl_input)
         
