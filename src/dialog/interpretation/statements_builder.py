@@ -407,13 +407,20 @@ class VerbalGroupStatementBuilder:
         d_obj_stmt_builder = NominalGroupStatementBuilder(d_objects, self._current_speaker)
         
         #Thematic roles
+        """
+        #TODO: Bug on Thematic Role - Need to check deterministic behaviour with the roles given by Resources pool manager
         thematic_roles = ResourcePool().thematic_roles
        
         try:
             d_obj_role = thematic_roles.get_next_cmplt_role(verb, True)
         except:
-            d_obj_role = None
-        
+            d_obj_role = " involves "
+        """
+        #TODO with thematic Role
+        if verb.lower() in ['get','take','pick', 'put', 'give', 'see', 'show', 'bring', 'move', 'go', 'hide', 'place']:
+            d_obj_role = " actsOnObject "
+        else:
+            d_obj_role = " involves "
         #nominal groups
         for d_obj in d_objects:
             #Case 1: The direct object follows the verb 'to be'.
@@ -429,11 +436,9 @@ class VerbalGroupStatementBuilder:
                     d_obj_id = d_obj.id
                 else:
                     d_obj_id = d_obj_stmt_builder.set_nominal_group_id(d_obj)
-                #If there is an existing role matching the current verb
+                
                 if d_obj_role:
                     self._statements.append(id + d_obj_role + d_obj_id)
-                else:
-                    self._statements.append(id + " involves " + d_obj_id)
             
             d_obj_stmt_builder.process_nominal_group(d_obj, d_obj_id)
             
@@ -484,6 +489,14 @@ class VerbalGroupStatementBuilder:
                     
                 elif icmpl_role:
                     self._statements.append(sit_id + icmpl_role + ic_noun_id)
+        
+                elif ic.prep[0].lower() == 'in+front+of':#TODO in ressource Pool
+                    self._statements.append(sit_id + " isLocated FRONT")
+                elif ic.prep[0].lower() == 'next+of':#TODO in ressource Pool
+                    self._statements.append(sit_id + " isLocated NEXT")
+                elif ic.prep[0].lower() == 'behind':#TODO in ressource Pool
+                    self._statements.append(sit_id + " isLocated BACK")
+                    
                 else:
                     self._statements.append(sit_id + " is" + ic.prep[0].capitalize()+ " " + ic_noun_id)
                 
