@@ -133,7 +133,7 @@ def w_question(analysis):
         aim_question=other_functions.list_rebuilding(analysis.aim)
         return ['what','kind','of']+aim_question[1:]+phrase
 
-    return ['what']+phrase
+    return ['what']+[analysis.aim]+phrase
 
 
 

@@ -45,23 +45,23 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="The bottle is on the table. The bottle is blue. The bottle is Blue."
         
         sentences=[Sentence('statement', '',
-                [Nominal_Group(['the'],['bottle'],[],[],[])],
-                [Verbal_Group(['be'], [],'present simple',
-                    [],
-                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '',
-                [Nominal_Group(['the'],['bottle'],[],[],[])],
-                [Verbal_Group(['be'], [],'present simple',
-                    [Nominal_Group([],[],['blue'],[],[])], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '',
-                [Nominal_Group(['the'],['bottle'],[],[],[])],
-                [Verbal_Group(['be'], [],'present simple',
-                    [Nominal_Group([],['Blue'],[],[],[])],
-                    [],
-                    [], [] ,'affirmative',[])])]
+            [Nominal_Group(['the'],['bottle'],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [],
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '',
+            [Nominal_Group(['the'],['bottle'],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '',
+            [Nominal_Group(['the'],['bottle'],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [Nominal_Group([],['Blue'],[],[],[])],
+                [],
+                [], [] ,'affirmative',[])])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -80,17 +80,17 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
      
         sentences=[Sentence('statement', '', 
-                [Nominal_Group(['the'],['bottle'],['blue'],[Nominal_Group([],['Jido'],[],[],[])],[])], 
-                [Verbal_Group(['be'], [],'present simple', 
-                    [], 
-                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['play'], [],'future simple', 
-                    [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
-                    [],
-                    [], [] ,'affirmative',[])])]
+            [Nominal_Group(['the'],['bottle'],['blue'],[Nominal_Group([],['Jido'],[],[],[])],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['play'], [],'future simple', 
+                [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -110,29 +110,29 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="It's on the table. I give it to you. Give me the bottle. I don't give the bottle to you."
         
         sentences=[Sentence('statement', '', 
-                [Nominal_Group([],['it'],[],[],[])], 
-                [Verbal_Group(['be'], [],'present simple', 
-                    [], 
-                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['give'], [],'present simple', 
-                    [Nominal_Group([],['it'],[],[],[])], 
-                    [Indirect_Complement(['to'],[Nominal_Group([],['you'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('imperative', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
                 [], 
-                [Verbal_Group(['give'], [],'present simple', 
-                    [Nominal_Group(['the'],['bottle'],[],[],[])], 
-                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])],
-                [Verbal_Group(['give'], [],'present simple', 
-                    [Nominal_Group(['the'],['bottle'],[],[],[])], 
-                    [Indirect_Complement(['to'],[Nominal_Group([],['you'],[],[],[])])],
-                    [], [] ,'negative',[])])]
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Indirect_Complement(['to'],[Nominal_Group([],['you'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])],
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement(['to'],[Nominal_Group([],['you'],[],[],[])])],
+                [], [] ,'negative',[])])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -151,17 +151,17 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="You aren't preparing the car and my father's moto at the same time. Is my brother's bottle in your right?"
         
         sentences=[Sentence('statement', '', 
-                [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['prepare'], [],'present progressive', 
-                    [Nominal_Group(['the'],['car'],[],[],[]),Nominal_Group(['the'],['moto'],[],[Nominal_Group(['my'],['father'],[],[],[])],[])], 
-                    [Indirect_Complement(['at'],[Nominal_Group(['the'],['time'],['same'],[],[])])],
-                    [], [] ,'negative',[])]),
-            Sentence('yes_no_question', '', 
-                [Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])], 
-                [Verbal_Group(['be'], [],'present simple', 
-                    [], 
-                    [Indirect_Complement(['in'],[Nominal_Group(['your'],['right'],[],[],[])])],
-                    [], [] ,'affirmative',[])])]
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['prepare'], [],'present progressive', 
+                [Nominal_Group(['the'],['car'],[],[],[]),Nominal_Group(['the'],['moto'],[],[Nominal_Group(['my'],['father'],[],[],[])],[])], 
+                [Indirect_Complement(['at'],[Nominal_Group(['the'],['time'],['same'],[],[])])],
+                [], [] ,'negative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['in'],[Nominal_Group(['your'],['right'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -180,23 +180,23 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? Shall I go?"
         
         sentences=[Sentence('statement', '', 
-                [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['should+drive'], [],'present conditional', 
-                    [Nominal_Group(['the'],['car'],['big', 'new'],[Nominal_Group(['the'],['wife'],[],[Nominal_Group(['his'],['uncle'],['poorest'],[], [])],[])],[])], 
-                    [],
-                    [], [] ,'negative',[])]),
-            Sentence('yes_no_question', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['should+give'], [],'present conditional', 
-                    [Nominal_Group(['the'],['bottle'],[],[],[])], 
-                    [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('yes_no_question', '', 
-                [Nominal_Group([],['I'],[],[],[])],  
-                [Verbal_Group(['shall+go'], [],'present simple', 
-                    [], 
-                    [],
-                    [], [] ,'affirmative',[])])]
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['should+drive'], [],'present conditional', 
+                [Nominal_Group(['the'],['car'],['big', 'new'],[Nominal_Group(['the'],['wife'],[],[Nominal_Group(['his'],['uncle'],['poorest'],[], [])],[])],[])], 
+                [],
+                [], [] ,'negative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['should+give'], [],'present conditional', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group([],['I'],[],[],[])],  
+            [Verbal_Group(['shall+go'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -216,18 +216,18 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="Isn't he doing his homework and his game now? Cann't he take this bottle? Hello."
         
         sentences=[Sentence('yes_no_question', '', 
-                [Nominal_Group([],['he'],[],[],[])], 
-                [Verbal_Group(['do'], [],'present progressive', 
-                    [Nominal_Group(['his'],['homework'],[],[],[]), Nominal_Group(['his'],['game'],[],[],[])], 
-                    [],
-                    [], ['now'] ,'negative',[])]),
-            Sentence('yes_no_question', '', 
-                [Nominal_Group([],['he'],[],[],[])],  
-                [Verbal_Group(['can+take'], [],'present simple', 
-                    [Nominal_Group(['this'],['bottle'],[],[],[])], 
-                    [],
-                    [], [] ,'negative',[])]),
-            Sentence('start', '', [], [])]
+            [Nominal_Group([],['he'],[],[],[])], 
+            [Verbal_Group(['do'], [],'present progressive', 
+                [Nominal_Group(['his'],['homework'],[],[],[]), Nominal_Group(['his'],['game'],[],[],[])], 
+                [],
+                [], ['now'] ,'negative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group([],['he'],[],[],[])],  
+            [Verbal_Group(['can+take'], [],'present simple', 
+                [Nominal_Group(['this'],['bottle'],[],[],[])], 
+                [],
+                [], [] ,'negative',[])]),
+        Sentence('start', '', [], [])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -246,33 +246,33 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="Don't quickly give me the blue bottle. I want to play with my guitar. I'd like to go to the cinema."
         
         sentences=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],['blue'],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                ['quickly'], [] ,'negative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['want'], [Verbal_Group(['play'], 
+                    [],'', 
+                    [], 
+                    [Indirect_Complement(['with'],[Nominal_Group(['my'],['guitar'],[],[],[])])],
+                    [], [] ,'affirmative',[])], 
+                'present simple',
                 [], 
-                [Verbal_Group(['give'], [],'present simple', 
-                    [Nominal_Group(['the'],['bottle'],['blue'],[],[])], 
-                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
-                    ['quickly'], [] ,'negative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['want'], [Verbal_Group(['play'], 
-                        [],'', 
-                        [], 
-                        [Indirect_Complement(['with'],[Nominal_Group(['my'],['guitar'],[],[],[])])],
-                        [], [] ,'affirmative',[])], 
-                    'present simple',
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])],  
+            [Verbal_Group(['like'], [Verbal_Group(['go'], 
+                    [],'', 
                     [], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])],  
-                [Verbal_Group(['like'], [Verbal_Group(['go'], 
-                        [],'', 
-                        [], 
-                        [Indirect_Complement(['to'],[Nominal_Group(['the'],['cinema'],[],[],[])])],
-                        [], [] ,'affirmative',[])], 
-                    'present conditional',
-                    [], 
-                    [],
-                    [], [] ,'affirmative',[])])]
+                    [Indirect_Complement(['to'],[Nominal_Group(['the'],['cinema'],[],[],[])])],
+                    [], [] ,'affirmative',[])], 
+                'present conditional',
+                [], 
+                [],
+                [], [] ,'affirmative',[])])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -288,30 +288,30 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="The man who talks, has a new car. I play the guitar which I bought yesterday."
+        original_utterance="The man who talks, has a new car. I play the guitar that I bought yesterday."
         
         sentences=[Sentence('statement', '', 
-                [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', 'who', 
-                    [],  
-                    [Verbal_Group(['talk'],[],'present simple', 
+            [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', 'who', 
+                [],  
+                [Verbal_Group(['talk'],[],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])])])],  
+            [Verbal_Group(['have'], [],'present simple', 
+                [Nominal_Group(['a'],['car'],['new'],[],[])],
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])],  
+            [Verbal_Group(['play'], [],'present simple', 
+                [Nominal_Group(['the'],['guitar'],[],[],[Sentence('relative', 'that', 
+                    [Nominal_Group([],['I'],[],[],[])],  
+                    [Verbal_Group(['buy'],[],'past simple', 
                         [], 
                         [],
-                        [], [] ,'affirmative',[])])])],  
-                [Verbal_Group(['have'], [],'present simple', 
-                    [Nominal_Group(['a'],['car'],['new'],[],[])],
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])],  
-                [Verbal_Group(['play'], [],'present simple', 
-                    [Nominal_Group(['the'],['guitar'],[],[],[Sentence('relative', 'which', 
-                        [Nominal_Group([],['I'],[],[],[])],  
-                        [Verbal_Group(['buy'],[],'past simple', 
-                            [], 
-                            [],
-                            [], ['yesterday'] ,'affirmative',[])])])],
-                    [],
-                    [], [] ,'affirmative',[])])]
+                        [], ['yesterday'] ,'affirmative',[])])])],
+                [],
+                [], [] ,'affirmative',[])])]
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -330,22 +330,22 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="Don't quickly give me the bottle which is on the table, and the glass which I cleaned yesterday, at my left."
         
         sentences=[Sentence('imperative', '', 
-                [],  
-                [Verbal_Group(['give'], [],'present simple', 
-                    [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
-                        [],  
-                        [Verbal_Group(['be'], [],'present simple', 
-                            [],
-                            [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
-                            [], [] ,'affirmative',[])])]),
-                    Nominal_Group(['the'],['glass'],[],[],[Sentence('relative', 'which', 
-                        [Nominal_Group([],['I'],[],[],[])],  
-                        [Verbal_Group(['clean'], [],'past simple', 
-                            [],
-                            [],
-                            [], ['yesterday'] ,'affirmative',[])])])],
-                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]), Indirect_Complement(['at'],[Nominal_Group(['my'],['left'],[],[],[])])],
-                ['quickly'], [] ,'negative',[])])]
+            [],  
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [],
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                        [], [] ,'affirmative',[])])]),
+                Nominal_Group(['the'],['glass'],[],[],[Sentence('relative', 'which', 
+                    [Nominal_Group([],['I'],[],[],[])],  
+                    [Verbal_Group(['clean'], [],'past simple', 
+                        [],
+                        [],
+                        [], ['yesterday'] ,'affirmative',[])])])],
+            [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]), Indirect_Complement(['at'],[Nominal_Group(['my'],['left'],[],[],[])])],
+            ['quickly'], [] ,'negative',[])])]
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -361,24 +361,24 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="The bottle which I bought from the store which is in the shopping center, is yours."
+        original_utterance="The bottle that I bought from the store which is in the shopping center, is yours."
         
         sentences=[Sentence('statement', '', 
-                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
-                    [Nominal_Group([],['I'],[],[],[])],  
-                    [Verbal_Group(['buy'], [],'past simple', 
-                        [], 
-                        [Indirect_Complement(['from'],[Nominal_Group(['the'],['store'],[],[],[Sentence('relative', 'which', 
-                            [],  
-                            [Verbal_Group(['be'], [],'present simple', 
-                                [], 
-                                [Indirect_Complement(['in'],[Nominal_Group(['the'],['center'],['shopping'],[],[])])],
-                                [], [] ,'affirmative',[])])])])],
-                        [], [] ,'affirmative',[])])])],  
-                [Verbal_Group(['be'], [],'present simple', 
-                    [Nominal_Group([],['yours'],[],[],[])],
-                    [],
-                    [], [] ,'affirmative',[])])]
+            [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'that', 
+                [Nominal_Group([],['I'],[],[],[])],  
+                [Verbal_Group(['buy'], [],'past simple', 
+                    [], 
+                    [Indirect_Complement(['from'],[Nominal_Group(['the'],['store'],[],[],[Sentence('relative', 'which', 
+                        [],  
+                        [Verbal_Group(['be'], [],'present simple', 
+                            [], 
+                            [Indirect_Complement(['in'],[Nominal_Group(['the'],['center'],['shopping'],[],[])])],
+                            [], [] ,'affirmative',[])])])])],
+                    [], [] ,'affirmative',[])])])],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],['yours'],[],[],[])],
+                [],
+                [], [] ,'affirmative',[])])]
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -397,17 +397,17 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="When won't the planning session take place? When must you take the bus?"
         
         sentences=[Sentence('w_question', 'date', 
-                [Nominal_Group(['the'],['session'],['planning'],[],[])], 
-                [Verbal_Group(['take+place'], [],'future simple', 
-                    [], 
-                    [],
-                    [], [] ,'negative',[])]),
-            Sentence('w_question', 'date', 
-                [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['must+take'], [],'present simple', 
-                    [Nominal_Group(['the'],['bus'],[],[],[])], 
-                    [],
-                    [], [] ,'affirmative',[])])]
+            [Nominal_Group(['the'],['session'],['planning'],[],[])], 
+            [Verbal_Group(['take+place'], [],'future simple', 
+                [], 
+                [],
+                [], [] ,'negative',[])]),
+        Sentence('w_question', 'date', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['must+take'], [],'present simple', 
+                [Nominal_Group(['the'],['bus'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -426,23 +426,23 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="Where is Broyen? Where are you going? Where must Jido and you be from?"
         
         sentences=[Sentence('w_question', 'place', 
-                [Nominal_Group([],['Broyen'],[],[],[])], 
-                [Verbal_Group(['be'], [],'present simple', 
-                    [], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('w_question', 'place', 
-                [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['go'], [],'present progressive', 
-                    [], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('w_question', 'origin', 
-                [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['must+be'], [],'present simple', 
-                    [], 
-                    [],
-                    [], [] ,'affirmative',[])])]
+            [Nominal_Group([],['Broyen'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'place', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['go'], [],'present progressive', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'origin', 
+            [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['must+be'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])])]
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -461,29 +461,29 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="What time is the news on TV? What size do you wear? The code is written by me. Is Mahdi going to the Laas?"
         
         sentences=[Sentence('w_question', 'time', 
-                [Nominal_Group(['the'],['news'],[],[],[])], 
-                [Verbal_Group(['be'], [],'present simple', 
-                    [], 
-                    [Indirect_Complement(['on'],[Nominal_Group([],['TV'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('w_question', 'size', 
-                [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['wear'], [],'present simple', 
-                    [], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group(['the'],['code'],[],[],[])], 
-                [Verbal_Group(['write'], [],'present passive', 
-                    [], 
-                    [Indirect_Complement(['by'],[Nominal_Group([],['me'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('yes_no_question', '', 
-                [Nominal_Group([],['Mahdi'],[],[],[])], 
-                [Verbal_Group(['go'], [],'present progressive', 
-                    [], 
-                    [Indirect_Complement(['to'],[Nominal_Group(['the'],['Laas'],[],[],[])])],
-                    [], [] ,'affirmative',[])])]
+            [Nominal_Group(['the'],['news'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group([],['TV'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'size', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['wear'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['code'],[],[],[])], 
+            [Verbal_Group(['write'], [],'present passive', 
+                [], 
+                [Indirect_Complement(['by'],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group([],['Mahdi'],[],[],[])], 
+            [Verbal_Group(['go'], [],'present progressive', 
+                [], 
+                [Indirect_Complement(['to'],[Nominal_Group(['the'],['Laas'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -502,28 +502,28 @@ class TestVerbalization(unittest.TestCase):
         original_utterance="what is the weather like in the winter here? what were you doing? What isn't Jido going to do tomorrow"
         
         sentences=[Sentence('w_question', 'description', 
-                [Nominal_Group(['the'],['weather'],[],[],[])], 
-                [Verbal_Group(['like'], [],'present simple', 
-                    [], 
-                    [Indirect_Complement(['in'],[Nominal_Group(['the'],['winter'],[],[],[])])],
-                    [], ['here'] ,'affirmative',[])]),
-            Sentence('w_question', 'thing', 
-                [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['do'], [],'past progressive', 
-                    [], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('w_question', 'thing', 
-                [Nominal_Group([],['Jido'],[],[],[])], 
-                [Verbal_Group(['go'], [Verbal_Group(['do'], 
-                        [],'', 
-                        [], 
-                        [],
-                        [], ['tomorrow'] ,'affirmative',[])],
-                    'present progressive', 
+            [Nominal_Group(['the'],['weather'],[],[],[])], 
+            [Verbal_Group(['like'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['in'],[Nominal_Group(['the'],['winter'],[],[],[])])],
+                [], ['here'] ,'affirmative',[])]),
+        Sentence('w_question', 'thing', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['do'], [],'past progressive', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'thing', 
+            [Nominal_Group([],['Jido'],[],[],[])], 
+            [Verbal_Group(['go'], [Verbal_Group(['do'], 
+                    [],'', 
                     [], 
                     [],
-                    [], [] ,'negative',[])])]
+                    [], ['tomorrow'] ,'affirmative',[])],
+                'present progressive', 
+                [], 
+                [],
+                [], [] ,'negative',[])])]
 
         utterance=utterance_rebuilding.verbalising(sentences)
         

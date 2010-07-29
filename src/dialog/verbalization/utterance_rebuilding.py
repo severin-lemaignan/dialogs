@@ -29,9 +29,7 @@ Statement of lists
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
-wques_rules=[('date',['when']),('place',['where']),('origin',['where']),('time',['what','time']),('color',['what','color']),('size',['what','size']),
-             ('people',['who']),('age',['how', 'old']),('duration',['how', 'long']),('frequency',['how', 'often']),('distance',['how', 'far']),
-             ('manner',['how']),('reason',['why']), ('object',['object'])]
+wques_rules=[('date',['when']),('place',['where']),('origin',['where'])]
 insertion_tuples=[("'m", 'am'),("'ve", 'have'),("'re", 'are'),("'ll", 'will'),("'d", 'would'),("'s", 'is')]
 
 
