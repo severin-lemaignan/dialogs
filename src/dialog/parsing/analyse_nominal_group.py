@@ -31,12 +31,14 @@ import other_functions
 Statement of lists
 """
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-det_list=['that','the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'every', 'there', 'some', 'any', 'those','all','no']
-proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind','behind+to','next+to','in+front+of','as', 'into']
+det_list=['that','the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 
+          'every', 'there', 'some', 'any', 'those','all','no','more','less']
+proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 
+               'with', 'by', 'behind','behind+to','next+to','in+front+of','as', 'into']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 composed_noun=['some', 'any']
-
+end_s_list=['is', 'this']
 
 
 """
@@ -221,10 +223,17 @@ def find_plural(phrase, position):
     This function find if there is a plural and add 'a'                     
     Input=sentence and position of nominal group         Output=sentence            
     """ 
+    if position>len(phrase)-1:
+        return phrase
     
+    for i in end_s_list:
+        if i==phrase[position]:
+            return phrase
+        
     if find_sn_pos(phrase, position)==[] and phrase[position].endswith('s'):
         #It can not be a verb
         phrase=['a']+phrase
+    return phrase
 
 
 

@@ -12,11 +12,13 @@
     find_vrb_adv : to recover the list of adverbs bound to verb                   
     find_adv : to recover the list of adverbs                                     
     check_proposal : to know if there is a proposal before the object             
-    recover_obj_iobj : to find the direct, indirect object and the adverbial      
+    recover_obj_iobj : to find the direct, indirect object and the adverbial 
+    state_adjective : to process adjectives after state verb     
     find_scd_vrb : to recover the second verb in a sentence                       
     process_scd_sentence : to process the second sentence found
     process_subsentence : to process the subsentence
     correct_i_compl : to transform indirect complement to relative
+    DOC_to_IOC : to put the direct complement in the indirect
 """
 from sentence import *
 import analyse_nominal_group
@@ -37,6 +39,8 @@ sub_list=['while', 'but','where', 'when', 'if']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean']
 adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of', 'into']
+complement_pronoun=['me','you','it']
+inderect_trans_verb_list=['tell', 'say']
 
 
 
@@ -238,6 +242,31 @@ def recover_obj_iobj(phrase, vg):
 
 
 
+def state_adjective(sentence, vg):
+    """
+    This function process adjectives after state verb                             
+    Input=sentence                        Output=second verb of the sentence         
+    """
+    
+    #In case there is a state verb followed by an adjective
+    if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
+        pos=analyse_nominal_group.adjective_pos(sentence,0)
+        vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
+        sentence=sentence[pos-1:]
+        while sentence[0]=='or' or sentence[0]==':but':
+            if sentence[0]=='or':
+                conjunction='OR'
+            elif sentence[0]==':but':
+                conjunction='BUT'
+            sentence=sentence[1:]
+            pos=analyse_nominal_group.adjective_pos(sentence,0)
+            vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
+            vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
+            sentence=sentence[pos-1:]
+    return sentence
+    
+    
+    
 def find_scd_vrb(phrase):
     """
     This function recovers the second verb in a sentence                             
@@ -335,10 +364,10 @@ def process_subsentence(phrase,vg):
                 
                 #We perform processing
                 vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', w ,subsentence)]
-                
+            
                 #We delete the subsentence
                 phrase=phrase[:phrase.index(i)]
-                phrase=phrase[end_pos:]
+                phrase=phrase+phrase[end_pos:]
                 
                 return phrase
 
@@ -414,3 +443,21 @@ def correct_i_compl(phrase,verb):
                             break
                 x=x+1
     return phrase
+
+
+
+def DOC_to_IOC(vg):
+    """
+    This function put the direct complement in the indirect
+    Input=sentence and verbal class         Output=sentence and verbal class         
+    """
+    
+    for x in inderect_trans_verb_list:
+        if vg.vrb_main!=[] and x==vg.vrb_main[0]:
+            for j in complement_pronoun:
+                #In this case we have just one direct compelment
+                if vg.d_obj[0].noun[0]==j:
+                    vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([],vg.d_obj)]
+                    vg.d_obj=[]
+                    return vg
+    return vg

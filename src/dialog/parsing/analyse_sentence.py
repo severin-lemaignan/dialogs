@@ -400,22 +400,6 @@ def y_n_ques(type, request, sentence):
         if vg.vrb_main!=['be']:
             sentence= sentence[sentence.index(verb[0])+len(verb_main):]
         
-        #In case there is a state verb followed by an adjective
-        if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
-            pos=analyse_nominal_group.adjective_pos(sentence,0)
-            vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
-            sentence=sentence[pos-1:]
-            while sentence[0]=='or' or sentence[0]==':but':
-                if sentence[0]=='or':
-                    conjunction='OR'
-                elif sentence[0]==':but':
-                    conjunction='BUT'
-                sentence=sentence[1:]
-                pos=analyse_nominal_group.adjective_pos(sentence,0)
-                vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
-                vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
-                sentence=sentence[pos-1:]
-        
         #Here we have special processing for different cases
         if sentence!=[]:
             #For 'what' descrition case
@@ -441,6 +425,7 @@ def y_n_ques(type, request, sentence):
         #Process relative changes
         sentence=analyse_verbal_structure.correct_i_compl(sentence,vg.vrb_main[0])
         
+        sentence=analyse_nominal_group.find_plural(sentence, 0)
         #We recover the direct, indirect complement and the adverbial
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
         
@@ -453,6 +438,11 @@ def y_n_ques(type, request, sentence):
     
     #If there is a forgotten*
     vg.vrb_adv=vg.vrb_adv+analyse_verbal_structure.find_vrb_adv (sentence)
+    
+    #In case there is a state verb followed by an adjective
+    sentence=analyse_verbal_structure.state_adjective(sentence, vg)
+    
+    vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
     analysis.sv=[vg]
     return analysis
@@ -536,22 +526,6 @@ def other_sentence(type, request, sentence):
             
             #We delete the verb
             sentence= sentence[sentence.index(verb[0])+len(verb_main):]
-            
-            #In case there is a state verb followed by an adjective
-            if vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
-                pos=analyse_nominal_group.adjective_pos(sentence,0)
-                vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
-                sentence=sentence[pos-1:]
-                while sentence[0]=='or' or sentence[0]==':but':
-                    if sentence[0]=='or':
-                        conjunction='OR'
-                    elif sentence[0]==':but':
-                        conjunction='BUT'
-                    sentence=sentence[1:]
-                    pos=analyse_nominal_group.adjective_pos(sentence,0)
-                    vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
-                    vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
-                    sentence=sentence[pos-1:]
                 
             #We perform the processing with the modal
             if modal!=[]:
@@ -585,14 +559,15 @@ def other_sentence(type, request, sentence):
     sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
     if sec_vrb!=[]:
         sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
-        
+    
     #We recover the subsentence
     sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
     
     if sentence!=[] and vg.vrb_main!=[]:
         #Process relative changes
         sentence=analyse_verbal_structure.correct_i_compl(sentence,vg.vrb_main[0])
-        
+    
+    sentence=analyse_nominal_group.find_plural(sentence, 0) 
     #We recover the direct, indirect complement and the adverbial
     sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
     
@@ -601,6 +576,11 @@ def other_sentence(type, request, sentence):
     
     #If there is a forgotten*
     vg.vrb_adv=vg.vrb_adv+analyse_verbal_structure.find_vrb_adv (sentence)
+    
+    #In case there is a state verb followed by an adjective
+    sentence=analyse_verbal_structure.state_adjective(sentence, vg)
+    
+    vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
     analysis.sv=[vg]
     return analysis

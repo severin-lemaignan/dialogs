@@ -137,21 +137,20 @@ def upper_to_lower(sentence):
         if other_functions.number(sentence[0])==1:
             return sentence
         
+        sentence=analyse_nominal_group.find_plural(sentence,0)
         #If there is a nominal group
         if analyse_nominal_group.find_sn_pos (sentence, 0)!=[]:
             return sentence
-        
-        #if We have plural we need to add determinant
-        if sentence[0].endswith('s'):
-            #It can not be a verb
-            sentence=['a']+sentence
             
-        sentence=analyse_nominal_group.find_plural(sentence,0)
-    
+        #It a propre name, we convert lowercase to uppercase
+        sentence[0]=sentence[0][0].upper()+sentence[0][1:]
+        
     #If the sentence begins with lower case
     else:
         sentence=analyse_nominal_group.find_plural(sentence,0)
-        return sentence
+    
+    return sentence
+    
 
 
 
@@ -697,7 +696,8 @@ def processing(sentence):
     sentence = conjunction_processing(sentence,':but')
     sentence = subsentence_comma(sentence)
     sentence = remerge_sentences(sentence)
-    sentence = take_off_comma(sentence) 
+    sentence = take_off_comma(sentence)
+     
     sentence = interjection(sentence)
     return sentence
 

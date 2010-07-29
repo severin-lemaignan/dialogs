@@ -22,7 +22,7 @@ Statement of lists
 """
 propo_rel_list=['who', 'which', 'that']
 quantifier_list=[('a','SOME'),('an','SOME'),('no','NONE'),('those','SOME'),('these','SOME'),('any','SOME'),('all','ALL'),('some','SOME'),
-       ('every','ALL'),('their','ALL')]
+       ('every','ALL'),('their','ALL'),('more','SOME'),('less','SOME')]
 noun_end_s_sing=['news','glass']
 irreg_plur_noun=[('glasses','glass')]
 

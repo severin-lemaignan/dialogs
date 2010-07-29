@@ -391,7 +391,7 @@ def unit_tests():
     print ''
     print ('######################## test 1.6 ##############################')
 
-    utterance="Isn't he doing his homework and his game now? Cann't he take this bottle. good afternoon"
+    utterance="Isn't he doing his homework and his game now? Can't he take this bottle. good afternoon"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1879,7 +1879,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.1 ##############################')
 
-    utterance="It is not red :but blue. a kind of thing"
+    utterance="It is not red :but blue. a kind of thing. this is my banana. bananas are fruits."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1898,6 +1898,18 @@ def unit_tests():
             [Verbal_Group(['.'], [],'present simple', 
                 [], 
                 [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['this'],[],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['my'],['banana'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['banana'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],['fruit'],[],[],[])], 
+                [],
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sv[0].d_obj[1]._conjunction="BUT"
@@ -1907,6 +1919,72 @@ def unit_tests():
     
     
     
+    print ''
+    print ('######################## test 6.2 ##############################')
+
+    utterance="there is no banana. All bananas are here. give me more information about the bottle."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group(['there'],[],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['no'],['banana'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['all'],['banana'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [],
+                [], ['here'] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['more'],['information'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                 Indirect_Complement(['about'],[Nominal_Group(['the'],['bottle'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
+    
+    
+    print ''
+    print ('######################## test 6.3 ##############################')
+
+    utterance="Jido, tell me where you go."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('interjection', '', 
+            [Nominal_Group([],['Jido'],[],[],[])],  
+            []),
+        Sentence('imperative', '', 
+            [Nominal_Group([],['Jido'],[],[],[])], 
+            [Verbal_Group(['tell'], [],'present simple', 
+                [], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[Sentence('subsentence', 'where', 
+                    [Nominal_Group([],['you'],[],[],[])], 
+                    [Verbal_Group(['go'], [],'present simple', 
+                        [], 
+                        [],
+                        [], [] ,'affirmative',[])])])])]
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
+
     
 if __name__ == '__main__':
     unit_tests()
