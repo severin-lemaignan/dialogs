@@ -15,7 +15,9 @@
     replace_tuple : to replace some tuples
     negation : to replace not
     delete_plus : to delete '+' if there is
+    move_prep : to put the preposition after the nominal group 
     delete_comma : to delete ',' if there is at the end of sentence 
+    a_which_process : to delete the determinant after 'which' if it exist   
     verbalising : is the basic function of this module
 """
 from resources_manager import ResourcePool
@@ -29,8 +31,9 @@ Statement of lists
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
-wques_rules=[('date',['when']),('place',['where']),('origin',['where'])]
+wques_rules=[('date',['when']),('place',['where']),('origin',['where']), ('reason',['why']),('people',['who'])]
 insertion_tuples=[("'m", 'am'),("'ve", 'have'),("'re", 'are'),("'ll", 'will'),("'d", 'would'),("'s", 'is')]
+prep_list=['ago']
 
 
 """
@@ -74,14 +77,17 @@ def dispatching(analysis):
 
     #For disagree
     elif analysis.data_type=='disagree':
-        return ['no','.']
+        return ['No, sorry','.']
 
     #For w_question
     elif analysis.data_type=='w_question':
         for x in wques_rules:
             if x[0]==analysis.aim:
                 return x[1]+sentence_rebuilding.y_o_question(analysis)
-
+            
+        if analysis.aim=='description':
+            return sentence_rebuilding.description_ques(analysis)
+        
         if analysis.aim=='quantity':
             return sentence_rebuilding.quantity_ques(analysis)
 
@@ -324,6 +330,11 @@ def replace_tuple(sentence):
                         sentence[i-1]=sentence[i-1]+j[0]
                         sentence=sentence[:i]+sentence[i+1:]
                         break
+                    
+        if i!=0 and sentence[i]=='is' and (sentence[i-1]=='that' or sentence[i-1]=='what'):
+            sentence[i-1]=sentence[i-1]+j[0]
+            sentence=sentence[:i]+sentence[i+1:]
+        
         i=i+1
     
     return sentence            
@@ -340,10 +351,12 @@ def negation(sentence):
     i=0
     
     while i < len(sentence):
-        
+            
         if sentence[i]=='not':
             if sentence[i-1]=='will':
                 sentence[i-1]="won't"
+            elif sentence[i-1]=='can':
+                sentence[i-1]="can't"
             else:
                 sentence[i-1]=sentence[i-1]+"n't"
                 
@@ -372,21 +385,64 @@ def delete_plus(sentence):
 
 
 
+def move_prep(sentence):
+    """ 
+    This function to put the preposition after the nominal group                     
+    Input=sentence                              Output=sentence                      
+    """ 
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        for p in prep_list:
+            
+            #If there is a preposal
+            if sentence[i]==p:
+                nom_gr = find_sn_pos(sentence, i+1)
+                sentence=sentence[:i]+nom_gr+[p]+sentence[i+len(nom_gr)+1:]
+                i=i+len(nom_gr)
+        i=i+1
+    return sentence
+
+
+    
 def delete_comma(sentence):
     """
     This function to delete ',' if there is at the end of sentence                                   
     Input=sentence                                     Output=sentence               
     """
     
+    #init    
+    i=0
+    
     word = sentence[len(sentence)-2]
     if word[len(word)-1]==',':
         word=word[:len(word)-1]
         sentence[len(sentence)-2]=word
+        
+    while i < len(sentence):
+        if sentence[i]==',':
+            sentence=sentence[:i-1]+[sentence[i-1]+',']+sentence[i+1:]
+        i=i+1
     
     return sentence
                 
-                 
-        
+
+
+def a_which_process(sentence):
+    """
+    This function delete the determinant after 'which' if it exist                             
+    Input=class sentence                                       Output=sentence       
+    """
+    if sentence[0]=='which':
+        for d in det_list:
+            if d==sentence[1]:
+                return [sentence[0]]+sentence[2:]
+    return sentence
+
+
+
 def verbalising(class_list):
     """
     This function is the basic function of this module                               
@@ -406,6 +462,8 @@ def verbalising(class_list):
         sentence=replace_tuple(sentence)
         sentence=delete_plus(sentence)
         sentence=delete_comma(sentence)
+        sentence=a_which_process(sentence)
+        sentence=move_prep(sentence)
         
         #To have the upper case and convert the list to string
         sentence[0]=sentence[0][0].upper()+sentence[0][1:]

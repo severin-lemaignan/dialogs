@@ -24,6 +24,7 @@ Statement of lists
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
+irreg_plur_noun=[('glasses','glass'),('busses','bus')]
 
 
 
@@ -46,9 +47,9 @@ def nom_struc_rebuilding(nom_struc):
     Input=class nominal structure                                                    
     Output=phrase concatenate all information of this class                             
     """
-
+    
     #init
-    nominal_structure=[]
+    nominal_structure=ns=nn=[]
     i=0
 
     while i < len(nom_struc):
@@ -63,15 +64,29 @@ def nom_struc_rebuilding(nom_struc):
         #We can have an 'or' with the first element if it is an indirect complement       
         if nom_struc[i]._conjunction=='OR':
             nominal_structure=nominal_structure+['or']
+        
         #We recover the nominal group and his complement
-        nominal_structure = nominal_structure + nom_struc[i].det + nom_struc[i].adj + nom_struc[i].noun
+        if nom_struc[i]._quantifier=='SOME' or nom_struc[i]._quantifier=='ALL':
+            for n in irreg_plur_noun:
+                if n[1]==nom_struc[i].noun[0]:
+                    nn=[n[0]]
+            if nn==[]:
+                nn=[nom_struc[i].noun[0]+'s']
+            nominal_structure = nominal_structure + nom_struc[i].det + nom_struc[i].adj +nn
+        else:
+            nominal_structure = nominal_structure + nom_struc[i].det + nom_struc[i].adj +nom_struc[i].noun
+        
         if nom_struc[i].noun_cmpl!=[]:
             nominal_structure = nominal_structure + ['of']
             nominal_structure=nominal_structure+nom_struc_rebuilding(nom_struc[i].noun_cmpl)
 
         #We recover the relative
         for j in nom_struc[i].relative:
-            nominal_structure=nominal_structure+[j.aim]+sentence_rebuilding.statement(j)
+            if j.sn==[]:
+                ns=[nom_struc[i]]
+        
+            nominal_structure=nominal_structure+[j.aim]+sentence_rebuilding.relative(j, ns)
+            ns=[]
 
         i=i+1
 
@@ -111,7 +126,7 @@ def indirect_compl_rebuilding(indirect_compl):
 
 
 
-def conjugate_vrb(tense, verb, sn, type):
+def conjugate_vrb(tense, verb, sn, type, aim):
     """
     This function conjugates the verb                                                
     Input=tense, verb in infinitive form, the adverb and subject                     
@@ -122,17 +137,19 @@ def conjugate_vrb(tense, verb, sn, type):
     if tense=='':
         tense='present simple'
     
-    
+    if aim.startswith('classification'):
+        if sn==[]:
+            sn=[Nominal_Group([],[aim[15:]],[],[],[])]
+        elif sn[0].noun==[]:
+            sn[0].noun=[aim[15:]]
+            
     if sn==[]:
         if type=='imperative':
             #If no subject, we use the third person of plural
             sn=[Nominal_Group([],['they'],[],[],[])]
-            
         else:
             #If no subject, we use the third person of singular
             sn=[Nominal_Group([],['it'],[],[],[])]
-            
-        return conjugate_vrb(tense, verb, sn, type)
 
     #For future simple
     if tense=='future simple':
@@ -143,10 +160,10 @@ def conjugate_vrb(tense, verb, sn, type):
 
         if verb[0]=='be':
             #Plural nouns
-            if len(sn)>1 or sn[0].noun[0].endswith('s'):
-                return ['are']+verb[1:]
-            elif sn[0].noun==['I']:
+            if sn[0].noun==['I']:
                 return ['am']+verb[1:]
+            elif len(sn)>1 or other_functions.plural_noun(sn[0].noun,sn[0]._quantifier)==1:
+                return ['are']+verb[1:]
             elif sn[0].noun==['we'] or sn[0].noun==['you'] or sn[0].noun==['they']:
                 return ['are']+verb[1:]
             else:
@@ -155,7 +172,7 @@ def conjugate_vrb(tense, verb, sn, type):
 
         else:
             #Plural nouns
-            if len(sn)>1 or sn[0].noun[0].endswith('s') or sn[0].noun==['we'] or sn[0].noun==['I'] or sn[0].noun==['you'] or sn[0].noun==['they']:
+            if len(sn)>1 or other_functions.plural_noun(sn[0].noun,sn[0]._quantifier)==1:
                 return verb
             else:
                 #Singular nouns
@@ -169,7 +186,7 @@ def conjugate_vrb(tense, verb, sn, type):
 
         if verb[0]=='be':
             #Plural nouns
-            if len(sn)>1 or sn[0].noun[0].endswith('s') or sn[0].noun==['we'] or sn[0].noun==['I'] or sn[0].noun==['you'] or sn[0].noun==['they']:
+            if len(sn)>1 or other_functions.plural_noun(sn[0].noun,sn[0]._quantifier)==1:
                 return ['were']+verb[1:]
             else:
                 #Singular nouns
@@ -185,20 +202,20 @@ def conjugate_vrb(tense, verb, sn, type):
     elif tense=='present progressive':
         for m in present_irreg_vrb:
             if m[0]==verb[0]:
-                return conjugate_vrb('present simple', ['be'], sn, type)+[m[2]]+verb[1:]
-        return conjugate_vrb('present simple', ['be'], sn, type)+[verb[0]+'ing']+verb[1:]
+                return conjugate_vrb('present simple', ['be'], sn, type, aim)+[m[2]]+verb[1:]
+        return conjugate_vrb('present simple', ['be'], sn, type, aim)+[verb[0]+'ing']+verb[1:]
     elif tense=='past progressive':
         for m in present_irreg_vrb:
             if m[0]==verb[0]:
-                return conjugate_vrb('past simple', ['be'], sn, type)+[m[2]]+verb[1:]
-        return conjugate_vrb('past simple', ['be'], sn, type)+[verb[0]+'ing']+verb[1:]
+                return conjugate_vrb('past simple', ['be'], sn, type, aim)+[m[2]]+verb[1:]
+        return conjugate_vrb('past simple', ['be'], sn, type, aim)+[verb[0]+'ing']+verb[1:]
 
     #For perfect forms
     elif tense=='present perfect':
         for i in past_irreg_vrb:
             if verb[0]==i[0]:
-                return conjugate_vrb('present simple', ['have'], sn, type)+[i[2]]+verb[1:]
-        return conjugate_vrb('present simple', ['have'], sn, type)+[verb[0]+'ed']+verb[1:]
+                return conjugate_vrb('present simple', ['have'], sn, type, aim)+[i[2]]+verb[1:]
+        return conjugate_vrb('present simple', ['have'], sn, type, aim)+[verb[0]+'ed']+verb[1:]
     elif tense=='present perfect':
         for i in past_irreg_vrb:
             if verb[0]==i[0]:
@@ -207,22 +224,22 @@ def conjugate_vrb(tense, verb, sn, type):
 
     #For passive forms
     elif tense=='present passive':
-        return conjugate_vrb('present simple', ['be'], sn, type)+conjugate_vrb('present perfect', verb, sn, type)[1:]
+        return conjugate_vrb('present simple', ['be'], sn, type, aim)+conjugate_vrb('present perfect', verb, sn, type, aim)[1:]
     elif tense=='past passive':
-        return conjugate_vrb('past simple', ['be'], sn, type)+conjugate_vrb('present perfect', verb, sn, type)[1:]
+        return conjugate_vrb('past simple', ['be'], sn, type, aim)+conjugate_vrb('present perfect', verb, sn, type, aim)[1:]
 
     #For conditional forms
     elif tense=='present conditional':
         return ['would']+verb
     elif tense=='past conditional':
-        return ['would']+conjugate_vrb('present perfect', verb, sn, type)
+        return ['would']+conjugate_vrb('present perfect', verb, sn, type, aim)
 
     #Default case
     return []
 
 
 
-def vrb_stat_rebuilding(tense, verb, adv, sn, state, type):
+def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
     """
     This function recovers the verb part of a statement                              
     Input=tense, verb in infinitive form, his state, the adverb and subject          
@@ -246,7 +263,7 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type):
     
     #No modal => normal processing
     if vrb_condjugated==[]:
-        vrb_condjugated=conjugate_vrb(tense, vrb, sn, type)
+        vrb_condjugated=conjugate_vrb(tense, vrb, sn, type, aim)
 
     #Affirmative case
     if state=='affirmative':
@@ -266,11 +283,11 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type):
             if i==vrb[0]:
                 return [vrb_condjugated[0]]+['not']+adv+vrb_condjugated[1:]
 
-        return conjugate_vrb(tense, ['do'], sn, type)+['not']+adv+vrb
+        return conjugate_vrb(tense, ['do'], sn, type, aim)+['not']+adv+vrb
 
 
 
-def vrb_ques_rebuilding(tense, verb, adverb, sn, state):
+def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     """
     This function recovers the verb part of a question                               
     Input=tense, verb in infinitive form, his state, the adverb and subject          
@@ -285,7 +302,7 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state):
 
     #If there is be or have : it is ok
     if vrb[0]=='be' or vrb[0]=='have':
-        vrb_condjugated=conjugate_vrb(tense, vrb, sn, '')
+        vrb_condjugated=conjugate_vrb(tense, vrb, sn, '', aim)
         if state=='negative':
             return [vrb_condjugated[0]]+['not']+adverb+vrb_condjugated[1:]
         return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
@@ -299,19 +316,19 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state):
     
     if tense=='present simple' or tense=='past simple':
         #We need to add the auxilary
-        aux=conjugate_vrb(tense, ['do'], sn,'')
+        aux=conjugate_vrb(tense, ['do'], sn,'', aim)
         if state=='negative':
             return aux+['not']+adverb+vrb
         return aux+adverb+vrb
     else:
-        vrb_condjugated=conjugate_vrb(tense, vrb, sn,'')
+        vrb_condjugated=conjugate_vrb(tense, vrb, sn,'', aim)
         if state=='negative':
             return [vrb_condjugated[0]]+['not']+adverb+vrb_condjugated[1:]
         return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
     
 
 
-def end_statement_rebuilding(sentence, sv ,sn, type):
+def end_statement_rebuilding(sentence, sv ,sn, type, aim):
     """
     This function recovers the end of the statement                                   
     Input=class sentence, subject and the verbal structure                           
@@ -319,7 +336,7 @@ def end_statement_rebuilding(sentence, sv ,sn, type):
     """
 
     #Recovering the verb in the correct form
-    phrase=vrb_stat_rebuilding(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state, type)
+    phrase=vrb_stat_rebuilding(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state, type, aim)
 
     #We add the direct and indirect complement
     if sv[0].i_cmpl!=[] and sv[0].i_cmpl[0].prep!=[]:
@@ -340,33 +357,33 @@ def end_statement_rebuilding(sentence, sv ,sn, type):
     phrase=phrase+sv[0].advrb
 
     #If there is a second verb
-    if sv[0].sv_sec!=[]:
+    for k in sv[0].sv_sec:
         #Add this verb with 'to'
-        phrase=phrase+['to']+sv[0].sv_sec[0].vrb_adv+other_functions.list_rebuilding(sv[0].sv_sec[0].vrb_main[0])
+        phrase=phrase+['to']+k.vrb_adv+other_functions.list_rebuilding(k.vrb_main[0])
         
         #We add the direct and indirect complement
-        if sv[0].sv_sec[0].i_cmpl!=[] and sv[0].sv_sec[0].i_cmpl[0].prep!=[]:
-            phrase=phrase+nom_struc_rebuilding(sv[0].sv_sec[0].d_obj)
-            for x in sv[0].sv_sec[0].i_cmpl:
+        if k.i_cmpl!=[] and k.i_cmpl[0].prep!=[]:
+            phrase=phrase+nom_struc_rebuilding(k.d_obj)
+            for x in k.i_cmpl:
                 phrase=phrase+indirect_compl_rebuilding(x)
         else:
-            if sv[0].sv_sec[0].i_cmpl!=[]:
-                phrase=phrase+indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[0])
-            phrase=phrase+nom_struc_rebuilding(sv[0].sv_sec[0].d_obj)
+            if k.i_cmpl!=[]:
+                phrase=phrase+indirect_compl_rebuilding(k.i_cmpl[0])
+            phrase=phrase+nom_struc_rebuilding(k.d_obj)
             #init
             x=1
-            while x < len(sv[0].sv_sec[0].i_cmpl):
-                phrase=phrase+indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[x])
+            while x < len(k.i_cmpl):
+                phrase=phrase+indirect_compl_rebuilding(k.i_cmpl[x])
                 x=x+1
 
         #We add the adverb of the sentence
-        phrase=phrase+sv[0].sv_sec[0].advrb
+        phrase=phrase+k.advrb
 
     return sentence+phrase
 
 
 
-def end_question_rebuilding(sentence, sv ,sn):
+def end_question_rebuilding(sentence, sv ,sn, aim):
     """
     This function recovers the end of the question                                   
     Input=class sentence, subject and the verbal structure                           
@@ -374,7 +391,7 @@ def end_question_rebuilding(sentence, sv ,sn):
     """
 
     #Recovering the verb in the correct form
-    phrase=vrb_ques_rebuilding(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state)
+    phrase=vrb_ques_rebuilding(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state, aim)
 
     #We add the direct and indirect complement
     if sv[0].i_cmpl!=[] and sv[0].i_cmpl[0].prep!=[]:
@@ -397,26 +414,26 @@ def end_question_rebuilding(sentence, sv ,sn):
     phrase=phrase+sv[0].advrb
 
     #If there is a second verb
-    if sv[0].sv_sec!=[]:
+    for k in sv[0].sv_sec:
         #Add this verb with 'to'
-        phrase=phrase+['to']+sv[0].sv_sec[0].vrb_adv+other_functions.list_rebuilding(sv[0].sv_sec[0].vrb_main[0])
+        phrase=phrase+['to']+k.vrb_adv+other_functions.list_rebuilding(k.vrb_main[0])
 
         #We add the direct and indirect complement
-        if sv[0].sv_sec[0].i_cmpl!=[] and sv[0].sv_sec[0].i_cmpl[0].prep!=[]:
-            phrase=phrase+nom_struc_rebuilding(sv[0].sv_sec[0].d_obj)
-            for x in sv[0].sv_sec[0].i_cmpl:
+        if k.i_cmpl!=[] and k.i_cmpl[0].prep!=[]:
+            phrase=phrase+nom_struc_rebuilding(k.d_obj)
+            for x in k.i_cmpl:
                 phrase=phrase+indirect_compl_rebuilding(x)
         else:
-            if sv[0].sv_sec[0].i_cmpl!=[]:
-                phrase=phrase+indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[0])
-            phrase=phrase+nom_struc_rebuilding(sv[0].sv_sec[0].d_obj)
+            if k.i_cmpl!=[]:
+                phrase=phrase+indirect_compl_rebuilding(k.i_cmpl[0])
+            phrase=phrase+nom_struc_rebuilding(k.d_obj)
             #init
             x=1
-            while x < len(sv[0].sv_sec[0].i_cmpl):
-                phrase=phrase+indirect_compl_rebuilding(sv[0].sv_sec[0].i_cmpl[x])
+            while x < len(k.i_cmpl):
+                phrase=phrase+indirect_compl_rebuilding(k.i_cmpl[x])
                 x=x+1
 
         #We add the adverb of the sentence
-        phrase=phrase+sv[0].sv_sec[0].advrb
+        phrase=phrase+k.advrb
 
     return sentence+phrase

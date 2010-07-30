@@ -8,15 +8,32 @@
     find_plus : to return 1 if the word containe '+'                                                           
     list_rebuilding : to return the list of strings without '+'                     
     eliminate_redundancy : to eliminate redundancy in the phrase                  
-    convert_string : to return concatenate token to have a string (sentence)      
+    convert_string : to return concatenate token to have a string (sentence) 
+    plural_noun : to return 1 if the word is a plural      
+    is_an_adj : to know if a word is an adjective
 """
-
+from resources_manager import ResourcePool
 
 
 """
 Statement of lists
 """
 cap_let_list=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+noun_end_s_sing=['news','glass', 'bus','Laas','business']
+plural_name=['people']
+adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
+
+
+"""
+We have to read all irregular adjectives before the processing                    
+"""
+adjective_list = ResourcePool().adjectives.keys()
+
+
+"""
+We have to read all nouns which have a confusion with regular adjectives        
+"""
+noun_list = ResourcePool().special_nouns
 
 
 
@@ -95,3 +112,56 @@ def convert_string(token_list):
     else:
         return token_list[0]+' '+convert_string(token_list[1:])
     
+    
+    
+def plural_noun(word_list, quantifier):
+    """
+    Function return 1 if the word is a plural                       
+    Input=list of word             Output=flag(0 if singular or 1 if plural)       
+    """
+    
+    if word_list==[]:
+        return 0
+    else:
+        word=word_list[0]
+        if word.endswith('s'):
+            for n in noun_end_s_sing:
+                if n==word:
+                    return 0
+            return 1
+        if word=='we' or word=='I' or word=='you' or word=='they':
+            return 1
+        
+        for k in plural_name:
+            if word==k:
+                return 1
+        
+        if quantifier=='SOME' or quantifier=='ALL':
+            return 1
+        
+    return 0
+
+
+
+def is_an_adj(word):
+    """
+    This function to know if a word is an adjective                                  
+    Input=word                Output=1 if it is an adjective and 0 if not                     
+    """
+    
+    #It is a noun so we have to return 1
+    for j in noun_list:
+        if word==j[0]:
+            return 0
+    
+    #For the regular adjectives
+    for k in adj_rules:
+        if word.endswith(k):
+            return 1
+    
+    #We use the irregular adjectives list to find it
+    for i in adjective_list:
+        if word==i:
+            return 1
+    
+    return 0
