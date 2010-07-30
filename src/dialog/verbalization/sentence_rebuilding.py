@@ -273,7 +273,7 @@ def possession_ques(analysis):
     phrase=statement(analysis)
 
     #We have to know if it is plural or singular
-    if len(analysis.sn)>1 or other_functions.plural_noun(analysis.sn[0].noun,analysis.sn[0]._quantifier)==1:
+    if other_functions.plural_noun(analysis.sn)==1:
         return ['whose']+phrase[:len(phrase)-1]+['these']+['?']
     else:
         return ['whose']+phrase[1:len(phrase)-1]+['this']+['?']

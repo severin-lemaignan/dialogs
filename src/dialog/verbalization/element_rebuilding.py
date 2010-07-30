@@ -66,11 +66,11 @@ def nom_struc_rebuilding(nom_struc):
             nominal_structure=nominal_structure+['or']
         
         #We recover the nominal group and his complement
-        if nom_struc[i]._quantifier=='SOME' or nom_struc[i]._quantifier=='ALL':
+        if nom_struc[i]._quantifier=='SOME' or nom_struc[i]._quantifier=='ALL' or (nom_struc[i]._quantifier=='DIGIT' and nom_struc[i].det!='one'):
             for n in irreg_plur_noun:
-                if n[1]==nom_struc[i].noun[0]:
+                if nom_struc[i].noun!=[] and n[1]==nom_struc[i].noun[0]:
                     nn=[n[0]]
-            if nn==[]:
+            if nom_struc[i].noun!=[] and nn==[]:
                 nn=[nom_struc[i].noun[0]+'s']
             nominal_structure = nominal_structure + nom_struc[i].det + nom_struc[i].adj +nn
         else:
@@ -108,11 +108,11 @@ def indirect_compl_rebuilding(indirect_compl):
     if indirect_compl.prep!=[]:
         nom_gr= nom_struc_rebuilding(indirect_compl.nominal_group)
         
-        if nom_gr[0]=='and' or nom_gr[0]=='or':
+        if nom_gr!=[] and (nom_gr[0]=='and' or nom_gr[0]=='or'):
             nom_gr=[nom_gr[0]]+indirect_compl.prep+nom_gr[1:]
         else:
             nom_gr=indirect_compl.prep+nom_gr
-       
+           
     else:
         """
         if i.nominal_group[0].adj!=[] and (i.nominal_group[0].adj[0]=='last' or i.nominal_group[0].adj[0]=='next'):
@@ -162,7 +162,7 @@ def conjugate_vrb(tense, verb, sn, type, aim):
             #Plural nouns
             if sn[0].noun==['I']:
                 return ['am']+verb[1:]
-            elif len(sn)>1 or other_functions.plural_noun(sn[0].noun,sn[0]._quantifier)==1:
+            elif other_functions.plural_noun(sn)==1:
                 return ['are']+verb[1:]
             elif sn[0].noun==['we'] or sn[0].noun==['you'] or sn[0].noun==['they']:
                 return ['are']+verb[1:]
@@ -172,7 +172,7 @@ def conjugate_vrb(tense, verb, sn, type, aim):
 
         else:
             #Plural nouns
-            if len(sn)>1 or other_functions.plural_noun(sn[0].noun,sn[0]._quantifier)==1:
+            if other_functions.plural_noun(sn)==1:
                 return verb
             else:
                 #Singular nouns
@@ -186,7 +186,7 @@ def conjugate_vrb(tense, verb, sn, type, aim):
 
         if verb[0]=='be':
             #Plural nouns
-            if len(sn)>1 or other_functions.plural_noun(sn[0].noun,sn[0]._quantifier)==1:
+            if other_functions.plural_noun(sn)==1:
                 return ['were']+verb[1:]
             else:
                 #Singular nouns

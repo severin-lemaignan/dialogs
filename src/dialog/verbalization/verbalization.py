@@ -1316,8 +1316,581 @@ class TestVerbalization(unittest.TestCase):
         
         self.assertEquals(original_utterance, utterance)    
     
-    
+    def test_39(self):
         
+        print ''
+        print '######################## test 1.39 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Would you like the blue bottle or the glass? The green or blue bottle is on the table. Is the green or blue glass mine?"
+     
+        sentences=[Sentence('yes_no_question', '', 
+            [Nominal_Group([],['you'],[],[],[])], 
+            [Verbal_Group(['like'], [],'present conditional', 
+                [Nominal_Group(['the'],['bottle'],['blue'],[],[]),Nominal_Group(['the'],['glass'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),       
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],[],['green'],[],[]),Nominal_Group([],['bottle'],['blue'],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]), 
+        Sentence('yes_no_question', '', 
+            [Nominal_Group(['the'],[],['green'],[],[]),Nominal_Group([],['glass'],['blue'],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],['mine'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+        
+        sentences[0].sv[0].d_obj[1]._conjunction="OR"
+        sentences[1].sn[1]._conjunction="OR"
+        sentences[2].sn[1]._conjunction="OR"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+    def test_40(self):
+        
+        print ''
+        print '######################## test 1.40 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Learn that I want you to give me the blue bottle that's blue."
+        
+        sentences=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['learn'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[Sentence('subsentence', 'that', 
+                    [Nominal_Group([],['I'],[],[],[])], 
+                    [Verbal_Group(['want'], [Verbal_Group(['give'], [],'', 
+                            [Nominal_Group(['the'],['bottle'],['blue'],[],[Sentence('relative', 'that', 
+                                [], 
+                                [Verbal_Group(['be'], [],'present simple', 
+                                    [Nominal_Group([],[],['blue'],[],[])], 
+                                    [],
+                                    [], [] ,'affirmative',[])])])], 
+                            [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                            [], [] ,'affirmative',[])],'present simple', 
+                        [], 
+                        [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+    def test_41(self):
+        
+        print ''
+        print '######################## test 1.41 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="The bottle is behind to me. The bottle is next to the table in front of the kitchen."
+        
+        sentences=[Sentence('statement', '',
+            [Nominal_Group(['the'],['bottle'],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [],
+                [Indirect_Complement(['behind+to'],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '',
+            [Nominal_Group(['the'],['bottle'],[],[],[])],
+            [Verbal_Group(['be'], [],'present simple',
+                [],
+                [Indirect_Complement(['next+to'],[Nominal_Group(['the'],['table'],[],[],[])]),
+                 Indirect_Complement(['in+front+of'],[Nominal_Group(['the'],['kitchen'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+    def test_42(self):
+        
+        print ''
+        print '######################## test 1.42 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Carefully take the bottle. I take that bottle that I drink in. I take twenty two bottles."
+        
+        sentences=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['take'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [],
+                ['carefully'], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])],  
+            [Verbal_Group(['take'], [],'present simple', 
+                [Nominal_Group(['that'],['bottle'],[],[],[Sentence('relative', 'that', 
+                    [Nominal_Group([],['I'],[],[],[])],  
+                    [Verbal_Group(['drink'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['in'],[])],
+                        [], [] ,'affirmative',[])])])],
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])],  
+            [Verbal_Group(['take'], [],'present simple', 
+                [Nominal_Group(['twenty+two'],['bottle'],[],[],[])],
+                [],
+                [], [] ,'affirmative',[])])]
+        
+        sentences[2].sv[0].d_obj[0]._quantifier="DIGIT"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)    
+        
+    
+    def test_43(self):
+        
+        print ''
+        print '######################## test 1.43 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="I'll play Jido's guitar, a saxophone, my oncle's wife's piano and Patrick's violon."
+        
+        sentences=[Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['play'], [],'future simple', 
+                [Nominal_Group(['the'],['guitar'],[],[Nominal_Group([],['Jido'],[],[],[])],[]),
+                 Nominal_Group(['a'],['saxophone'],[],[],[]),
+                 Nominal_Group(['a'],['piano'],[],[Nominal_Group(['the'],['wife'],[],[Nominal_Group(['my'],['oncle'],[],[],[])],[])],[]),
+                 Nominal_Group(['the'],['violon'],[],[Nominal_Group([],['Patrick'],[],[],[])],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+    def test_44(self):
+        
+        print ''
+        print '######################## test 1.44 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Give me two or three bottles. The bottle is blue big fanny. Give me the bottle which is on the table."
+        
+        sentences=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['two'],[],[],[],[]),
+                 Nominal_Group(['three'],['bottle'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue', 'big', 'fanny'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+                
+        sentences[0].sv[0].d_obj[1]._conjunction="OR"
+        sentences[0].sv[0].d_obj[0]._quantifier="DIGIT"
+        sentences[0].sv[0].d_obj[1]._quantifier="DIGIT"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+    def test_45(self):
+        
+        print ''
+        print '######################## test 1.45 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="The boys' ball is blue. He asks me to do something. Is any person courageous on the laboratory?"
+        
+        sentences=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['ball'],[],[Nominal_Group(['the'],['boy'],[],[],[])],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['he'],[],[],[])], 
+            [Verbal_Group(['ask'], [Verbal_Group(['do'], [],'', 
+                [Nominal_Group([],['something'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])],'present simple', 
+            [], 
+            [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+            [], [] ,'affirmative',[])]),
+        Sentence('yes_no_question', '', 
+            [Nominal_Group(['any'],['person'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['courageous'],[],[])], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['laboratory'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+        
+        
+        sentences[0].sn[0].noun_cmpl[0]._quantifier="ALL"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)    
+    
+    def test_46(self):
+        
+        print ''
+        print '######################## test 1.46 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="What must be happened in the company today? The building shouldn't be built fastly. You can be here. It can be played by twenty players"
+        
+        sentences=[Sentence('w_question', 'situation', 
+            [],  
+            [Verbal_Group(['must+happen'], [],'present passive', 
+                [], 
+                [Indirect_Complement(['in'],[Nominal_Group(['the'],['company'],[],[],[])])],
+                [], ['today'] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['building'],[],[],[])],  
+            [Verbal_Group(['should+build'],[],'passive conditional', 
+                [], 
+                [],
+                ['fastly'], [] ,'negative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['you'],[],[],[])],  
+            [Verbal_Group(['can+be'],[],'present simple', 
+                [], 
+                [],
+                [], ['here'] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])],  
+            [Verbal_Group(['can+play'],[],'present passive', 
+                [], 
+                [Indirect_Complement(['by'],[Nominal_Group(['twenty'],['player'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+        
+        sentences[3].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    """
+    def test_47(self):
+        
+        print ''
+        print '######################## test 1.47 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="what size is the best one? What object is blue? How good is this"
+        
+        sentences=[Sentence('w_question', 'size', 
+            [Nominal_Group(['the'],['one'],['best'],[],[])],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'object', 
+            [],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('w_question', 'good', 
+            [Nominal_Group(['this'],[],[],[],[])],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+    def test_48(self):
+        
+        print ''
+        print '######################## test 1.48 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="He Patrick, the bottle is on the table. give it to me"
+        
+        sentences=[Sentence('interjection', '', 
+            [Nominal_Group([],['Patrick'],[],[],[])],  
+            []),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])],  
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [Nominal_Group([],['Patrick'],[],[],[])],  
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Indirect_Complement(['to'],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+        
+        sentences[2].sv[0].d_obj[0]._quantifier="DIGIT"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)  
+    
+    def test_49(self):
+        
+        print ''
+        print '######################## test 1.49 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Jido, give me the bottle. Jido, Patrick and you will go to the cinema. Jido, Patrick and you, give me the bottle"
+        
+        sentences=[Sentence('interjection', '', 
+            [Nominal_Group([],['Jido'],[],[],[])],  
+            []),
+        Sentence('imperative', '', 
+            [Nominal_Group([],['Jido'],[],[],[])],  
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['Patrick'],[],[],[]),Nominal_Group([],['you'],[],[],[])],  
+            [Verbal_Group(['go'], [],'future simple', 
+                [], 
+                [Indirect_Complement(['to'],[Nominal_Group(['the'],['cinema'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('interjection', '', 
+            [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['Patrick'],[],[],[]),Nominal_Group([],['you'],[],[],[])],  
+            []),
+        Sentence('imperative', '', 
+            [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['Patrick'],[],[],[]),Nominal_Group([],['you'],[],[],[])],  
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)  
+    
+    def test_50(self):
+        
+        print ''
+        print '######################## test 1.50 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="The bottle is not blue but it is red. It is not the glass :but the bottle. it is blue or red"
+        
+        sentences=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'negative',[Sentence('subsentence', 'but', 
+                    [Nominal_Group([],['it'],[],[],[])], 
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [Nominal_Group([],[],['red'],[],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['the'],['glass'],[],[],[]),Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [],
+                [], [] ,'negative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[]),Nominal_Group([],[],['red'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+                
+        rslt[1].sv[0].d_obj[1]._conjunction="BUT"
+        rslt[2].sv[0].d_obj[1]._conjunction="OR"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance) 
+        
+    def test_51(self):
+        
+        print ''
+        print '######################## test 1.51 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="It is not red :but blue. a kind of thing. this is my banana. bananas are fruits."
+        
+        sentences=[Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],[],['red'],[],[]),Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'negative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
+            [Verbal_Group(['.'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['this'],[],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['my'],['banana'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['banana'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group([],['fruit'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+        
+        rslt[0].sv[0].d_obj[1]._conjunction="BUT"
+    rslt[1].sn[0]._quantifier="SOME"
+    rslt[1].sn[0].noun_cmpl[0]._quantifier="SOME"
+    rslt[3].sn[0]._quantifier="ALL"
+    rslt[3].sv[0].d_obj[0]._quantifier="ALL"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)  
+    
+    def test_52(self):
+        
+        print ''
+        print '######################## test 1.52 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="there are no bananas. All bananas are here. give me more information about the bottle."
+        
+        sentences=[Sentence('statement', '', 
+            [Nominal_Group(['there'],[],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['no'],['banana'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['all'],['banana'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [],
+                [], ['here'] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['more'],['information'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                 Indirect_Complement(['about'],[Nominal_Group(['the'],['bottle'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+        
+        rslt[0].sn[0]._quantifier="SOME"
+    rslt[0].sv[0].d_obj[0]._quantifier="NONE"
+    rslt[1].sn[0]._quantifier="ALL"
+    rslt[2].sv[0].d_obj[0]._quantifier="SOME"
+    
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)  
+    
+    def test_53(self):
+        
+        print ''
+        print '######################## test 1.53 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Jido, tell me where you go."
+        
+        sentences=[Sentence('interjection', '', 
+            [Nominal_Group([],['Jido'],[],[],[])],  
+            []),
+        Sentence('imperative', '', 
+            [Nominal_Group([],['Jido'],[],[],[])], 
+            [Verbal_Group(['tell'], [],'present simple', 
+                [], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[Sentence('subsentence', 'where', 
+                    [Nominal_Group([],['you'],[],[],[])], 
+                    [Verbal_Group(['go'], [],'present simple', 
+                        [], 
+                        [],
+                        [], [] ,'affirmative',[])])])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance) 
+    """
     
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,

@@ -11,6 +11,7 @@
     find_nom_gr_list : to break phrase into nominal groups with 'of'
     create_possession_claus : to create phrase with 's
     possesion_form : to convert 'of' to possession form 's
+    determination_nom_gr : to return the nominal group with his complement 
     and_case : to convert 'and' to ',' if it is necessary
     replace_tuple : to replace some tuples
     negation : to replace not
@@ -277,14 +278,28 @@ def possesion_form(sentence):
             #We create the final phrase
             end_pos=nom_gr_list[len(nom_gr_list)-1]+begin_pos
             sentence=sentence[:begin_pos]+create_possession_claus(nom_gr_list[:len(nom_gr_list)-1])+sentence[end_pos:]
-
-            #We continue processing from the end's position
-            begin_pos=end_pos
-            
-        else:
-            begin_pos=begin_pos+1
+ 
+        begin_pos=begin_pos+1
 
     return sentence
+
+
+
+def determination_nom_gr(sentence, position,prop):
+    """
+    This function return the nominal group with his complement                             
+    Input=sentence                             Output=nominal group               
+    """
+    
+    nom_gr=find_sn_pos(sentence, position)
+    list_nom_gr=nom_gr
+    
+    while position+len(nom_gr)<len(sentence) and sentence[position+len(nom_gr)] == prop:
+        position=position+len(nom_gr)+1
+        nom_gr=find_sn_pos(sentence, position)
+        list_nom_gr=list_nom_gr+[prop]+nom_gr
+        
+    return list_nom_gr
 
 
 
@@ -296,16 +311,14 @@ def and_case(sentence):
     
     #init
     i=0
-    
     while i < len(sentence):
         if sentence[i] == 'and':
-            nom_gr=find_sn_pos(sentence, i+1)
+            nom_gr=determination_nom_gr(sentence, i+1, 'of')
 
             if len(sentence)>len(nom_gr)+i+1 and sentence[len(nom_gr)+i+1]=='and':
-                sentence[i-1]=sentence[i-1]+','
-                sentence=sentence[:i]+sentence[i+1:]
+                sentence=sentence[:i]+[',']+sentence[i+1:]
         i=i+1
-        
+   
     return sentence
 
 
@@ -456,8 +469,8 @@ def verbalising(class_list):
         sentence = dispatching(i)
         
         #To perform some changes to have an usual sentence at the end
-        sentence=possesion_form(sentence)
         sentence=and_case(sentence)
+        sentence=possesion_form(sentence)
         sentence=negation(sentence)
         sentence=replace_tuple(sentence)
         sentence=delete_plus(sentence)

@@ -9,7 +9,8 @@
     list_rebuilding : to return the list of strings without '+'                     
     eliminate_redundancy : to eliminate redundancy in the phrase                  
     convert_string : to return concatenate token to have a string (sentence) 
-    plural_noun : to return 1 if the word is a plural      
+    plural : to to return 1 if the word is a plural
+    plural_noun : to return 1 if the nominal group is a plural      
     is_an_adj : to know if a word is an adjective
 """
 from resources_manager import ResourcePool
@@ -113,31 +114,56 @@ def convert_string(token_list):
         return token_list[0]+' '+convert_string(token_list[1:])
     
     
-    
-def plural_noun(word_list, quantifier):
+
+def plural(word,quantifier,determinant):
     """
     Function return 1 if the word is a plural                       
     Input=list of word             Output=flag(0 if singular or 1 if plural)       
     """
+   
+    if word.endswith('s'):
+        for n in noun_end_s_sing:
+            if n==word:
+                return 0
+        return 1
+    if word=='we' or word=='I' or word=='you' or word=='they':
+        return 1
+        
+    for k in plural_name:
+        if word==k:
+            return 1
+        
+    if quantifier=='SOME' or quantifier=='ALL':
+        return 1
     
-    if word_list==[]:
+    if quantifier=='DIGIT' and determinant[0]!='one':
+        return 1
+    
+    #Default case
+    return 0
+           
+           
+def plural_noun(sn):
+    """
+    Function return 1 if the nominal group is a plural                      
+    Input=list of nominal group             Output=flag(0 if singular or 1 if plural)       
+    """
+    
+    #init
+    i=1
+    
+    while i < len(sn):
+        if sn[i]._conjunction!='AND':
+            if plural(sn[i].noun[0], sn[i]._quantifier, sn[i].det)==1:
+                return 1
+        else:
+            return 1
+        i=i+1
+        
+    if sn[0].noun==[]:
         return 0
     else:
-        word=word_list[0]
-        if word.endswith('s'):
-            for n in noun_end_s_sing:
-                if n==word:
-                    return 0
-            return 1
-        if word=='we' or word=='I' or word=='you' or word=='they':
-            return 1
-        
-        for k in plural_name:
-            if word==k:
-                return 1
-        
-        if quantifier=='SOME' or quantifier=='ALL':
-            return 1
+        return plural(sn[0].noun[0],sn[0]._quantifier, sn[0].det)
         
     return 0
 
