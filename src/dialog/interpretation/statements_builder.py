@@ -492,8 +492,8 @@ class VerbalGroupStatementBuilder:
         
                 elif ic.prep[0].lower() == 'in+front+of':#TODO in ressource Pool
                     self._statements.append(sit_id + " isLocated FRONT")
-                elif ic.prep[0].lower() == 'next+of':#TODO in ressource Pool
-                    self._statements.append(sit_id + " isLocated NEXT")
+                elif ic.prep[0].lower() == 'next+to':#TODO in ressource Pool
+                    self._statements.append(sit_id + " isNexto " + ic_noun_id)
                 elif ic.prep[0].lower() == 'behind':#TODO in ressource Pool
                     self._statements.append(sit_id + " isLocated BACK")
                     

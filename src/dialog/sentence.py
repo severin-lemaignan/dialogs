@@ -4,7 +4,7 @@
 #SVN:rev202 + PythonTidy + rewrite 'toString' methods using Python __str__ + test cases
 
 from helpers import colored_print #to colorize the sentence output
-
+from resources_manager import ResourcePool
 
 
 """
@@ -99,8 +99,195 @@ class SentenceFactory:
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,'affirmative',[])])]
         return sentence
-
     
+    def create_w_question_answer(self, w_question, w_answer, query_on_field):
+        """Create the answer of a W-Question
+            w_question is the current question
+            w_answer is the response found in the ontology
+            query_on_field is the part of the W_question to fill with the answer. it takes the following values:
+                - None :
+                - QUERY_ON_INDIRECT_OBJ
+                - QUERY_ON_DIRECT_OBJ
+        """
+        nominal_groupL = []
+        #Nominal group holding the answer
+        
+        
+        if w_question.aim in ['color', 'size']: #TODO in ResourcePool, list of adjective with given class in the ontology
+            nominal_groupL = [Nominal_Group([], [], [object], [], [])]
+        
+        elif w_question.aim == 'people':
+            nominal_groupL = [Nominal_Group([], [object], [], [], [])]
+        else:
+            for response in w_answer:
+                ng = self.create_w_question_object(response)
+                nominal_groupL.append(ng)
+            
+        #Sentence holding the answer
+        sentence = w_question
+        sentence.data_type = "statement"
+        sentence.aim = ""
+        if not query_on_field:#Default case on sentence.sn
+            sentence.sn = nominal_groupL
+            
+        elif query_on_field == 'QUERY_ON_DIRECT_OBJ':
+            sentence.sv[0].d_obj = nominal_groupL
+        
+        elif query_on_field == 'QUERY_ON_INDIRECT_OBJ':
+            sentence.sv[0].i_cmpl = [Indirect_Complement(['to'], nominal_groupL)]
+            
+        return sentence
+    
+    def create_w_question_object(self, object):
+        """Creating a nominal group by retrieving relevant information on 'object'."""
+        
+        
+        def _filter_ontology_inferred_class(object_list):
+            """Filter infered class from the ontology such as SpatialThing, EnduringThing-Localized, ... that add no needed infos """
+            #TODO in ResourcePool()
+            filter_list = ['Object', 'Location', 
+                            'Agent', 'SpatialThing-Localized', 'SpatialThing',
+                            'PartiallyTangible', 
+                            'EnduringThing-Localized', 'Object-SupportingFurniture', 
+                            'Artifact', 'PhysicalSupport', 'owl:Thing',
+                            'Place', 'Furniture']
+            
+            
+            if not object_list:
+                return ['owl:Thing']
+            
+            result_list = []
+            for item in object_list:
+                if not item in filter_list:
+                    result_list.append(item)
+            
+            return result_list
+            
+        #end of _filter_ontology_inferred_class
+        
+        
+        
+        # Object label if Proper noun
+        object_noun = []
+        object_determiner = []
+        
+        onto = []
+        try:
+           onto = ResourcePool().ontology_server.find('?concept', [object + ' rdfs:label ?concept'])
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
+        
+        if onto:
+            object_noun = onto # name must be unique for a given object
+            
+            return Nominal_Group([], object_noun, [], [], [])#No need to go further as we know the label now
+            
+        # Object Class if Common noun or Id
+        else:
+            try:
+               onto = ResourcePool().ontology_server.find('?concept', [object + ' rdf:type ?concept'])
+            except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
+            
+            object_noun = [_filter_ontology_inferred_class(onto)[0].lower()]
+                
+            if object_noun == ['owl:Thing']:
+                object_noun = [object]
+                
+            object_determiner = ['the']
+        
+        
+        
+        # Object Features 
+        object_features = []
+        description = [' hasFeature ', ' hasSize ']
+        for desc in description:
+            onto = []
+            try:
+               onto = ResourcePool().ontology_server.find('?concept', [object + desc + '?concept'])
+            except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
+                
+            if onto:
+                object_features.extend(onto)        
+        
+        # Object Location
+        object_location = []
+        description = [' isNexto ', ' isLocated ', ' isAt ', ' isIn ', ' hasGoal ', ' receivedBy ']
+                        
+        for desc in description:
+            onto = []
+            try:
+               onto = ResourcePool().ontology_server.find('?concept', [object + desc + '?concept'])
+            except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
+            
+            #Match preposition with description
+            prep = ''
+            if desc == ' isNexto ':
+                prep = 'next+to'
+            elif desc == ' isLocated ':
+                if 'BACK' in onto:
+                    prep = 'behind'
+                elif 'FRONT' in onto:
+                    prep = 'in+front+of'
+                elif 'LEFT' in onto:
+                    prep = 'at+the+left+of'
+                elif 'RIGHT' in onto:
+                    prep = 'at+the+right+of'
+                else:
+                    pass
+            elif desc == ' isIn ':
+                prep = 'in'
+            elif desc in  [' hasGoal ', ' receivedBy ']:
+                prep = 'to'
+            else:
+                prep = 'at'
+            
+            for i_c_object in onto:
+                object_location.append(Indirect_Complement([prep], [self.create_w_question_object(i_c_object)]))        
+        
+        #Keep Location in a relative description => relative
+        object_relative_description = []
+        if object_location:
+            object_relative_description = [Sentence("relative", "", [],
+                                                        [Verbal_Group(['be'],                                               
+                                                                       [],
+                                                                       'present_simple',
+                                                                       [],
+                                                                       object_location,
+                                                                       [],
+                                                                       [],
+                                                                       'affirmative',
+                                                                       [])])]
+        
+        
+        
+        
+        
+        #   Object owner if there exists
+        object_owner = []
+        description = [' belongsTo ']
+        onto = []
+        try:
+            onto = ResourcePool().ontology_server.find('?concept', [object + desc + '?concept'])
+        except AttributeError:
+            pass
+            
+        for n_cmpl_object in onto:
+            object_owner.append(self.create_w_question_object(n_cmpl_object))
+        
+            
+                
+        # Nominal Groupp to return
+        return Nominal_Group(object_determiner, 
+                            object_noun, 
+                            object_features, 
+                            object_owner,
+                            object_relative_description)
+        
+        
+            
 class Sentence:
     """
     A sentence is formed from:
@@ -202,9 +389,15 @@ class Nominal_Group:
         if self._resolved:
             res += colored_print(self.id, 'white', 'blue') + '\n' + colored_print('>resolved<', 'green')
         else:
-            res +=   colored_print(self.det, 'yellow') + " " + \
-                    colored_print(self.adj, 'green') + " " + \
-                    colored_print(self.noun, 'blue') + '\n'
+            if self.det:
+                res +=   colored_print(self.det, 'yellow') + " " 
+            
+            if self.adj:
+                res +=  colored_print(self.adj, 'green') + " " 
+            
+            if self.noun:
+                res +=   colored_print(self.noun, 'blue') + '\n'
+            
             
             if self.noun_cmpl:
                 for s in self.noun_cmpl:
