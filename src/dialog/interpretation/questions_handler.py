@@ -32,6 +32,12 @@ class QuestionHandler:
         self._statements = []
     
     
+    def set_current_speaker(self, current_speaker):
+        self._current_speaker = current_speaker
+    
+    def get_query_on_field(self):
+        return self._query_on_field
+        
     def process_sentence(self, sentence):
         self._sentence = sentence
         #StatementBuilder
@@ -272,6 +278,7 @@ class QuestionHandler:
                 
         return stmts
     
+
     
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):
@@ -353,7 +360,7 @@ class TestQuestionHandler(unittest.TestCase):
         
         self.qhandler = QuestionHandler("SPEAKER")
         self.sfactory = SentenceFactory()
-    
+    """
     def test_1_where_question(self):
         print "\n*************  test_1_where_question ******************"
         print "Where is the blue cube?"
@@ -646,7 +653,7 @@ class TestQuestionHandler(unittest.TestCase):
         expected_result = True        
         self.process(sentence , statement_query, expected_result)
         
-        
+    """
     def test_5_y_n_question(self):
         print "\n*************  test_5_y_n_question verb to be followed by complement******************"
           "Is the blue cube on the table?"
@@ -771,10 +778,19 @@ class TestQuestionHandler(unittest.TestCase):
         logging.info("************************************************")
         logging.info("* Factory: Sentence towards Verbalization .... *")
         logging.info("************************************************")
+        
+        res_factory = []
         if sentence.data_type == 'w_question':
-            response = self.sfactory.create_w_question_answer(sentence, self.qhandler._answer, self.qhandler._query_on_field)
-            logging.debug(str(response))
-            logging.debug(str(response.flatten()))
+            res_factory = self.sfactory.create_w_question_answer(sentence, self.qhandler._answer, self.qhandler._query_on_field)
+            
+        elif sentence.data_type == 'yes_no_question':
+            res_factory = self.sfactory.create_yes_no_answer(sentence, self.qhandler._answer)
+        else:
+            pass
+        
+        for rep in res_factory:
+            logging.debug(str(rep))
+            logging.debug(str(rep.flatten()))
         
         self.qhandler.clear_statements()
         self.assertEqual(res, expected_result)

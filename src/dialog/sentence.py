@@ -144,7 +144,7 @@ class SentenceFactory:
             sentence.sv[0].i_cmpl = [Indirect_Complement(prep, nominal_groupL)]
             
         
-        return sentence
+        return [sentence]
     
     
     def reverse_personal_pronoun(self, sentence):
@@ -341,8 +341,32 @@ class SentenceFactory:
                             object_owner,
                             object_relative_description)
         
+        
+        
+    def create_yes_no_answer(self, yes_no_question, answer):
+        
+        sentence = self.reverse_personal_pronoun(yes_no_question)
+        
+        if answer:
+            return [Sentence("agreement",
+                                "", 
+                                [],
+                                []),
+                    sentence]
+        
+        else:
+            for sv in sentence.sv:
+                sv.state = "negative"
+                
+            return [Sentence("disagreement",
+                                "",
+                                [],
+                                []),
+                    sentence]
             
             
+            
+               
 class Sentence:
     """
     A sentence is formed from:
