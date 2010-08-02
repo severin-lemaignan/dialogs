@@ -1996,7 +1996,7 @@ def unit_tests():
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sn[0]._quantifier="SOME"
-    rslt[0].sv[0].d_obj[0]._quantifier="NONE"
+    rslt[0].sv[0].d_obj[0]._quantifier="ANY"
     rslt[1].sn[0]._quantifier="ALL"
     rslt[2].sv[0].d_obj[0]._quantifier="SOME"
     

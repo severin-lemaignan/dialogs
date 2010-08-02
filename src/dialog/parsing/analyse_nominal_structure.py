@@ -21,7 +21,7 @@ import analyse_sentence
 Statement of lists
 """
 propo_rel_list=['who', 'which', 'that']
-quantifier_list=[('a','SOME'),('an','SOME'),('no','NONE'),('those','SOME'),('these','SOME'),('any','SOME'),('all','ALL'),('some','SOME'),
+quantifier_list=[('a','SOME'),('an','SOME'),('no','NONE'),('those','SOME'),('these','SOME'),('any','ANY'),('all','ALL'),('some','SOME'),
        ('every','ALL'),('more','SOME'),('less','SOME')]
 noun_end_s_sing=['news','glass', 'bus','Laas','business']
 irreg_plur_noun=[('glasses','glass'),('busses','bus')]
@@ -64,6 +64,8 @@ def recover_quantifier(nom_gr):
                 if nom_gr.det[0]=='a':
                     nom_gr.det=[]
                     nom_gr._quantifier='ONE'
+                elif nom_gr.det[0]=='no':
+                    nom_gr._quantifier='ANY'
                 
                 #We have to put the noun in singular form
                 for y in irreg_plur_noun:
