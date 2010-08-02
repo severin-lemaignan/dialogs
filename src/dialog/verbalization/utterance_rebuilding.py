@@ -55,7 +55,11 @@ def dispatching(analysis):
     This function dispatches the main class in corresponding function                
     Input=class sentence                         Output=sentence (list of string)
     """
-
+    
+    #For interjection
+    if analysis.data_type=='interjection':
+        return  sentence_rebuilding.statement(analysis)
+    
     #For statement
     if analysis.data_type=='statement':
         return sentence_rebuilding.statement(analysis)
@@ -219,7 +223,10 @@ def create_possession_claus(list):
     i=1
     #To take the first element
     phrase=list[i-1]
-    phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'s"
+    if list[i-1][len(list[i-1])-1].endswith('s'):
+        phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'"
+    else:
+        phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'s"
 
     #We concatenate
     while i < len(list):
@@ -228,8 +235,11 @@ def create_possession_claus(list):
             phrase=phrase+list[i]
         else:
             phrase=phrase+list[i][1:]
-            
-        phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'s"
+        
+        if list[i][len(list[i])-1].endswith('s'):
+            phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'"
+        else:
+            phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'s"
         
         i=i+1
     
@@ -463,10 +473,17 @@ def verbalising(class_list):
     """
 
     utterance=''
-
+    flag=i=0
+    
     #converting all classes sentence
-    for i in class_list:
-        sentence = dispatching(i)
+    while i < len(class_list):
+        if class_list[i].data_type=='interjection':
+            flag=1
+        
+        if flag==1 and class_list[i].data_type=='imperative':
+            class_list[i].sn=[]
+        
+        sentence = dispatching(class_list[i])
         
         #To perform some changes to have an usual sentence at the end
         sentence=and_case(sentence)
@@ -478,8 +495,13 @@ def verbalising(class_list):
         sentence=a_which_process(sentence)
         sentence=move_prep(sentence)
         
-        #To have the upper case and convert the list to string
-        sentence[0]=sentence[0][0].upper()+sentence[0][1:]
+        if i>0 and class_list[i-1].data_type=='interjection':
+            utterance=utterance[:len(utterance)-2]+', '
+        else:    
+            #To have the upper case
+            sentence[0]=sentence[0][0].upper()+sentence[0][1:]
+        
+        #convert the list to string
         sentence= other_functions.convert_string(sentence)
         
         #To concatenate the last punctuation to the last word of the sentence
@@ -489,6 +511,8 @@ def verbalising(class_list):
         sentence= sentence+' '
         
         utterance=utterance+sentence
+        
+        i=i+1
     
     #To remove the last escape (at the end)
     return utterance[:len(utterance)-1]

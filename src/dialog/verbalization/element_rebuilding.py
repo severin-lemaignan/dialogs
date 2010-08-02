@@ -60,6 +60,8 @@ def nom_struc_rebuilding(nom_struc):
                 nominal_structure=nominal_structure+['and']
             elif nom_struc[i]._conjunction=='OR':
                 nominal_structure=nominal_structure+['or']
+            elif nom_struc[i]._conjunction=='BUT':
+                nominal_structure=nominal_structure+['but']
         
         #We can have an 'or' with the first element if it is an indirect complement       
         if nom_struc[i]._conjunction=='OR':
@@ -132,7 +134,7 @@ def conjugate_vrb(tense, verb, sn, type, aim):
     Input=tense, verb in infinitive form, the adverb and subject                     
     Output=the verb conjugated                                                       
     """
-
+    
     #If there is no tense => we use the present simple
     if tense=='':
         tense='present simple'
@@ -264,6 +266,8 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
     #No modal => normal processing
     if vrb_condjugated==[]:
         vrb_condjugated=conjugate_vrb(tense, vrb, sn, type, aim)
+    elif tense=='present passive' or tense=='passive conditional':
+        vrb_condjugated=[vrb[0]]+['be']+conjugate_vrb('present passive', vrb[1:], sn,'', aim)[1:]
 
     #Affirmative case
     if state=='affirmative':
@@ -299,7 +303,7 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     
     #We take of the '+'
     vrb=other_functions.list_rebuilding(verb[0])
-
+    
     #If there is be or have : it is ok
     if vrb[0]=='be' or vrb[0]=='have':
         vrb_condjugated=conjugate_vrb(tense, vrb, sn, '', aim)
@@ -311,7 +315,11 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     for i in modal_list:
         if i==vrb[0]:
             if state=='negative':
+                if tense=='present passive' or tense=='passive conditional':
+                    return [vrb[0]]+['not']+adverb+['be']+conjugate_vrb('present passive', vrb[1:], sn,'', aim)[1:]
                 return [vrb[0]]+['not']+adverb+vrb[1:]
+            elif tense=='present passive' or tense=='passive conditional':
+                return [vrb[0]]+adverb+['be']+conjugate_vrb('present passive', vrb[1:], sn,'', aim)[1:]
             return [vrb[0]]+adverb+vrb[1:]
     
     if tense=='present simple' or tense=='past simple':
@@ -389,7 +397,7 @@ def end_question_rebuilding(sentence, sv ,sn, aim):
     Input=class sentence, subject and the verbal structure                           
     Output=end of the sentence                                                       
     """
-
+    
     #Recovering the verb in the correct form
     phrase=vrb_ques_rebuilding(sv[0].vrb_tense, sv[0].vrb_main, sv[0].vrb_adv, sn, sv[0].state, aim)
 

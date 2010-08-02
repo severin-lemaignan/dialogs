@@ -288,6 +288,6 @@ def sub_process(analysis):
     
     #processing as statement
     subsentence=statement(analysis)
-    if analysis.aim!='that':
+    if analysis.aim=='if':
         return [',']+[analysis.aim]+subsentence
     return [analysis.aim]+subsentence

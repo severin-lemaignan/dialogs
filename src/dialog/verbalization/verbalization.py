@@ -1583,7 +1583,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="What must be happened in the company today? The building shouldn't be built fastly. You can be here. It can be played by twenty players"
+        original_utterance="What must be happened in the company today? The building shouldn't fastly be built. You can be here. It can be played by twenty players."
         
         sentences=[Sentence('w_question', 'situation', 
             [],  
@@ -1618,7 +1618,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)
-    """
+    
     def test_47(self):
         
         print ''
@@ -1626,7 +1626,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="what size is the best one? What object is blue? How good is this"
+        original_utterance="What size is the best one? What object is blue? How good is this?"
         
         sentences=[Sentence('w_question', 'size', 
             [Nominal_Group(['the'],['one'],['best'],[],[])],  
@@ -1661,7 +1661,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="He Patrick, the bottle is on the table. give it to me"
+        original_utterance="Patrick, the bottle is on the table. Give it to me."
         
         sentences=[Sentence('interjection', '', 
             [Nominal_Group([],['Patrick'],[],[],[])],  
@@ -1678,8 +1678,6 @@ class TestVerbalization(unittest.TestCase):
                 [Nominal_Group([],['it'],[],[],[])], 
                 [Indirect_Complement(['to'],[Nominal_Group([],['me'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
-        
-        sentences[2].sv[0].d_obj[0]._quantifier="DIGIT"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1736,7 +1734,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="The bottle is not blue but it is red. It is not the glass :but the bottle. it is blue or red"
+        original_utterance="The bottle isn't blue but it's red. It isn't the glass but the bottle. It's blue or red."
         
         sentences=[Sentence('statement', '', 
             [Nominal_Group(['the'],['bottle'],[],[],[])], 
@@ -1762,8 +1760,8 @@ class TestVerbalization(unittest.TestCase):
                 [],
                 [], [] ,'affirmative',[])])]
                 
-        rslt[1].sv[0].d_obj[1]._conjunction="BUT"
-        rslt[2].sv[0].d_obj[1]._conjunction="OR"
+        sentences[1].sv[0].d_obj[1]._conjunction="BUT"
+        sentences[2].sv[0].d_obj[1]._conjunction="OR"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1771,7 +1769,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance) 
-        
+    """    
     def test_51(self):
         
         print ''
@@ -1859,7 +1857,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)  
-    
+    """
     def test_53(self):
         
         print ''
@@ -1890,7 +1888,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance) 
-    """
+    
     
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
