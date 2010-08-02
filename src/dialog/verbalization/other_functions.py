@@ -21,7 +21,7 @@ Statement of lists
 """
 cap_let_list=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 noun_end_s_sing=['news','glass', 'bus','Laas','business']
-plural_name=['people']
+plural_name=['people', 'information']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 
 

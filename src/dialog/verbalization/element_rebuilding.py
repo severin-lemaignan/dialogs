@@ -24,7 +24,7 @@ Statement of lists
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-irreg_plur_noun=[('glasses','glass'),('busses','bus')]
+irreg_plur_noun=[('glasses','glass'),('busses','bus'), ('information','information')]
 
 
 

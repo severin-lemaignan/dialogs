@@ -1769,7 +1769,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance) 
-    """    
+       
     def test_51(self):
         
         print ''
@@ -1777,7 +1777,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="It is not red :but blue. a kind of thing. this is my banana. bananas are fruits."
+        original_utterance="It isn't red but blue. A kind of thing. This is my banana. Bananas are fruits."
         
         sentences=[Sentence('statement', '', 
             [Nominal_Group([],['it'],[],[],[])], 
@@ -1787,10 +1787,7 @@ class TestVerbalization(unittest.TestCase):
                 [], [] ,'negative',[])]),
         Sentence('statement', '', 
             [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
-            [Verbal_Group(['.'], [],'present simple', 
-                [], 
-                [],
-                [], [] ,'affirmative',[])]),
+            []),
         Sentence('statement', '', 
             [Nominal_Group(['this'],[],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
@@ -1804,11 +1801,9 @@ class TestVerbalization(unittest.TestCase):
                 [],
                 [], [] ,'affirmative',[])])]
         
-        rslt[0].sv[0].d_obj[1]._conjunction="BUT"
-    rslt[1].sn[0]._quantifier="SOME"
-    rslt[1].sn[0].noun_cmpl[0]._quantifier="SOME"
-    rslt[3].sn[0]._quantifier="ALL"
-    rslt[3].sv[0].d_obj[0]._quantifier="ALL"
+        sentences[0].sv[0].d_obj[1]._conjunction="BUT"
+        sentences[3].sn[0]._quantifier="ALL"
+        sentences[3].sv[0].d_obj[0]._quantifier="ALL"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1846,10 +1841,10 @@ class TestVerbalization(unittest.TestCase):
                  Indirect_Complement(['about'],[Nominal_Group(['the'],['bottle'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
         
-        rslt[0].sn[0]._quantifier="SOME"
-    rslt[0].sv[0].d_obj[0]._quantifier="NONE"
-    rslt[1].sn[0]._quantifier="ALL"
-    rslt[2].sv[0].d_obj[0]._quantifier="SOME"
+        sentences[0].sn[0]._quantifier="SOME"
+        sentences[0].sv[0].d_obj[0]._quantifier="NONE"
+        sentences[1].sn[0]._quantifier="ALL"
+        sentences[2].sv[0].d_obj[0]._quantifier="SOME"
     
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1857,7 +1852,7 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance)  
-    """
+    
     def test_53(self):
         
         print ''
