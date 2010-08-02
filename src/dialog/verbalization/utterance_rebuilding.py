@@ -262,10 +262,11 @@ def possesion_form(sentence):
     flag=0
     
     while begin_pos < len(sentence):
-        if sentence[begin_pos] == 'of' and sentence[begin_pos-1]!='think' and find_sn_pos(sentence, begin_pos+1)!=[]:
+        
+        if sentence[begin_pos] == 'of' and sentence[begin_pos-1]!='think' and find_sn_pos(sentence, begin_pos+1)!=[] and sentence[begin_pos+1]!='thing':
             #We have to find the first nominal group
             nom_gr=find_sn_pos(sentence, begin_pos)
-            
+
             #In the case of a proper name
             while nom_gr!=[] and begin_pos!=0 and other_functions.find_cap_lettre(nom_gr[0])==1:
                 begin_pos=begin_pos-1
@@ -489,7 +490,8 @@ def verbalising(class_list):
         sentence=and_case(sentence)
         sentence=possesion_form(sentence)
         sentence=negation(sentence)
-        sentence=replace_tuple(sentence)
+        if len(class_list[i].sn)<2:
+            sentence=replace_tuple(sentence)
         sentence=delete_plus(sentence)
         sentence=delete_comma(sentence)
         sentence=a_which_process(sentence)

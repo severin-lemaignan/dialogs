@@ -1693,7 +1693,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="Jido, give me the bottle. Jido, Patrick and you will go to the cinema. Jido, Patrick and you, give me the bottle"
+        original_utterance="Jido, give me the bottle. Jido, Patrick and you will go to the cinema. Jido, Patrick and you, give me the bottle."
         
         sentences=[Sentence('interjection', '', 
             [Nominal_Group([],['Jido'],[],[],[])],  
@@ -1786,7 +1786,7 @@ class TestVerbalization(unittest.TestCase):
                 [],
                 [], [] ,'negative',[])]),
         Sentence('statement', '', 
-            [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
+            [Nominal_Group(['a'],['kind'],[],[Nominal_Group([],['thing'],[],[],[])],[])], 
             []),
         Sentence('statement', '', 
             [Nominal_Group(['this'],[],[],[],[])], 
@@ -1819,7 +1819,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="there are no bananas. All bananas are here. give me more information about the bottle."
+        original_utterance="There are no bananas. All bananas are here. Give me more information about the bottle."
         
         sentences=[Sentence('statement', '', 
             [Nominal_Group(['there'],[],[],[],[])], 
@@ -1842,7 +1842,7 @@ class TestVerbalization(unittest.TestCase):
                 [], [] ,'affirmative',[])])]
         
         sentences[0].sn[0]._quantifier="SOME"
-        sentences[0].sv[0].d_obj[0]._quantifier="NONE"
+        sentences[0].sv[0].d_obj[0]._quantifier="ANY"
         sentences[1].sn[0]._quantifier="ALL"
         sentences[2].sv[0].d_obj[0]._quantifier="SOME"
     

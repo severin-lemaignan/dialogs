@@ -133,7 +133,7 @@ def plural(word,quantifier,determinant):
         if word==k:
             return 1
         
-    if quantifier=='SOME' or quantifier=='ALL':
+    if quantifier=='SOME' or quantifier=='ALL' or quantifier=='ANY':
         return 1
     
     if quantifier=='DIGIT' and determinant[0]!='one':
@@ -160,8 +160,10 @@ def plural_noun(sn):
             return 1
         i=i+1
         
-    if sn[0].noun==[]:
+    if sn[0].noun==[] and sn[0]._quantifier!='SOME':
         return 0
+    elif sn[0]._quantifier=='SOME':
+        return 1
     else:
         return plural(sn[0].noun[0],sn[0]._quantifier, sn[0].det)
         

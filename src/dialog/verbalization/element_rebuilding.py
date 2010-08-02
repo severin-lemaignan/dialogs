@@ -68,7 +68,7 @@ def nom_struc_rebuilding(nom_struc):
             nominal_structure=nominal_structure+['or']
         
         #We recover the nominal group and his complement
-        if nom_struc[i]._quantifier=='SOME' or nom_struc[i]._quantifier=='ALL' or (nom_struc[i]._quantifier=='DIGIT' and nom_struc[i].det!='one'):
+        if nom_struc[i]._quantifier=='SOME' or nom_struc[i]._quantifier=='ALL' or nom_struc[i]._quantifier=='ANY' or (nom_struc[i]._quantifier=='DIGIT' and nom_struc[i].det!='one'):
             for n in irreg_plur_noun:
                 if nom_struc[i].noun!=[] and n[1]==nom_struc[i].noun[0]:
                     nn=[n[0]]
