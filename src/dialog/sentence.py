@@ -114,19 +114,18 @@ class SentenceFactory:
         
         
         if w_question.aim in ['color', 'size']: #TODO in ResourcePool, list of adjective with given class in the ontology
-            nominal_groupL = [Nominal_Group([], [], [object], [], [])]
+            nominal_groupL = [Nominal_Group([], [], w_answer, [], [])]
         
-        elif w_question.aim == 'people':
-            nominal_groupL = [Nominal_Group([], [object], [], [], [])]
         else:
             for response in w_answer:
                 ng = self.create_w_question_object(response)
                 nominal_groupL.append(ng)
             
         #Sentence holding the answer
-        sentence = w_question
+        
+        sentence = self.reverse_personal_pronoun(w_question)
         sentence.data_type = "statement"
-        sentence.aim = ""
+        
         if not query_on_field:#Default case on sentence.sn
             sentence.sn = nominal_groupL
             
@@ -134,22 +133,75 @@ class SentenceFactory:
             sentence.sv[0].d_obj = nominal_groupL
         
         elif query_on_field == 'QUERY_ON_INDIRECT_OBJ':
-            sentence.sv[0].i_cmpl = [Indirect_Complement(['to'], nominal_groupL)]
+            #preposition
+            if w_question.aim == 'place':
+                prep = ['at']
+            elif w_question.aim == 'people':
+                prep = ['to']
+            else:
+                prep = []
+                
+            sentence.sv[0].i_cmpl = [Indirect_Complement(prep, nominal_groupL)]
             
+        
         return sentence
     
+    
+    def reverse_personal_pronoun(self, sentence):
+        """ transforming all the nominal group in a sentence with the following rules:
+            You -> Me, I
+            I, Me -> you
+            my -> your
+            your -> my
+         """        
+        def _reverse_noun_group_personal_pronoun(nominal_groupL, subject = True):
+            """Transforming within a group of nominal group"""
+            for ng in nominal_groupL:
+                #Determinant
+                if ng.det and ng.det == ['my']:
+                    ng.det = ['your']
+                elif ng.det and ng.det == ['your']:
+                    ng.det = ['my']
+                
+                #Noun
+                if ng.noun and ng.noun == ['you']:
+                    ng.noun = ['I'] if subject else ['me'] 
+                elif ng.noun and ng.noun == ['I', 'me']:
+                    ng.noun = ['you']
+                else:
+                    pass             
+            return nominal_groupL
+            
+        #Subject sentence.sn
+        if sentence.sn:
+            sentence.sn = _reverse_noun_group_personal_pronoun(sentence.sn)
+            
+        for sv in sentence.sv:
+            #Direct object
+            if sv.d_obj:
+                sv.d_obj = _reverse_noun_group_personal_pronoun(sv.d_obj, False)
+                
+            #Indirect complement
+            for i_cmpl in sv.i_cmpl:
+                i_cmpl.nominal_group = _reverse_noun_group_personal_pronoun(i_cmpl.nominal_group)
+                
+        
+        return sentence
+        
+        
+        
     def create_w_question_object(self, object):
         """Creating a nominal group by retrieving relevant information on 'object'."""
         
         
         def _filter_ontology_inferred_class(object_list):
-            """Filter infered class from the ontology such as SpatialThing, EnduringThing-Localized, ... that add no needed infos """
+            """Filtering infered class from the ontology such as SpatialThing, EnduringThing-Localized, ... that add no needed infos """
             #TODO in ResourcePool()
             filter_list = ['Object', 'Location', 
                             'Agent', 'SpatialThing-Localized', 'SpatialThing',
                             'PartiallyTangible', 
                             'EnduringThing-Localized', 'Object-SupportingFurniture', 
-                            'Artifact', 'PhysicalSupport', 'owl:Thing',
+                            'Artifact', 'PhysicalSupport', 'owl:Thing', 'owl:thing',
                             'Place', 'Furniture']
             
             
@@ -165,9 +217,9 @@ class SentenceFactory:
             
         #end of _filter_ontology_inferred_class
         
+        #Creating object components : Det, Noun, noun-cmpl, etc.
         
-        
-        # Object label if Proper noun
+        # Label if Proper noun
         object_noun = []
         object_determiner = []
         
@@ -182,7 +234,8 @@ class SentenceFactory:
             
             return Nominal_Group([], object_noun, [], [], [])#No need to go further as we know the label now
             
-        # Object Class if Common noun or Id
+            
+        # Class Type if Common noun or Id
         else:
             try:
                onto = ResourcePool().ontology_server.find('?concept', [object + ' rdf:type ?concept'])
@@ -198,7 +251,7 @@ class SentenceFactory:
         
         
         
-        # Object Features 
+        # Adjectives or Object Features 
         object_features = []
         description = [' hasFeature ', ' hasSize ']
         for desc in description:
@@ -213,7 +266,7 @@ class SentenceFactory:
         
         # Object Location
         object_location = []
-        description = [' isNexto ', ' isLocated ', ' isAt ', ' isIn ', ' hasGoal ', ' receivedBy ']
+        description = [' isNexto ', ' isLocated ', ' isOn ', ' isIn ', ' hasGoal ', ' receivedBy ']
                         
         for desc in description:
             onto = []
@@ -241,6 +294,8 @@ class SentenceFactory:
                 prep = 'in'
             elif desc in  [' hasGoal ', ' receivedBy ']:
                 prep = 'to'
+            elif desc == ' isOn ':
+                prep = 'on'
             else:
                 prep = 'at'
             
@@ -265,7 +320,7 @@ class SentenceFactory:
         
         
         
-        #   Object owner if there exists
+        # Noun Complement or Object owner if there exists
         object_owner = []
         description = [' belongsTo ']
         onto = []
@@ -286,7 +341,7 @@ class SentenceFactory:
                             object_owner,
                             object_relative_description)
         
-        
+            
             
 class Sentence:
     """
@@ -389,6 +444,8 @@ class Nominal_Group:
         if self._resolved:
             res += colored_print(self.id, 'white', 'blue') + '\n' + colored_print('>resolved<', 'green')
         else:
+            
+            
             if self.det:
                 res +=   colored_print(self.det, 'yellow') + " " 
             

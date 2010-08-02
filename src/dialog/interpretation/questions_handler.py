@@ -189,7 +189,7 @@ class QuestionHandler:
                             'show':'hasGoal', 
                             None:'receivedBy'}
                             
-        dic_on_direct_obj = {'be':None,
+        dic_on_direct_obj = {'be':'owl:sameAs',
                             'put':'actsOnObject',
                             'give':'actsOnObject',
                             'show':'actsOnObject', 
@@ -200,8 +200,7 @@ class QuestionHandler:
         dic_place[None]['be'] = 'isAt'
                         
         #Dictionary for sentence.aim = 'thing' 
-        dic_thing={None:dic_on_direct_obj.copy()}                    
-        dic_thing[None]['be'] = 'owl:sameAs'
+        dic_thing={None:dic_on_direct_obj.copy()}
                 
         #Dictionary for sentence.aim = 'manner' 
         dic_manner={'be':'?sub_feature'}
@@ -209,7 +208,6 @@ class QuestionHandler:
         #Dictionary for sentence.aim = 'people'
         dic_people={'QUERY_ON_DIRECT_OBJ':dic_on_direct_obj.copy(),                                                                                              
                     'QUERY_ON_INDIRECT_OBJ':dic_on_indirect_obj.copy()}
-        dic_people['QUERY_ON_DIRECT_OBJ']['be'] = 'rdfs:label'
         
         #Dictionary for all
         #dic_aim = resourcePool.Dictionary(dic_aim)
@@ -305,7 +303,7 @@ class TestQuestionHandler(unittest.TestCase):
                      'blue_cube isOn table1',
                      
                      'another_cube rdf:type Cube',
-                     'another_cube isOn shelf1',
+                     'another_cube isAt shelf1',
                      'another_cube belongsTo SPEAKER',
                      'another_cube hasSize small',
                      
@@ -338,11 +336,24 @@ class TestQuestionHandler(unittest.TestCase):
                      'see_some_one actsOnObject SPEAKER',
                      ])
         except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
+            pass
+        
+        
+        try:
+            ResourcePool().ontology_server.addForAgent('SPEAKER', ['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
+                     'blue_cube rdf:type Cube',
+                     'shelf1 rdf:type Shelf',
+                     'id_danny rdfs:label "Danny"',
+                     'another_cube rdf:type Cube',
+                     ])
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
+                
+                
         
         self.qhandler = QuestionHandler("SPEAKER")
         self.sfactory = SentenceFactory()
-    """
+    
     def test_1_where_question(self):
         print "\n*************  test_1_where_question ******************"
         print "Where is the blue cube?"
@@ -415,7 +426,7 @@ class TestQuestionHandler(unittest.TestCase):
         expected_result = ['shelf1']
         
         self.process(sentence , statement_query, expected_result)
-    """
+
     def test_8_what_question(self):
         print "\n*************  test_8_what_question ******************"
         print "what is blue?"
@@ -461,6 +472,7 @@ class TestQuestionHandler(unittest.TestCase):
         statement_query = ['SPEAKER focusesOn ?concept']
         expected_result = ['another_cube']        
         self.process(sentence , statement_query, expected_result) 
+    
     
     def test_10_what_question(self):
         print "\n*************  test_10_w_question ******************"
@@ -527,7 +539,7 @@ class TestQuestionHandler(unittest.TestCase):
         statement_query = ['blue_cube hasColor ?concept']
         expected_result = ['blue']        
         self.process(sentence , statement_query, expected_result)
-        
+    
     def test_13_who_question(self):
         print "\n*************  test_13_who_question ******************"
         print "who is the SPEAKER?"
@@ -546,10 +558,10 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        statement_query = ['SPEAKER rdfs:label ?concept']
-        expected_result = ['Patrick']        
+        statement_query = ['SPEAKER owl:sameAs ?concept']
+        expected_result = ['SPEAKER']        
         self.process(sentence , statement_query, expected_result)
-
+    
     def test_14_who_question(self):
         print "\n*************  test_14_who_question ******************"
         print "who sees Patrick?"
@@ -604,7 +616,7 @@ class TestQuestionHandler(unittest.TestCase):
                             
         expected_result = ['SPEAKER']        
         self.process(sentence , statement_query, expected_result)
-    
+
     """
     def test_4_y_n_question(self):
         print "\n*************  test_4_y_n_question action verb******************"

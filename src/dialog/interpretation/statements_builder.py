@@ -180,6 +180,7 @@ class NominalGroupStatementBuilder:
                 pass
             
             if onto_id and [noun,"INSTANCE"] in onto_id:
+                logging.info("... \t" + noun + " is an existing ID in " + self._current_speaker + "'s model.")            
                 pass
             
             # Case : Personal pronoun
@@ -188,10 +189,12 @@ class NominalGroupStatementBuilder:
             
             #Case : proper noun (Always Capitalized in sentence, and never follows a determiner) 
             elif not nominal_group.det and noun.istitle():
+                logging.info("... \t" + noun + " is being processed as a proper noun in  " + self._current_speaker + "'s model.")            
                 self._statements.append(ng_id + " rdfs:label \"" + noun + "\"")
             
             # Case : common noun    
-            else:            
+            else:
+                logging.info("... \t" + noun + " is neither a common noun nor an existing ID in " + self._current_speaker + "'s model.")            
                 # get the exact class name (capitalized letters where needed)
                 class_name = get_class_name(noun, onto_id)
                 self._statements.append(ng_id + " rdf:type " + class_name)            
