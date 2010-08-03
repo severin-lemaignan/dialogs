@@ -7,7 +7,7 @@ import random
 import inspect
 import unittest
 from resources_manager import ResourcePool
-from statements_safe_adder import StatementSafeAdder, generate_id, printer
+from statements_safe_adder import StatementSafeAdder
 
 from dialog_exceptions import DialogError, GrammaticalError, EmptyNominalGroupId
 
@@ -72,7 +72,7 @@ class StatementBuilder:
             if not sn.id:
                 raise EmptyNominalGroupId("Nominal group ID not resolved or not affected yet")
             
-            self._statements.extend(vg_stmt_builder.process(sn.id))
+            self._statements.extend(vg_stmt_builder.process(subject_id = sn.id, subject_quantifier = sn._quantifier))
             self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
 
 class NominalGroupStatementBuilder:
@@ -96,7 +96,7 @@ class NominalGroupStatementBuilder:
             if not ng.id:
                 ng.id = self.set_nominal_group_id(ng)      
             
-            self.process_nominal_group(ng, ng.id)
+            self.process_nominal_group(ng, ng.id, None)
                                     
         return self._statements
     
@@ -126,24 +126,54 @@ class NominalGroupStatementBuilder:
         self._unresolved_ids.append(id)
         return id
     
-    def process_nominal_group(self, ng, ng_id):
-        """ The following function processes a single nominal_group"""
-        if not ng._resolved:
-            if ng.noun:
-                self.process_noun_phrases(ng, ng_id)
-            if ng.det:
-                self.process_determiners(ng, ng_id)
-            if ng.adj:
-                self.process_adjectives(ng, ng_id)
-            if ng.noun_cmpl:
-                self.process_noun_cmpl(ng, ng_id)
-            if ng.relative:
-                self.process_relative(ng, ng_id)
+    
+    def process_nominal_group(self, ng, ng_id, subject_quantifier):
+        """ The following function processes a single nominal_group with a given resolved ID and quantifier"""
+        
+        def process_all_component_of_a_nominal_group(nom_grp, id, quantifier):
+            """This processes all the components of a given nominal group 'nom_grp'. """
+            if nom_grp.noun:
+                self.process_noun_phrases(nom_grp, id, quantifier)
+            if nom_grp.det:
+                self.process_determiners(nom_grp, id)
+            if nom_grp.adj:
+                self.process_adjectives(nom_grp, id)
+            if nom_grp.noun_cmpl:
+                self.process_noun_cmpl(nom_grp, id)
+            if nom_grp.relative:
+                self.process_relative(nom_grp, id)
                 
-        elif ng.adjectives_only():
-            self.process_adjectives(ng, ng_id)
+        # End of process_all_component_of_a_nominal_group()
+        
+        
+        # Case of resolved nominal group
+        if ng._resolved:
+            # Case: Adjectives only
+            if ng.adjectives_only():
+                self.process_adjectives(ng, ng_id)
+            
+            #Case: indifinite Quantifier of the nominal group being processed. 
+            #       E.g: "jido is a robot" => 'robot' is in a nominal group with an indifinite quantifier 'SOME'
+            if subject_quantifier:
+                if ng._quantifier != 'ONE' :
+                        
+                    # Case of an finite nominal group described by an infinite one
+                    #
+                    # E.g "this is 'a blue cube'" provides:
+                    #   [something hasColor blue, something rdf:type Cube] where something is known in the ontology as [* focusesOn something]
+                    # However, in E.g "Apples are Yellow Fruits", 
+                    #   it is wrong to create the statement [Apples hasColor yellow], as it transforms "Apple" into on instance
+                    process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier)
+                    
+                else:
+                    if ng.noun:
+                        self.process_noun_phrases(ng, ng_id, subject_quantifier)
+            
+        #Case of a not resolved nominal group
         else:
-            pass
+            process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier)
+                
+            
 
     def process_determiners(self, nominal_group, ng_id):
         for det in nominal_group.det:
@@ -160,17 +190,47 @@ class NominalGroupStatementBuilder:
             # Case 4: general determiners: See http://www.learnenglish.de/grammar/determinertext.htm"""
             
     
-    def process_noun_phrases(self, nominal_group, ng_id):
+    def process_noun_phrases(self, nominal_group, ng_id, ng_quantifier):
         
-        def get_class_name(noun,conceptL):
-            """Simple function to obtain the exact class name"""
-            for c in conceptL:
-                if 'CLASS' in c: return c[0]
+        def get_object_property(subject_quantifier, object_quantifier):
+            """ The following returns the appropriate object property relationship between two nominal groups; the subject and the object.
+                These are the rule:
+                    - ONE + ONE => rdf:type ; 
+                        E.g: [The blue cube] is [small]. 
+                        Here, both nominal groups of 'the blue cube' and 'small' hold the quantifier 'ONE'
+                    
+                    - ONE + SOME => rdf:type; 
+                        E.g: [The blue object] is [a robot]. 
+                        Here, the nominal group of robot holds the indefinite quantifier 'SOME'
+                    
+                    - SOME + SOME => rdfs:subClassOf;
+                        E.g: [an apple] is [a fruit].
+                        Both the quantifier of the nominal groups of "apple" and "fruit" are 'SOME'.
+                        This is a convention for all nomina group with an indefinite determiner
+                        
+                    - ALL + ALL => rdfs:subClassOf ;
+                        E.g: [Apples] are [fruits].
+                        E.g: [the apples] are [the fruits].
+                        Here, both Apples and Fruits hold the quantifier 'ALL'. 
+                        This is a convention for all nominal group with plural nouns
+                    
+                    for more details about quantifiers, see sentence.py 
+            """
+            if [subject_quantifier, object_quantifier] in [['ONE', 'ONE'],
+                                                            ['ONE', 'SOME']]:
+                return ' rdf:type '
                 
-            return noun.capitalize()
-            
+            elif [subject_quantifier, object_quantifier] in [['SOME', 'SOME'],
+                                                               ['ALL', 'ALL']]:
+                return ' rdfs:subClassOf '
+                
+            else:#default case
+                return ' rdf:type '
+                
+        # End of def get_object_property()
+        
+        
         for noun in nominal_group.noun:
-            #logging.debug("Found a noun phrase:\"" + noun + "\"")
                         
             # Case : existing ID
             onto_id = ''
@@ -194,10 +254,13 @@ class NominalGroupStatementBuilder:
             
             # Case : common noun    
             else:
-                logging.info("... \t" + noun + " is neither a common noun nor an existing ID in " + self._current_speaker + "'s model.")            
+                logging.info("... \t" + noun + " is being processed as a common noun in " + self._current_speaker + "'s model.")            
                 # get the exact class name (capitalized letters where needed)
                 class_name = get_class_name(noun, onto_id)
-                self._statements.append(ng_id + " rdf:type " + class_name)            
+                
+                # get the exac object property (subClass or type)
+                object_property = get_object_property(ng_quantifier, nominal_group._quantifier)
+                self._statements.append(ng_id + object_property + class_name)            
             
     
     def process_adjectives(self, nominal_group, ng_id):
@@ -221,7 +284,7 @@ class NominalGroupStatementBuilder:
             else:
                 noun_cmpl_id = self.set_nominal_group_id(noun_cmpl)
                 
-            self.process_nominal_group(noun_cmpl, noun_cmpl_id)
+            self.process_nominal_group(noun_cmpl, noun_cmpl_id, None)
             self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
     
     def process_relative(self, nominal_group, ng_id):
@@ -270,15 +333,15 @@ class NominalGroupStatementBuilder:
                 for ng in rel.sn:
                     ng.id = rel_ng_stmt_builder.set_nominal_group_id(ng)
                     
-                    rel_ng_stmt_builder.process_nominal_group(ng, ng.id)    
-                    rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng.id)
+                    rel_ng_stmt_builder.process_nominal_group(ng, ng.id, None)    
+                    rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng.id, None)
                     
                 self._statements.extend(rel_ng_stmt_builder._statements)
                 self._unresolved_ids.extend(rel_ng_stmt_builder._unresolved_ids)
                 
             #case 2        
             else:
-                rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng_id)
+                rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng_id, None)
             
             self._statements.extend(rel_vg_stmt_builder._statements)
             self._unresolved_ids.extend(rel_vg_stmt_builder._unresolved_ids)
@@ -309,7 +372,10 @@ class VerbalGroupStatementBuilder:
     def clear_statements(self):
         self._statements = [] 
     
-    def process(self, subject_id = None):
+    def process(self, subject_id = None, subject_quantifier = None):
+        """This processes a sentence sv attribute, given the (resolved) ID and quantifier of the subject
+            and return a set of RDF statements.
+        """
         #Case: an imperative sentence does not contain an sn attribute,
         #      we will assume that it is implicitly an order from the current speaker.
         #      performed by the recipient of the order.
@@ -321,7 +387,7 @@ class VerbalGroupStatementBuilder:
             subject_id = '?concept'       
         
             
-        self.process_verbal_groups(self._verbal_groups  , subject_id)                
+        self.process_verbal_groups(self._verbal_groups, subject_id, subject_quantifier)                
         return self._statements
    
     def get_statements(self):
@@ -329,12 +395,13 @@ class VerbalGroupStatementBuilder:
     
     
     
-    def process_verbal_groups(self, verbal_groups, subject_id):
-        
+    def process_verbal_groups(self, verbal_groups, subject_id, subject_quantifier):
+        """This processes every single verbal group in the sentence sv, given the (resolved) ID and quantifier of the subject.
+        """
         for vg in verbal_groups:          
             self.process_state(vg)
             if vg.vrb_main:
-                self.process_verb(vg, subject_id)
+                self.process_verb(vg, subject_id, subject_quantifier)
             
             if vg.advrb:
                 self.process_adverbial_sentence(vg)
@@ -348,7 +415,7 @@ class VerbalGroupStatementBuilder:
         """For A != B, Shall we use owl:complementOf => see Negation in http://www.co-ode.org/resources/tutorials/intro/slides/OWLFoundationsSlides.pdf """
         pass
     
-    def process_verb(self, verbal_group, subject_id):
+    def process_verb(self, verbal_group, subject_id, subject_quantifier):
          
         for verb in verbal_group.vrb_main:
          
@@ -383,13 +450,12 @@ class VerbalGroupStatementBuilder:
                     self._statements.append(sit_id + " performedBy " + subject_id)
                     
             
-            
             if self._process_on_imperative:
                 self._statements.append(self._current_speaker + " desires " + sit_id)
             
             #Direct object
             if verbal_group.d_obj:
-                self.process_direct_object(verbal_group.d_obj, verb, sit_id)
+                self.process_direct_object(verbal_group.d_obj, verb, sit_id, subject_quantifier)
             
             
             #Indirect Complement
@@ -405,7 +471,8 @@ class VerbalGroupStatementBuilder:
             #logging.debug("Found verb:\"" + verb + "\"")
             pass
             
-    def process_direct_object(self, d_objects, verb, id):
+    def process_direct_object(self, d_objects, verb, id, quantifier):
+        """This processes the attribute d_obj of a sentence verbal groups."""
         #logging.debug("Processing direct object d_obj:")
         d_obj_stmt_builder = NominalGroupStatementBuilder(d_objects, self._current_speaker)
         
@@ -430,6 +497,7 @@ class VerbalGroupStatementBuilder:
             #        We process the d_obj with the same id as the subject of the sentence
             if verb == "be":
                 d_obj_id = id
+                d_obj_quantifier = quantifier
             
             
             #Case 2: The direct object follows another stative or action verb.
@@ -442,8 +510,10 @@ class VerbalGroupStatementBuilder:
                 
                 if d_obj_role:
                     self._statements.append(id + d_obj_role + d_obj_id)
+                    
+                d_obj_quantifier = None
             
-            d_obj_stmt_builder.process_nominal_group(d_obj, d_obj_id)
+            d_obj_stmt_builder.process_nominal_group(d_obj, d_obj_id, d_obj_quantifier)
             
         self._statements.extend(d_obj_stmt_builder._statements)
         self._unresolved_ids.extend(d_obj_stmt_builder._unresolved_ids)
@@ -504,7 +574,7 @@ class VerbalGroupStatementBuilder:
                     self._statements.append(sit_id + " is" + ic.prep[0].capitalize()+ " " + ic_noun_id)
                 
                 
-                i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id)
+                i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id, None)
                 
             self._statements.extend(i_stmt_builder._statements)
             self._unresolved_ids.extend(i_stmt_builder._unresolved_ids)
@@ -527,26 +597,45 @@ class VerbalGroupStatementBuilder:
             logging.debug("Processing adverbial clauses:")
             
             
-
+"""
+    The following function are not implemented for a specific class
+"""
+def get_class_name(noun,conceptL):
+    """Simple function to obtain the exact class name"""
+    for c in conceptL:
+        if 'CLASS' in c: return c[0]
         
+    return noun.capitalize()
+
+
+def generate_id(with_question_mark = True):
+    sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    sample = random.sample(sequence, 5)
+    return ("?" + "".join(sample)) if with_question_mark else ("".join(sample))
+
+
 """
     The following functions are implemented for test purpose only
 """
-
+        
 def dump_resolved(sentence, current_speaker, current_listener):
     def resolve_ng(ngs, builder):        
         for ng in ngs:
-            #Statement for resolution
-            logging.info("Statements sended to Resolution for discrmination for this nominal group...")
-            print(ng)
-            builder.process_nominal_group(ng, '?concept')
-            stmts = builder.get_statements()
-            builder.clear_statements()
-            for s in stmts:
-                logging.info("\t>>" + s)
+            if ng._quantifier != 'ONE':
+                logging.info("\t...No Statements sended to Resolution for discrmination for this nominal group...")
                 
-            logging.info("--------------<<\n")
-            
+            else:
+                #Statement for resolution
+                logging.info("Statements sended to Resolution for discrmination for this nominal group...")
+                print(ng)
+                builder.process_nominal_group(ng, '?concept', None)
+                stmts = builder.get_statements()
+                builder.clear_statements()
+                for s in stmts:
+                    logging.info("\t>>" + s)
+                    
+                logging.info("--------------<<\n")
+                
             #Dump resolution for StatementBuilder test ONLY
             logging.info("Dump resolution for statement builder test ONLY ...")
             
@@ -554,6 +643,19 @@ def dump_resolved(sentence, current_speaker, current_listener):
             
             if ng._resolved:
                 pass
+            
+            elif ng._quantifier != 'ONE':
+                
+                logging.debug("... Found nominal group with quantifier " + ng._quantifier)
+                onto_class = ''
+                try:
+                    onto_class =  ResourcePool().ontology_server.lookupForAgent(current_speaker, ng.noun[0])
+                except AttributeError: #the ontology server is not started of doesn't know the method
+                    pass
+                
+                ng.id = get_class_name(ng.noun[0], onto_class)
+                
+                
             elif ng.adjectives_only():
                 ng.id = '*'
             
@@ -796,8 +898,8 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_result, display_statement_result = True)
         
     
-    def test_3(self):
-        print "\n**** Test 3  *** "
+    def test_3_quantifier_one_some(self):
+        print "\n**** test_3_quantifier_one_some *** "
         print "Jido is a robot"
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
@@ -813,7 +915,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            'affirmative',
-                                          [])])  
+                                          [])]) 
+        #quantifier
+        sentence.sv[0].d_obj[0]._quantifier = 'SOME' # robot
+        
         expected_result = ['id_jido rdf:type Robot']   
         return self.process(sentence, expected_result, display_statement_result = True)
         
@@ -1063,8 +1168,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['another_cube hasColor blue',
-                          'another_cube rdf:type Cube']
+        #Quantifier
+        sentence.sv[0].d_obj[0]._quantifier = 'SOME' # a blue cube
+        expected_resut = ['another_cube rdf:type Cube',
+                            'another_cube hasColor blue']
                           
         another_expected_resut = ['SPEAKER focusesOn blue_cube']
         
@@ -1181,7 +1288,68 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_resut, display_statement_result = True)
 
     
-     
+    
+    def test_14_quantifier_all_all(self):        
+        print "\n**** test_14_quantifier_all_all  *** "
+        print "Apples are fruits"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['apple'],#apple is common noun. Therefore, do not capitalize.
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present_simple',
+                                           [Nominal_Group([],
+                                                        ['fruit'],
+                                                        [],
+                                                        [],
+                                                        [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                            [])])
+        
+        #quantifier
+        sentence.sn[0]._quantifier = 'ALL' # apples
+        sentence.sv[0].d_obj[0]._quantifier = 'ALL' # fruits
+        expected_resut = ['Apple rdfs:subClassOf Fruit']
+        
+        return self.process(sentence, expected_resut, display_statement_result = True)
+    
+    def test_15_quantifier_some_some(self):        
+        print "\n**** test_15_quantifier_some_some  *** "
+        print "an apple is a fruit"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['an'],
+                                            ['apple'],#apple is common noun. Therefore, do not capitalize.
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present_simple',
+                                           [Nominal_Group(['a'],
+                                                        ['fruit'],
+                                                        [],
+                                                        [],
+                                                        [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                            [])])
+        
+        #quantifier
+        sentence.sn[0]._quantifier = 'SOME' # apples
+        sentence.sv[0].d_obj[0]._quantifier = 'SOME' # fruits
+        expected_resut = ['Apple rdfs:subClassOf Fruit']
+        
+        return self.process(sentence, expected_resut, display_statement_result = True)
+    
+    
     def process(self, sentence, expected_result, display_statement_result = False):
          
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
@@ -1194,7 +1362,10 @@ class TestStatementBuilder(unittest.TestCase):
         
         if display_statement_result:
             logging.info( "*** StatementSafeAdder result from " + inspect.stack()[1][3] + " ****")
-            printer(res)
+            for s in res:
+                logging.info("\t >> " + s)            
+            logging.info("\t --------------  << ")
+        
         self.assertTrue(self.check_results(res, expected_result))
         
         

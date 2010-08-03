@@ -57,14 +57,7 @@ class StatementSafeAdder():
 		except AttributeError: #the ontology server is not started of doesn't know the method
 			pass
 
-def generate_id(with_question_mark = True):
-    sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    sample = random.sample(sequence, 5)
-    return ("?" + "".join(sample)) if with_question_mark else ("".join(sample))
 
-def printer(list):
-    for l in list:
-        print l
 
 def unit_tests():
     """This function tests the main features of the class StatementBuilder"""

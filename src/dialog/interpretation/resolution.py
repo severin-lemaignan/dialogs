@@ -7,7 +7,7 @@ from helpers import colored_print
 
 from dialog_exceptions import UnsufficientInputError, UnknownVerb
 from resources_manager import ResourcePool
-from statements_builder import NominalGroupStatementBuilder #for nominal group discrimination
+from statements_builder import NominalGroupStatementBuilder, get_class_name #for nominal group discrimination
 from discrimination import Discrimination
 from sentence import SentenceFactory, Comparator
 
@@ -141,15 +141,22 @@ class Resolver:
             return nominal_group
         
         if nominal_group.adjectives_only():#E.g, 'big' in 'the yellow banana is big'.
-			nominal_group.id = '*'
-			nominal_group._resolved = True
-			return nominal_group
-			
-        if not nominal_group.noun:
+            nominal_group.id = '*'
+            nominal_group._resolved = True
+            return nominal_group
+        
+        
+        if nominal_group._quantifier != 'ONE': # means the nominal group holds an indefinite determiner. E.g a robot, every plant, fruits, ...
+            nominal_group.id = get_class_name(nominal_group.noun[0], onto)
+            nominal_group._resolved = True
+            return nominal_group
+        
+        
+        if not nominal_group.noun:# Nominal group with no noun.
             return nominal_group
         
         #In the following , if there are two nouns in the same sentence
-        #they will be split into two different nominal groups
+        #they will be split into two different nominal groups. Therefore we can use noun[0]
         if onto and [nominal_group.noun[0],"INSTANCE"] in onto:
             nominal_group.id = nominal_group.noun[0]
             nominal_group._resolved = True
@@ -177,14 +184,14 @@ class Resolver:
         # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
         resolved_sn = []
         for sn in array_sn:
-			onto = None
-			if sn.noun:
-				try:
-					onto = ResourcePool().ontology_server.lookup(sn.noun[0])
-				except AttributeError: #the ontology server is not started or doesn't know the method
-					pass
+            onto = None
+            if sn.noun:
+                try:
+                    onto = ResourcePool().ontology_server.lookup(sn.noun[0])
+                except AttributeError: #the ontology server is not started or doesn't know the method
+                    pass
             
-			resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
+            resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
            
         return resolved_sn
     
@@ -195,7 +202,7 @@ class Resolver:
         
         
         logging.debug(str(nominal_group))
-        builder.process_nominal_group(nominal_group, '?concept')
+        builder.process_nominal_group(nominal_group, '?concept', None)
         stmts = builder.get_statements()
         builder.clear_statements()
         logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
@@ -258,8 +265,8 @@ class Resolver:
         return verbal_group
 
 def unit_tests():
-	"""This function tests the main features of the class Resolver"""
-	print("This is a test...")
+    """This function tests the main features of the class Resolver"""
+    print("This is a test...")
 
 if __name__ == '__main__':
-	unit_tests()
+    unit_tests()

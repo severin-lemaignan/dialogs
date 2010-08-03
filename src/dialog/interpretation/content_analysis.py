@@ -4,7 +4,8 @@
 import logging
 from helpers import colored_print
 
-from interpretation.statements_builder import StatementBuilder, StatementSafeAdder, QuestionHandler
+from interpretation.statements_builder import StatementBuilder, StatementSafeAdder
+from interpretation.questions_handler import QuestionHandler
 from sentence import SentenceFactory
 
 """This module implements ...
