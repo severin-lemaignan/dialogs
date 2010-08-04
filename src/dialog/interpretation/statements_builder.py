@@ -152,22 +152,23 @@ class NominalGroupStatementBuilder:
             if ng.adjectives_only():
                 self.process_adjectives(ng, ng_id)
             
-            #Case: indifinite Quantifier of the nominal group being processed. 
-            #       E.g: "jido is a robot" => 'robot' is in a nominal group with an indifinite quantifier 'SOME'
+            #Case: Quantifier of the nominal group being processed. 
             if subject_quantifier:
-                if ng._quantifier != 'ONE' :
-                        
-                    # Case of an finite nominal group described by an infinite one
-                    #
-                    # E.g "this is 'a blue cube'" provides:
-                    #   [something hasColor blue, something rdf:type Cube] where something is known in the ontology as [* focusesOn something]
-                    # However, in E.g "Apples are Yellow Fruits", 
-                    #   it is wrong to create the statement [Apples hasColor yellow], as it transforms "Apple" into on instance
+                # Case of an finite nominal group described by either a finite or an infinite one
+                #
+                # E.g "this is 'a blue cube'" provides:
+                #   [something hasColor blue, something rdf:type Cube] where something is known in the ontology as [* focusesOn something]
+                # E.g "this is 'my cube'" should provide [something belongsTo *]
+                if subject_quantifier == 'ONE':
                     process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier)
-                    
-                else:
-                    if ng.noun:
-                        self.process_noun_phrases(ng, ng_id, subject_quantifier)
+                
+                # Case of an infinite nominal group
+                # E.g "Apples are Yellow Fruits",  or "An apple is a yellow fruit"
+                #   it is wrong to create the statement [Apples hasColor yellow], as it transforms "Apple" into on instance
+                elif ng.noun and \
+                    subject_quantifier in ['SOME', 'ALL'] and \
+                        ng._quantifier in ['SOME', 'ALL']:
+                    self.process_noun_phrases(ng, ng_id, subject_quantifier)
             
         #Case of a not resolved nominal group
         else:
@@ -399,20 +400,17 @@ class VerbalGroupStatementBuilder:
         """This processes every single verbal group in the sentence sv, given the (resolved) ID and quantifier of the subject.
         """
         for vg in verbal_groups:          
-            self.process_state(vg)
             if vg.vrb_main:
                 self.process_verb(vg, subject_id, subject_quantifier)
             
             if vg.advrb:
-                self.process_adverbial_sentence(vg)
-            if vg.vrb_adv:
-                self.process_adverb(vg)
+                self.process_sentence_adverb(vg)
+            
             if vg.vrb_sub_sentence:
                 self.process_adverb(vg)   
 
     #TODO:   
-    def process_state(self, state):
-        """For A != B, Shall we use owl:complementOf => see Negation in http://www.co-ode.org/resources/tutorials/intro/slides/OWLFoundationsSlides.pdf """
+    def process_state(self, verb, id):
         pass
     
     def process_verb(self, verbal_group, subject_id, subject_quantifier):
@@ -448,10 +446,11 @@ class VerbalGroupStatementBuilder:
                 else:
                     self._statements.append(sit_id + " rdf:type " + verb.capitalize())
                     self._statements.append(sit_id + " performedBy " + subject_id)
-                    
             
+            #Imperative specification, add the goal verb 'desire'
             if self._process_on_imperative:
                 self._statements.append(self._current_speaker + " desires " + sit_id)
+            
             
             #Direct object
             if verbal_group.d_obj:
@@ -462,8 +461,9 @@ class VerbalGroupStatementBuilder:
             if verbal_group.i_cmpl:
                 self.process_indirect_complement(verbal_group.i_cmpl, verb, sit_id)
             
-                    
-                    
+            # Adverbs modifiying the manner of an action verb
+            if verbal_group.vrb_adv:
+                self.process_action_verb_adverb(verbal_group.vrb_adv, verb, sit_id)
                 
             
     def process_vrb_sec(self, verbal_group):
@@ -582,14 +582,35 @@ class VerbalGroupStatementBuilder:
                 
                 
     #TODO:      
-    def process_adverbial_sentence(self, advrb):
+    def process_sentence_adverb(self, advrb, verb, id):
         for adv in advrb:
             logging.debug("Found adverbial phrase:\"" + adv + "\"")
             
-    #TODO:       
-    def process_adverb(self, advrb):
-        for adv in advrb:
-            logging.debug("Found adverb:\"" + adv + "\"")
+    
+    def process_action_verb_adverb(self, advrb ,verb, id):
+        """This provides a solution in order to process adverbs modifying the meaning of the action verbs.
+            Stative verbs are not taken into consideration.
+            
+            Eg: Danny 'slowly' drives the blue car.
+            In this example, we may want to create the following statements: 
+                [ * rdf:type Drive, 
+                  * performedBy id_dany,
+                  * involves id_blue_car,
+                  ...
+                  * actionSupervisionMode SLOW]
+            
+            However, this solution is not appropriate for stative verb. It wouldn't make sense to say "Danny is slowly a human".
+        """
+        
+        if verb == 'be':
+            info.debug("Trying to process an adverb that aim to modify an action verb with the sative verb 'To Be' ... No method implemented!")
+        else:
+            for adv in advrb:
+                #Creating statement [id actionSupervisionMode pattern], where if adv == carefully then pattern = CAREFUL, if adv == slowly then pattern = SLOW, ...
+                self._statements.append(id + " actionSupervisionMode "+ adv[:len(adv) - 2].upper())
+            
+            
+            
             
     #TODO:
     def vrb_subsentence(self, vrb_sub_sentence):
@@ -667,7 +688,9 @@ def dump_resolved(sentence, current_speaker, current_listener):
             
             #common noun
             elif [ng.noun, ng.det, ng.adj] == [['car'], ['my'],[]]:
-                ng.id = 'volvo'                
+                ng.id = 'volvo'     
+            elif [ng.noun, ng.det, ng.adj] == [['cube'], ['my'],[]]:
+                ng.id = 'another_cube'  
             elif [ng.noun, ng.det, ng.adj] == [['bottle'], ['the'], []]:
                 ng.id = 'a_bottle'
             elif [ng.noun, ng.det, ng.adj] == [['man'], ['the'], []]:
@@ -795,7 +818,9 @@ class TestStatementBuilder(unittest.TestCase):
                           'id_tom belongsTo id_danny',
                           'id_toulouse rdfs:label "Toulouse"',
                           'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
-                          'SPEAKER focusesOn another_cube'])
+                          'SPEAKER focusesOn another_cube',
+                          'shelf1 rdf:type Shelf',
+                          ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
@@ -1177,6 +1202,34 @@ class TestStatementBuilder(unittest.TestCase):
         
         return self.process(sentence, expected_resut, display_statement_result = True)
     
+    def test_9_this_my(self):
+        
+        print "\n**** test_9_this_my  *** "
+        print "this is my cube"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['this'],
+                                            [],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present_simple',
+                                           [Nominal_Group(['my'],
+                                                          ['cube'],
+                                                          [],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_resut = ['another_cube belongsTo SPEAKER']
+                          
+        another_expected_resut = ['SPEAKER focusesOn blue_cube']
+        
+        return self.process(sentence, expected_resut, display_statement_result = True)
     
     
     def test_10_this(self):
@@ -1267,7 +1320,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['this'],
                                             ['cube'],
-                                            ['blue'],
+                                            [],
                                             [],
                                             [])],                                         
                              [Verbal_Group(['be'],
@@ -1348,6 +1401,37 @@ class TestStatementBuilder(unittest.TestCase):
         expected_resut = ['Apple rdfs:subClassOf Fruit']
         
         return self.process(sentence, expected_resut, display_statement_result = True)
+    
+    
+    
+    """Action adverbs"""
+    def test_16_adverb(self):
+        print "\n**** test_16_negative *** "
+        print "Danny slowly drives the blue car"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['drive'],
+                                           [],
+                                           'present_simple',
+                                           [Nominal_Group(['the'],
+                                                          ['car'],
+                                                          ['blue'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           ['quickly'],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = ['* rdf:type Drive', 
+                            '* performedBy id_danny',
+                            '* involves blue_car',
+                            '* actionSupervisionMode QUICK']   
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     
     def process(self, sentence, expected_result, display_statement_result = False):
