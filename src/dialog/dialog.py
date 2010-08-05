@@ -25,6 +25,10 @@ from verbalization.verbalization import Verbalizer
 VERSION = "0.1"
 
 class Dialog(Thread):
+    
+    #This holds the history of conversation of all the instances of Dialog.
+    dialog_history = []
+    
     def __init__(self):
         Thread.__init__(self)
         
@@ -102,6 +106,10 @@ class Dialog(Thread):
                 sys.stdout.write(colored_print( \
                             self._verbalizer.verbalize(output), \
                             'red') + "\n")
+                            
+                # Store output 
+                Dialog.dialog_history.extend(output)
+                
             except Empty:
                 pass
             
@@ -193,6 +201,11 @@ class Dialog(Thread):
             self.last_stmts_set = self._content_analyser.analyse(self.active_sentence, 
                                                                     self.current_speaker)
             self._sentence_output_queue.put(self._content_analyser.analyse_output())
+            
+            
+            #Dialog History
+            self._logger.debug(colored_print(" \t Sentence saved in history", 'green'))
+            Dialog.dialog_history.append(self.active_sentence)
             
         #Finalizing the processing
         self._logger.info(colored_print("\n###################################\n", 'green'))
