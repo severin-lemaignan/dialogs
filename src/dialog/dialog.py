@@ -97,13 +97,11 @@ class Dialog(Thread):
             
             try:
                 output = self._sentence_output_queue.get(block = False)
-
                 self._logger.debug(colored_print("> Got output to verbalize: ", 'bold'))
                 
                 sys.stdout.write(colored_print( \
                             self._verbalizer.verbalize(output), \
                             'red') + "\n")
-                  
             except Empty:
                 pass
             
@@ -192,7 +190,9 @@ class Dialog(Thread):
             self._logger.info(colored_print("###################################", 'green'))
             self._logger.info(colored_print("#        CONTENT ANALYSIS         #", 'green'))
             self._logger.info(colored_print("###################################", 'green'))
-            self.last_stmts_set = self._content_analyser.analyse(self.active_sentence, self.current_speaker)
+            self.last_stmts_set = self._content_analyser.analyse(self.active_sentence, 
+                                                                    self.current_speaker)
+            self._sentence_output_queue.put(self._content_analyser.analyse_output())
             
         #Finalizing the processing
         self._logger.info(colored_print("\n###################################\n", 'green'))

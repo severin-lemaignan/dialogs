@@ -203,17 +203,16 @@ class SentenceFactory:
                             'EnduringThing-Localized', 'Object-SupportingFurniture', 
                             'Artifact', 'PhysicalSupport', 'owl:Thing', 'owl:thing',
                             'Place', 'Furniture']
-            
-            
+                        
             if not object_list:
-                return ['owl:Thing']
+                return ['owl:thing']
             
             result_list = []
             for item in object_list:
                 if not item in filter_list:
                     result_list.append(item)
             
-            return result_list
+            return result_list if result_list else ['owl:thing']
             
         #end of _filter_ontology_inferred_class
         
@@ -243,8 +242,8 @@ class SentenceFactory:
                 pass
             
             object_noun = [_filter_ontology_inferred_class(onto)[0].lower()]
-                
-            if object_noun == ['owl:Thing']:
+            
+            if object_noun == ['owl:thing']:
                 object_noun = [object]
                 
             object_determiner = ['the']

@@ -163,7 +163,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         
     def test_sentence5(self):
-        """FAIL
+        
         print("\n##################### test_sentence5 - THIS ########################\n")
         ####
         stmt = "This is my banana"
@@ -172,8 +172,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ###
         expected_result = ['y_banana belongsTo myself']
         self.assertTrue(self.check_results(res, expected_result))
-        """
-        
+                
         stmt = "This is a green banana" ## ERROR -> y_banana can not be green
         ####
         res = self.dialog.test('myself', stmt)
@@ -514,6 +513,164 @@ class TestDiscriminateDialog(unittest.TestCase):
         self.dialog.join()
 
 
+
+class TestQuestionHandlerDialog(unittest.TestCase):
+    """Tests the processing of question by the Dialog module.
+    This must be tested with oro-server using the testsuite.oro.owl ontology.
+    """
+    
+    def setUp(self):
+        self.dialog = Dialog()
+        self.dialog.start()
+        
+        self.oro = ResourcePool().ontology_server
+        
+        try:
+            self.oro.add(['shelf1 rdf:type Shelf',
+                        'table1 rdf:type Table', 
+                        'table2 rdf:type Table', 
+                        'table2 hasColor blue', 
+                        'Banana rdfs:subClassOf Plant',
+                        'y_banana rdf:type Banana',
+                        'y_banana hasColor yellow',
+                        'y_banana isOn shelf',
+                        'green_banana rdf:type Banana',
+                        'green_banana hasColor green',
+                        'green_banana isOn table2',
+                        'myself focusesOn y_banana',
+                        'myself rdfs:label "Jido"',
+                        'see_tom performedBy myself',
+                        'see_tom rdf:type See',
+                        'see_tom involves id_tom',
+                        'id_tom rdf:type Human',
+                        'id_tom rdfs:label "Tom"',
+                        'id_tom isNexto myself',                        
+                        ])
+            
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
+
+    def test_question1_where(self):
+
+        print("\n##################### test_question1_where ########################\n")
+        
+        ####
+        stmt = "Where is the green banana?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        self.assertTrue(res)
+    
+        
+    
+    def test_question2_what(self):
+
+        print("\n##################### test_question2_what ########################\n")
+        
+        ####
+        stmt = "What is yellow?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        self.assertTrue(res)
+        
+    
+    def test_question3_what(self):
+        print("\n##################### test_question3_what ########################\n")
+        
+        stmt = "What object is yellow?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        self.assertTrue(res)
+        
+    def test_question4_what(self):    
+        print("\n##################### test_question4_what ########################\n")
+        
+        stmt = "What color is the banana that is on the table?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        self.assertTrue(res)
+    
+    def test_question5_what(self):    
+        print("\n##################### test_question5_what ########################\n")
+        
+        stmt = "What is this?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        self.assertTrue(res)
+
+    
+    def test_question6_who(self):
+
+        print("\n##################### test_question6_who ########################\n")
+        
+        ####
+        stmt = "Who are you?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        self.assertTrue(res)
+    
+    def test_question7_who(self):
+        print("\n##################### test_question7_who ########################\n")
+        
+        stmt = "Who is the myself?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements: ", res
+        self.assertTrue(res)
+        
+    def test_question8_who(self):
+        print("\n##################### test_question8_who ########################\n")
+        
+        stmt = "Who do you see?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        self.assertTrue(res)
+        
+    def test_question9_who(self):
+        print("\n##################### test_question9_who ########################\n")
+        
+        stmt = "Who is Tom?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        self.assertTrue(res)
+        
+        
+
+
 class TestISUDialog(unittest.TestCase):
     """Tests the differents features of the Dialog module.
     This must be tested with oro-server using the testsuite.oro.owl ontology.
@@ -615,11 +772,23 @@ if __name__ == '__main__':
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate8'))
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate9'))
     
+    suiteQuestionHandler = unittest.TestSuite()
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question1_where'))
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question2_what'))
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question3_what'))
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question4_what'))
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question5_what'))
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question6_who'))
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question7_who'))
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question8_who'))
+    suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question9_who'))
+    
     suiteISU = unittest.TestSuite()
     suiteISU.addTest(TestISUDialog('test_ISU1'))
     
-    unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
-    unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
-    unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
+    #unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
+    #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
+    #unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
+    unittest.TextTestRunner(verbosity=2).run(suiteQuestionHandler)
     #unittest.TextTestRunner(verbosity=2).run(suiteISU)
 

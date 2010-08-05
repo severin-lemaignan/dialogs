@@ -360,7 +360,7 @@ class TestQuestionHandler(unittest.TestCase):
         
         self.qhandler = QuestionHandler("SPEAKER")
         self.sfactory = SentenceFactory()
-    """
+    
     def test_1_where_question(self):
         print "\n*************  test_1_where_question ******************"
         print "Where is the blue cube?"
@@ -653,7 +653,7 @@ class TestQuestionHandler(unittest.TestCase):
         expected_result = True        
         self.process(sentence , statement_query, expected_result)
         
-    """
+    
     def test_5_y_n_question(self):
         print "\n*************  test_5_y_n_question verb to be followed by complement******************"
           "Is the blue cube on the table?"
