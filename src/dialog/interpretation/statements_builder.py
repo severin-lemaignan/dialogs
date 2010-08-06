@@ -464,7 +464,11 @@ class VerbalGroupStatementBuilder:
             # Adverbs modifiying the manner of an action verb
             if verbal_group.vrb_adv:
                 self.process_action_verb_adverb(verbal_group.vrb_adv, verb, sit_id)
-                
+            
+            
+            #verb tense
+            if verbal_group.vrb_tense:
+                self.process_verb_tense(verbal_group.vrb_tense, verb, sit_id)
             
     def process_vrb_sec(self, verbal_group):
         for verb in verbal_group.vrb_sec:
@@ -608,6 +612,43 @@ class VerbalGroupStatementBuilder:
             for adv in advrb:
                 #Creating statement [id actionSupervisionMode pattern], where if adv == carefully then pattern = CAREFUL, if adv == slowly then pattern = SLOW, ...
                 self._statements.append(id + " actionSupervisionMode "+ adv[:len(adv) - 2].upper())
+            
+            
+    def process_verb_tense(self, vrb_tense, verb, id):
+        """This provides a solution to process verb tense for action verbs ONLY.
+        we create the object property 'eventOccursIn' and bind it with the flag PAST or FUTUR
+        
+            E.g: Danny 'went' to Toulouse.
+            In this example we may want to create the statements:
+            [* rdf:type Go,
+             * performedBy id_anny,
+             * hasGoal id_toulouse,
+             ...
+             
+             * eventOccursIn PAST]
+             
+            Although, we do not implement this for stative verb, it may be adapted in the case of describing objects feature, location, and so on.
+            Therefore, we need to create new object properties.
+                E.g : 'hasFeature' may be turned into 'hadFeature' and 'willHaveFeature'
+                      'isOn' may be turned into 'wasOn' and 'willBeOn'.
+            
+            It would not work for object type or class, as it does not make sense to say "Fruits were Plants".
+        """
+        
+        #Assiging the variable 'tense' with either PAST or FUTUR
+        tense = '' #Nothing to do if the verb tense involves the present
+        
+        #PAST
+        if vrb_tense in ['past simple', 'present perfect']:
+            tense = 'PAST'
+        
+        #FUTUR
+        if vrb_tense in ['future simple', 'future progressive']:
+            tense = 'FUTUR'
+        
+        if verb != 'be' and tense:
+            self._statements.append(id + ' eventOccursIn ' + tense)
+            
             
             
             
@@ -843,7 +884,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['drive'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['a'],['car'],[],[],[])],
                                            [],
                                            [],
@@ -866,8 +907,6 @@ class TestStatementBuilder(unittest.TestCase):
         #    or
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
-    
-                        
     """
     
     def test_1(self):
@@ -881,7 +920,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['drive'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['the'],['car'],['blue'],[],[])],
                                            [],
                                            [],
@@ -908,7 +947,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['be'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group([],
                                                           [],
                                                           ['blue'],
@@ -934,7 +973,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['be'],
                                            None,
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['a'],['robot'],[],[],[])],
                                            [],
                                            [],
@@ -975,7 +1014,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [relative4])],                                         
                              [Verbal_Group(['have'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(
                                                           ['a'],
                                                           ['car'],
@@ -1015,7 +1054,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [relative5])],                                         
                              [Verbal_Group(['have'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(
                                                           ['a'],
                                                           ['car'],
@@ -1078,6 +1117,7 @@ class TestStatementBuilder(unittest.TestCase):
                           '* receivedBy myself']
         
         return self.process(sentence, expected_resut, display_statement_result = True)
+    
         
     
     def test_7(self):
@@ -1092,7 +1132,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['go'],
                                            [],
-                                           'present_simple',
+                                           'past simple',
                                            [],
                                            [Indirect_Complement(['to'], [Nominal_Group([],['Toulouse'],[],[],[])])],
                                            [],
@@ -1101,10 +1141,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            [])])
         expected_resut = ['* rdf:type Go',
                           '* performedBy SPEAKER',
-                          '* hasGoal id_toulouse']
+                          '* hasGoal id_toulouse',
+                          '* eventOccursIn PAST']
         return self.process(sentence, expected_resut, display_statement_result = True)
         
-    
     def test_8(self):
         print "\n**** Test 8  *** "
         print "put the bottle in the blue car"
@@ -1112,7 +1152,7 @@ class TestStatementBuilder(unittest.TestCase):
                              [],                                         
                              [Verbal_Group(['put'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['the'],['bottle'],[],[],[])],
                                            [Indirect_Complement(['in'],
                                                                 [Nominal_Group(['the'],['car'],['blue'],[],[])]) ],
@@ -1149,7 +1189,7 @@ class TestStatementBuilder(unittest.TestCase):
                              [],                                         
                              [Verbal_Group(['show'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['the'],
                                                           ['bottle'],
                                                           [],
@@ -1182,7 +1222,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['be'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['a'],
                                                           ['cube'],
                                                           ['blue'],
@@ -1214,7 +1254,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['be'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['my'],
                                                           ['cube'],
                                                           [],
@@ -1244,7 +1284,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['be'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [],
                                            [Indirect_Complement(['on'],
                                                                 [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
@@ -1270,7 +1310,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['go'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [],
                                            [Indirect_Complement(['to'],
                                                                 [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
@@ -1297,7 +1337,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['go'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [],
                                            [Indirect_Complement(['to'],
                                                                 [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
@@ -1325,7 +1365,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['be'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group([],
                                             [],
                                             ['blue'],
@@ -1353,7 +1393,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['be'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group([],
                                                         ['fruit'],
                                                         [],
@@ -1383,7 +1423,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['be'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['a'],
                                                         ['fruit'],
                                                         [],
@@ -1404,7 +1444,7 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     
-    """Action adverbs"""
+    #Action adverbs
     def test_16_adverb(self):
         print "\n**** test_16_negative *** "
         print "Danny slowly drives the blue car"
@@ -1416,7 +1456,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])],                                         
                              [Verbal_Group(['drive'],
                                            [],
-                                           'present_simple',
+                                           'present simple',
                                            [Nominal_Group(['the'],
                                                           ['car'],
                                                           ['blue'],
@@ -1433,6 +1473,35 @@ class TestStatementBuilder(unittest.TestCase):
                             '* actionSupervisionMode QUICK']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
+    
+    #Verb tense approach
+    def test_17_verb_tense(self):
+        print "\n**** test_16_negative *** "
+        print "Danny will drive the blue car"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['drive'],
+                                           [],
+                                           'future simple',
+                                           [Nominal_Group(['the'],
+                                                          ['car'],
+                                                          ['blue'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           ['quickly'],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = ['* rdf:type Drive', 
+                            '* performedBy id_danny',
+                            '* involves blue_car',
+                            '* eventOccursIn FUTUR']   
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     def process(self, sentence, expected_result, display_statement_result = False):
          
