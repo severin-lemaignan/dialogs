@@ -2051,7 +2051,43 @@ def unit_tests():
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
+    
+    
+    print ''
+    print ('######################## test 6.4 ##############################')
 
+    utterance="The bottle becomes blue. One piece could become two, if you smoldered it"
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])], 
+            [Verbal_Group(['become'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['one'],['piece'],[],[],[])], 
+            [Verbal_Group(['could+become'], [],'present conditional', 
+                [Nominal_Group(['two'],[],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[Sentence('subsentence', 'if', 
+                    [Nominal_Group([],['you'],[],[],[])], 
+                    [Verbal_Group(['smolder'], [],'past simple', 
+                        [Nominal_Group([],['it'],[],[],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])])]
+    
+    rslt[1].sn[0]._quantifier="DIGIT"
+    rslt[1].sv[0].d_obj[0]._quantifier="DIGIT"
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
     
 if __name__ == '__main__':
     unit_tests()

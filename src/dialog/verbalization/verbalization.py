@@ -1898,6 +1898,41 @@ class TestVerbalization(unittest.TestCase):
         self.assertEquals(original_utterance, utterance) 
     
     
+    def test_54(self):
+        
+        print ''
+        print '######################## test 1.54 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="The bottle becomes blue. One piece could become two, if you smoldered it."
+        
+        sentences=rslt=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],[],[],[])], 
+            [Verbal_Group(['become'], [],'present simple', 
+                [Nominal_Group([],[],['blue'],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['one'],['piece'],[],[],[])], 
+            [Verbal_Group(['could+become'], [],'present conditional', 
+                [Nominal_Group(['two'],[],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[Sentence('subsentence', 'if', 
+                    [Nominal_Group([],['you'],[],[],[])], 
+                    [Verbal_Group(['smolder'], [],'past simple', 
+                        [Nominal_Group([],['it'],[],[],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance) 
+        
+        
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")

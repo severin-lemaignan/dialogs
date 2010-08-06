@@ -41,6 +41,7 @@ direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean']
 adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of', 'into']
 complement_pronoun=['me','you','it']
 inderect_trans_verb_list=['tell', 'say']
+state_vrb_list=['be','become']
 
 
 
@@ -249,20 +250,22 @@ def state_adjective(sentence, vg):
     """
     
     #In case there is a state verb followed by an adjective
-    if sentence!=[] and vg.vrb_main[0]=='be' and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
-        pos=analyse_nominal_group.adjective_pos(sentence,0)
-        vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
-        sentence=sentence[pos-1:]
-        while sentence[0]=='or' or sentence[0]==':but':
-            if sentence[0]=='or':
-                conjunction='OR'
-            elif sentence[0]==':but':
-                conjunction='BUT'
-            sentence=sentence[1:]
-            pos=analyse_nominal_group.adjective_pos(sentence,0)
-            vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
-            vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
-            sentence=sentence[pos-1:]
+    if sentence!=[]:
+        for k in state_vrb_list:
+            if vg.vrb_main[0]==k and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
+                pos=analyse_nominal_group.adjective_pos(sentence,0)
+                vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                sentence=sentence[pos-1:]
+                while sentence[0]=='or' or sentence[0]==':but':
+                    if sentence[0]=='or':
+                        conjunction='OR'
+                    elif sentence[0]==':but':
+                        conjunction='BUT'
+                    sentence=sentence[1:]
+                    pos=analyse_nominal_group.adjective_pos(sentence,0)
+                    vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                    vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
+                    sentence=sentence[pos-1:]
     return sentence
     
     
