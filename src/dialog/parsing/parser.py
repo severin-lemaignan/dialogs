@@ -2008,7 +2008,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.3 ##############################')
 
-    utterance="Jido, tell me where you go."
+    utterance="Jido, tell me where you go. Goodbye. Bye"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -2029,7 +2029,9 @@ def unit_tests():
                     [Verbal_Group(['go'], [],'present simple', 
                         [], 
                         [],
-                        [], [] ,'affirmative',[])])])])]
+                        [], [] ,'affirmative',[])])])]),
+        Sentence('end', '', [], []),
+        Sentence('end', '', [], [])]
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''

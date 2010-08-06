@@ -75,6 +75,10 @@ def dispatching(analysis):
     #For start
     elif analysis.data_type=='start':
         return ['hello','.']
+    
+    #For end
+    elif analysis.data_type=='end':
+        return ['goodbye','.']
 
     #For agree
     elif analysis.data_type=='agree':

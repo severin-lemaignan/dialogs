@@ -54,6 +54,10 @@ def dispatching(sentence):
     
     if len(sentence)>0:
         
+        #For ending dialogue
+        if sentence[0].endswith('bye'):
+            return Sentence('end', '', [], [])
+        
         #When others
         for x in frt_wd:
             #If we find a knowing case
@@ -62,7 +66,7 @@ def dispatching(sentence):
                 #For
                 if x[1] == '1':
                     return Sentence('start', '', [], [])
-
+                
                 #It's a w_question
                 if x[1] == '2':
 

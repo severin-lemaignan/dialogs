@@ -1860,7 +1860,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="Jido, tell me where you go."
+        original_utterance="Jido, tell me where you go. Goodbye."
         
         sentences=[Sentence('interjection', '', 
             [Nominal_Group([],['Jido'],[],[],[])],  
@@ -1875,7 +1875,8 @@ class TestVerbalization(unittest.TestCase):
                     [Verbal_Group(['go'], [],'present simple', 
                         [], 
                         [],
-                        [], [] ,'affirmative',[])])])])]
+                        [], [] ,'affirmative',[])])])]),
+        Sentence('end', '', [], [])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
