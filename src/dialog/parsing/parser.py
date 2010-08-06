@@ -2008,7 +2008,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.3 ##############################')
 
-    utterance="Jido, tell me where you go. Goodbye. Bye. there is nothing."
+    utterance="Jido, tell me where you go. Goodbye. Bye. there is nothing. it is another one."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -2037,9 +2037,16 @@ def unit_tests():
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],['nothing'],[],[],[])], 
                 [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['another'],['one'],[],[],[])], 
+                [],
                 [], [] ,'affirmative',[])])]
     
     rslt[4].sv[0].d_obj[0]._quantifier="NONE"
+    rslt[5].sv[0].d_obj[0]._quantifier="SOME"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''

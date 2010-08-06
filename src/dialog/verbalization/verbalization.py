@@ -1860,7 +1860,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="Jido, tell me where you go. Goodbye. There is nothing."
+        original_utterance="Jido, tell me where you go. Goodbye. There is nothing. It's another one."
         
         sentences=[Sentence('interjection', '', 
             [Nominal_Group([],['Jido'],[],[],[])],  
@@ -1881,6 +1881,12 @@ class TestVerbalization(unittest.TestCase):
             [Nominal_Group(['there'],[],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
                 [Nominal_Group([],['nothing'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['another'],['one'],[],[],[])], 
                 [],
                 [], [] ,'affirmative',[])])]
         

@@ -32,7 +32,7 @@ Statement of lists
 """
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 det_list=['that','the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 
-          'every', 'there', 'some', 'any', 'those','all','no','more','less']
+          'every', 'there', 'some', 'any', 'those','all','no','more','less', 'another']
 proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 
                'with', 'by', 'behind','behind+to','next+to','in+front+of','as', 'into']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
