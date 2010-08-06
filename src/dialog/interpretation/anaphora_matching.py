@@ -9,6 +9,7 @@
     delete_redon_nom_group : to delete the redundancy in the list of nominal groups                                                                     
     delete_unuse_nom_gr : to delete the pronoun from the list of the nominal groups          
     recover_nom_gr_list : to return the list of the nominal groups used by anaphora processing 
+    first_replacement : to perform the first replacement (before the loop)
 """
 from sentence import *
 
@@ -95,10 +96,46 @@ def recover_nom_gr_list(sentences):
 
 
 def first_replacement(nom_gr_list, current_nom_gr):
+    """
+    This function perform the first replacement (before the loop)                          
+    Input=nominal group list and the current one       Output=a nominal group or NONE         
+    """
+    
+    #init
+    flg=0
+    
+    if nom_gr_list==[]:
+        return None
     
     if current_nom_gr.noun==['it']:
         return nom_gr_list[0]
-
+    
+    #We have to change only the noun
+    elif current_nom_gr.noun==['one']:
+        current_nom_gr.noun=nom_gr_list[0].noun
+        
+        #We add adjectives and delete the redundancy
+        for i in nom_gr_list[0].adj:
+            for j in current_nom_gr.adj:
+                if i==j:
+                    flg=1
+            if flg==1:
+                flg=0
+            else:
+                current_nom_gr.adj=current_nom_gr.adj+[i]
+        
+        #For all other information, we perform an addition
+        current_nom_gr.noun_cmpl=current_nom_gr.noun_cmpl+nom_gr_list[0].noun_cmpl
+        current_nom_gr.relative=current_nom_gr.relative+nom_gr_list[0].relative 
+        
+        #We affect the if
+        current_nom_gr.id=nom_gr_list[0].id
+        
+        return current_nom_gr
+    
+    return None
+    
+    
 
 def unit_tests():
     
@@ -106,14 +143,13 @@ def unit_tests():
     Function to perform unit tests                                                   
     """ 
     
-    
     """
     ## Aim of this test : To use the complement of the noun and the duplication with 'and'
     """
     print ''
     print ('######################## test 1.1 ##############################')
 
-    utterance="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
+    utterance="Using 'one' with adding an adjective and deletion of another one"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -139,19 +175,58 @@ def unit_tests():
     
     list_gr=recover_nom_gr_list(sentences)
     
-    c_gr=Nominal_Group([],['it'],[],[],[])
+    c_gr=Nominal_Group(['the'],['one'],['blue'],[],[])
     gr = first_replacement(list_gr, c_gr)
-    print gr.id
+    print "the id of the nominal group: ", gr.id
     print (str(gr))
     
+    
     """
+    ## Aim of this test : To use the complement of the noun and the duplication with 'and'
+    """
+    print ''
+    print ('######################## test 1.1 ##############################')
+
+    utterance="Using 'one' with adding an adjective and without deletion of another one"
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentences=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],['blue'],[Nominal_Group([],['Jido'],[],[],[])],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['play'], [],'future simple', 
+                [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+    
+    sentences[0].sn[0].id='azeaz'
+    sentences[1].sn[0].id='eaz'
+    sentences[1].sv[0].d_obj[0].id='s'
+    sentences[1].sv[0].d_obj[1].id='z'
+    sentences[1].sv[0].d_obj[2].id='e'
+    
+    list_gr=recover_nom_gr_list(sentences)
+    
+    c_gr=Nominal_Group(['the'],['one'],['big'],[],[])
+    gr = first_replacement(list_gr, c_gr)
+    print "the id of the nominal group: ", gr.id
+    print (str(gr))
+    
+    
+    
     """
     ## Aim of this test : Present the duality between the direct and indirect complement
     """
     print ''
     print ('######################## test 1.3 ##############################')
 
-    utterance="It's on the table. give me the bottle. I don't give the bottle to you."
+    utterance="Using 'it' so we have to replace automatically"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -188,9 +263,10 @@ def unit_tests():
     
     c_gr=Nominal_Group([],['it'],[],[],[])
     gr = first_replacement(list_gr, c_gr)
-    print gr.id
+    print "the id of the nominal group: ", gr.id
     print (str(gr))
-    """
+    
+    
 if __name__ == '__main__':
     unit_tests()
     
