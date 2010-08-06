@@ -37,7 +37,7 @@ proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', '
                'with', 'by', 'behind','behind+to','next+to','in+front+of','as', 'into']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
-composed_noun=['some', 'any']
+composed_noun=['some', 'any', 'no']
 end_s_list=['is', 'this']
 
 

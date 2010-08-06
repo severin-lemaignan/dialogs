@@ -82,7 +82,7 @@ def find_tense_statement (phrase, adverb):
     #processing for the progressive form and passive form (in present)
     if phrase[0]=='is' or phrase[0]=='are' or phrase[0]=='am' or phrase[0]=='be' :
         #Progressive form in the present
-        if len(phrase)!=1 and phrase[1+len(adverb)].endswith('ing'):
+        if len(phrase)!=1 and phrase[1+len(adverb)].endswith('ing') and not(phrase[1+len(adverb)].endswith('thing')):
             return 'present progressive'
         #Passive form in the present
         elif find_tense_statement(['have']+phrase[1:], adverb)=='present perfect':
