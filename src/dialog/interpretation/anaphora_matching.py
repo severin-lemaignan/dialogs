@@ -94,9 +94,103 @@ def recover_nom_gr_list(sentences):
 
 
 
+def first_replacement(nom_gr_list, current_nom_gr):
+    
+    if current_nom_gr.noun==['it']:
+        return nom_gr_list[0]
+
+
 def unit_tests():
     
+    """
+    Function to perform unit tests                                                   
+    """ 
+    
+    
+    """
+    ## Aim of this test : To use the complement of the noun and the duplication with 'and'
+    """
+    print ''
+    print ('######################## test 1.1 ##############################')
 
+    utterance="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentences=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['bottle'],['blue'],[Nominal_Group([],['Jido'],[],[],[])],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['play'], [],'future simple', 
+                [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[])])]
+    
+    sentences[0].sn[0].id='azeaz'
+    sentences[1].sn[0].id='eaz'
+    sentences[1].sv[0].d_obj[0].id='s'
+    sentences[1].sv[0].d_obj[1].id='z'
+    sentences[1].sv[0].d_obj[2].id='e'
+    
+    list_gr=recover_nom_gr_list(sentences)
+    
+    c_gr=Nominal_Group([],['it'],[],[],[])
+    gr = first_replacement(list_gr, c_gr)
+    print gr.id
+    print (str(gr))
+    
+    """
+    """
+    ## Aim of this test : Present the duality between the direct and indirect complement
+    """
+    print ''
+    print ('######################## test 1.3 ##############################')
+
+    utterance="It's on the table. give me the bottle. I don't give the bottle to you."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    
+    sentences=[Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])],
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                [Indirect_Complement(['to'],[Nominal_Group([],['you'],[],[],[])])],
+                [], [] ,'negative',[])])]
+
+    sentences[0].sn[0].id='azeaz'
+    sentences[0].sv[0].i_cmpl[0].nominal_group[0].id="4"
+    sentences[1].sv[0].d_obj[0].id='sghj'
+    sentences[1].sv[0].i_cmpl[0].nominal_group[0].id="9"
+    sentences[2].sn[0].id='eaz'
+    sentences[2].sv[0].d_obj[0].id='9'
+    sentences[2].sv[0].i_cmpl[0].nominal_group[0].id="6"
+    
+    list_gr=recover_nom_gr_list(sentences)
+    
+    c_gr=Nominal_Group([],['it'],[],[],[])
+    gr = first_replacement(list_gr, c_gr)
+    print gr.id
+    print (str(gr))
+    """
 if __name__ == '__main__':
     unit_tests()
     
