@@ -96,7 +96,7 @@ class NominalGroupStatementBuilder:
             if not ng.id:
                 ng.id = self.set_nominal_group_id(ng)      
             
-            self.process_nominal_group(ng, ng.id, None)
+            self.process_nominal_group(ng, ng.id, None, False)
                                     
         return self._statements
     
@@ -127,17 +127,19 @@ class NominalGroupStatementBuilder:
         return id
     
     
-    def process_nominal_group(self, ng, ng_id, subject_quantifier):
-        """ The following function processes a single nominal_group with a given resolved ID and quantifier"""
+    def process_nominal_group(self, ng, ng_id, subject_quantifier, negative_object):
+        """ The following function processes a single nominal_group with a given resolved ID and quantifier
+            the parameter 'negative_object' is to meant that the sentence hold a negative form involving the nominal group being processed
+        """
         
-        def process_all_component_of_a_nominal_group(nom_grp, id, quantifier):
+        def process_all_component_of_a_nominal_group(nom_grp, id, quantifier, negative):
             """This processes all the components of a given nominal group 'nom_grp'. """
             if nom_grp.noun:
-                self.process_noun_phrases(nom_grp, id, quantifier)
+                self.process_noun_phrases(nom_grp, id, quantifier, negative)
             if nom_grp.det:
                 self.process_determiners(nom_grp, id)
             if nom_grp.adj:
-                self.process_adjectives(nom_grp, id)
+                self.process_adjectives(nom_grp, id, negative)
             if nom_grp.noun_cmpl:
                 self.process_noun_cmpl(nom_grp, id)
             if nom_grp.relative:
@@ -150,17 +152,17 @@ class NominalGroupStatementBuilder:
         if ng._resolved:
             # Case: Adjectives only
             if ng.adjectives_only():
-                self.process_adjectives(ng, ng_id)
+                self.process_adjectives(ng, ng_id, negative_object)
             
             #Case: Quantifier of the nominal group being processed. 
-            if subject_quantifier:
+            elif subject_quantifier:
                 # Case of an finite nominal group described by either a finite or an infinite one
                 #
                 # E.g "this is 'a blue cube'" provides:
                 #   [something hasColor blue, something rdf:type Cube] where something is known in the ontology as [* focusesOn something]
                 # E.g "this is 'my cube'" should provide [something belongsTo *]
                 if subject_quantifier == 'ONE':
-                    process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier)
+                    process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier, negative_object)
                 
                 # Case of an infinite nominal group
                 # E.g "Apples are Yellow Fruits",  or "An apple is a yellow fruit"
@@ -168,11 +170,11 @@ class NominalGroupStatementBuilder:
                 elif ng.noun and \
                     subject_quantifier in ['SOME', 'ALL'] and \
                         ng._quantifier in ['SOME', 'ALL']:
-                    self.process_noun_phrases(ng, ng_id, subject_quantifier)
+                    self.process_noun_phrases(ng, ng_id, subject_quantifier, negative_object)
             
         #Case of a not resolved nominal group
         else:
-            process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier)
+            process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier, negative_object)
                 
             
 
@@ -191,7 +193,7 @@ class NominalGroupStatementBuilder:
             # Case 4: general determiners: See http://www.learnenglish.de/grammar/determinertext.htm"""
             
     
-    def process_noun_phrases(self, nominal_group, ng_id, ng_quantifier):
+    def process_noun_phrases(self, nominal_group, ng_id, ng_quantifier, negative_object):
         
         def get_object_property(subject_quantifier, object_quantifier):
             """ The following returns the appropriate object property relationship between two nominal groups; the subject and the object.
@@ -259,22 +261,48 @@ class NominalGroupStatementBuilder:
                 # get the exact class name (capitalized letters where needed)
                 class_name = get_class_name(noun, onto_id)
                 
-                # get the exac object property (subClass or type)
+                # get the exact object property (subClassOf or type)
                 object_property = get_object_property(ng_quantifier, nominal_group._quantifier)
-                self._statements.append(ng_id + object_property + class_name)            
+                
+                # Case of negation
+                if negative_object:
+                    #Committing negativeAssertion class
+                    try:
+                        ResourcePool.ontology_server.safeAdd(["NegativeAssertionOf" + class_name + " owl:complementOf " + class_name,
+                                                                "NegativeAssertionOf" + class_name + " rdfs:subClassOf NegativeAssertions"])
+                    except AttributeError:
+                        pass
+                        
+                    self._statements.append(ng_id + object_property + "NegativeAssertionOf" + class_name)
+                
+                # Case of affirmative sentence
+                else:
+                    self._statements.append(ng_id + object_property + class_name)
             
     
-    def process_adjectives(self, nominal_group, ng_id):
+    def process_adjectives(self, nominal_group, ng_id, negative_object):
         """For any adjectives, we add it in the ontology with the objectProperty 
         'hasFeature' except if a specific category has been specified in the 
         adjectives list.
         """
         for adj in nominal_group.adj:
-            #logging.debug("Found adjective:\"" + adj + "\"")
-            try:
-                self._statements.append(ng_id + " has" + ResourcePool().adjectives[adj] + " " + adj)
-            except KeyError:
-                self._statements.append(ng_id + " hasFeature " + adj)
+            #Case negative assertion
+            if negative_object:
+                
+                try:
+                    self._statements.append(ng_id + " NegativeAssertionOfHas" + ResourcePool().adjectives[adj] + " " + adj)
+                except KeyError:
+                    self._statements.append(ng_id + " NegativeAssertionOfHasFeature " + adj)
+                finally:
+                    #TODO: Check or add the fact that NegativeAssertionOfHas+adj is negation of adj
+                    pass
+            
+            #Case Affirmative assertion
+            else:
+                try:
+                    self._statements.append(ng_id + " has" + ResourcePool().adjectives[adj] + " " + adj)
+                except KeyError:
+                    self._statements.append(ng_id + " hasFeature " + adj)
     
     
     def process_noun_cmpl(self, nominal_group, ng_id):
@@ -285,7 +313,7 @@ class NominalGroupStatementBuilder:
             else:
                 noun_cmpl_id = self.set_nominal_group_id(noun_cmpl)
                 
-            self.process_nominal_group(noun_cmpl, noun_cmpl_id, None)
+            self.process_nominal_group(noun_cmpl, noun_cmpl_id, None, False)
             self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
     
     def process_relative(self, nominal_group, ng_id):
@@ -334,7 +362,7 @@ class NominalGroupStatementBuilder:
                 for ng in rel.sn:
                     ng.id = rel_ng_stmt_builder.set_nominal_group_id(ng)
                     
-                    rel_ng_stmt_builder.process_nominal_group(ng, ng.id, None)    
+                    rel_ng_stmt_builder.process_nominal_group(ng, ng.id, None, False)    
                     rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng.id, None)
                     
                 self._statements.extend(rel_ng_stmt_builder._statements)
@@ -361,8 +389,11 @@ class VerbalGroupStatementBuilder:
         #This field holds the value True when the active sentence is of imperative data_type
         self._process_on_imperative = False
         
-        #This fiels holds the value True when the active sentence is fully resolved
+        #This field holds the value True when the active sentence is fully resolved
         self._process_on_resolved_sentence = False
+        
+        #this field is True when the verbal group is in the negative form
+        self._process_on_negative = False
 
     def set_attribute_on_data_type(self, data_type):
         if data_type == 'imperative':
@@ -399,7 +430,11 @@ class VerbalGroupStatementBuilder:
     def process_verbal_groups(self, verbal_groups, subject_id, subject_quantifier):
         """This processes every single verbal group in the sentence sv, given the (resolved) ID and quantifier of the subject.
         """
-        for vg in verbal_groups:          
+        for vg in verbal_groups:         
+            #Verbal group state : Negative or affirmative
+            self.process_state(vg)
+            
+            #Main verb
             if vg.vrb_main:
                 self.process_verb(vg, subject_id, subject_quantifier)
             
@@ -409,9 +444,12 @@ class VerbalGroupStatementBuilder:
             if vg.vrb_sub_sentence:
                 self.process_adverb(vg)   
 
-    #TODO:   
-    def process_state(self, verb, id):
-        pass
+    
+    def process_state(self, verbal_group):
+        if verbal_group.state == 'negative':
+            self._process_on_negative = True
+        else:
+            self._process_on_negative = False
     
     def process_verb(self, verbal_group, subject_id, subject_quantifier):
          
@@ -444,7 +482,22 @@ class VerbalGroupStatementBuilder:
                         self.process_vrb_sec(verbal_group)                      
                 #Case 3:   
                 else:
-                    self._statements.append(sit_id + " rdf:type " + verb.capitalize())
+                    #negation
+                    if self._process_on_negative:
+                        #Creating a negative assertion 
+                        
+                        try:
+                            ResourcePool.ontology_server.safeAdd(["NegativeAssertionOf" + verb.capitalize() +
+                                                                    " owl:complementOf " + verb.capitalize(),
+                                                                    "NegativeAssertionOf" + verb.capitalize() + 
+                                                                    " rdfs:subClassOf NegativeAssertions"])
+                        except AttributeError:
+                            pass
+                            
+                        self._statements.append(sit_id + " rdf:type NegativeAssertionOf" + verb.capitalize())
+                    else:
+                        self._statements.append(sit_id + " rdf:type " + verb.capitalize())
+                    
                     self._statements.append(sit_id + " performedBy " + subject_id)
             
             #Imperative specification, add the goal verb 'desire'
@@ -517,7 +570,7 @@ class VerbalGroupStatementBuilder:
                     
                 d_obj_quantifier = None
             
-            d_obj_stmt_builder.process_nominal_group(d_obj, d_obj_id, d_obj_quantifier)
+            d_obj_stmt_builder.process_nominal_group(d_obj, d_obj_id, d_obj_quantifier, self._process_on_negative)
             
         self._statements.extend(d_obj_stmt_builder._statements)
         self._unresolved_ids.extend(d_obj_stmt_builder._unresolved_ids)
@@ -530,8 +583,7 @@ class VerbalGroupStatementBuilder:
         thematic_roles = ResourcePool().thematic_roles
         
         for ic in indirect_cmpls:
-            #logging.debug("Processing indirect complement i_cmpl:")
-            
+           
             # Case 1: if there is no preposition, the indirect complement is obviously an indirect object.
             #        Therefore, it receives the action
             #            e.g. I gave you a ball also means I gave a ball 'to' you
@@ -578,7 +630,7 @@ class VerbalGroupStatementBuilder:
                     self._statements.append(sit_id + " is" + ic.prep[0].capitalize()+ " " + ic_noun_id)
                 
                 
-                i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id, None)
+                i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id, None, False)
                 
             self._statements.extend(i_stmt_builder._statements)
             self._unresolved_ids.extend(i_stmt_builder._unresolved_ids)
@@ -690,7 +742,7 @@ def dump_resolved(sentence, current_speaker, current_listener):
                 #Statement for resolution
                 logging.info("Statements sended to Resolution for discrmination for this nominal group...")
                 print(ng)
-                builder.process_nominal_group(ng, '?concept', None)
+                builder.process_nominal_group(ng, '?concept', None, False)
                 stmts = builder.get_statements()
                 builder.clear_statements()
                 for s in stmts:
@@ -908,7 +960,7 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-    
+     
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives the blue car"  
@@ -1446,7 +1498,7 @@ class TestStatementBuilder(unittest.TestCase):
     
     #Action adverbs
     def test_16_adverb(self):
-        print "\n**** test_16_negative *** "
+        print "\n**** test_16_adverb *** "
         print "Danny slowly drives the blue car"
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
@@ -1476,7 +1528,7 @@ class TestStatementBuilder(unittest.TestCase):
     
     #Verb tense approach
     def test_17_verb_tense(self):
-        print "\n**** test_16_negative *** "
+        print "\n**** test_17_verb_tense *** "
         print "Danny will drive the blue car"
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
@@ -1501,6 +1553,113 @@ class TestStatementBuilder(unittest.TestCase):
                             '* performedBy id_danny',
                             '* involves blue_car',
                             '* eventOccursIn FUTUR']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    #Negative approach
+    def test_18_negative(self):
+        print "\n**** test_18_negative *** "
+        print "Danny doesn't 'drive the blue car"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['drive'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['the'],
+                                                          ['car'],
+                                                          ['blue'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+        expected_result = [ '* rdf:type NegativeAssertionOfDrive', 
+                            '* performedBy id_danny',
+                            '* involves blue_car']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    def test_19_negative(self):
+        print "\n**** test_19_negative *** "
+        print "Jido is not a human"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Jido'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['a'],
+                                                          ['human'],
+                                                          [],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+        
+        #quantifier
+        sentence.sv[0].d_obj[0]._quantifier = 'SOME' # Human
+       
+        expected_result = [ 'id_jido rdf:type NegativeAssertionOfHuman']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    def test_20_negative(self):
+        print "\n**** test_20_negative *** "
+        print "the shelf1 is not green"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['the'],
+                                            ['shelf1'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group([],
+                                                          [],
+                                                          ['green'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+        expected_result = [ 'shelf1 NegativeAssertionOfHasColor green']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    def test_20_negative(self):
+        print "\n**** test_20_negative *** "
+        print "the shelf1 is not green"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['the'],
+                                            ['shelf1'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group([],
+                                                          [],
+                                                          ['green'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+        expected_result = [ 'shelf1 NegativeAssertionOfHasColor green']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
     def process(self, sentence, expected_result, display_statement_result = False):
