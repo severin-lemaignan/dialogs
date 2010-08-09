@@ -513,9 +513,9 @@ def remerge_unit_tests():
         
     
     print ''
-    print ('######################## test 1.6 ##############################')
+    print ('######################## test 1.16 ##############################')
 
-    utterance="He mean that he want the bottle of Jido"
+    utterance="He means that he want the bottle of Jido"
     print 'The speaker said :'
     print utterance
     print '#################################################################'
@@ -540,9 +540,281 @@ def remerge_unit_tests():
     else:
         print "There is a problem with parsing this sentence"
         print ''
-           
 
 
+    print ''
+    print ('######################## test 1.17 ##############################')
+
+    utterance="no. The bottle is not blue. It is red"
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='SUCCESS'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],['blue'],[],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],['red'],[],[])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print ''
+
+    
+    print ''
+    print ('######################## test 1.18 ##############################')
+
+    utterance="no. The bottle is not on the table. It is on the shelf."
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='SUCCESS'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print ''
+        
+        
+        
+    print ''
+    print ('######################## test 1.19 ##############################')
+
+    utterance="no. The bottle is not on the table. It is on the shelf."
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='SUCCESS'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print ''        
+        
+        
+    print ''
+    print ('######################## test 1.20 ##############################')
+
+    utterance="no. it is not blue :but red."
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='FAILURE'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],['blue'],[],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],['red'],[],[])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print ''  
+        
+        
+    
+    print ''
+    print ('######################## test 1.21 ##############################')
+
+    utterance="This one is not mine but it is the bottle of my brother."
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='FAILURE'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print '' 
+        
+    
+    print ''
+    print ('######################## test 1.22 ##############################')
+
+    utterance="This one is not the bottle of my uncle but it is the bottle of my brother."
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='SUCCESS'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['uncle'],[],[],[])],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print '' 
+    
+    
+    
+    print ''
+    print ('######################## test 1.23 ##############################')
+
+    utterance="no. It is not on the table :but on the shelf."
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='SUCCESS'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print '' 
+
+    
+    print ''
+    print ('######################## test 1.24 ##############################')
+
+    utterance="no. It is not on the table :but on the shelf."
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='SUCCESS'
+    
+    nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
+                    [],  
+                    [Verbal_Group(['be'],[],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print '' 
+        
+        
 if __name__ == '__main__':
     remerge_unit_tests()
     

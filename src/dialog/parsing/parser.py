@@ -55,7 +55,7 @@ def compare_nom_gr(ng,rslt_ng):
     #init
     i=0
     j=0
-
+    
     if len(ng)!=len(rslt_ng):
         return 1
     else:
@@ -120,12 +120,13 @@ def compare_vs(vs, rslt_vs):
     j=0
 
     if len(vs)!=len(rslt_vs):
-       
         return 1
     
     else:
         while i < len(rslt_vs):
-            if vs[i].vrb_main!=rslt_vs[i].vrb_main or vs[i].vrb_tense!=rslt_vs[i].vrb_tense or vs[i].state!=rslt_vs[i].state:  
+            if vs[i].vrb_main!=rslt_vs[i].vrb_main or vs[i].vrb_tense!=rslt_vs[i].vrb_tense or vs[i].state!=rslt_vs[i].state:
+                print vs[i].state
+                print rslt_vs[i].state
                 return 1
             if vs[i].advrb!=rslt_vs[i].advrb or vs[i].vrb_adv!=rslt_vs[i].vrb_adv:
                 return 1
@@ -275,7 +276,7 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-
+    
     
     
     """
@@ -2056,7 +2057,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.4 ##############################')
 
-    utterance="The bottle becomes blue. One piece could become two, if you smoldered it"
+    utterance="The bottle becomes blue. One piece could become two, if you smoldered it."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -2088,6 +2089,42 @@ def unit_tests():
     compare_utterance(class_list,rslt,sentence_list)
     print ''
     
+    
+    
+    print ''
+    print ('######################## test 6.5 ##############################')
+
+    utterance="This one is not the bottle of my uncle but it is the bottle of my brother. It is not on the table :but on the shelf."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group(['this'],['one'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['uncle'],[],[],[])],[])], 
+                [],
+                [], [] ,'negative',[Sentence('subsentence', 'but', 
+                    [Nominal_Group([],['it'],[],[],[])], 
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])]),
+                 Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                [], [] ,'negative',[])])]
+    
+    rslt[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="BUT"
+  
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
     
 if __name__ == '__main__':
     unit_tests()

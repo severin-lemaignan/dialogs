@@ -352,19 +352,20 @@ def process_subsentence(phrase,vg):
     #If phrase is empty
     if len(phrase)<0:
         return phrase
-
+    
     #We look down the list to see if there is a subsentence
     for w in sub_list:
         for i in phrase:
             if i == w:
+                
                 begin_pos=phrase.index(i)
-
+                
                 #We include the relative's proposal if there are relatives in the subsentence
                 end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], sub_list+rel_list)
-
+            
                 #We have to remove the proposal
-                subsentence= phrase[begin_pos+1:end_pos]
-                
+                subsentence= phrase[begin_pos+1:begin_pos+end_pos]
+               
                 #We perform processing
                 vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', w ,subsentence)]
             
