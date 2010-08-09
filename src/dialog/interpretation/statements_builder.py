@@ -137,7 +137,7 @@ class NominalGroupStatementBuilder:
             if nom_grp.noun:
                 self.process_noun_phrases(nom_grp, id, quantifier, negative)
             if nom_grp.det:
-                self.process_determiners(nom_grp, id)
+                self.process_determiners(nom_grp, id, negative)
             if nom_grp.adj:
                 self.process_adjectives(nom_grp, id, negative)
             if nom_grp.noun_cmpl:
@@ -178,7 +178,7 @@ class NominalGroupStatementBuilder:
                 
             
 
-    def process_determiners(self, nominal_group, ng_id):
+    def process_determiners(self, nominal_group, ng_id, negative_object):
         for det in nominal_group.det:
             #logging.debug("Found determiner:\"" + det + "\"")
             # Case 1: definite article : the"""
@@ -186,9 +186,9 @@ class NominalGroupStatementBuilder:
             if det in ['this', 'that', 'these', 'those']:
                 self._statements.append(self._current_speaker + " focusesOn " + ng_id)
             # Case 3: possessives : my, your, his, her, its, our, their """
-            if det == "my":
+            if det == "my" and not negative_object:
                 self._statements.append(ng_id + " belongsTo " + self._current_speaker)
-            elif det == "your":
+            elif det == "your" and not negative_object:
                 self._statements.append(ng_id + " belongsTo myself")
             # Case 4: general determiners: See http://www.learnenglish.de/grammar/determinertext.htm"""
             
@@ -244,11 +244,34 @@ class NominalGroupStatementBuilder:
             
             if onto_id and [noun,"INSTANCE"] in onto_id:
                 logging.info("... \t" + noun + " is an existing ID in " + self._current_speaker + "'s model.")            
-                pass
+                #Case of Negation
+                if negative_object:
+                    self._statements.append(ng_id + " owl:differentFrom " + noun)
+                
+                #Case of affirmative form
+                else:
+                    pass
             
             # Case : Personal pronoun
             elif not nominal_group.det and noun in ["I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "their"]:
-                pass
+                # Case of negation
+                if negative_object:
+                    # assign noun_id == current_speaker ID or Current receipient, or so on
+                    noun_id = None
+                    
+                    if noun in ["I", "me"]:
+                        noun_id = self._current_speaker
+                    elif noun in ["you"]:
+                        noun_id = "myslef"
+                    
+                    if noun_id:
+                        self._statements.append(ng_id + " owl:differentFrom " + noun_id)
+                    else:
+                        logging.debug("Aie Aie!! Personal pronoun " + noun + " Not implemented yet!")
+                
+                # Case of affirmative form
+                else:
+                    pass
             
             #Case : proper noun (Always Capitalized in sentence, and never follows a determiner) 
             elif not nominal_group.det and noun.istitle():
@@ -266,15 +289,22 @@ class NominalGroupStatementBuilder:
                 
                 # Case of negation
                 if negative_object:
-                    #Committing negativeAssertion class
-                    try:
-                        ResourcePool.ontology_server.safeAdd(["NegativeAssertionOf" + class_name + " owl:complementOf " + class_name,
-                                                                "NegativeAssertionOf" + class_name + " rdfs:subClassOf NegativeAssertions"])
-                    except AttributeError:
-                        pass
-                        
-                    self._statements.append(ng_id + object_property + "NegativeAssertionOf" + class_name)
-                
+                    # Case of a definite concept
+                    if nominal_group._quantifier == 'ONE':
+                        self._statements.append(ng_id + " owl:differentFrom " + nominal_group.id)
+                    
+                    # Case of an indefinite concept
+                    else:
+                        #Committing negativeAssertion class
+                        try:
+                            ResourcePool.ontology_server.safeAdd(["NegativeAssertionOf" + class_name + " owl:complementOf " + class_name,
+                                                                    "NegativeAssertionOf" + class_name + " rdfs:subClassOf NegativeAssertions"])
+                        except AttributeError:
+                            pass
+                            
+                        self._statements.append(ng_id + object_property + "NegativeAssertionOf" + class_name)
+                    
+                    
                 # Case of affirmative sentence
                 else:
                     self._statements.append(ng_id + object_property + class_name)
@@ -306,13 +336,12 @@ class NominalGroupStatementBuilder:
     
     
     def process_noun_cmpl(self, nominal_group, ng_id):
-        #logging.debug("processing noun complement:")
         for noun_cmpl in nominal_group.noun_cmpl:
             if noun_cmpl.id:
                 noun_cmpl_id = noun_cmpl.id
             else:
                 noun_cmpl_id = self.set_nominal_group_id(noun_cmpl)
-                
+            
             self.process_nominal_group(noun_cmpl, noun_cmpl_id, None, False)
             self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
     
@@ -788,9 +817,11 @@ def dump_resolved(sentence, current_speaker, current_listener):
                 ng.id = 'a_bottle'
             elif [ng.noun, ng.det, ng.adj] == [['man'], ['the'], []]:
                 ng.id = 'a_man'
+            elif [ng.noun, ng.det, ng.adj] == [['brother'], ['the'], []]:
+                ng.id = 'id_tom'
             elif [ng.noun, ng.adj, ng.det] == [['car'], ['blue'], ['the']]:
                 ng.id = 'blue_car'
-            elif [ng.noun, ng.adj, ng.det] == [['cube'], ['blue'], ['a']]:
+            elif [ng.noun, ng.adj, ng.det] == [['cube'], ['blue'], ['the']]:
                 ng.id = 'blue_cube'
             elif [ng.noun, ng.adj, ng.det] == [['car'], ['small'], ['a']]:
                 ng.id = 'twingo'
@@ -960,7 +991,7 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-     
+    
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives the blue car"  
@@ -1662,6 +1693,151 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'shelf1 NegativeAssertionOfHasColor green']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
+    
+    def test_21_negative(self):
+        print "\n**** test_21_negative *** "
+        print "this is not the shelf1"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['this'],
+                                            [],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['the'],
+                                                          ['shelf1'],
+                                                          [],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+        
+        expected_result = [ 'another_cube owl:differentFrom shelf1']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    
+    def test_22_negative(self):
+        print "\n**** test_22_negative *** "
+        print "Fruits are not humans"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['fruit'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group([],
+                                                          ['human'],
+                                                          [],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+                                           
+        
+        #quantifier
+        sentence.sn[0]._quantifier = 'ALL' # Fruits
+        sentence.sv[0].d_obj[0]._quantifier = 'ALL' # Humans
+        
+        expected_result = [ 'Fruit rdfs:subClassOf NegativeAssertionOfHuman']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    
+    def test_23_negative(self):
+        print "\n**** test_23_negative *** "
+        print "you are not me"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['you'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group([],
+                                                          ['me'],
+                                                          [],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+        
+        expected_result = [ 'myself owl:differentFrom SPEAKER']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    
+    def test_24_negative(self):
+        print "\n**** test_24_negative *** "
+        print "the blue car is not my car"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['the'],
+                                            ['car'],
+                                            ['blue'],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['my'],
+                                                          ['car'],
+                                                          [],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+        
+        expected_result = [ 'blue_car owl:differentFrom volvo']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    """
+    def test_25_negative(self):
+        print "\n**** test_25_negative *** "
+        print "I am not the brother of Danny"
+        sentence = sentence = Sentence("statement", 
+                             "",
+                             [Nominal_Group([],
+                                            ['I'],
+                                            [],
+                                            [],
+                                            [])], 
+                              [Verbal_Group(['be'],
+                                            [],
+                                            'present simple',
+                                            [Nominal_Group(['the'],
+                                                            ['brother'],
+                                                            [],
+                                                            [Nominal_Group([],
+                                                                            ['Danny'],
+                                                                            [],
+                                                                            [],
+                                                                            [])],
+                                                            [])], 
+                                            [], 
+                                            [],
+                                            [],
+                                            'negative', 
+                                            [])])
+                                            
+        expected_result = [ 'another_cube owl:differentFrom fiat']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    """
     def process(self, sentence, expected_result, display_statement_result = False):
          
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
