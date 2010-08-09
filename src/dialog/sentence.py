@@ -100,6 +100,18 @@ class SentenceFactory:
                         [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,'affirmative',[])])]
         return sentence
     
+    
+    def create_do_you_mean_reference(self, object):
+        """ Creates sentences: 
+            "Do you mean the bottle?"
+        """
+        
+        return [Sentence('yes_no_question', '', 
+                    [Nominal_Group([],['you'],[],[],[])], 
+                    [Verbal_Group(['mean'], [],'present simple', [object], [], [], [] ,'affirmative',[])])]
+        
+        
+    
     def create_w_question_answer(self, w_question, w_answer, query_on_field):
         """Create the answer of a W-Question
             w_question is the current question
