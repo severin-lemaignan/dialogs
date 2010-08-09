@@ -511,22 +511,12 @@ class VerbalGroupStatementBuilder:
                         self.process_vrb_sec(verbal_group)                      
                 #Case 3:   
                 else:
-                    #negation
+                    self._statements.append(sit_id + " rdf:type " + verb.capitalize())
+                   
+                    # Case of Negation
                     if self._process_on_negative:
-                        #Creating a negative assertion 
-                        
-                        try:
-                            ResourcePool.ontology_server.safeAdd(["NegativeAssertionOf" + verb.capitalize() +
-                                                                    " owl:complementOf " + verb.capitalize(),
-                                                                    "NegativeAssertionOf" + verb.capitalize() + 
-                                                                    " rdfs:subClassOf NegativeAssertions"])
-                        except AttributeError:
-                            pass
-                            
-                        self._statements.append(sit_id + " rdf:type NegativeAssertionOf" + verb.capitalize())
-                    else:
-                        self._statements.append(sit_id + " rdf:type " + verb.capitalize())
-                    
+                        self._statements.append(sit_id + " isNegativeAssertion \"true\"^^xsd:boolean")
+                                        
                     self._statements.append(sit_id + " performedBy " + subject_id)
             
             #Imperative specification, add the goal verb 'desire'
@@ -1609,9 +1599,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'negative',
                                            [])])
-        expected_result = [ '* rdf:type NegativeAssertionOfDrive', 
+        expected_result = [ '* rdf:type Drive', 
                             '* performedBy id_danny',
-                            '* involves blue_car']   
+                            '* involves blue_car',
+                            '* isNegativeAssertion "true"^^xsd:boolean']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
     def test_19_negative(self):
@@ -1643,30 +1634,6 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'id_jido rdf:type NegativeAssertionOfHuman']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    def test_20_negative(self):
-        print "\n**** test_20_negative *** "
-        print "the shelf1 is not green"
-        sentence = Sentence("statement", "", 
-                             [Nominal_Group(['the'],
-                                            ['shelf1'],
-                                            [],
-                                            [],
-                                            [])],                                         
-                             [Verbal_Group(['be'],
-                                           [],
-                                           'present simple',
-                                           [Nominal_Group([],
-                                                          [],
-                                                          ['green'],
-                                                          [],
-                                                          [])],
-                                           [],
-                                           [],
-                                           [],
-                                           'negative',
-                                           [])])
-        expected_result = [ 'shelf1 NegativeAssertionOfHasColor green']   
-        return self.process(sentence, expected_result, display_statement_result = True)
     
     def test_20_negative(self):
         print "\n**** test_20_negative *** "
