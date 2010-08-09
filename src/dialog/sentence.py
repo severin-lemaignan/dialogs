@@ -455,7 +455,6 @@ class Nominal_Group:
         
         self._conjunction = 'AND' #could be 'AND' or 'OR'... TODO: use constants!
         self._quantifier = 'ONE'  #could be 'ONE' or 'SOME'... TODO: use constants!
-        
 
     def __str__(self):
         
