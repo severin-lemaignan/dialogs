@@ -1877,7 +1877,7 @@ def unit_tests():
     print ''
     print ('######################## test 5.8 ##############################')
 
-    utterance="The bottle is not blue but it is red. It is not the glass :but the bottle. it is blue or red"
+    utterance="The bottle is not blue but it is red. It is not the glass but the bottle. it is blue or red"
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -1921,7 +1921,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.1 ##############################')
 
-    utterance="It is not red :but blue. a kind of thing. this is my banana. bananas are fruits."
+    utterance="It is not red but blue. a kind of thing. this is my banana. bananas are fruits."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -2094,7 +2094,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.5 ##############################')
 
-    utterance="This one is not the bottle of my uncle but it is the bottle of my brother. It is not on the table :but on the shelf."
+    utterance="This one is not the bottle of my uncle but it is the bottle of my brother. It is not on the table but on the shelf."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'

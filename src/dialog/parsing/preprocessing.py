@@ -10,7 +10,8 @@
  Functions:                                                                       
     delete_and_from_number : to delete 'and' between two numbers
     concat_number : to concatenate numbers with '+'
-    upper_to_lower : to process the upper case at the beginning of the sentence        
+    upper_to_lower : to process the upper case at the beginning of the sentence   
+    but : to find 'but' that need preporcessing     
     concatenate_pos : to concatenate an element in a position given               
     case_apostrophe_s_to_is : to know if there is this kind of "'s"               
     expand_contractions : to perform expand contraction using concatenate_pos     
@@ -155,6 +156,37 @@ def upper_to_lower(sentence):
     
     return sentence
     
+
+
+def but(sentence):
+    """
+    This function find 'but' that need preporcessing                    
+    Input=sentence                         Output=sentence               
+    """
+    
+    #init
+    i=0
+    
+    while i < len(sentence):
+        #The 'but' must be between 2 nominal groups
+        if sentence[i]=='but':
+            #After 'but' of subsentence we must have a nominal group (subject)
+            scd_nom_gr=analyse_nominal_group.find_sn_pos (sentence, i+1)
+            if scd_nom_gr==[]:
+                sentence[i]=':but'
+            else:
+                
+                #We have to find the first nominal group
+                begin_pos=i-1
+                fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
+                while fst_nom_gr==[] and begin_pos>0:
+                    begin_pos=begin_pos-1
+                    fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
+                if fst_nom_gr[len(fst_nom_gr)-1]=='but':
+                    sentence[i]=':but'
+        i=i+1
+
+    return sentence
 
 
 
@@ -695,6 +727,7 @@ def processing(sentence):
     sentence = refine_possesion_form(sentence)
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
+    sentence = but(sentence)
     sentence = conjunction_processing(sentence,'or')
     sentence = conjunction_processing(sentence,':but')
     sentence = subsentence_comma(sentence)
