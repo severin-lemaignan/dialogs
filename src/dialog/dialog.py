@@ -11,7 +11,7 @@ from collections import deque
 
 from helpers import colored_print
 
-from dialog_exceptions import UnsufficientInputError
+from dialog_exceptions import UnsufficientInputError, UnresolvedAnaphora
 
 from sentence import Sentence
 import sentence
@@ -95,7 +95,19 @@ class Dialog(Thread):
                     
                     #Waiting for more info to solve content
                     self.waiting_for_more_info = True
-
+                
+                except UnresolvedAnaphora as uie:
+                    self._logger.info(colored_print("##########################################", 'green'))
+                    self._logger.info(colored_print("#  Missing content! Going back to human  #", 'green'))
+                    self._logger.info(colored_print("##########################################", 'green'))
+                    
+                    
+                    #TODO: remove this
+                    sys.stdout.write(colored_print( \
+                            self._verbalizer.verbalize(uie.value['question']), \
+                            'red') + "\n")
+                            
+                            
             except Empty:
                 pass
             
@@ -179,9 +191,13 @@ class Dialog(Thread):
             self._logger.info(colored_print("#       RESOLVING SENTENCE        #", 'green'))
             self._logger.info(colored_print("###################################", 'green'))
             
+            self._resolver.sentences_store = Dialog.dialog_history
+            
             uie_object = self._last_output['object'] if self._last_output else None
             uie_object_with_more_info = self._last_output['object_with_more_info'] if uie_object else None
-            self._last_output = None # No Needed no more
+            
+                    # No Needed no more
+            self._last_output = None 
             self.active_sentence = self._resolver.references_resolution(self.active_sentence,
                                                                         self.current_speaker, 
                                                                         self.current_object)

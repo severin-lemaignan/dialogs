@@ -9,7 +9,7 @@ import unittest
 from resources_manager import ResourcePool
 from statements_safe_adder import StatementSafeAdder
 
-from dialog_exceptions import DialogError, GrammaticalError, EmptyNominalGroupId
+from dialog_exceptions import DialogError, GrammaticalError
 
 
 

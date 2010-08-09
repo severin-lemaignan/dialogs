@@ -13,7 +13,19 @@
 """
 from sentence import *
 
-
+class AnaphoraMatcher:
+    
+    def match_object(self):
+        return "method 1"
+        
+        
+    def match_first_object(self, sentences):
+        print(sentences[0])
+        list_gr=recover_nom_gr_list(sentences)
+        gr = first_replacement(list_gr, c_gr)
+        return [gr, 'FAILLURE']
+        
+        
 """
 Statement of lists
 """

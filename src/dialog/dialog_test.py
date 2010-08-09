@@ -185,8 +185,32 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ###
         expected_result = ['y_banana rdf:type Fruit']
         self.assertTrue(self.check_results(res, expected_result))
+    
+    def test_sentence6(self):
         
-
+        print("\n##################### test_sentence6 - it ########################\n")
+        """
+        ####
+        stmt = "this is my banana"
+        ####
+        res = self.dialog.test('myself', stmt)
+        ###
+        expected_result = ['y_banana belongsTo myself']
+        self.assertTrue(self.check_results(res, expected_result))
+        """
+        
+        
+        stmt = "I eat it" 
+        ####
+        res = self.dialog.test('myself', stmt)
+        ###
+        expected_result = ['myself desires *',
+                            '* rdf:type Give',
+                            '* performedBy myself',
+                            '* receivedBy myself']
+                            
+        self.assertTrue(self.check_results(res, expected_result))
+        
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
@@ -749,12 +773,17 @@ if __name__ == '__main__':
     # executing only some tests
     
     suiteSimpleSentences = unittest.TestSuite()
+    """
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence1'))    
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence2'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence3'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence4'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence5'))
+    """
     
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence6'))
+        
+    """
     suiteVerbalization = unittest.TestSuite()
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize1'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize2'))
@@ -786,9 +815,11 @@ if __name__ == '__main__':
     suiteISU = unittest.TestSuite()
     suiteISU.addTest(TestISUDialog('test_ISU1'))
     
-    #unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
+    """
+    
+    unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
     #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
     #unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
-    unittest.TextTestRunner(verbosity=2).run(suiteQuestionHandler)
+    #unittest.TextTestRunner(verbosity=2).run(suiteQuestionHandler)
     #unittest.TextTestRunner(verbosity=2).run(suiteISU)
 

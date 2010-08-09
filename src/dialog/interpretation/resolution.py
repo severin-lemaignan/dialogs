@@ -5,10 +5,11 @@ import logging
 
 from helpers import colored_print
 
-from dialog_exceptions import UnsufficientInputError, UnknownVerb
+from dialog_exceptions import UnsufficientInputError, UnknownVerb, UnresolvedAnaphora
 from resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name #for nominal group discrimination
 from discrimination import Discrimination
+from anaphora_matching import AnaphoraMatcher
 from sentence import SentenceFactory, Comparator
 
 class Resolver:
@@ -23,8 +24,9 @@ class Resolver:
      action_matcher module.
     
     """
-    def __init__(self):
+    def __init__(self, sentences_store = []):
         self._current_sentence = None
+        self.sentences_store = sentences_store
         
     def references_resolution(self, sentence, current_speaker, current_object):
               
@@ -32,23 +34,27 @@ class Resolver:
         #Record of current sentence
         self._current_sentence = sentence
         
+        
+        #Anaphoric resolution
+        matcher = AnaphoraMatcher()
+        
         #sentence sn nominal groups reference resolution
         if sentence.sn:
-            sentence.sn = self._resolve_groups_references(sentence.sn, current_speaker, current_object)
+            sentence.sn = self._resolve_groups_references(sentence.sn, matcher, current_speaker)
         
         
         #sentence sv nominal groups reference resolution
         for sv in sentence.sv:
             if sv.d_obj:
                 sv.d_obj = self._resolve_groups_references(sv.d_obj,
-                                                               current_speaker,
-                                                               current_object)
+                                                            matcher,
+                                                            current_speaker)
             if sv.i_cmpl:
                 resolved_i_cmpl = []
                 for i_cmpl in sv.i_cmpl:
                     i_cmpl.nominal_group = self._resolve_groups_references(i_cmpl.nominal_group, 
-                                                                    current_speaker, 
-                                                                    current_object)
+                                                                                matcher,
+                                                                                current_speaker)
                     resolved_i_cmpl.append(i_cmpl)
                 
                 sv.i_cmpl = resolved_i_cmpl
@@ -61,6 +67,7 @@ class Resolver:
         #Nominal group replacement possibly after uie_object and uie_object_with_more_info are sent from Dialog to resolve missing content
         if uie_object and uie_object_with_more_info:
             sentence = self.noun_phrases_replace_with_ui_exception(sentence, uie_object, uie_object_with_more_info)
+            
             #No uie_objects needed after replacement
             uie_object = None
             uie_object_with_more_info = None
@@ -135,7 +142,7 @@ class Resolver:
                     
         return sentence
         
-    def _resolve_references(self, nominal_group, current_speaker, current_object, onto = None):
+    def _resolve_references(self, nominal_group, matcher, current_speaker, onto = None):
         
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
@@ -170,16 +177,28 @@ class Resolver:
             logging.debug("Replaced \"you\" by \"myself\"")
             nominal_group.id = 'myself'
             nominal_group._resolved = True
-        
+        """
         if current_object and nominal_group.noun[0].lower() in ['it', 'one']:
             logging.debug("Replaced the anaphoric reference \"it\" by " + current_object)
             nominal_group.id = current_object
             nominal_group._resolved = True
-
-
+        """
+        
+        if nominal_group.noun[0].lower() in ['it', 'one']:
+            try:
+                object = matcher.match_first_object(get_last(self.sentences_store, 3))
+            except IndexError:
+                logging.debug("History empty")
+            
+            
+            if object and object[1] == "FAILLURE":
+                sf = SentenceFactory()
+                raise UnresolvedAnaphora({'status':'FAILURE', 'question':sf.create_do_you_mean_reference(object[0])}) #raise UnresolvedAnaphora("Plante")
+            else:
+                raise DialogError("OOoooops!!!")
         return nominal_group
     
-    def _resolve_groups_references(self, array_sn, current_speaker, current_object):
+    def _resolve_groups_references(self, array_sn, matcher, current_speaker):
         #TODO: We should start with resolved_sn filled with sentence.sn and replace
         # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
         resolved_sn = []
@@ -191,7 +210,7 @@ class Resolver:
                 except AttributeError: #the ontology server is not started or doesn't know the method
                     pass
             
-            resolved_sn.append(self._resolve_references(sn, current_speaker, current_object, onto))
+            resolved_sn.append(self._resolve_references(sn, matcher, current_speaker, onto))
            
         return resolved_sn
     
@@ -202,7 +221,7 @@ class Resolver:
         
         
         logging.debug(str(nominal_group))
-        builder.process_nominal_group(nominal_group, '?concept', None)
+        builder.process_nominal_group(nominal_group, '?concept', None, False)
         stmts = builder.get_statements()
         builder.clear_statements()
         logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
@@ -263,6 +282,23 @@ class Resolver:
             verbal_group.sv_sec = self._resolve_verbs(verbal_group.sv_sec)
             
         return verbal_group
+
+
+
+def get_last(list, nb):
+    """This returns the last 'Nb' elements of the history from in the reverse order"""
+    last = len(list)
+    
+    if last > 0 and last > nb:
+        stnts = list[(last - nb):last]
+    else:
+        stnts = list[last]
+        
+    stnts.reverse()
+    
+    return stnts
+
+
 
 def unit_tests():
     """This function tests the main features of the class Resolver"""
