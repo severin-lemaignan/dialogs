@@ -651,7 +651,7 @@ def remerge_unit_tests():
     print ''
     print ('######################## test 1.20 ##############################')
 
-    utterance="no. it is not blue :but red."
+    utterance="no. it is not blue but red."
     print 'The speaker said :'
     print utterance
     print '#################################################################'
@@ -743,7 +743,7 @@ def remerge_unit_tests():
     print ''
     print ('######################## test 1.23 ##############################')
 
-    utterance="no. It is not on the table :but on the shelf."
+    utterance="no. It is not on the table but on the shelf."
     print 'The speaker said :'
     print utterance
     print '#################################################################'
@@ -778,7 +778,7 @@ def remerge_unit_tests():
     print ''
     print ('######################## test 1.24 ##############################')
 
-    utterance="no. It is not on the table :but on the shelf."
+    utterance="no. It is not on the table but on the shelf."
     print 'The speaker said :'
     print utterance
     print '#################################################################'

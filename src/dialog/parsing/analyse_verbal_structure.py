@@ -368,7 +368,17 @@ def process_subsentence(phrase,vg):
                
                 #We perform processing
                 vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', w ,subsentence)]
-            
+                
+                if w=='but':
+                    #If the main verb is not a verb but a part of verbal structure => we have nominal groups
+                    for k in ['.','?','!','']+proposal_list:
+                        if vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
+                            
+                            #We make changes and return the sentence with but of nominal groups
+                            phrase[phrase.index(w)]=':but'
+                            vg.vrb_sub_sentence=vg.vrb_sub_sentence[:len(vg.vrb_sub_sentence)-1]
+                            return phrase
+                        
                 #We delete the subsentence
                 phrase=phrase[:phrase.index(i)]
                 phrase=phrase+phrase[end_pos:]+['.']

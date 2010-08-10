@@ -50,22 +50,17 @@ def nom_struc_rebuilding(nom_struc):
     
     #init
     nominal_structure=ns=nn=[]
-    i=0
-
+    i=0 
+    
     while i < len(nom_struc):
-        #The first nominal group not preceded
-        if i > 0:
-            #With the flag we put 'or' or 'and'
-            if nom_struc[i]._conjunction=='AND':
-                nominal_structure=nominal_structure+['and']
-            elif nom_struc[i]._conjunction=='OR':
-                nominal_structure=nominal_structure+['or']
-            elif nom_struc[i]._conjunction=='BUT':
-                nominal_structure=nominal_structure+['but']
         
-        #We can have an 'or' with the first element if it is an indirect complement       
-        if nom_struc[i]._conjunction=='OR':
+        #The first nominal group not preceded but 'and' if there is
+        if nom_struc[i]._conjunction=='AND' and i > 0:
+            nominal_structure=nominal_structure+['and']
+        elif nom_struc[i]._conjunction=='OR':
             nominal_structure=nominal_structure+['or']
+        elif nom_struc[i]._conjunction=='BUT':
+            nominal_structure=nominal_structure+['but']
         
         #We recover the nominal group and his complement
         if nom_struc[i]._quantifier=='SOME' or nom_struc[i]._quantifier=='ALL' or nom_struc[i]._quantifier=='ANY' or (nom_struc[i]._quantifier=='DIGIT' and nom_struc[i].det!='one'):
@@ -110,17 +105,12 @@ def indirect_compl_rebuilding(indirect_compl):
     if indirect_compl.prep!=[]:
         nom_gr= nom_struc_rebuilding(indirect_compl.nominal_group)
         
-        if nom_gr!=[] and (nom_gr[0]=='and' or nom_gr[0]=='or'):
+        if nom_gr!=[] and (nom_gr[0]=='and' or nom_gr[0]=='or' or nom_gr[0]=='but'):
             nom_gr=[nom_gr[0]]+indirect_compl.prep+nom_gr[1:]
         else:
             nom_gr=indirect_compl.prep+nom_gr
            
     else:
-        """
-        if i.nominal_group[0].adj!=[] and (i.nominal_group[0].adj[0]=='last' or i.nominal_group[0].adj[0]=='next'):
-            gr_ind_cmpl=gr_ind_cmpl+gr_nominal(i.nominal_group)
-        else:
-        """
         nom_gr= indirect_compl.prep + nom_struc_rebuilding(indirect_compl.nominal_group)
             
     ind_cmpl=ind_cmpl+nom_gr

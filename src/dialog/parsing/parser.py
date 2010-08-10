@@ -1702,7 +1702,7 @@ def unit_tests():
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sn[0].noun_cmpl[0]._quantifier="ALL"
-    rslt[2].sn[0]._quantifier="SOME"
+    rslt[2].sn[0]._quantifier="ANY"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
@@ -1917,7 +1917,9 @@ def unit_tests():
     """
     
     
-    
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
     print ''
     print ('######################## test 6.1 ##############################')
 
@@ -1965,6 +1967,9 @@ def unit_tests():
     
     
     
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
     print ''
     print ('######################## test 6.2 ##############################')
 
@@ -2006,6 +2011,9 @@ def unit_tests():
     
     
     
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
     print ''
     print ('######################## test 6.3 ##############################')
 
@@ -2054,6 +2062,9 @@ def unit_tests():
     
     
     
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
     print ''
     print ('######################## test 6.4 ##############################')
 
@@ -2091,6 +2102,9 @@ def unit_tests():
     
     
     
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
     print ''
     print ('######################## test 6.5 ##############################')
 
@@ -2125,6 +2139,9 @@ def unit_tests():
   
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    
+    
+    
     
 if __name__ == '__main__':
     unit_tests()

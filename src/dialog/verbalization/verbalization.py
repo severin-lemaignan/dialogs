@@ -1931,6 +1931,44 @@ class TestVerbalization(unittest.TestCase):
         print "The result obtained is :    ", utterance
         
         self.assertEquals(original_utterance, utterance) 
+         
+    def test_55(self):
+        
+        print ''
+        print '######################## test 1.55 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="This one isn't my uncle's bottle but it's my brother's bottle. It isn't on the table but on the shelf."
+        
+        sentences=[Sentence('statement', '', 
+            [Nominal_Group(['this'],['one'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['uncle'],[],[],[])],[])], 
+                [],
+                [], [] ,'negative',[Sentence('subsentence', 'but', 
+                    [Nominal_Group([],['it'],[],[],[])], 
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['it'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])]),
+                 Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                [], [] ,'negative',[])])]
+        
+        sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="BUT"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)        
+        
         
         
 if __name__ == '__main__':

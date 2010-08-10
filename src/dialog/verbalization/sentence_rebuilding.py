@@ -54,6 +54,9 @@ def statement(analysis):
     if analysis.data_type=='w_question':
         return phrase+['?']
     
+    #To take of all not useless comma
+    while phrase[len(phrase)-1][len(phrase[len(phrase)-1])-1]==',':
+        phrase[len(phrase)-1]=phrase[len(phrase)-1][:len(phrase[len(phrase)-1])-1]
     return phrase+['.']
     
     
