@@ -50,6 +50,7 @@ prep_concat_list=[['next','to'],['behind','to'],['in','front','of']]
 rel_list=['which', 'who','that']
 sub_list=['while', 'but','where', 'when', 'if']
 adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of', 'into']
+superlative_number=['first','second','third','fifth','ninth']
 
 
 
@@ -103,10 +104,18 @@ def concat_number(sentence):
                 i=i+1
             end_pos=i
             
+            #We have to concatenate the last number if it is superlative
+            if other_functions.number(sentence[i])==2:
+                end_pos=end_pos+1
+            for z in superlative_number:
+                if sentence[i]==z:
+                    end_pos=end_pos+1
+                    
             sentence=sentence[:begin_pos]+[other_functions.convert_to_string(sentence[begin_pos:end_pos])]+sentence[end_pos:]
             
         i=i+1    
     return sentence
+        
         
         
 def upper_to_lower(sentence):
@@ -543,33 +552,35 @@ def conjunction_processing(sentence, cjt):
     """ 
     #init
     i=0
+    fst_nom_gr=[]
     
     while i < len(sentence):
         
         if sentence[i]==cjt:
             #We have to find the first and the second nominal group in the sentence
             position=i
-            fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
-            
             #Until we find the first nominal group
-            while fst_nom_gr==[]:
+            while position>0 and fst_nom_gr==[]:
                 position=position-1
                 fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, position)
-        
-            #We will find the second nominal group
-            scd_nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
-            
-            if fst_nom_gr[len(fst_nom_gr)-1]==cjt and scd_nom_gr==[]:
-                #We have to know the second nominal group
-                sentence=sentence[:i+1]+[fst_nom_gr[0]]+sentence[i+1:]
+                
+            if fst_nom_gr!=[]:
+                
+                #We will find the second nominal group
                 scd_nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
                 
-                #We insert word to have 2 nominal groups in the sentence
-                sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+[cjt]+sentence[i+1:]
-            
-            elif fst_nom_gr[len(fst_nom_gr)-1]==cjt:
-                #We insert word to have 1 nominal group in the sentence
-                sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+sentence[i:]
+                if fst_nom_gr[len(fst_nom_gr)-1]==cjt and scd_nom_gr==[]:
+                    #We have to know the second nominal group
+                    sentence=sentence[:i+1]+[fst_nom_gr[0]]+sentence[i+1:]
+                    scd_nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
+                    
+                    #We insert word to have 2 nominal groups in the sentence
+                    sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+[cjt]+sentence[i+1:]
+                
+                elif fst_nom_gr[len(fst_nom_gr)-1]==cjt:
+                    #We insert word to have 1 nominal group in the sentence
+                    sentence=sentence[:position]+fst_nom_gr[:len(fst_nom_gr)-1]+[scd_nom_gr[len(scd_nom_gr)-1]]+sentence[i:]
+                i=i+1
     
         i=i+1
     return sentence
@@ -721,6 +732,9 @@ def processing(sentence):
     sentence = upper_to_lower(sentence)
     sentence = delete_empty(sentence)
     sentence = concat_number(sentence)
+    sentence = conjunction_processing(sentence,'and')
+    sentence = conjunction_processing(sentence,'or')
+    sentence = conjunction_processing(sentence,':but')
     sentence = other_processing(sentence)
     sentence = reorganize_adj(sentence)
     sentence = possesion_form(sentence)
@@ -728,8 +742,7 @@ def processing(sentence):
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
     sentence = but(sentence)
-    sentence = conjunction_processing(sentence,'or')
-    sentence = conjunction_processing(sentence,':but')
+   
     sentence = subsentence_comma(sentence)
     sentence = remerge_sentences(sentence)
     sentence = take_off_comma(sentence)

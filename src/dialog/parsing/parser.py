@@ -2141,6 +2141,40 @@ def unit_tests():
     print ''
     
     
+
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
+    print ''
+    print ('######################## test 6.6 ##############################')
+
+    utterance="Give me the fourth and seventh bottle. Give me the one thousand ninth and the thirty thousand twenty eighth bottle."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],['fourth'],[],[]),
+                 Nominal_Group(['the'],['bottle'],['seventh'],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],['one+thousand+ninth'],[],[]),
+                 Nominal_Group(['the'],['bottle'],['thirty+thousand+twenty+eighth'],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+  
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''   
+    
+    
     
     
 if __name__ == '__main__':

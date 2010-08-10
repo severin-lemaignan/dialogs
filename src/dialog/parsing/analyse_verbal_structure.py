@@ -186,6 +186,7 @@ def recover_obj_iobj(phrase, vg):
 
 
         else:
+            
             #It is a direct complement
             gr_nom_list=[]
             #It reproduces the same code as above
@@ -238,7 +239,7 @@ def recover_obj_iobj(phrase, vg):
                 vg.d_obj=gr_nom_list
 
         object= analyse_nominal_group.find_sn(phrase)
-
+        
     return phrase
 
 

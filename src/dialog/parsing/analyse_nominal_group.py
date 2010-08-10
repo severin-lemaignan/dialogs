@@ -39,6 +39,9 @@ adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 composed_noun=['some', 'any', 'no']
 end_s_list=['is', 'this']
+word_list=['now']
+superlative_number=['first','second','third','fifth','ninth']
+
 
 
 """
@@ -70,8 +73,12 @@ def is_an_adj(word):
         if word.endswith(k):
             return 1
     
+    #For adjectives created from numbers
+    if word.endswith('th') and other_functions.number(word)==2:
+        return 1
+        
     #We use the irregular adjectives list to find it
-    for i in adjective_list:
+    for i in adjective_list+superlative_number:
         if word==i:
             return 1
     
@@ -100,11 +107,14 @@ def adjective_pos(phrase, word_pos):
     for k in adj_rules:
         if phrase[word_pos].endswith(k):
             return 1+adjective_pos(phrase, word_pos+1)
-
+    
+    #For adjectives created from numbers
+    if phrase[word_pos].endswith('th') and other_functions.number(phrase[word_pos])==2:
+        return 1+adjective_pos(phrase, word_pos+1)
+    
     #We use the irregular adjectives list to find it
-    for i in adjective_list:
+    for i in adjective_list+superlative_number:
         if phrase[word_pos]==i:
-            adjective_pos(phrase, word_pos+1)
             return 1+ adjective_pos(phrase, word_pos+1)
 
     #Default case
@@ -139,6 +149,9 @@ def find_sn_pos (phrase, begin_pos):
     #If we have 'something'
     for k in composed_noun:
         if phrase[begin_pos].startswith(k):
+            for l in word_list:
+                if l==phrase[begin_pos]:
+                    return []
             return [phrase[begin_pos]]    
        
     #If there is a number, it will be the same with determinant
@@ -189,6 +202,9 @@ def find_sn (phrase):
         #If we have 'something'
         for k in composed_noun:
             if x.startswith(k):
+                for l in word_list:
+                    if l==x:
+                        return []
                 return [phrase[phrase.index(x)]]
         
         #If there is a number, it will be the same with determinant

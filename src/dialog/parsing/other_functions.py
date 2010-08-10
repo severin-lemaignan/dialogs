@@ -8,7 +8,7 @@
     find_cap_lettre : to see if the word starts with capital letter               
     convert_to_string : to convert a list to string with '+' in place of ' '      
     recover_end_pos_sub : to find the end position of the subsentence             
-    number : to return 1 if the word is a number
+    number : to return 1 if the word is a number and 2 if it is a adjectif-number 
 """
 from resources_manager import ResourcePool
 
@@ -17,7 +17,7 @@ from resources_manager import ResourcePool
 Statement of lists
 """
 cap_let_list=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-number_list=['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','twent','thirt','fift','hundred','thousand','million']
+number_list=['one','two','three','four','five','six','seven','eight','ten','eleven','twelve','twent','thirt','fift','hundred','thousand','million']
 
 
 """
@@ -92,13 +92,16 @@ def recover_end_pos_sub(phrase, propo_sub_list):
 
 def number(word):
     """
-    Function return 1 if the word is a number                      
-    Input=word               Output=flag(0 if no number or 1 if number)        
+    Function return 1 if the word is a number and 2 if it is a adjectif-number                    
+    Input=word          Output=flag(0 if no number or 1 if number or 2 adjectif-number)        
     """
     
     for n in number_list:
-        if word.startswith(n):
-            return 1
+        if word.startswith(n): 
+            if word.endswith('th'):
+                return 2
+            else:
+                return 1
     return 0
 
 

@@ -1497,7 +1497,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="Give me two or three bottles. The bottle is blue big fanny. Give me the bottle which is on the table."
+        original_utterance="Give me two or three bottles. The bottle is blue big funny. Give me the bottle which is on the table."
         
         sentences=[Sentence('imperative', '', 
             [], 
@@ -1509,7 +1509,7 @@ class TestVerbalization(unittest.TestCase):
         Sentence('statement', '', 
             [Nominal_Group(['the'],['bottle'],[],[],[])], 
             [Verbal_Group(['be'], [],'present simple', 
-                [Nominal_Group([],[],['blue', 'big', 'fanny'],[],[])], 
+                [Nominal_Group([],[],['blue', 'big', 'funny'],[],[])], 
                 [],
                 [], [] ,'affirmative',[])]),
         Sentence('imperative', '', 
@@ -1969,7 +1969,38 @@ class TestVerbalization(unittest.TestCase):
         
         self.assertEquals(original_utterance, utterance)        
         
+    def test_56(self):
         
+        print ''
+        print '######################## test 1.56 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="Give me the fourth and seventh bottle. Give me the one thousand ninth and the thirty thousand twenty eighth bottle."
+        
+        sentences=[Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],[],['fourth'],[],[]),
+                 Nominal_Group([],['bottle'],['seventh'],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['the'],[],['one+thousand+ninth'],[],[]),
+                 Nominal_Group(['the'],['bottle'],['thirty+thousand+twenty+eighth'],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)       
+   
+   
         
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
