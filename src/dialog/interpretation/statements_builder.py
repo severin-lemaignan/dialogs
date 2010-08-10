@@ -316,23 +316,53 @@ class NominalGroupStatementBuilder:
         adjectives list.
         """
         for adj in nominal_group.adj:
+            #Getting the object property if there exists a specific class
+            object_property = ''
+            try:
+                object_property = "has" + ResourcePool().adjectives[adj] + " "
+            
+            #Default case, creating hasFeature object Property
+            except KeyError:
+                object_property = "hasFeature "
+                
             #Case negative assertion
             if negative_object:
-                
+                #Check that affirmation does not already exist
+                onto = ''
                 try:
-                    self._statements.append(ng_id + " NegativeAssertionOfHas" + ResourcePool().adjectives[adj] + " " + adj)
-                except KeyError:
-                    self._statements.append(ng_id + " NegativeAssertionOfHasFeature " + adj)
-                finally:
-                    #TODO: Check or add the fact that NegativeAssertionOfHas+adj is negation of adj
+                    onto = ResourcePool().ontology_server.find('?concept', ['?concept' + ' ' + object_property + adj])
+                except AttributeError:
                     pass
+                
+                if onto and ng_id in onto:
+                    logging.info("\t >> Found in the ontology the statement " + \
+                                                    str([ng_id + ' ' + object_property + adj]))
+                    logging.info("\t >> Keeping it like that... And not creating its negative assertion")
+                    
+                    self._statements.append(ng_id + ' ' + object_property + adj)
+                else:
+                    self._statements.append(ng_id + ' NegativeAssertionOf'+object_property + adj)
+                
             
             #Case Affirmative assertion
             else:
+                #Check that negation does not already exist
+                onto = ''
                 try:
-                    self._statements.append(ng_id + " has" + ResourcePool().adjectives[adj] + " " + adj)
-                except KeyError:
-                    self._statements.append(ng_id + " hasFeature " + adj)
+                    onto = ResourcePool().ontology_server.find('?concept', ['?concept' + ' NegativeAssertionOf' + object_property + adj])
+                except AttributeError:
+                    pass
+                
+                if onto and ng_id in onto:
+                    logging.info("\t >> Found in the ontology the statement " + \
+                                                    str([ng_id + ' NegativeAssertionOf' + object_property + adj]))
+                    logging.info("\t >> Keeping it like that... And not creating its affirmative assertion")
+                    
+                    self._statements.append(ng_id +' NegativeAssertionOf' + object_property + adj)
+                else:
+                    self._statements.append(ng_id + ' ' +object_property + adj)
+                    
+                    
     
     
     def process_noun_cmpl(self, nominal_group, ng_id):
@@ -845,7 +875,7 @@ def dump_resolved(sentence, current_speaker, current_listener):
             elif [ng.noun, ng.det, ng.adj] == [['car'], ['the'],[]]:
                 onto_fiat = ''
                 try:
-                    onto_fiat =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',['?concept belongsTo ?a', '?concept rdf:type Car','?a belongsTo id_danny'])
+                    onto_fiat =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',stmts)
                 except AttributeError: #the ontology server is not started of doesn't know the method
                     pass
                     
@@ -925,6 +955,7 @@ class TestStatementBuilder(unittest.TestCase):
                           'twingo rdf:type Car',
                           'twingo hasSize small',
                           'a_man rdf:type Man',
+                          'fiat NegativeAssertionOfhasColor blue',
                           'fiat belongsTo id_tom',
                           'fiat rdf:type Car',
                           'id_tom rdfs:label "Tom"',
@@ -1515,6 +1546,38 @@ class TestStatementBuilder(unittest.TestCase):
         
         return self.process(sentence, expected_resut, display_statement_result = True)
     
+    """
+    def test_15_quantifier_action_verb(self):        
+        print "\n**** test_15_quantifier_action_verb  *** "
+        print "an apple grows on a tree"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['an'],
+                                            ['apple'],#apple is common noun. Therefore, do not capitalize.
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['grow'],
+                                           [],
+                                           'present simple',
+                                           [],
+                                           [Indirect_Complement(['on'],
+                                                                [Nominal_Group(['a'],
+                                                                                ['tree'],
+                                                                                [],
+                                                                                [],
+                                                                                [])])],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                            [])])
+        
+        #quantifier
+        sentence.sn[0]._quantifier = 'SOME' # an apple
+        sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier = 'SOME' # a tree
+        expected_resut = ['? ? ?']
+        
+        return self.process(sentence, expected_resut, display_statement_result = True)
+    """
     
     
     #Action adverbs
@@ -1605,6 +1668,48 @@ class TestStatementBuilder(unittest.TestCase):
                             '* isNegativeAssertion "true"^^xsd:boolean']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
+    def test_18_negative_relative(self):
+        print "\n**** test_18_negative_relative *** "
+        print "Danny drives the car that is not blue"
+        
+        relative18 = Sentence("relative", "", 
+                            [], 
+                            [Verbal_Group(['be'],
+                                          [],
+                                          'past_simple',
+                                          [Nominal_Group([],[],['blue'],[],[])],
+                                          [],
+                                          [],
+                                          [],
+                                          'negative',
+                                          [])])
+                                          
+        
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['drive'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['the'],
+                                                          ['car'],
+                                                          [],
+                                                          [],
+                                                          [relative18])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = [ '* rdf:type Drive', 
+                            '* performedBy id_danny',
+                            '* involves fiat']
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    
     def test_19_negative(self):
         print "\n**** test_19_negative *** "
         print "Jido is not a human"
@@ -1657,7 +1762,33 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'negative',
                                            [])])
-        expected_result = [ 'shelf1 NegativeAssertionOfHasColor green']   
+        expected_result = [ 'shelf1 NegativeAssertionOfhasColor green']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    
+    def test_20_negative_inconsistent(self):
+        print "\n**** test_20_negative *** "
+        print "the shelf1 is green"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['the'],
+                                            ['shelf1'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group([],
+                                                          [],
+                                                          ['green'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = ['shelf1 NegativeAssertionOfhasColor green']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
@@ -1808,19 +1939,21 @@ class TestStatementBuilder(unittest.TestCase):
     def process(self, sentence, expected_result, display_statement_result = False):
          
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
-        res_stmt_builder = self.stmt.process_sentence(sentence)        
-        self.stmt_adder._statements = res_stmt_builder
-        self.stmt_adder._unresolved_ids = self.stmt._unresolved_ids
-        self.stmt_adder.process(sentence.resolved())
-        res = self.stmt_adder._statements
-        
+        res = self.stmt.process_sentence(sentence)        
         
         if display_statement_result:
-            logging.info( "*** StatementSafeAdder result from " + inspect.stack()[1][3] + " ****")
+            logging.info( "*** Statement to add in the ontology result from " + inspect.stack()[1][3] + " ****")
             for s in res:
-                logging.info("\t >> " + s)            
+                logging.info("\t >> " + s)
+                
+                try:
+                    if not ResourcePool().ontology_server.safeAdd([s]):
+                        logging.info("Inconsistent statement ([ " + s + " ])")
+                except AttributeError:
+                    pass
+                    
             logging.info("\t --------------  << ")
-        
+            
         self.assertTrue(self.check_results(res, expected_result))
         
         
