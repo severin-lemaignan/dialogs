@@ -15,15 +15,12 @@ from sentence import *
 
 class AnaphoraMatcher:
     
-    def match_object(self):
-        return "method 1"
+    def match_first_object(self, sentences, c_gr):
         
-        
-    def match_first_object(self, sentences):
-        print(sentences[0])
         list_gr=recover_nom_gr_list(sentences)
         gr = first_replacement(list_gr, c_gr)
-        return [gr, 'FAILLURE']
+        
+        return [gr, list_gr]
         
         
 """
@@ -147,7 +144,12 @@ def first_replacement(nom_gr_list, current_nom_gr):
     
     return None
     
-    
+
+
+def replacement(input, c_gr, list_gr):
+    return Nominal_Group(['the'],['one'],['big'],[],[])
+
+
 
 def unit_tests():
     

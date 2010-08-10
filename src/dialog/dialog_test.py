@@ -74,6 +74,10 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'green_banana hasColor green',
                         'green_banana isOn table2',
                         'myself focusesOn y_banana',
+                        'big_tree rdf:type Tree',
+                        'big_tree hasSize big',
+                        'red_apple rdf:type Apple',
+                        'red_apple hasColor red'
                         ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
@@ -170,9 +174,11 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ####
         res = self.dialog.test('myself', stmt)
         ###
+        print(res)
         expected_result = ['y_banana belongsTo myself']
         self.assertTrue(self.check_results(res, expected_result))
-                
+        
+        """
         stmt = "This is a green banana" ## ERROR -> y_banana can not be green
         ####
         res = self.dialog.test('myself', stmt)
@@ -185,29 +191,82 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ###
         expected_result = ['y_banana rdf:type Fruit']
         self.assertTrue(self.check_results(res, expected_result))
-    
+        """
     def test_sentence6(self):
         
         print("\n##################### test_sentence6 - it ########################\n")
-        """
+       
+        stmt = "this is good"
+        res = self.dialog.test('myself', stmt)
+        print(res)
+        
+        stmt = "the red apple is on the big tree"
+        res = self.dialog.test('myself', stmt)
+        print(res)
+        
+        
+        stmt = "the green banana is next to the red apple"
+        res = self.dialog.test('myself', stmt)
+        print(res)
+        
+        
+        stmt = "I eat it"
+        ###
+        answer = "yes , I meant the green one"
+        res = self.dialog.test('myself', stmt, answer)
+        print(res)
+        
+        expected_result = ['* rdf:type Eat',
+                            '* performedBy myself',
+                            '* involves y_banana']
+                            
+        self.assertTrue(self.check_results(res, expected_result))
+        
+    
+    def test_sentence7(self):
+        
+        print("\n##################### test_sentence7 - it ########################\n")
+        
         ####
         stmt = "this is my banana"
         ####
         res = self.dialog.test('myself', stmt)
-        ###
+        print(res)
+        ###        
         expected_result = ['y_banana belongsTo myself']
         self.assertTrue(self.check_results(res, expected_result))
-        """
-        
         
         stmt = "I eat it" 
         ####
-        res = self.dialog.test('myself', stmt)
+        answer = "yes, the yellow banana"
+        res = self.dialog.test('myself', stmt, answer)
+        print(res)
         ###
-        expected_result = ['myself desires *',
-                            '* rdf:type Give',
+        expected_result = ['* rdf:type Eat',
                             '* performedBy myself',
-                            '* receivedBy myself']
+                            '* involves y_banana']
+    def test_sentence8(self):
+        
+        print("\n##################### test_sentence8 - it ########################\n")
+        
+        ####
+        stmt = "the green banana is next to the red apple"
+        ####
+        res = self.dialog.test('myself', stmt)
+        print(res)
+        ###
+        expected_result = ['green_banana isNexto red_apple']
+        self.assertTrue(self.check_results(res, expected_result))
+        
+        stmt = "it grows on the big tree" 
+        ####
+        answer = "no, the red apple"
+        res = self.dialog.test('myself', stmt, answer)
+        print(res)
+        ###
+        expected_result = ['* rdf:type Grow',
+                            '* performedBy red_apple',
+                            '* isOn big_tree']
                             
         self.assertTrue(self.check_results(res, expected_result))
         
@@ -764,7 +823,7 @@ class TestISUDialog(unittest.TestCase):
 
         
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                     format="%(message)s")
     
     # all tests
@@ -773,17 +832,17 @@ if __name__ == '__main__':
     # executing only some tests
     
     suiteSimpleSentences = unittest.TestSuite()
-    """
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence1'))    
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence2'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence3'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence4'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence5'))
-    """
     
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence6'))
+    #suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence7'))
+    #suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence8'))
         
-    """
+    
     suiteVerbalization = unittest.TestSuite()
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize1'))
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize2'))
@@ -814,8 +873,6 @@ if __name__ == '__main__':
     
     suiteISU = unittest.TestSuite()
     suiteISU.addTest(TestISUDialog('test_ISU1'))
-    
-    """
     
     unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
     #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)

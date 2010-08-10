@@ -11,16 +11,17 @@ from collections import deque
 
 from helpers import colored_print
 
-from dialog_exceptions import UnsufficientInputError, UnresolvedAnaphora
+from dialog_exceptions import UnsufficientInputError, UnidentifiedAnaphoraError
 
 from sentence import Sentence
-import sentence
 
 from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser
 from interpretation.resolution import Resolver
 from interpretation.content_analysis import ContentAnalyser
+from interpretation.anaphora_matching import replacement
 from verbalization.verbalization import Verbalizer
+
 
 VERSION = "0.1"
 
@@ -62,6 +63,8 @@ class Dialog(Thread):
         #that could not be resolved. Cf doc of UnsufficientInputError for details.
         self._last_output = None
         
+        self._anaphora_input = None
+        
         #the object currently discussed. Used to resolve anaphors (like 'this 
         # one').
         self.current_object = None
@@ -96,15 +99,18 @@ class Dialog(Thread):
                     #Waiting for more info to solve content
                     self.waiting_for_more_info = True
                 
-                except UnresolvedAnaphora as uie:
+                except UnidentifiedAnaphoraError as uae:
                     self._logger.info(colored_print("##########################################", 'green'))
-                    self._logger.info(colored_print("#  Missing content! Going back to human  #", 'green'))
+                    self._logger.info(colored_print("#  Asking for confirmation to human      #", 'green'))
                     self._logger.info(colored_print("##########################################", 'green'))
+                    self._anaphora_input = uae.value
                     
+                    #waiting for more info to solve anaphora
+                    self.waiting_for_more_info = True
                     
-                    #TODO: remove this
+                    #Output towards human
                     sys.stdout.write(colored_print( \
-                            self._verbalizer.verbalize(uie.value['question']), \
+                            self._verbalizer.verbalize(uae.value['question']), \
                             'red') + "\n")
                             
                             
@@ -137,6 +143,7 @@ class Dialog(Thread):
         else:
             self.current_speaker = self._speaker.get_current_speaker_id()
         
+        #Unsifficient input  Error 
         if self.waiting_for_more_info and self._last_output:
             self._logger.info(colored_print("##########################################", 'green'))
             self._logger.info(colored_print("#   New content provided by human!       #", 'green'))
@@ -148,7 +155,20 @@ class Dialog(Thread):
                                                                 self._last_output['object'])
             #No more info needed
             self.waiting_for_more_info = False
+        
+        #Unidentified Anaphora Error
+        if self.waiting_for_more_info and self._anaphora_input:
+            self._logger.info(colored_print("##########################################", 'green'))
+            self._logger.info(colored_print("#   New content provided by human!       #", 'green'))
+            self._logger.info(colored_print("##########################################", 'green'))            
+            self._logger.info(colored_print(input + "\n", 'blue'))
             
+            self._anaphora_input['object_with_more_info'] = replacement(self._parser.parse(input, None),
+                                                                                   self._anaphora_input['object'] , 
+                                                                                   self._anaphora_input['objects_list'][1:])
+            self.waiting_for_more_info = False
+        
+        
         self._nl_input_queue.put(input)    
         
         
@@ -187,20 +207,25 @@ class Dialog(Thread):
             self.active_sentence = self.sentences.popleft()
             
             #Resolution
+            self._resolver.sentences_store = Dialog.dialog_history
+            uie_object = self._last_output['object'] if self._last_output else None
+            uie_object_with_more_info = self._last_output['object_with_more_info'] if uie_object else None
+            self._last_output = None  
+            
+            uae_object = self._anaphora_input['object'] if self._anaphora_input else None
+            uae_object_with_more_info = self._anaphora_input['object_with_more_info'] if uae_object else None
+            self._anaphora_input = None
+            
+            
             self._logger.info(colored_print("###################################", 'green'))
             self._logger.info(colored_print("#       RESOLVING SENTENCE        #", 'green'))
             self._logger.info(colored_print("###################################", 'green'))
             
-            self._resolver.sentences_store = Dialog.dialog_history
-            
-            uie_object = self._last_output['object'] if self._last_output else None
-            uie_object_with_more_info = self._last_output['object_with_more_info'] if uie_object else None
-            
-                    # No Needed no more
-            self._last_output = None 
             self.active_sentence = self._resolver.references_resolution(self.active_sentence,
                                                                         self.current_speaker, 
-                                                                        self.current_object)
+                                                                        uae_object,
+                                                                        uae_object_with_more_info)
+                                                                        
             self.active_sentence = self._resolver.noun_phrases_resolution(self.active_sentence,
                                                                           self.current_speaker,
                                                                           uie_object,

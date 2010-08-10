@@ -50,7 +50,7 @@ class UnknownVerb(DialogError):
     def __str__(self):
         return repr(self.value)
     
-class UnresolvedAnaphora(DialogError):
+class UnidentifiedAnaphoraError(DialogError):
     def __init__(self, value):
         self.value = value
     def __str__(self):

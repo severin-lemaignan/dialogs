@@ -5,7 +5,8 @@ import logging
 
 from helpers import colored_print
 
-from dialog_exceptions import UnsufficientInputError, UnknownVerb, UnresolvedAnaphora
+from dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError
+from dialog_exceptions import DialogError
 from resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name #for nominal group discrimination
 from discrimination import Discrimination
@@ -28,7 +29,10 @@ class Resolver:
         self._current_sentence = None
         self.sentences_store = sentences_store
         
-    def references_resolution(self, sentence, current_speaker, current_object):
+    def references_resolution(self, sentence, current_speaker, uae_object, uae_object_with_more_info):
+        
+        if uae_object and uae_object_with_more_info:
+           raise DialogError("Pause !! We carry on later !!!!")
               
         logging.info(colored_print("-> Resolving references and anaphors...", 'green'))
         #Record of current sentence
@@ -177,25 +181,25 @@ class Resolver:
             logging.debug("Replaced \"you\" by \"myself\"")
             nominal_group.id = 'myself'
             nominal_group._resolved = True
-        """
-        if current_object and nominal_group.noun[0].lower() in ['it', 'one']:
-            logging.debug("Replaced the anaphoric reference \"it\" by " + current_object)
-            nominal_group.id = current_object
-            nominal_group._resolved = True
-        """
+        
         
         if nominal_group.noun[0].lower() in ['it', 'one']:
-            try:
-                object = matcher.match_first_object(get_last(self.sentences_store, 3))
-            except IndexError:
-                logging.debug("History empty")
+            if not self.sentences_store:
+                raise DialogError("Empty Dialog history")
             
+            sf = SentenceFactory()
+            object = matcher.match_first_object(get_last(self.sentences_store, 3), nominal_group)
             
-            if object and object[1] == "FAILLURE":
-                sf = SentenceFactory()
-                raise UnresolvedAnaphora({'status':'FAILURE', 'question':sf.create_do_you_mean_reference(object[0])}) #raise UnresolvedAnaphora("Plante")
+            # Case there exist only one nominal group identified from anaphora matching
+            if object and len(object[1]) <= 1:
+                nominal_group = object[0]
+            
+            # Ask confirmation to the user
             else:
-                raise DialogError("OOoooops!!!")
+                raise UnidentifiedAnaphoraError({'object':nominal_group,
+                                                'object_with_more_info':None,
+                                                'objects_list': object[1],
+                                                'question':sf.create_do_you_mean_reference(object[0])}) 
         return nominal_group
     
     def _resolve_groups_references(self, array_sn, matcher, current_speaker):
@@ -286,14 +290,20 @@ class Resolver:
 
 
 def get_last(list, nb):
-    """This returns the last 'Nb' elements of the history from in the reverse order"""
-    last = len(list)
+    """This returns the last 'Nb' elements of the list 'list' in the reverse order"""
+    #Empty list
+    if not list:
+        return list
     
-    if last > 0 and last > nb:
-        stnts = list[(last - nb):last]
-    else:
-        stnts = list[last]
-        
+    #Not empty list but, NB > len(list).
+    last = len(list)
+    if nb > last:
+        nb = 0
+    
+    # last NB elements
+    stnts = list[(last - nb):last]
+    
+    #reverse    
     stnts.reverse()
     
     return stnts
