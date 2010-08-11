@@ -517,7 +517,7 @@ class VerbalGroupStatementBuilder:
             #TODO: modal verbs e.g can+go
             
             #Case 1:  the linking verb 'to be'/"""
-            #Case 2:  actions or stative verbs with a specified 'goal' role:
+            #Case 2:  actions or stative verbs with a specified 'goal' or 'thematic' role:
             #                          see '../../share/dialog/thematic_roles'
             #Case 3:  other action or stative verbs
             
@@ -537,7 +537,7 @@ class VerbalGroupStatementBuilder:
                 if verb in goal_verbs:
                     self._statements.append(subject_id + " desires " + sit_id)
                     
-                    if verbal_group.verb_sec:
+                    if verbal_group.sv_sec:
                         self.process_vrb_sec(verbal_group)                      
                 #Case 3:   
                 else:
@@ -1012,7 +1012,7 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-    
+    """
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives the blue car"  
@@ -1037,9 +1037,31 @@ class TestStatementBuilder(unittest.TestCase):
                            '* involves blue_car']
         
         return self.process(sentence, expected_result, display_statement_result = True)
-    
+    """
+    def test_1_goal_verb(self):
+        print "\n**** Test 1  *** "
+        print "Danny wants the blue car"  
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['would+like'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['the'],['car'],['blue'],[],[])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])    
         
-    
+        expected_result = ['id_danny desires *',
+                            '* involves blue_car']
+        
+        return self.process(sentence, expected_result, display_statement_result = True)
+    """
     def test_2(self):
         print "\n**** Test 2  *** "
         print "my car is blue"
@@ -1545,7 +1567,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_resut = ['Apple rdfs:subClassOf Fruit']
         
         return self.process(sentence, expected_resut, display_statement_result = True)
-    
+    """
     """
     def test_15_quantifier_action_verb(self):        
         print "\n**** test_15_quantifier_action_verb  *** "
@@ -1579,7 +1601,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_resut, display_statement_result = True)
     """
     
-    
+    """
     #Action adverbs
     def test_16_adverb(self):
         print "\n**** test_16_adverb *** "
@@ -1903,7 +1925,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         expected_result = [ 'blue_car owl:differentFrom volvo']   
         return self.process(sentence, expected_result, display_statement_result = True)
-    
+    """
     """
     def test_25_negative(self):
         print "\n**** test_25_negative *** "
