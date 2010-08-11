@@ -63,11 +63,9 @@ class Dialog(Thread):
         #that could not be resolved. Cf doc of UnsufficientInputError for details.
         self._last_output = None
         
+        #contains the last result of a failed resolution of an anaphoric words (it, one) (including the object 
+        #that could not be resolved. Cf doc of UnidentifiedAnaphoraError for details.
         self._anaphora_input = None
-        
-        #the object currently discussed. Used to resolve anaphors (like 'this 
-        # one').
-        self.current_object = None
         
         #the ID of the speaker we are talking with. used to resolve references
         #like 'me', 'you', etc.
@@ -143,7 +141,7 @@ class Dialog(Thread):
         else:
             self.current_speaker = self._speaker.get_current_speaker_id()
         
-        #Unsifficient input  Error 
+        #Input for Unsifficient input  Error 
         if self.waiting_for_more_info and self._last_output:
             self._logger.info(colored_print("##########################################", 'green'))
             self._logger.info(colored_print("#   New content provided by human!       #", 'green'))
@@ -156,7 +154,7 @@ class Dialog(Thread):
             #No more info needed
             self.waiting_for_more_info = False
         
-        #Unidentified Anaphora Error
+        #Input for Unidentified Anaphora Error
         if self.waiting_for_more_info and self._anaphora_input:
             self._logger.info(colored_print("##########################################", 'green'))
             self._logger.info(colored_print("#   New content provided by human!       #", 'green'))
@@ -165,7 +163,9 @@ class Dialog(Thread):
             
             self._anaphora_input['object_with_more_info'] = replacement(self._parser.parse(input, None),
                                                                                    self._anaphora_input['object'] , 
-                                                                                   self._anaphora_input['objects_list'][1:])
+                                                                                   self._anaphora_input['objects_list'][1:],
+                                                                                   self._anaphora_input['object_to_confirm'])
+            #No more info needed
             self.waiting_for_more_info = False
         
         
@@ -198,10 +198,16 @@ class Dialog(Thread):
         self._logger.info(colored_print("###################################", 'green'))
         self._logger.info(colored_print("#             PARSING             #", 'green'))
         self._logger.info(colored_print("###################################", 'green'))
-        
-        uie_sentence = self._last_output['sentence'] if self._last_output else None
-        
-        self.sentences.appendleft(self._parser.parse(nl_input, uie_sentence)[0])
+            
+            # Current sentence possibly created from a occured exception
+        if self._last_output:
+            current_sentence = self._last_output['sentence']
+        elif self._anaphora_input:
+            current_sentence = self._anaphora_input['sentence']
+        else:
+            current_sentence = None
+               
+        self.sentences.appendleft(self._parser.parse(nl_input, current_sentence)[0])
         
         for s in range(len(self.sentences)): #sentences is a deque. Cannot do a simple [:] to iterate over a copy
             self.active_sentence = self.sentences.popleft()
@@ -214,6 +220,7 @@ class Dialog(Thread):
             
             uae_object = self._anaphora_input['object'] if self._anaphora_input else None
             uae_object_with_more_info = self._anaphora_input['object_with_more_info'] if uae_object else None
+            uae_object_list = self._anaphora_input['objects_list'] if uae_object else None
             self._anaphora_input = None
             
             
@@ -224,12 +231,14 @@ class Dialog(Thread):
             self.active_sentence = self._resolver.references_resolution(self.active_sentence,
                                                                         self.current_speaker, 
                                                                         uae_object,
-                                                                        uae_object_with_more_info)
-                                                                        
+                                                                        uae_object_with_more_info,
+                                                                        uae_object_list)
+            
             self.active_sentence = self._resolver.noun_phrases_resolution(self.active_sentence,
                                                                           self.current_speaker,
                                                                           uie_object,
                                                                           uie_object_with_more_info)
+            
             self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
             
             self._logger.debug(colored_print("###################################", 'green'))

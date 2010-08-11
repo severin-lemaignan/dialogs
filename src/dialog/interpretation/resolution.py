@@ -27,13 +27,18 @@ class Resolver:
     """
     def __init__(self, sentences_store = []):
         self._current_sentence = None
+        self._current_object = None
         self.sentences_store = sentences_store
         
-    def references_resolution(self, sentence, current_speaker, uae_object, uae_object_with_more_info):
+    def references_resolution(self, sentence, current_speaker, uae_object, uae_object_with_more_info, uae_object_list):
         
+        # Current object replacement with uae object
         if uae_object and uae_object_with_more_info:
-           raise DialogError("Pause !! We carry on later !!!!")
-              
+            self._current_object = self._references_resolution_replace_current_object_with_ua_exception(sentence,
+                                                                                                uae_object,
+                                                                                                uae_object_with_more_info,
+                                                                                                uae_object_list)
+                                                                                        
         logging.info(colored_print("-> Resolving references and anaphors...", 'green'))
         #Record of current sentence
         self._current_sentence = sentence
@@ -44,7 +49,7 @@ class Resolver:
         
         #sentence sn nominal groups reference resolution
         if sentence.sn:
-            sentence.sn = self._resolve_groups_references(sentence.sn, matcher, current_speaker)
+            sentence.sn = self._resolve_groups_references(sentence.sn, matcher, current_speaker, self._current_object)
         
         
         #sentence sv nominal groups reference resolution
@@ -52,25 +57,33 @@ class Resolver:
             if sv.d_obj:
                 sv.d_obj = self._resolve_groups_references(sv.d_obj,
                                                             matcher,
-                                                            current_speaker)
+                                                            current_speaker, 
+                                                            self._current_object)
             if sv.i_cmpl:
                 resolved_i_cmpl = []
                 for i_cmpl in sv.i_cmpl:
                     i_cmpl.nominal_group = self._resolve_groups_references(i_cmpl.nominal_group, 
                                                                                 matcher,
-                                                                                current_speaker)
+                                                                                current_speaker,
+                                                                                self._current_object)
                     resolved_i_cmpl.append(i_cmpl)
                 
                 sv.i_cmpl = resolved_i_cmpl
-
+        
+        
         return sentence
+        
+    
+    
+    
+    
         
     def noun_phrases_resolution(self, sentence, current_speaker, uie_object, uie_object_with_more_info):
         logging.info(colored_print("-> Resolving noun phrases", 'green'))
         
         #Nominal group replacement possibly after uie_object and uie_object_with_more_info are sent from Dialog to resolve missing content
         if uie_object and uie_object_with_more_info:
-            sentence = self.noun_phrases_replace_with_ui_exception(sentence, uie_object, uie_object_with_more_info)
+            sentence = self._noun_phrases_replace_with_ui_exception(sentence, uie_object, uie_object_with_more_info)
             
             #No uie_objects needed after replacement
             uie_object = None
@@ -111,33 +124,7 @@ class Resolver:
         return sentence
         
         
-    def noun_phrases_replace_with_ui_exception(self, sentence, uie_object, uie_object_with_more_info):
-        
-        #Comparator
-        cmp = Comparator()
-        
-        #Trying to replace in sentence sn
-        if sentence.sn:
-            for sn in sentence.sn:
-                if cmp.compare(sn, uie_object):
-                    sn = uie_object_with_more_info
-                    return sentence
-                            
-        #Trying to replace in sentence sv nomina groups
-        for sv in sentence.sv:
-            for d_obj in sv.d_obj:
-                if cmp.compare(d_obj, uie_object):
-                    d_obj = uie_object_with_more_info                    
-                    return sentence                    
-            
-            for i_cmpl in sv.i_cmpl:
-                for ng in i_cmpl.nominal_group:
-                    if cmp.compare(ng , uie_object):
-                        ng = uie_object_with_more_info                        
-                        return sentence       
-        
-        return sentence
-
+    
         
     def verbal_phrases_resolution(self, sentence):
         logging.info(colored_print("-> Resolving verbal groups", 'green'))
@@ -145,8 +132,30 @@ class Resolver:
             sv = self._resolve_verbs(sv)
                     
         return sentence
+    
+    
+    
+    def _references_resolution_replace_current_object_with_ua_exception(self, sentence, uae_object, uae_object_with_more_info, uae_object_list):
+        """This attempts to replace a nominal group that has failled from identifying the anaphoric word with one that holds more information.
+        """
         
-    def _resolve_references(self, nominal_group, matcher, current_speaker, onto = None):
+        current_object = None
+        
+        if uae_object_with_more_info[1]:
+            current_object = uae_object_with_more_info[0]
+        else:
+            sf = SentenceFactory()
+            raise UnidentifiedAnaphoraError({'object':uae_object,
+                                            'object_to_confirm':uae_object_with_more_info[0],
+                                            'object_with_more_info':None,
+                                            'objects_list':uae_object_list,
+                                            'sentence':sentence,
+                                            'question':sf.create_do_you_mean_reference(uae_object_with_more_info[0])}) 
+           
+        return current_object
+        
+        
+    def _resolve_references(self, nominal_group, matcher, current_speaker, current_object, onto = None):
         
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
@@ -184,6 +193,11 @@ class Resolver:
         
         
         if nominal_group.noun[0].lower() in ['it', 'one']:
+            if current_object:
+                self._current_object = None
+                return current_object
+                
+                
             if not self.sentences_store:
                 raise DialogError("Empty Dialog history")
             
@@ -197,14 +211,15 @@ class Resolver:
             # Ask confirmation to the user
             else:
                 raise UnidentifiedAnaphoraError({'object':nominal_group,
+                                                'object_to_confirm':object[0],
                                                 'object_with_more_info':None,
                                                 'objects_list': object[1],
+                                                'sentence':self._current_sentence,
                                                 'question':sf.create_do_you_mean_reference(object[0])}) 
         return nominal_group
     
-    def _resolve_groups_references(self, array_sn, matcher, current_speaker):
-        #TODO: We should start with resolved_sn filled with sentence.sn and replace
-        # 'au fur et a mesure' to avoid re-resolve already resolved nominal groups
+    def _resolve_groups_references(self, array_sn, matcher, current_speaker, current_object):
+        """This attempts to resolve every single nominal group held in a nominal group list"""
         resolved_sn = []
         for sn in array_sn:
             onto = None
@@ -214,12 +229,16 @@ class Resolver:
                 except AttributeError: #the ontology server is not started or doesn't know the method
                     pass
             
-            resolved_sn.append(self._resolve_references(sn, matcher, current_speaker, onto))
+            resolved_sn.append(self._resolve_references(sn, matcher, current_speaker, current_object, onto))
            
         return resolved_sn
     
+    
     def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
-
+        """This attempts to resolve a single nominal by the use of discrimiation routines.
+            The output is the ID off the nominal group
+        """
+        
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
         
@@ -249,12 +268,44 @@ class Resolver:
         
         return nominal_group
     
+    
+    def _noun_phrases_replace_with_ui_exception(self, sentence, uie_object, uie_object_with_more_info):
+        """This attempts to replace a nominal group that has failled from discrimation with one that holds more information.
+        """
+        #Comparator
+        cmp = Comparator()
+        
+        #Trying to replace in sentence sn
+        if sentence.sn:
+            for sn in sentence.sn:
+                if cmp.compare(sn, uie_object):
+                    sn = uie_object_with_more_info
+                    return sentence
+                            
+        #Trying to replace in sentence sv nomina groups
+        for sv in sentence.sv:
+            for d_obj in sv.d_obj:
+                if cmp.compare(d_obj, uie_object):
+                    d_obj = uie_object_with_more_info                    
+                    return sentence                    
+            
+            for i_cmpl in sv.i_cmpl:
+                for ng in i_cmpl.nominal_group:
+                    if cmp.compare(ng , uie_object):
+                        ng = uie_object_with_more_info                        
+                        return sentence       
+        
+        return sentence
+
+
     def _resolve_groups_nouns(self, nominal_groups, current_speaker, discriminator, builder):
         resolved_sn = []
         for ng in nominal_groups:
             resolved_sn.append(self._resolve_nouns(ng, current_speaker, discriminator, builder))
             
         return resolved_sn
+    
+    
     
     def _resolve_verbs(self, verbal_group):        
         if verbal_group.resolved(): #already resolved: possible after asking human for more details.

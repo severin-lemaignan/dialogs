@@ -159,7 +159,6 @@ class TestBaseSentenceDialog(unittest.TestCase):
         stmt = "A banana is a fruit"
         ####
         res = self.dialog.test('myself', stmt)
-        print(res)
         ###
         expected_result = ['Banana rdfs:subClassOf Fruit']
         self.assertTrue(self.check_results(res, expected_result))
@@ -195,30 +194,25 @@ class TestBaseSentenceDialog(unittest.TestCase):
     def test_sentence6(self):
         
         print("\n##################### test_sentence6 - it ########################\n")
-       
-        stmt = "this is good"
-        res = self.dialog.test('myself', stmt)
-        print(res)
+        #Fill up History
         
+        ##sentence1
         stmt = "the red apple is on the big tree"
         res = self.dialog.test('myself', stmt)
-        print(res)
         
-        
+        ##sentence2
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
-        print(res)
         
-        
-        stmt = "I eat it"
+        ##sentence3
+        stmt = "I see it"
         ###
-        answer = "yes , I meant the green one"
+        answer = "yes. I meant the green one"
         res = self.dialog.test('myself', stmt, answer)
-        print(res)
         
-        expected_result = ['* rdf:type Eat',
+        expected_result = ['* rdf:type See',
                             '* performedBy myself',
-                            '* involves y_banana']
+                            '* actsOnObject green_banana']
                             
         self.assertTrue(self.check_results(res, expected_result))
         
@@ -227,49 +221,25 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         print("\n##################### test_sentence7 - it ########################\n")
         
-        ####
-        stmt = "this is my banana"
-        ####
-        res = self.dialog.test('myself', stmt)
-        print(res)
-        ###        
-        expected_result = ['y_banana belongsTo myself']
-        self.assertTrue(self.check_results(res, expected_result))
+        #Fill up History
         
-        stmt = "I eat it" 
-        ####
-        answer = "yes, the yellow banana"
-        res = self.dialog.test('myself', stmt, answer)
-        print(res)
-        ###
-        expected_result = ['* rdf:type Eat',
-                            '* performedBy myself',
-                            '* involves y_banana']
-    def test_sentence8(self):
-        
-        print("\n##################### test_sentence8 - it ########################\n")
-        
-        ####
+        ##sentence2
         stmt = "the green banana is next to the red apple"
-        ####
         res = self.dialog.test('myself', stmt)
-        print(res)
-        ###
-        expected_result = ['green_banana isNexto red_apple']
-        self.assertTrue(self.check_results(res, expected_result))
         
-        stmt = "it grows on the big tree" 
-        ####
-        answer = "no, the red apple"
-        res = self.dialog.test('myself', stmt, answer)
-        print(res)
+        ##sentence3
+        stmt = "I see it"
         ###
-        expected_result = ['* rdf:type Grow',
-                            '* performedBy red_apple',
-                            '* isOn big_tree']
+        answer = "No. I mean the red apple"
+        res = self.dialog.test('myself', stmt, answer)
+        
+        expected_result = ['* rdf:type See',
+                            '* performedBy myself',
+                            '* actsOnObject red_apple']
                             
         self.assertTrue(self.check_results(res, expected_result))
         
+  
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
@@ -837,10 +807,9 @@ if __name__ == '__main__':
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence3'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence4'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence5'))
-    
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence6'))
-    #suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence7'))
-    #suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence8'))
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence7'))
+   
         
     
     suiteVerbalization = unittest.TestSuite()
