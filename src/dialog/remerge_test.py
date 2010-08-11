@@ -814,6 +814,35 @@ def remerge_unit_tests():
         print "There is a problem with parsing this sentence"
         print '' 
         
+
+    print ''
+    print ('######################## test 1.24 ##############################')
+
+    utterance="no. I mean the bottle."
+    print 'The speaker said :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list=analyse_sentence.sentences_analyzer(sentence_list)
+    flag='SUCCESS'
+    
+    nom_gr_struc=Nominal_Group([],['it'],[],[],[])
+    print 'the nominal group of the last out put'
+    print (str(nom_gr_struc))
+    
+    nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+    print 'the nominal group after processing'
+    print (str(nom_gr_struc))
+    
+    rslt=Nominal_Group(['the'],['bottle'],[],[],[])
+    
+    if parser.compare_nom_gr([nom_gr_struc],[rslt])==0:
+        print "############### Parsing is OK ###############"
+        print ''
+    else:
+        print "There is a problem with parsing this sentence"
+        print '' 
         
 if __name__ == '__main__':
     remerge_unit_tests()

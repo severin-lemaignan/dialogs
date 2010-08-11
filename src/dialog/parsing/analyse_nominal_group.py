@@ -38,7 +38,7 @@ proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', '
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 composed_noun=['some', 'any', 'no']
-end_s_list=['is', 'this']
+end_s_list=['is', 'this','yes']
 word_list=['now']
 superlative_number=['first','second','third','fifth','ninth']
 

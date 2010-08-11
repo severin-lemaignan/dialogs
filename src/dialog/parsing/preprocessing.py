@@ -105,10 +105,10 @@ def concat_number(sentence):
             end_pos=i
             
             #We have to concatenate the last number if it is superlative
-            if other_functions.number(sentence[i])==2:
+            if i < len(sentence) and other_functions.number(sentence[i])==2:
                 end_pos=end_pos+1
             for z in superlative_number:
-                if sentence[i]==z:
+                if i < len(sentence) and sentence[i]==z:
                     end_pos=end_pos+1
                     
             sentence=sentence[:begin_pos]+[other_functions.convert_to_string(sentence[begin_pos:end_pos])]+sentence[end_pos:]
