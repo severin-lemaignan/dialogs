@@ -2175,7 +2175,30 @@ def unit_tests():
     print ''   
     
     
+
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
+    print ''
+    print ('######################## test 6.7 ##############################')
+
+    utterance="the evil tyrant is in the laboratory."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['tyrant'],['evil'],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['in'],[Nominal_Group(['the'],['laboratory'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+  
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''     
     
 if __name__ == '__main__':
     unit_tests()
