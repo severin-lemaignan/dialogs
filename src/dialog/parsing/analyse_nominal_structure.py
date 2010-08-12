@@ -11,7 +11,7 @@
     fill_nom_gr : to fulfill a structure Nominal_Group
     recover_ns : to recovers the nominal structure of the sentence                
 """
-from sentence import *
+from dialog.sentence import *
 import analyse_nominal_group
 import other_functions
 import analyse_sentence

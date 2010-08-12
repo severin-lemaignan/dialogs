@@ -9,9 +9,9 @@ information.
 
 import logging
 
-from resources_manager import ResourcePool
-from dialog_exceptions import UnsufficientInputError
-from sentence import *
+from dialog.resources_manager import ResourcePool
+from dialog.dialog_exceptions import UnsufficientInputError
+from dialog.sentence import *
  
 class Discrimination():
 

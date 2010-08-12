@@ -1,8 +1,8 @@
 import logging
 import random
 
-from resources_manager import ResourcePool
-from dialog_exceptions import UnsufficientInputError
+from dialog.resources_manager import ResourcePool
+from dialog.dialog_exceptions import UnsufficientInputError
 
 class StatementSafeAdder():
     """ Add statement in the ontology, from statement with resolved ID"""

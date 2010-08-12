@@ -11,11 +11,10 @@
     recover_nom_gr_list : to return the list of the nominal groups used by anaphora processing 
     first_replacement : to perform the first replacement (before the loop)
 """
-from sentence import *
-from sentence import nom_gr_remerge
-from parsing import preprocessing
-from parsing import analyse_sentence
-from parsing import parser
+from dialog.sentence import *
+from dialog.parsing import preprocessing
+from dialog.parsing import analyse_sentence
+from dialog.parsing import parser
 
 class AnaphoraMatcher:
     

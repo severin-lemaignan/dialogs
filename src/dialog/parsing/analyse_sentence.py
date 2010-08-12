@@ -21,8 +21,8 @@
     other_sentence : to process the other from of a sentence                        
     sentences_analyzer : is the basic function of parsing                         
 """
-from sentence import *
-from resources_manager import ResourcePool
+from dialog.sentence import *
+from dialog.resources_manager import ResourcePool
 import analyse_nominal_group
 import analyse_nominal_structure
 import analyse_verb

@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from helpers import colored_print
+from dialog.helpers import colored_print
 
-from interpretation.statements_builder import StatementBuilder
-from interpretation.questions_handler import QuestionHandler
-from sentence import SentenceFactory
-from resources_manager import ResourcePool
+from statements_builder import StatementBuilder
+from questions_handler import QuestionHandler
+from dialog.sentence import SentenceFactory
+from dialog.resources_manager import ResourcePool
 """This module implements ...
 
 """

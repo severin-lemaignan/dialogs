@@ -13,7 +13,7 @@
     plural_noun : to return 1 if the nominal group is a plural      
     is_an_adj : to know if a word is an adjective
 """
-from resources_manager import ResourcePool
+from dialog.resources_manager import ResourcePool
 
 
 """

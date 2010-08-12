@@ -20,7 +20,7 @@
     correct_i_compl : to transform indirect complement to relative
     DOC_to_IOC : to put the direct complement in the indirect
 """
-from sentence import *
+from dialog.sentence import *
 import analyse_nominal_group
 import analyse_nominal_structure
 import other_functions

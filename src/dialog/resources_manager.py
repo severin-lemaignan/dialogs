@@ -10,7 +10,7 @@ from pyoro import Oro, OroServerError
 from dialog_exceptions import UnknownVerb
 
 #These values are overridden in dialog.py. Only useful for unittesting alone.
-DATA_DIR = '../../share/dialog/'
+DATA_DIR = os.path.dirname(__file__).split('lib')[0].split('src')[0] + '/share/dialog/' #tries to find out the current prefix and then the data directory
 ORO_HOST = 'localhost'
 ORO_PORT = 6969
 

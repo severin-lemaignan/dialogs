@@ -4,13 +4,13 @@
 import logging
 import unittest
 
-from dialog import Dialog
+from dialog.dialog_core import Dialog
 
-from resources_manager import ResourcePool
+from dialog.resources_manager import ResourcePool
 
 # raquel
-from sentence import *
-from parsing.parser import Parser
+from dialog.sentence import *
+from dialog.parsing.parser import Parser
 
 #sentence="take the blue cube."
 #sentence="give me the small orange bottle."
@@ -793,7 +793,7 @@ class TestISUDialog(unittest.TestCase):
 
         
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO,
+    logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")
     
     # all tests

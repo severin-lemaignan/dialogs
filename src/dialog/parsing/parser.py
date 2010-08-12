@@ -16,7 +16,7 @@
     display : to display class Sentence                                           
     unit_tests : to perform unit tests                                           
 """
-from sentence import *
+from dialog.sentence import *
 import logging
 import preprocessing
 import analyse_sentence

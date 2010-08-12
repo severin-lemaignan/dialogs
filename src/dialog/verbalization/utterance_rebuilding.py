@@ -21,7 +21,7 @@
     a_which_process : to delete the determinant after 'which' if it exist   
     verbalising : is the basic function of this module
 """
-from resources_manager import ResourcePool
+from dialog.resources_manager import ResourcePool
 import other_functions
 import sentence_rebuilding
 

@@ -3,15 +3,14 @@
 
 import logging
 
-from helpers import colored_print
+from dialog.helpers import colored_print
 
-from dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError
-from dialog_exceptions import DialogError
-from resources_manager import ResourcePool
+from dialog.dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError, DialogError
+from dialog.resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name #for nominal group discrimination
 from discrimination import Discrimination
 from anaphora_matching import AnaphoraMatcher
-from sentence import SentenceFactory, Comparator
+from dialog.sentence import SentenceFactory, Comparator
 
 class Resolver:
     """Implements the concept resolution mechanisms.

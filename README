@@ -27,4 +27,8 @@ II/ USAGE
 The main module is in dialog.py
 
 Run it with:
-> ./dialog.py
+> dialog
+
+The main test-suite can be started with:
+
+> dialog_test

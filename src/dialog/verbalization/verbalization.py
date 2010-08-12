@@ -14,7 +14,7 @@
 import logging
 import unittest
 
-from sentence import *
+from dialog.sentence import *
 
 import utterance_rebuilding
 

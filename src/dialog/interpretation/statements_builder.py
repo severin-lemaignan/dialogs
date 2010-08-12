@@ -1,19 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import logging
-from helpers import colored_print
+from dialog.helpers import colored_print
 
 import random
 import inspect
 import unittest
-from resources_manager import ResourcePool
+from dialog.resources_manager import ResourcePool
 from statements_safe_adder import StatementSafeAdder
 
-from dialog_exceptions import DialogError, GrammaticalError
+from dialog.dialog_exceptions import DialogError, GrammaticalError
 
 
 
-from sentence import *
+from dialog.sentence import *
 
 """This module implements ...
 

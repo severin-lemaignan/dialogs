@@ -16,7 +16,7 @@
     infinitive : to return the infinitive form of the verb                        
     return_verb : to return the verb (with proposal)                              
 """
-from resources_manager import ResourcePool
+from dialog.resources_manager import ResourcePool
 
 
 """

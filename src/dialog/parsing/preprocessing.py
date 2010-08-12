@@ -32,8 +32,7 @@
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
-from resources_manager import ResourcePool
-from resources_manager import ThematicRolesDict
+from dialog.resources_manager import ResourcePool, ThematicRolesDict
 import analyse_nominal_group
 import other_functions
 

@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import os
-import getopt
+
 import logging
 from threading import Thread
 from Queue import Queue, Empty
@@ -23,7 +22,7 @@ from interpretation.anaphora_matching import replacement
 from verbalization.verbalization import Verbalizer
 
 
-VERSION = "0.1"
+DIALOG_VERSION = "0.1"
 
 class Dialog(Thread):
     
@@ -264,82 +263,12 @@ class Dialog(Thread):
         self.in_interaction = False
 
 
-def usage():
-    print """The LAAS-CNRS dialog module.
-
-Usage:
-dialog.py [OPTIONS]
-  -h, --help			Displays this message and exits
-  -t, --test			Runs unit-tests
-  -d, --debug			Sets verbosity to debug
-  -s, --silent			The module won't output anything
-
-This module reads on stdin user input in natural language, parse it, call 
-resolution routines when ambiguous concepts are used, and finally generate RDF 
-statements that are an interpretation of the input.
-
-It includes as well a verbalization module that conversely turns RDF statements
-into a sentence in natural language.
-
-dialog fits into the so-called CHRIS architecture @ LAAS. More details on the 
-LAAS internal Wiki:
-https://intranet.laas.fr/intranet/robots/wiki/ChrisArchitecture
-"""
-
 def unit_tests():
-    print("Please run the dialog_test.py Python script.")
-    print()
-    print("> ./dialog_test.py")
-
-def main():
-
-    debug_level = logging.INFO
-    
-    try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'htds', ['help', 'test', 'debug', 'silent'])
-    except getopt.GetoptError, err:
-        # print help information and exit:
-        print str(err) # will print something like "option -a not recognized"
-        usage()
-        sys.exit(2)
-
-    for o, a in optlist:
-        if o in ("-h", "--help"):
-            usage()
-            sys.exit(0)
-        elif o in ("-t", "--test"):
-            unit_tests()
-            sys.exit(0)
-        elif o in ("-d", "--debug"):
-            debug_level = logging.DEBUG
-        elif o in ("-s", "--silent"):
-            debug_level = logging.CRITICAL
-        else:
-            print "Unhandled option " + o
-            usage()
-            sys.exit(2)
-
-    logging.basicConfig(level=debug_level, format="%(message)s")
-    logging.info("**** DIALOG module ****")
-    logging.info("v." + VERSION + "\n")
-
-    dialog = Dialog()
-
-    dialog.start()
-
-    running = True
-    while running:
-        try:
-            data = sys.stdin.readline()
-            dialog.input(data)
-            
-        except KeyboardInterrupt:
-            logging.info("Leaving now.")
-            running = False
-            dialog.stop()
-
-    dialog.join()
-    sys.exit()
+    print("Please run the 'dialog_test' Python script.")
+    print
+    print("> ./dialog_test")
 
 if __name__ == '__main__':
-    main()
+    print("Please run the 'dialog' Python script.")
+    print
+    print("> dialog")
