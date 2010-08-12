@@ -76,9 +76,7 @@ def main():
     console.setFormatter(formatter)
     # add the handler to the root logger
     logger.addHandler(console)
-    
-    
-    #logging.basicConfig(level=debug_level, format="%(message)s")
+
     logger.info("**** DIALOG module ****")
     logger.info("v." + DIALOG_VERSION + "\n")
 

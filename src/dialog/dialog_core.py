@@ -22,7 +22,7 @@ from interpretation.anaphora_matching import replacement
 from verbalization.verbalization import Verbalizer
 
 
-DIALOG_VERSION = "0.1"
+DIALOG_VERSION = "0.2"
 
 class Dialog(Thread):
     
