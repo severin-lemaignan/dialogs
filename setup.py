@@ -3,9 +3,10 @@
 
 import os
 from distutils.core import setup
+from dialog.dialog_core import DIALOG_VERSION
 
 setup(name='Dialog',
-      version='0.1',
+      version=DIALOG_VERSION,
       license='BSD',
       description='Handles natural language inputs and outputs on cognitive robots',
       long_description='Dialog parses natural language and tries to ground it with respect to an ontology that is maintained by the robot',
