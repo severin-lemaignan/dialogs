@@ -33,12 +33,14 @@ Statement of lists
 """
 aux_list=['have', 'has', 'had', 'is', 'are', 'am', 'was', 'were', 'will']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
-proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind','behind+to','next+to','in+front+of','as', 'into']
+proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind',
+               'behind+to','next+to','in+front+of','as', 'into','in+spite+of','because+of','despite']
 rel_list=['which', 'who','that']
-sub_list=['while', 'but','where', 'when', 'if']
+sub_list=['while', 'but','where', 'when', 'if', 'what', 'However', 'although', 'because']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean']
-adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of', 'into']
+adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to',
+                'next+to','in+front+of', 'into','in+spite+of','because+of','despite']
 complement_pronoun=['me','you','it']
 inderect_trans_verb_list=['tell', 'say']
 state_vrb_list=['be','become']
@@ -368,8 +370,10 @@ def process_subsentence(phrase,vg):
                 subsentence= phrase[begin_pos+1:begin_pos+end_pos]
                
                 #We perform processing
-                vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', w ,subsentence)]
-                
+                vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.dispatching(subsentence)]
+                vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence'
+                vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
+                 
                 if w=='but':
                     #If the main verb is not a verb but a part of verbal structure => we have nominal groups
                     for k in ['.','?','!','']+proposal_list:
@@ -476,3 +480,16 @@ def DOC_to_IOC(vg):
                     vg.d_obj=[]
                     return vg
     return vg
+
+
+
+def add_it(sentence):
+    """
+    This function add it i there is an adverbial without nominal group
+    Input=sentence                         Output=sentence       
+    """
+    
+    for i in proposal_list:
+        if i==sentence[0]:
+            return [sentence[0]]+['it']+sentence[1:]
+    return sentence

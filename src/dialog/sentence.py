@@ -11,7 +11,8 @@ from resources_manager import ResourcePool
 Statement of lists
 """
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to','next+to','in+front+of', 'into']
+adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to',
+                'next+to','in+front+of', 'into','in+spite+of','because+of','despite']
 
 
 class SentenceFactory:

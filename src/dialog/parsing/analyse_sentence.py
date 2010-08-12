@@ -448,6 +448,13 @@ def y_n_ques(type, request, sentence):
     
     vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
+    
+    while len(sentence)>1:
+        sentence=analyse_verbal_structure.add_it(sentence)
+        print sentence
+        #We recover the direct, indirect complement and the adverbial
+        sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
+    
     analysis.sv=[vg]
     return analysis
 

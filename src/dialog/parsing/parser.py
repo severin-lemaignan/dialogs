@@ -125,8 +125,6 @@ def compare_vs(vs, rslt_vs):
     else:
         while i < len(rslt_vs):
             if vs[i].vrb_main!=rslt_vs[i].vrb_main or vs[i].vrb_tense!=rslt_vs[i].vrb_tense or vs[i].state!=rslt_vs[i].state:
-                print vs[i].state
-                print rslt_vs[i].state
                 return 1
             if vs[i].advrb!=rslt_vs[i].advrb or vs[i].vrb_adv!=rslt_vs[i].vrb_adv:
                 return 1
@@ -2182,7 +2180,7 @@ def unit_tests():
     print ''
     print ('######################## test 6.7 ##############################')
 
-    utterance="the evil tyrant is in the laboratory."
+    utterance="the evil tyrant is in the laboratory. I don't know what are you talking about."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -2195,7 +2193,18 @@ def unit_tests():
             [Verbal_Group(['be'], [],'present simple', 
                 [], 
                 [Indirect_Complement(['in'],[Nominal_Group(['the'],['laboratory'],[],[],[])])],
-                [], [] ,'affirmative',[])])]
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['know'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'negative',[Sentence('subsentence', 'what', 
+                    [Nominal_Group([],['you'],[],[],[])], 
+                    [Verbal_Group(['talk'], [],'present progressive', 
+                        [], 
+                        [Indirect_Complement(['about'],[Nominal_Group([],['it'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])])]
   
     compare_utterance(class_list,rslt,sentence_list)
     print ''     
