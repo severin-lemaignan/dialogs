@@ -1,18 +1,68 @@
+================================================================================
 
-Dialog TODO list for release 1.0
+Dialog TODO list for release 0.5
 ================================
 
+====
 Bugs
-----
-[TODO] method 'check(Set)' on server always returns 'True'
-    Useful for questionHandler for processing Yes-No question
+====
 
-[ONGOING] "close the loop" -> parser should be able to complete a previously, partially resolved, sentence.
+
+[TODO:?] method 'check(Set)' on server always returns 'True'
+    Useful for questionHandler for processing Yes-No question
+[TODO:?] Non-deterministic solution in discrimation test of dialog_test.py
+    test_discriminate_1, test_discriminate_8 FAILS in the first execution. OK in the execution
+
+[FIXED v0.2] "close the loop" -> parser should be able to complete a previously, partially resolved, sentence.
     with method remerge in sentence.py
-    
-[DONE] sentence pre-processing (punctuation, term expansion, capital letters...)
-[DONE] Turn everything to English
-[DONE] Clarify which members of sentence are list, which are single element. 
+
+========
+Features
+========
+
+[TODO:3]{Complete By End-August} subsentence
+-> "learn that..."
+
+[TODO:3]{Complete By End-August} second verb
+-> "I want you to do something" (currently somehow hardcoded for 'want')
+
+[TODO:3-4] There is
+
+[TODO:3] complete resources pool
+-> merge in resourcepool word lists that are currently spread out
+
+[TODO:2] Quantifier
+    with action verbs ... E.g:
+        Danny drives a car
+        
+        the red apple grows on the blue tree ---> [* rdf:type Grow, 
+                                                   * performedBy red_apple,
+                                                   * involves blue_tree]
+        
+        
+        Apples grow on tree --> [id_grow rdf:type Grow,
+                                id_grow performedBy owl:AllValuesOf(Apple),
+                                id_grow isOn owl:someOf(Tree)]
+        
+        or   -----------------> [id_grow rdf:type Grow,
+                                id_grow performedBy id_apple,
+                                id_grow isOn id_tree, ]
+                                + id_tree rdf:type Tree,
+                                + id_apple rdf:type Apple]
+
+[TODO] Managing unknown concepts: "Jido is a schtroumph" -> what is a schtroumph ?
+-> looping on unknown concepts
+
+[ONGOING] Negation
+    differentOf
+    complementOf
+    ->cf discussion report of 12/08/10
+
+[PARTIALLY DONE] Numerals (parsing ok)
+   
+[DONE v0.2] sentence pre-processing (punctuation, term expansion, capital letters...)
+[DONE v0.2] Turn everything to English
+[DONE v0.2] Clarify which members of sentence are list, which are single element. 
     map: [A] means list of A
 	Sentence (data_type, aim, sn, sv):
 		data_type:	string	
@@ -42,35 +92,31 @@ Bugs
 	
 	Also: If we have several nouns, e.g "toto" and "tata", we create a new nominal group, even though this results to several single-element lists.
 
-[DONE] Sort out the "flags": at least, convert it to a map, maybe, remove it.
+[DONE v0.2] Sort out the "flags": at least, convert it to a map, maybe, remove it.
 	Removed.
         
-[DONE] "this bottle is blue" <- what to do with blue? 
+[DONE v0.2] "this bottle is blue" <- what to do with blue? 
 		The adjectives 'blue', is kept in the d_obj as a single element of the nominal group.
         Method 'adjectives_only()' in sentence.py in class Nominal_Group' returns True in this case.
 
-[DONE] "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
-[DONE]{Complete By End July}: Running dialog even if ORO is off. Need an exception raised when a connection to ORO is required.
+[DONE v0.2] "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
+[DONE v0.2]{Complete By End July}: Running dialog even if ORO is off. Need an exception raised when a connection to ORO is required.
 
-
-Features
---------
-[TODO]{prioritized - Complete By End July}: Resolving anaphora "it" "one"
-[TODO]{Complete By End July}: Return a sentence towards verbalization
+[DONE v0.2] Resolving anaphora "it" "one"
+[DONE v0.2] Return a sentence towards verbalization
     possibly create add features in sentenceFactory in sentence.py
 
-[TODO]{Complete By mid-August} subclassOf:
+[DONE v0.2] subclassOf:
     E.g: Apples are Fruits
+    E.g: an Apple is a fruit
     
-[TODO]{Complete By mid-August} Nombre    
-[TODO]{Complete By mid-August} Verb Tense. 
-[TODO]{Complete By mid-August} Negation
-    differentOf
-    complementOf
+
+[DONE v0.2] Verb Tense.
     
-[TODO]{Complete By mid-August} Process adverbs
-    
-[TODO]{Complete By mid-August} Quantifier
+[DONE v0.2] Process adverbs
+[DONE v0.2] Goal verbs
+  
+[DONE v0.2] Quantifier
     add quantifier
 	any - 
 	some - 
@@ -80,35 +126,24 @@ Features
     if determiner is 'a' do not resolve. E.g Jido is a robot => id_jido rdf:type Robot
     "Take the bottle 'carefully'", what to do with 'carefully'
 
-[TODO] Processing the demonstrative 'this' 
+[DONE v0.2] Processing the demonstrative 'this' 
     'this is a blue table'
     Use quantifier 'a' to complete statement
-    
-[TODO] input/output module for supervision
-[TODO]{Start by mid-August} speech synthesis -> stdout | festival
-[TODO]{Start by mid-August} speech recognition -> sphinx?? in simple cases?? pfff... sphinx version 4
-    see Anthony for installation
 
-
-[ONGOING] verbalizing module to reconstruct a NL sentence
-[ONGOING] statement builder (convert a parsed sentence into RDF statements)
-[ONGOING] question handler (for question, try to answer them with ORO)
-    what to do with how long/big/small => nothing
-    forget How-question
-[DONE] input/output module to chat with the robot
-[DONE] parsing module for English natural language (NL)
-[DONE] resolution of personal references + anaphors
-[DONE] resolution noun phrases (= identification of concepts)
-[DONE] resolution action verbs
+[DONE v0.2] input/output module to chat with the robot
+[DONE v0.2] parsing module for English natural language (NL)
+[DONE v0.2] resolution of personal references + anaphors
+[DONE v0.2] resolution noun phrases (= identification of concepts)
+[DONE v0.2] resolution action verbs
         based on thematic roles
         
-[DONE] content analysis (is the sentence a question? a statement?...)
+[DONE v0.2] content analysis (is the sentence a question? a statement?...)
         Done for imperative and statements.
         On process for question
-[DONE] glue-ing parsing + resolution + analysis + handling
-[DONE] handling of "or" :)
+[DONE v0.2] glue-ing parsing + resolution + analysis + handling
+[DONE v0.2] handling of "or" :)
 
-[DONE] pre content-analysis -> "what color is the tape?" -> don't use the color to discriminate
+[DONE v0.2] pre content-analysis -> "what color is the tape?" -> don't use the color to discriminate
         Actually done from Parser.
         E.g: 'what color is the tape?' provides the following sentence with 'color' held in the field 'aim':
             Sentence("w_question", "color", 
@@ -130,10 +165,10 @@ Features
             Statements provided for discrimation:
                 ?concept rdf:type Tape .
    
-[DONE] Statement to represent disjunction 'or' and conjunction 'and'?
+[DONE v0.2] Statement to represent disjunction 'or' and conjunction 'and'?
     specify the process of 'or' as a limit of the input of Dialog module
     
-[DONE] Add statement in the ontology: use 'safeAdd' method to avoid the inconsistency 
+[DONE v0.2] Add statement in the ontology: use 'safeAdd' method to avoid the inconsistency 
     see 'http://homepages.laas.fr/slemaign/doc/oro-server/laas/openrobots/ontology/modules/base/BaseModule.html#safeAdd%28java.util.Set%29'
     Create new Module 'Statement_Safe_adder' aiming to add statements in the ontology. 
     It may possibly handle unresolved sentence, and force statement_builder to build additionnal information.
@@ -144,27 +179,44 @@ Features
 	not on statementBuilder
 
 
+=========
 Interface
----------
+=========
 
-[ONGOING] Improve the output of the dialog module (including colors) to make clear what append (especially for demos):
+[TODO:4] simple GUI
+[TODO:?] Add the possibility to pause the processing to explain step by step what happen
+  see 
+  
+[DONE v0.2] Improve the output of the dialog module (including colors) to make clear what append (especially for demos):
   * First parsing
   * Resolution *relying on perspective taking* + symbolic knowledge
   * Back interaction with the human
   * Re-parsing
   * Generation of final statements
-  
-  * simple GUI
-[TODO] Add the possibility to pause the processing to explain step by step what happen
-  see 
 
-Report
---------------
-[TODO]{Start Early August} write report on trac wiki
-    write in wiki syntax in TXT file, add in folder doc
-    * analyse general module
-    * Input, output
-    * Formal description of features
-    * How: - No lines of code
-    A good formalized draft should be done by mi-august
+=============
+DOCUMENTATION
+=============
 
+[TODO] Quantifiers
+[TODO] Anaphora (previous sentences memory + selection of nominal group)
+[TODO] Processing of human answers (like "No, no, no, I mean the blue bottle")
+[TODO] Explain how Dialog deals (or not) with "context"
+-> where context is used (-> connection with ontology), where it is missing (eg "I'm going to Toulouse" can be right now or in 2 months. If we know we are talking about the Patrick's holidays next week, it would be clear)
+[ONGOING] Negation cases
+
+
+====================================================================================================
+
+Release 1.0
+===========
+
+[TODO] input/output module for supervision
+[TODO]{Start by mid-August} speech synthesis -> stdout | festival
+[TODO]{Start by mid-August} speech recognition -> sphinx?? in simple cases?? pfff... sphinx version 4
+    see Anthony for installation
+
+Release 18.0
+============
+
+[TODO] Nice handling of timeline/history -> has to be done in oro-server?
