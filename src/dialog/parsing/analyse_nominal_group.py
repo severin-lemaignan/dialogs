@@ -234,24 +234,28 @@ def find_sn (phrase):
 
 
 
-def find_plural(phrase, position):
+def find_plural(phrase):
     """
     This function find if there is a plural and add 'a'                     
     Input=sentence and position of nominal group         Output=sentence            
     """ 
-    if position>len(phrase)-1:
+    if len(phrase)-1<0:
         return phrase
     
     for i in end_s_list:
-        if i==phrase[position]:
+        if i==phrase[0]:
             return phrase
     
-    if phrase[position].endswith("'s") or phrase[position].endswith("ous"):
+    if phrase[0].endswith("'s") or phrase[0].endswith("ous"):
         return phrase
     
-    if find_sn_pos(phrase, position)==[] and phrase[position].endswith('s'):
+    if find_sn_pos(phrase, 0)==[] and phrase[0].endswith('s'):
         #It can not be a verb
         phrase=['a']+phrase
+        
+    for a in proposal_list:
+        if phrase[0]==a:
+            return [a]+find_plural(phrase[1:])
     return phrase
 
 

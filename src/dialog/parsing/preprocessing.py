@@ -150,9 +150,9 @@ def upper_to_lower(sentence):
         if other_functions.number(sentence[0])==1:
             return sentence
         
-        sentence=analyse_nominal_group.find_plural(sentence,0)
+        sentence=analyse_nominal_group.find_plural(sentence)
         #If there is a nominal group
-        if analyse_nominal_group.find_sn_pos (sentence, 0)!=[]:
+        if analyse_nominal_group.find_sn_pos (sentence,0)!=[]:
             return sentence
             
         #It a propre name, we convert lowercase to uppercase
@@ -161,7 +161,7 @@ def upper_to_lower(sentence):
     #If the sentence begins with lower case
     else:
         sentence=expand_contractions(sentence)
-        sentence=analyse_nominal_group.find_plural(sentence,0)
+        sentence=analyse_nominal_group.find_plural(sentence)
     
     return sentence
     
