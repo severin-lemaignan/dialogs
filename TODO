@@ -55,7 +55,18 @@ Features
 
 [TODO] What do we do when a statement brings an inconsistency?
 
-[ONGOING] Negation
+[TODO:4] What to do with this example?
+    Put the green banana on the red table...
+    [EVENT rdf:type Put,
+    EVENT actsOnObject green_banana,
+    {EVENT receivedBy red_table}
+    or
+    {green_banana receivedBy red_table}]
+    
+    
+    
+
+[DONE v0.5] Negation
     differentOf
     complementOf
     ->cf discussion report of 12/08/10
