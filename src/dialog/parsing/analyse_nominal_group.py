@@ -41,6 +41,7 @@ composed_noun=['some', 'any', 'no']
 end_s_list=['is', 'this','yes']
 word_list=['now']
 superlative_number=['first','second','third','fifth','ninth']
+adj_quantifier=['very','much','many','so','too']
 
 
 
@@ -78,7 +79,7 @@ def is_an_adj(word):
         return 1
         
     #We use the irregular adjectives list to find it
-    for i in adjective_list+superlative_number:
+    for i in adjective_list+superlative_number+adj_quantifier:
         if word==i:
             return 1
     
@@ -113,7 +114,7 @@ def adjective_pos(phrase, word_pos):
         return 1+adjective_pos(phrase, word_pos+1)
     
     #We use the irregular adjectives list to find it
-    for i in adjective_list+superlative_number:
+    for i in adjective_list+superlative_number+adj_quantifier:
         if phrase[word_pos]==i:
             return 1+ adjective_pos(phrase, word_pos+1)
 
@@ -328,6 +329,35 @@ def return_adj (nom_gr):
                     adj_list=adj_list+[nom_gr[k]]
                 k=k+1
     return adj_list
+
+
+
+def process_adj_quantifier(adj_list):    
+    """
+    This function returns adjectives of the nominal group organized with quantifier                           
+    Input=the adjective                               Output=the adjective            
+    """
+    
+    #init
+    adjective_list=[]
+    flg=0     
+    
+    #Now, we will put quantifier (if it exist) with the adjective
+    z=len(adj_list)-1
+    while z >= 0:
+        for j in adj_quantifier:
+            if j==adj_list[z]:
+                #We can't have quantifier if there is no adjective
+                flg=1
+                adjective_list[0][1]=[adj_list[z]]+adjective_list[0][1]
+                break
+        if flg==0:
+            adjective_list=[[adj_list[z],[]]]+adjective_list
+        else:
+            flg=0
+        z=z-1
+        
+    return adjective_list
 
 
 

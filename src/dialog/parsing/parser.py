@@ -2353,5 +2353,38 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
+    
+
+
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
+    print ''
+    print ('######################## test 7.2 ##############################')
+
+    utterance="the big and very strong man is on the corner. the too big and very strong man is on the corner."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group(['the'],['man'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['corner'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group(['the'],['man'],[],[],[])], 
+            [Verbal_Group(['be'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['on'],[Nominal_Group(['the'],['corner'],[],[],[])])],
+                [], [] ,'affirmative',[])])]
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print '' 
+    
 if __name__ == '__main__':
     unit_tests()

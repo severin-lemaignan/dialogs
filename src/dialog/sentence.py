@@ -476,16 +476,22 @@ class Nominal_Group:
         if self._conjunction != 'AND':
             res += colored_print('[' + self._conjunction + "] ", 'bold')
         
+        if self._quantifier != 'ONE':
+            res += colored_print('[' + self._quantifier + "] ", 'bold')
+            
         if self._resolved:
             res += colored_print(self.id, 'white', 'blue') + '\n' + colored_print('>resolved<', 'green')
+            
         else:
             
             
             if self.det:
                 res +=   colored_print(self.det, 'yellow') + " " 
             
-            if self.adj:
-                res +=  colored_print(self.adj, 'green') + " " 
+            
+            for k in self.adj:
+                res +=  colored_print(k[1], 'red') + " " 
+                res +=  colored_print([k[0]], 'green') + " " 
             
             if self.noun:
                 res +=   colored_print(self.noun, 'blue') + '\n'

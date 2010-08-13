@@ -104,6 +104,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     det=analyse_nominal_group.return_det(nom_gr)
     adj=analyse_nominal_group.return_adj(nom_gr)
     noun=analyse_nominal_group.return_noun(nom_gr, adj, det)
+    adj=analyse_nominal_group.process_adj_quantifier(adj)
 
     #We will process the relative
     begin_pos_rel=analyse_nominal_group.find_relative(nom_gr, phrase, pos_nom_gr, propo_rel_list)
