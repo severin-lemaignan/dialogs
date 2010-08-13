@@ -2275,7 +2275,7 @@ def unit_tests():
     print ''
     print ('######################## test 7.1 ##############################')
 
-    utterance="apples grow on trees and plants."
+    utterance="apples grow on trees and plants. give me three apples."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -2289,11 +2289,18 @@ def unit_tests():
                 [], 
                 [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[],[],[])]),
                  Indirect_Complement(['on'],[Nominal_Group([],['plant'],[],[],[])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('imperative', '', 
+            [], 
+            [Verbal_Group(['give'], [],'present simple', 
+                [Nominal_Group(['3'],['apple'],[],[],[])], 
+                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sn[0]._quantifier="ALL"
     rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
     rslt[0].sv[0].i_cmpl[1].nominal_group[0]._quantifier="ALL"
+    rslt[1].sv[0].d_obj[0]._quantifier="DIGIT"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''

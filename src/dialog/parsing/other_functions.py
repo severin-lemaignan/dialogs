@@ -17,8 +17,8 @@ from dialog.resources_manager import ResourcePool
 Statement of lists
 """
 cap_let_list=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-number_list=['one','two','three','four','five','six','seven','eight','ten','eleven','twelve','twent','thirt','fift','hundred','thousand','million']
-
+number_list=[('zero',0),('one',1),('two',2),('three',3),('four',4),('five',5),('six',6),('seven',7),('eight',8),('nine',9),('ten',10),
+                    ('eleven',11),('twelve',12),('thirt',3),('fift',5),('twent',20),('hundred',100),('thousand',1000),('million',1000000)]
 
 """
 We have to read all words that sentence can begin with                           
@@ -97,7 +97,7 @@ def number(word):
     """
     
     for n in number_list:
-        if word.startswith(n): 
+        if word.startswith(n[0]): 
             if word.endswith('th'):
                 return 2
             else:
@@ -106,6 +106,49 @@ def number(word):
 
 
 
+def word_to_digit(word):
+    """
+    Function convert the number from literal to digit                    
+    Input=word                          Output=digit (string form)   
+    """
+    
+    #init
+    number=0
+   
+    for l in number_list:
+        if l[0]==word:
+            if word.endswith('teen'):
+                number=number+l[1]+10
+            elif word.endswith('ty'):
+                number=number+l[1]*10
+            else:
+                number=number+l[1]
+    return number
+            
+            
+
+def convert_to_digit(det):
+    """
+    Function convert the determinant to digit                    
+    Input=word                          Output=digit (string form)   
+    """
+    
+    #init
+    num=k=0
+        
+    while k < len(det):
+        if det[k]!='+':
+            k=k+1
+        else:
+            num=num+word_to_digit(det[:k])
+            det=det[k+1:]
+            k=0 
+                
+    num=num+word_to_digit(det)
+    return str(num)
+                
+                
+                
 def recover_aux_list():
     """
     This function recovers the auxiliary list                             
