@@ -1914,7 +1914,7 @@ def unit_tests():
     print ''
     """
     
-    
+    """
     """
     ## Aim of this test : Using different cases of what question with relative 
     """
@@ -2266,16 +2266,16 @@ def unit_tests():
   
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-    
+    """
     
     
     """
     ## Aim of this test : Using different cases of what question with relative 
     """
     print ''
-    print ('######################## test 6.7 ##############################')
+    print ('######################## test 7.1 ##############################')
 
-    utterance="apples grow on trees."
+    utterance="apples grow on trees and plants. "
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -2287,11 +2287,13 @@ def unit_tests():
             [Nominal_Group([],['apple'],[],[],[])], 
             [Verbal_Group(['grow'], [],'present simple', 
                 [], 
-                [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[],[],[])])],
+                [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[],[],[])]),
+                 Indirect_Complement(['on'],[Nominal_Group([],['plant'],[],[],[])])],
                 [], [] ,'affirmative',[])])]
     
     rslt[0].sn[0]._quantifier="ALL"
     rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
+    rslt[0].sv[0].i_cmpl[1].nominal_group[0]._quantifier="ALL"
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''

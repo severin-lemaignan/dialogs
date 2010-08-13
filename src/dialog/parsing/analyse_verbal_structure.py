@@ -157,6 +157,7 @@ def recover_obj_iobj(phrase, vg):
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object,pos_object)
                 #We will take off the proposal
+              
                 phrase=phrase[:phrase.index(proposal[0])]+phrase[phrase.index(proposal[0])+1:]
 
                 #If there is a relative
@@ -167,9 +168,10 @@ def recover_obj_iobj(phrase, vg):
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
                 
-                #If there is 'and', we need to duplicate the information
+                #If there is 'and', we need to duplicate the information with the proposal if there is
                 if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or' or phrase[0]==':but'):
-                    
+                    phrase=[phrase[0]]+proposal+phrase[1:]
+                    phrase=[phrase[0]]+analyse_nominal_group.find_plural(phrase[1:])
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
                     
                     #We process the 'or' like the 'and' and remove it
@@ -214,6 +216,7 @@ def recover_obj_iobj(phrase, vg):
                     
                 if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or' or phrase[0]==':but'):
                     
+                    phrase=[phrase[0]]+analyse_nominal_group.find_plural(phrase[1:])
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
                     
                     #We process the 'or' like the 'and' and remove it
@@ -239,7 +242,10 @@ def recover_obj_iobj(phrase, vg):
                 #Else the first nominal group found is indirect and this one is direct complement
                 vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([],vg.d_obj)]
                 vg.d_obj=gr_nom_list
-
+        
+        #If the last nominal group is followed by another one in plural form 
+        #phrase=analyse_nominal_group.find_plural(phrase)
+    
         object= analyse_nominal_group.find_sn(phrase)
         
     return phrase
