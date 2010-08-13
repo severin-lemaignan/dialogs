@@ -25,6 +25,7 @@ class StatementBuilder:
         self._sentence = None
         self._current_speaker = current_speaker
         self._statements = []
+        
         self._unresolved_ids = []
         
 
@@ -141,7 +142,7 @@ class NominalGroupStatementBuilder:
             if nom_grp.adj:
                 self.process_adjectives(nom_grp, id, negative)
             if nom_grp.noun_cmpl:
-                self.process_noun_cmpl(nom_grp, id)
+                self.process_noun_cmpl(nom_grp, id, negative)
             if nom_grp.relative:
                 self.process_relative(nom_grp, id)
                 
@@ -219,11 +220,7 @@ class NominalGroupStatementBuilder:
                     
                     for more details about quantifiers, see sentence.py 
             """
-            if [subject_quantifier, object_quantifier] in [['ONE', 'ONE'],
-                                                            ['ONE', 'SOME']]:
-                return ' rdf:type '
-                
-            elif [subject_quantifier, object_quantifier] in [['SOME', 'SOME'],
+            if [subject_quantifier, object_quantifier] in [['SOME', 'SOME'],
                                                                ['ALL', 'ALL']]:
                 return ' rdfs:subClassOf '
                 
@@ -234,7 +231,6 @@ class NominalGroupStatementBuilder:
         
         
         for noun in nominal_group.noun:
-                        
             # Case : existing ID
             onto_id = ''
             try:
@@ -295,14 +291,14 @@ class NominalGroupStatementBuilder:
                     
                     # Case of an indefinite concept
                     else:
-                        #Committing negativeAssertion class
+                        #Committing ComplementOf class
                         try:
-                            ResourcePool.ontology_server.safeAdd(["NegativeAssertionOf" + class_name + " owl:complementOf " + class_name,
-                                                                    "NegativeAssertionOf" + class_name + " rdfs:subClassOf NegativeAssertions"])
+                            ResourcePool.ontology_server.safeAdd(["ComplementOf" + class_name + " owl:complementOf " + class_name,
+                                                                    "ComplementOf" + class_name + " rdfs:subClassOf ComplementClasses"])
                         except AttributeError:
                             pass
                             
-                        self._statements.append(ng_id + object_property + "NegativeAssertionOf" + class_name)
+                        self._statements.append(ng_id + object_property + "ComplementOf" + class_name)
                     
                     
                 # Case of affirmative sentence
@@ -319,53 +315,34 @@ class NominalGroupStatementBuilder:
             #Getting the object property if there exists a specific class
             object_property = ''
             try:
-                object_property = "has" + ResourcePool().adjectives[adj] + " "
+                object_property = " has" + ResourcePool().adjectives[adj] + " "
             
             #Default case, creating hasFeature object Property
             except KeyError:
-                object_property = "hasFeature "
+                object_property = " hasFeature "
                 
             #Case negative assertion
             if negative_object:
-                #Check that affirmation does not already exist
-                onto = ''
-                try:
-                    onto = ResourcePool().ontology_server.find('?concept', ['?concept' + ' ' + object_property + adj])
-                except AttributeError:
-                    pass
+                negative_adj = generate_id(with_question_mark = not nominal_group._resolved)
                 
-                if onto and ng_id in onto:
-                    logging.info("\t >> Found in the ontology the statement " + \
-                                                    str([ng_id + ' ' + object_property + adj]))
-                    logging.info("\t >> Keeping it like that... And not creating its negative assertion")
-                    
-                    self._statements.append(ng_id + ' ' + object_property + adj)
-                else:
-                    self._statements.append(ng_id + ' NegativeAssertionOf'+object_property + adj)
-                
+                self._statements.append(ng_id + object_property + negative_adj)
+                self._statements.append(negative_adj + ' owl:differentFrom ' + adj)
             
             #Case Affirmative assertion
             else:
-                #Check that negation does not already exist
-                onto = ''
-                try:
-                    onto = ResourcePool().ontology_server.find('?concept', ['?concept' + ' NegativeAssertionOf' + object_property + adj])
-                except AttributeError:
-                    pass
-                
-                if onto and ng_id in onto:
-                    logging.info("\t >> Found in the ontology the statement " + \
-                                                    str([ng_id + ' NegativeAssertionOf' + object_property + adj]))
-                    logging.info("\t >> Keeping it like that... And not creating its affirmative assertion")
-                    
-                    self._statements.append(ng_id +' NegativeAssertionOf' + object_property + adj)
-                else:
-                    self._statements.append(ng_id + ' ' +object_property + adj)
-                    
+                self._statements.append(ng_id + object_property + adj)
                     
     
     
-    def process_noun_cmpl(self, nominal_group, ng_id):
+    def process_noun_cmpl(self, nominal_group, ng_id, negative_object):
+        """This attempts to process the noun complment attribute of a nominal group:
+            E.g: The car of Danny
+            This example should provide the statements [danny_car rdf:type Car, 
+                                                        danny_car belongsTo DANNY]
+            where 'danny_car' is the existing ID od the car of Danny in the ontology and
+            'DANNY' is the ID of an existing agent named 'Danny'
+        """
+        
         for noun_cmpl in nominal_group.noun_cmpl:
             if noun_cmpl.id:
                 noun_cmpl_id = noun_cmpl.id
@@ -373,7 +350,10 @@ class NominalGroupStatementBuilder:
                 noun_cmpl_id = self.set_nominal_group_id(noun_cmpl)
             
             self.process_nominal_group(noun_cmpl, noun_cmpl_id, None, False)
-            self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
+            
+            # Case of affirmation
+            if not negative_object:
+                self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
     
     def process_relative(self, nominal_group, ng_id):
         """ The following processes the relative clause of the subject of a sentence.           
@@ -530,6 +510,12 @@ class VerbalGroupStatementBuilder:
             else:
                 if self._process_on_question:
                     sit_id = '?event'
+                
+                #case of negation : Creating a fake ID that is to find in the ontology for removal
+                if self._process_on_negative:
+                    sit_id = generate_id(with_question_mark = True)
+                    self._unresolved_ids.append(sit_id)
+                    
                 else:
                     sit_id = generate_id(with_question_mark = not self._process_on_resolved_sentence)
                 
@@ -542,11 +528,6 @@ class VerbalGroupStatementBuilder:
                 #Case 3:   
                 else:
                     self._statements.append(sit_id + " rdf:type " + verb.capitalize())
-                   
-                    # Case of Negation
-                    if self._process_on_negative:
-                        self._statements.append(sit_id + " isNegativeAssertion \"true\"^^xsd:boolean")
-                                        
                     self._statements.append(sit_id + " performedBy " + subject_id)
             
             #Imperative specification, add the goal verb 'desire'
@@ -650,33 +631,56 @@ class VerbalGroupStatementBuilder:
             
             i_stmt_builder = NominalGroupStatementBuilder(ic.nominal_group, self._current_speaker)
             for ic_noun  in ic.nominal_group:
-                #Proposition role
-                try:
-                    icmpl_role = thematic_roles.get_cmplt_role_for_preposition(verb, ic.prep[0], True)
-                except:
-                    icmpl_role = None
                 
-                #Nominal group
+                #Indirect object ID
                 if ic_noun.id:
                     ic_noun_id = ic_noun.id
                 else:
                     ic_noun_id = i_stmt_builder.set_nominal_group_id(ic_noun)
-                    
+                
+                
+                #Proposition role
+                icmpl_role = None
+                
+                # Case of no preposition
                 if not ic.prep:
-                    self._statements.append(sit_id + " receivedBy " + ic_noun_id)
+                    icmpl_role = " receivedBy " 
                     
-                elif icmpl_role:
-                    self._statements.append(sit_id + icmpl_role + ic_noun_id)
-        
-                elif ic.prep[0].lower() == 'in+front+of':#TODO in ressource Pool
-                    self._statements.append(sit_id + " isLocated FRONT")
-                elif ic.prep[0].lower() == 'next+to':#TODO in ressource Pool
-                    self._statements.append(sit_id + " isNexto " + ic_noun_id)
-                elif ic.prep[0].lower() == 'behind':#TODO in ressource Pool
-                    self._statements.append(sit_id + " isLocated BACK")
-                    
+                # Case of a preposition. Attempt to get from thematic roles
                 else:
-                    self._statements.append(sit_id + " is" + ic.prep[0].capitalize()+ " " + ic_noun_id)
+                    try:
+                        icmpl_role = thematic_roles.get_cmplt_role_for_preposition(verb, ic.prep[0], True)
+                    except:
+                        icmpl_role = None
+                    
+                    #TODO in ResourcePool()
+                    if not icmpl_role:
+                        if ic.prep[0].lower() == 'in+front+of':
+                            icmpl_role = " isLocated "
+                            ic_noun_id = "FRONT"
+                        
+                        elif ic.prep[0].lower() == 'next+to':
+                            icmpl_role = " isNexto "
+                        
+                        elif ic.prep[0].lower() == 'behind':
+                            icmpl_role = " isLocated "
+                            ic_noun_id = "BACK"
+                    
+                # Case of prepostion but thematic roles not found
+                if not icmpl_role and ic.prep:
+                    icmpl_role = " is" + ic.prep[0].capitalize() + " "
+                
+                
+                #Creating statements
+                # Case of negation
+                if self._process_on_negative:
+                    negative_ic_noun_id = generate_id(with_question_mark = False)
+                    self._statements.append(sit_id + icmpl_role + negative_ic_noun_id)
+                    self._statements.append(negative_ic_noun_id + ' owl:differentFrom ' + ic_noun_id)
+                    
+                # Case of affirmation
+                else:
+                    self._statements.append(sit_id + icmpl_role + ic_noun_id)
                 
                 
                 i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id, None, False)
@@ -717,7 +721,7 @@ class VerbalGroupStatementBuilder:
             
     def process_verb_tense(self, vrb_tense, verb, id):
         """This provides a solution to process verb tense for action verbs ONLY.
-        we create the object property 'eventOccursIn' and bind it with the flag PAST or FUTUR
+        we create the object property 'eventOccurs' and bind it with the flag PAST or FUTUR
         
             E.g: Danny 'went' to Toulouse.
             In this example we may want to create the statements:
@@ -726,7 +730,7 @@ class VerbalGroupStatementBuilder:
              * hasGoal id_toulouse,
              ...
              
-             * eventOccursIn PAST]
+             * eventOccurs PAST]
              
             Although, we do not implement this for stative verb, it may be adapted in the case of describing objects feature, location, and so on.
             Therefore, we need to create new object properties.
@@ -748,17 +752,23 @@ class VerbalGroupStatementBuilder:
             tense = 'FUTUR'
         
         if verb != 'be' and tense:
-            self._statements.append(id + ' eventOccursIn ' + tense)
+            self._statements.append(id + ' eventOccurs ' + tense)
             
             
             
             
-            
-    #TODO:
-    def vrb_subsentence(self, vrb_sub_sentence):
-        for sub in vrb_sub_sentence:
-            logging.debug("Processing adverbial clauses:")
-            
+    def process_vrb_subsentence(self, verbal_group, id):
+        
+        for sub in verbal_group.vrb_sub_sentence:
+            if sub.sn:
+                sub_ng_builder = NominalGroupStatementBuilder(sub.sn, self._current_speaker)
+                
+            if sub.sv:
+                sub_vg_builder = VerbalGroupStatementBuilder(sub.sv, self._current_speaker)
+                
+        
+        self._statements.extend(sub_ng_builder._statements)
+        self._statements.extend(sub_vg_builder._statements)
             
 """
     The following function are not implemented for a specific class
@@ -767,7 +777,8 @@ def get_class_name(noun,conceptL):
     """Simple function to obtain the exact class name"""
     for c in conceptL:
         if 'CLASS' in c: return c[0]
-        
+    #TODO: Learn_more.append(c)
+    
     return noun.capitalize()
 
 
@@ -803,21 +814,9 @@ def dump_resolved(sentence, current_speaker, current_listener):
             logging.info("Dump resolution for statement builder test ONLY ...")
             
             resolved = True
-            
+                    
             if ng._resolved:
                 pass
-            
-            elif ng._quantifier != 'ONE':
-                
-                logging.debug("... Found nominal group with quantifier " + ng._quantifier)
-                onto_class = ''
-                try:
-                    onto_class =  ResourcePool().ontology_server.lookupForAgent(current_speaker, ng.noun[0])
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
-                
-                ng.id = get_class_name(ng.noun[0], onto_class)
-                
                 
             elif ng.adjectives_only():
                 ng.id = '*'
@@ -826,70 +825,51 @@ def dump_resolved(sentence, current_speaker, current_listener):
             elif ng.noun in [['me'], ['Me'],['I']]:
                 ng.id = current_speaker
             elif ng.noun in [['you'], ['You']]:
-                ng.id = current_listener                       
+                ng.id = current_listener       
             
-            #common noun
-            elif [ng.noun, ng.det, ng.adj] == [['car'], ['my'],[]]:
-                ng.id = 'volvo'     
-            elif [ng.noun, ng.det, ng.adj] == [['cube'], ['my'],[]]:
-                ng.id = 'another_cube'  
-            elif [ng.noun, ng.det, ng.adj] == [['bottle'], ['the'], []]:
-                ng.id = 'a_bottle'
-            elif [ng.noun, ng.det, ng.adj] == [['man'], ['the'], []]:
-                ng.id = 'a_man'
-            elif [ng.noun, ng.det, ng.adj] == [['brother'], ['the'], []]:
-                ng.id = 'id_tom'
-            elif [ng.noun, ng.adj, ng.det] == [['car'], ['blue'], ['the']]:
-                ng.id = 'blue_car'
-            elif [ng.noun, ng.adj, ng.det] == [['cube'], ['blue'], ['the']]:
-                ng.id = 'blue_cube'
-            elif [ng.noun, ng.adj, ng.det] == [['car'], ['small'], ['a']]:
-                ng.id = 'twingo'
-            
-            
-            #proper noun
-            elif ng.noun == ['Danny']:
-                ng.id = 'id_danny' 
-            elif ng.noun == ['Jido']:
-                ng.id = 'id_jido'
-            elif ng.noun == ['Toulouse']:
-                ng.id = 'id_toulouse'
-                   
-            #existing ID
-            elif ng.noun == ['twingo']:
-                ng.id = 'twingo'            
-            elif ng.noun == ['shelf1']:
-                ng.id = 'shelf1'
-            
-            #existing ID with lookupForAgent on the ontology 
-            elif ng.det in [['this'], ['that']]:
-                onto_focus = ''
-                try:
-                    onto_focus =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', [current_speaker + ' focusesOn ?concept'])
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
-                    
-                if onto_focus:
-                    ng.id = onto_focus[0]
-                    
-            elif [ng.noun, ng.det, ng.adj] == [['car'], ['the'],[]]:
-                onto_fiat = ''
-                try:
-                    onto_fiat =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',stmts)
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
-                    
-                if onto_fiat:    
-                    ng.id = onto_fiat[0]
+            elif ng.noun:
                 
-            #Else
+                onto_class = ''
+                try:
+                    onto_class =  ResourcePool().ontology_server.lookupForAgent(current_speaker, ng.noun[0])
+                except AttributeError: #the ontology server is not started of doesn't know the method
+                    pass
+                
+                if ng._quantifier != 'ONE':
+                    logging.debug("... Found nominal group with quantifier " + ng._quantifier)
+                    ng.id = get_class_name(ng.noun[0], onto_class)
+                
+                elif [ng.noun[0], 'INSTANCE'] in onto_class:    
+                    ng.id = ng.noun[0]
+                
+                else:
+                    onto = ''
+                    try:
+                        onto =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',stmts)
+                    except AttributeError: #the ontology server is not started of doesn't know the method
+                        pass
+                            
+                    
+                    if onto:    
+                        ng.id = onto[0]
+                        
             else:
-                pass
-            
+                onto = ''
+                try:
+                    onto =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',stmts)
+                except AttributeError: #the ontology server is not started of doesn't know the method
+                    pass
+                        
+                
+                if onto:    
+                    ng.id = onto[0]
+                        
             
             #Other Nominal group attibutes
             if ng.noun_cmpl and not ng._resolved:
-                ng.noun_cmpl = resolve_ng(ng.noun_cmpl, builder)
+                res_noun_cmpl = resolve_ng(ng.noun_cmpl, builder)
+                ng.noun_cmpl =res_noun_cmpl[0]
+                
             if ng.relative and not ng._resolved:
                 for rel in ng.relative:
                     rel = dump_resolved(rel, current_speaker, current_listener)
@@ -947,31 +927,51 @@ class TestStatementBuilder(unittest.TestCase):
             
             ResourcePool().ontology_server.addForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
                           'id_danny rdf:type Human',
+                          
                           'volvo hasColor blue', 
                           'volvo rdf:type Car',
                           'volvo belongsTo SPEAKER',
+                          
                           'id_jido rdf:type Robot',
                           'id_jido rdfs:label "Jido"',
+                          
                           'twingo rdf:type Car',
                           'twingo hasSize small',
+                          'twingo_key rdf:type Key',
+                          'twingo_key belongsTo twingo',
+                          
                           'a_man rdf:type Man',
-                          'fiat NegativeAssertionOfhasColor blue',
+                          
+                          'id_see rdf:type See', 'id_see actsOnObject a_man', 'id_see performedBy SPEAKER',
+                          'id_talk performedBy a_man', 'id_talk rdf:type Talk',
+                          
                           'fiat belongsTo id_tom',
                           'fiat rdf:type Car',
+                          'fiat hasColor black',
+                          
                           'id_tom rdfs:label "Tom"',
                           'id_tom rdf:type Brother',
                           'id_tom belongsTo id_danny',
+                          
                           'id_toulouse rdfs:label "Toulouse"',
                           'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
+                          
                           'SPEAKER focusesOn another_cube',
+                          'another_cube belongsTo SPEAKER', 
+                          'another_cube rdf:type Cube',
+                          
                           'shelf1 rdf:type Shelf',
+                          'green_bottle hasColor green',
+                          'green_bottle rdf:type Bottle',
+                          'a_bottle rdf:type Bottle',
+                          'a_bottle isIn twingo',
                           ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
         
         self.stmt = StatementBuilder("SPEAKER")
-        self.stmt_adder = StatementSafeAdder()
+        self.adder = StatementSafeAdder()
         
     """
         Please write your test below using the following template
@@ -1012,7 +1012,7 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-    """
+    
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives the blue car"  
@@ -1034,10 +1034,10 @@ class TestStatementBuilder(unittest.TestCase):
         
         expected_result = ['* rdf:type Drive',
                            '* performedBy id_danny',
-                           '* involves blue_car']
+                           '* involves volvo']
         
         return self.process(sentence, expected_result, display_statement_result = True)
-    """
+   
     def test_1_goal_verb(self):
         print "\n**** Test 1  *** "
         print "Danny wants the blue car"  
@@ -1058,10 +1058,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            [])])    
         
         expected_result = ['id_danny desires *',
-                            '* involves blue_car']
+                            '* involves volvo']
         
         return self.process(sentence, expected_result, display_statement_result = True)
-    """
+   
     def test_2(self):
         print "\n**** Test 2  *** "
         print "my car is blue"
@@ -1125,7 +1125,7 @@ class TestStatementBuilder(unittest.TestCase):
                             [Verbal_Group(['see'],
                                           [],
                                           'past_simple',
-                                          [],
+                                          [Nominal_Group(['the'],['man'], [], [], [])],
                                           [],
                                           [],
                                           [],
@@ -1157,7 +1157,7 @@ class TestStatementBuilder(unittest.TestCase):
                           '* involves twingo']
         return self.process(sentence, expected_resut, display_statement_result = True)
         
-        
+    
     def test_5(self):
         print "\n**** Test 5  *** "
         print "the man that talks , has a small car"
@@ -1268,18 +1268,18 @@ class TestStatementBuilder(unittest.TestCase):
         expected_resut = ['* rdf:type Go',
                           '* performedBy SPEAKER',
                           '* hasGoal id_toulouse',
-                          '* eventOccursIn PAST']
+                          '* eventOccurs PAST']
         return self.process(sentence, expected_resut, display_statement_result = True)
-        
+    
     def test_8(self):
         print "\n**** Test 8  *** "
-        print "put the bottle in the blue car"
+        print "put the green bottle in the blue car"
         sentence = Sentence("imperative", "", 
                              [],                                         
                              [Verbal_Group(['put'],
                                            [],
                                            'present simple',
-                                           [Nominal_Group(['the'],['bottle'],[],[],[])],
+                                           [Nominal_Group(['the'],['bottle'],['green'],[],[])],
                                            [Indirect_Complement(['in'],
                                                                 [Nominal_Group(['the'],['car'],['blue'],[],[])]) ],
                                            [],
@@ -1289,8 +1289,8 @@ class TestStatementBuilder(unittest.TestCase):
         expected_resut = ['SPEAKER desires *',
                           '* rdf:type Put',
                           '* performedBy myself',
-                          '* actsOnObject a_bottle',
-                          '* isIn blue_car']  
+                          '* actsOnObject green_bottle',
+                          '* isIn volvo']  
         
 
         return self.process(sentence, expected_resut, display_statement_result = True)
@@ -1368,6 +1368,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         return self.process(sentence, expected_resut, display_statement_result = True)
     
+   
     def test_9_this_my(self):
         
         print "\n**** test_9_this_my  *** "
@@ -1396,7 +1397,6 @@ class TestStatementBuilder(unittest.TestCase):
         another_expected_resut = ['SPEAKER focusesOn blue_cube']
         
         return self.process(sentence, expected_resut, display_statement_result = True)
-    
     
     def test_10_this(self):
         
@@ -1567,8 +1567,8 @@ class TestStatementBuilder(unittest.TestCase):
         expected_resut = ['Apple rdfs:subClassOf Fruit']
         
         return self.process(sentence, expected_resut, display_statement_result = True)
-    """
-    """
+    
+    
     def test_15_quantifier_action_verb(self):        
         print "\n**** test_15_quantifier_action_verb  *** "
         print "an apple grows on a tree"
@@ -1599,9 +1599,8 @@ class TestStatementBuilder(unittest.TestCase):
         expected_resut = ['? ? ?']
         
         return self.process(sentence, expected_resut, display_statement_result = True)
-    """
     
-    """
+    
     #Action adverbs
     def test_16_adverb(self):
         print "\n**** test_16_adverb *** "
@@ -1627,7 +1626,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [])])
         expected_result = ['* rdf:type Drive', 
                             '* performedBy id_danny',
-                            '* involves blue_car',
+                            '* involves volvo',
                             '* actionSupervisionMode QUICK']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
@@ -1657,14 +1656,16 @@ class TestStatementBuilder(unittest.TestCase):
                                            [])])
         expected_result = ['* rdf:type Drive', 
                             '* performedBy id_danny',
-                            '* involves blue_car',
-                            '* eventOccursIn FUTUR']   
+                            '* involves volvo',
+                            '* eventOccurs FUTUR']   
         return self.process(sentence, expected_result, display_statement_result = True)
+    
     
     #Negative approach
     def test_18_negative(self):
+        
         print "\n**** test_18_negative *** "
-        print "Danny doesn't 'drive the blue car"
+        print "Danny doesn't drive the blue car"
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -1684,11 +1685,35 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'negative',
                                            [])])
-        expected_result = [ '* rdf:type Drive', 
+        expected_result = [ '* rdf:type Drive', #REMOVE after finding *
                             '* performedBy id_danny',
-                            '* involves blue_car',
-                            '* isNegativeAssertion "true"^^xsd:boolean']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+                            '* involves volvo']   
+        self.process(sentence, expected_result, display_statement_result = True)
+        
+        
+        print "\n**** test_18_negative_bis *** "
+        print "Danny is not in Toulouse"
+        self.stmt.clear_statements()
+        sentence = Sentence("statement", "",
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [],
+                                           [Indirect_Complement(['in'], [Nominal_Group([],['Toulouse'],[],[],[])])],
+                                           [],
+                                           [],
+                                           'negative',
+                                           [])])
+        expected_result = [ 'id_danny isIn *',
+                            '* owl:differentFrom id_toulouse']
+
+        self.process(sentence, expected_result, display_statement_result = True)
+    
     
     def test_18_negative_relative(self):
         print "\n**** test_18_negative_relative *** "
@@ -1758,7 +1783,7 @@ class TestStatementBuilder(unittest.TestCase):
         #quantifier
         sentence.sv[0].d_obj[0]._quantifier = 'SOME' # Human
        
-        expected_result = [ 'id_jido rdf:type NegativeAssertionOfHuman']   
+        expected_result = [ 'id_jido rdf:type ComplementOfHuman']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
@@ -1784,7 +1809,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'negative',
                                            [])])
-        expected_result = [ 'shelf1 NegativeAssertionOfhasColor green']   
+        expected_result = [ 'shelf1 hasColor *']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
@@ -1810,8 +1835,32 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_result = ['shelf1 NegativeAssertionOfhasColor green']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        expected_result = ['shelf1 hasColor green']   
+        self.process(sentence, expected_result, display_statement_result = True)
+        
+        print "\n**** test_20_negative_bis *** "
+        print "the shelf1 is red"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['the'],
+                                            ['shelf1'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group([],
+                                                          [],
+                                                          ['red'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = ['shelf1 hasColor red']   
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_21_negative(self):
@@ -1837,7 +1886,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'negative',
                                            [])])
         
-        expected_result = [ 'another_cube owl:differentFrom shelf1']   
+        expected_result = ['another_cube owl:differentFrom shelf1']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
@@ -1869,7 +1918,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence.sn[0]._quantifier = 'ALL' # Fruits
         sentence.sv[0].d_obj[0]._quantifier = 'ALL' # Humans
         
-        expected_result = [ 'Fruit rdfs:subClassOf NegativeAssertionOfHuman']   
+        expected_result = [ 'Fruit rdfs:subClassOf ComplementOfHuman']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
@@ -1923,10 +1972,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            'negative',
                                            [])])
         
-        expected_result = [ 'blue_car owl:differentFrom volvo']   
+        expected_result = [ 'volvo owl:differentFrom volvo']   
         return self.process(sentence, expected_result, display_statement_result = True)
-    """
-    """
+    
+    
     def test_25_negative(self):
         print "\n**** test_25_negative *** "
         print "I am not the brother of Danny"
@@ -1955,27 +2004,121 @@ class TestStatementBuilder(unittest.TestCase):
                                             'negative', 
                                             [])])
                                             
-        expected_result = [ 'another_cube owl:differentFrom fiat']   
+        expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
         return self.process(sentence, expected_result, display_statement_result = True)
+    
     """
+    
+    def test_26_subsentences(self):
+        print "\n**** test_26_subsentences *** "
+        print "you will drive the car if you get the keys'."
+        
+        subsentence = Sentence('subsentence', 'if', 
+                                [Nominal_Group([],['you'],[],[],[])], 
+                                [Verbal_Group(['get'], [],'present simple', 
+                                    [Nominal_Group(['the'],['key'],[],[],[])], 
+                                    [],
+                                    [], 
+                                    [] ,
+                                    'affirmative',
+                                    [])])
+                                    
+        sentence = Sentence('statement', '', 
+                                [Nominal_Group([],['you'],[],[],[])], 
+                                [Verbal_Group(['drive'],
+                                    [],
+                                    'future simple', 
+                                    [Nominal_Group(['the'],['car'],[],[],[])], 
+                                    [],
+                                    [], 
+                                    [],
+                                    'affirmative',
+                                    [subsentence])])
+                                            
+        expected_result = [ '* rdf:type Drive',
+                            '* performedBy myself',
+                            '* hasGoal twingo',
+                            # [A eventOccursIf B] means that the event B occurs if the event A occurs
+                            '* eventOccursIf *',
+                            '* rdf:type Get',
+                            '* performedBy myself',
+                            '* hasGoal twingo_key']   
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+
+    def test_27_subsentences(self):
+        print "\n**** test_27_subsentences *** "
+        print "learn that apple are fruits."
+        
+        subsentence = Sentence('subsentence', 'that', 
+                                [Nominal_Group([],['Apple'],[],[],[])], 
+                                [Verbal_Group(['be'], [],'present simple', 
+                                    [Nominal_Group([],['fruit'],[],[],[])], 
+                                    [],
+                                    [], 
+                                    [] ,
+                                    'affirmative',
+                                    [])])
+                                    
+        sentence = Sentence('statement', '', 
+                                [Verbal_Group(['learn'], [], 'present simple',[], [], [], 
+                                    [] ,
+                                    'affirmative',
+                                    [subsentence])])
+                                            
+        expected_result = ['Apple rdfs:subClassOf Fruit']
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    
+    def test_28_subsentences(self):
+        print "\n**** test_28_subsentences *** "
+        print "I am going to toulouse when you get the small car."
+        
+        subsentence = Sentence('subsentence', 'when', 
+                                [Nominal_Group([],['you'],[],[],[])], 
+                                [Verbal_Group(['get'], [],'present simple', 
+                                    [Nominal_Group(['the'],['car'],['small'],[],[])], 
+                                    [],
+                                    [], 
+                                    [] ,
+                                    'affirmative',
+                                    [])])
+                                    
+        sentence = Sentence('statement', '', 
+                                [Nominal_Group([],['I'],[],[],[])], 
+                                [Verbal_Group(['go'],
+                                    [],
+                                    'present processive', 
+                                    [Indirect_Complement(['on'], 
+                                                        [Nominal_Group(['a'],
+                                                                        ['tree'],
+                                                                        [],
+                                                                        [],
+                                                                        [])])], 
+                                    [],
+                                    [], 
+                                    [] ,
+                                    'affirmative',
+                                    [subsentence])])
+                                            
+        expected_result = ['* rdf:type Go',
+                            '* performedBy SPEAKER', 
+                            '* hasGoal id_toulouse',
+                            # [A eventOccursWhen B] means that the event B occurs when the event A occurs
+                            '* eventOccursWhen *', 
+                            '* rdf:type Get',
+                            '* performedBy myself',
+                            '* hasGoal twingo']   
+                            
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    """
+    
     def process(self, sentence, expected_result, display_statement_result = False):
          
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
-        res = self.stmt.process_sentence(sentence)        
-        
-        if display_statement_result:
-            logging.info( "*** Statement to add in the ontology result from " + inspect.stack()[1][3] + " ****")
-            for s in res:
-                logging.info("\t >> " + s)
-                
-                try:
-                    if not ResourcePool().ontology_server.safeAdd([s]):
-                        logging.info("Inconsistent statement ([ " + s + " ])")
-                except AttributeError:
-                    pass
-                    
-            logging.info("\t --------------  << ")
-            
+        res = self.stmt.process_sentence(sentence)
+        res = self.adder.process(res, self.stmt._unresolved_ids)
         self.assertTrue(self.check_results(res, expected_result))
         
         
@@ -1985,7 +2128,9 @@ class TestStatementBuilder(unittest.TestCase):
             tr_split = tr.split()
             te_split = te.split()
             
-            return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
+            return  (not '?' in tr_split[0]) and \
+                    (not '?' in tr_split[2]) and \
+                    (tr_split[0] == te_split[0] or te_split[0] == '*') and\
                     (tr_split[1] == te_split[1]) and\
                     (tr_split[2] == te_split[2] or te_split[2] == '*') 
            
