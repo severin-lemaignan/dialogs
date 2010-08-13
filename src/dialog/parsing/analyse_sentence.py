@@ -67,9 +67,13 @@ def dispatching(sentence):
                 if x[1] == '1':
                     return Sentence('start', '', [], [])
                 
-                #It's a w_question
+                #It's a w_question or subsentence
                 if x[1] == '2':
-
+                    
+                    #Here we have the condition of the subsentences
+                    if analyse_nominal_group.find_sn_pos(sentence, 1)!=[]:
+                        return stc_start_subsentence(sentence)
+                    
                     #For 'when'
                     if x[2]=='1':
                         #If we remove the first word => it becomes like y_n_question
@@ -131,7 +135,7 @@ def dispatching(sentence):
 
                 #It's a conditional sentence
                 elif x[1]=='4':
-                    return condi_sentence(sentence)
+                    return stc_start_subsentence(sentence)
 
                 #Agree
                 elif x[1]=='5':
@@ -282,18 +286,18 @@ def w_quest_how(type, sentence):
 
 
 
-def condi_sentence(sentence):
+def stc_start_subsentence(sentence):
     """
     This function process the conditional sentence
     Input=sentence                                          Output=class Sentence    
     """
 
     #We recover the conditional sentence
-    conditional_sentence=sentence[1:sentence.index(';')]
+    subsentence=sentence[1:sentence.index(';')]
 
     #We perform the 2 processing
     analysis=other_sentence('statement', '', sentence[sentence.index(';')+1:])
-    analysis.sv[0].vrb_sub_sentence=[other_sentence('subsentence', 'if', conditional_sentence)]
+    analysis.sv[0].vrb_sub_sentence=[other_sentence('subsentence', sentence[0], subsentence)]
 
     return analysis
 

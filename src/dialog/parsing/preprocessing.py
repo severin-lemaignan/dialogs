@@ -47,7 +47,7 @@ insertion_tuples=[(";", ';', 1),(",", ',', 1),("'m", 'am', 2),("'ve", 'have', 3)
 prep_list=['ago']
 prep_concat_list=[['next','to'],['behind','to'],['in','front','of'],['in','spite','of'],['because','of'],['to','whom'],['in','which']]
 rel_list=['who', 'which', 'that','where','to+whom','whom','in+which']
-sub_list=['while', 'but','where', 'when', 'if', 'what', 'However', 'although', 'because']
+sub_list=['while', 'but','where', 'when', 'if', 'what', 'however', 'although', 'because']
 adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to',
                 'next+to','in+front+of', 'into','in+spite+of','because+of','despite']
 superlative_number=['first','second','third','fifth','ninth']

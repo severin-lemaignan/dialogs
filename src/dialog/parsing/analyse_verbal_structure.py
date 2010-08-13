@@ -36,11 +36,9 @@ adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind',
                'behind+to','next+to','in+front+of','as', 'into','in+spite+of','because+of','despite']
 rel_list=['who', 'which', 'that','where','to+whom','whom','in+which']
-sub_list=['while', 'but','where', 'when', 'if', 'what', 'However', 'although', 'because']
+sub_list=['while', 'but','where', 'when', 'if', 'what', 'however', 'although', 'because']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean']
-adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to',
-                'next+to','in+front+of', 'into','in+spite+of','because+of','despite']
+direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean','make']
 complement_pronoun=['me','you','it']
 inderect_trans_verb_list=['tell', 'say']
 state_vrb_list=['be','become']
@@ -244,8 +242,7 @@ def recover_obj_iobj(phrase, vg):
                 vg.d_obj=gr_nom_list
         
         #If the last nominal group is followed by another one in plural form 
-        #phrase=analyse_nominal_group.find_plural(phrase)
-    
+        phrase=analyse_nominal_group.find_plural(phrase)
         object= analyse_nominal_group.find_sn(phrase)
         
     return phrase
@@ -456,26 +453,30 @@ def correct_i_compl(phrase,verb):
     for i in direct_trans_verb_list:
         #If we have a direct transitive verb
         if i==verb:
-        
+            
             #init
             x=0
             while x<len(phrase):
-                for y in adverbial_list:
-
+                for y in proposal_list:
+                    
                     #If there is a proposal with an adverbial
-                    if x+1<len(phrase)-1 and phrase[x]==y and analyse_nominal_group.find_sn_pos(phrase, x+1)!=[]:
-                        adverbial=analyse_nominal_group.find_sn_pos(phrase, x+1)
-                        begin_pos=x-1
+                    if x+1<len(phrase) and phrase[x]==y:
+                        #If there is a plural
+                        phrase=phrase[:x]+analyse_nominal_group.find_plural(phrase[x:])
                         
-                        #We will find the subject of the relative
-                        while analyse_nominal_group.find_sn_pos(phrase, begin_pos)==[]:
-                            begin_pos=begin_pos-1
-                        nom_gr=analyse_nominal_group.find_sn_pos(phrase, begin_pos)
-                        
-                        #If there nominal group is just before the adverbial
-                        if begin_pos+len(nom_gr)==x:
-                            phrase=phrase[:x]+['which','is']+[phrase[x]]+adverbial+[';']+phrase[x+len(adverbial)+1:]
-                            break
+                        if analyse_nominal_group.find_sn_pos(phrase, x+1)!=[]:
+                            adverbial=analyse_nominal_group.find_sn_pos(phrase, x+1)
+                            begin_pos=x-1
+                            
+                            #We will find the subject of the relative
+                            while analyse_nominal_group.find_sn_pos(phrase, begin_pos)==[]:
+                                begin_pos=begin_pos-1
+                            nom_gr=analyse_nominal_group.find_sn_pos(phrase, begin_pos)
+                            
+                            #If there nominal group is just before the adverbial
+                            if begin_pos+len(nom_gr)==x:
+                                phrase=phrase[:x]+['which','is']+[phrase[x]]+adverbial+[';']+phrase[x+len(adverbial)+1:]
+                                break
                 x=x+1
     return phrase
 

@@ -2275,7 +2275,7 @@ def unit_tests():
     print ''
     print ('######################## test 7.1 ##############################')
 
-    utterance="apples grow on trees and plants. "
+    utterance="apples grow on trees and plants."
     print 'The object of our test is this utterance :'
     print utterance
     print '#################################################################'
@@ -2297,6 +2297,54 @@ def unit_tests():
     
     compare_utterance(class_list,rslt,sentence_list)
     print ''
-            
+
+
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
+    print ''
+    print ('######################## test 7.2 ##############################')
+
+    utterance="When your father came, we was preparing the dinner. While I phoned, he made a sandwich with bacons."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group([],['we'],[],[],[])], 
+            [Verbal_Group(['prepare'], [],'past progressive', 
+                [Nominal_Group(['the'],['dinner'],[],[],[])], 
+                [],
+                [], [] ,'affirmative',[Sentence('subsentence', 'when', 
+                    [Nominal_Group(['your'],['father'],[],[],[])], 
+                    [Verbal_Group(['come'], [],'past simple', 
+                         [], 
+                         [],
+                         [], [] ,'affirmative',[])])])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['he'],[],[],[])], 
+            [Verbal_Group(['make'], [],'past simple', 
+                [Nominal_Group(['a'],['sandwich'],[],[],[Sentence('relative', 'which', 
+                    [], 
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [], 
+                        [Indirect_Complement(['with'],[Nominal_Group([],['bacon'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])], 
+                [],
+                [], [] ,'affirmative',[Sentence('subsentence', 'while', 
+                    [Nominal_Group([],['I'],[],[],[])], 
+                    [Verbal_Group(['phone'], [],'past simple', 
+                         [], 
+                         [],
+                         [], [] ,'affirmative',[])])])])]
+    
+    rslt[1].sv[0].d_obj[0]._quantifier="SOME"
+    rslt[1].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
+    
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
 if __name__ == '__main__':
     unit_tests()
