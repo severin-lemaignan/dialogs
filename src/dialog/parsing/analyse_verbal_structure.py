@@ -35,7 +35,7 @@ aux_list=['have', 'has', 'had', 'is', 'are', 'am', 'was', 'were', 'will']
 adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind',
                'behind+to','next+to','in+front+of','as', 'into','in+spite+of','because+of','despite']
-rel_list=['which', 'who','that']
+rel_list=['who', 'which', 'that','where','to+whom','whom','in+which']
 sub_list=['while', 'but','where', 'when', 'if', 'what', 'However', 'although', 'because']
 pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean']
@@ -365,30 +365,40 @@ def process_subsentence(phrase,vg):
                 
                 #We include the relative's proposal if there are relatives in the subsentence
                 end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], sub_list+rel_list)
-            
-                #We have to remove the proposal
-                subsentence= phrase[begin_pos+1:begin_pos+end_pos]
-               
-                #We perform processing
-                vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.dispatching(subsentence)]
-                vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence'
-                vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
-                 
-                if w=='but':
-                    #If the main verb is not a verb but a part of verbal structure => we have nominal groups
-                    for k in ['.','?','!','']+proposal_list:
-                        if vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
-                            
-                            #We make changes and return the sentence with but of nominal groups
-                            phrase[phrase.index(w)]=':but'
-                            vg.vrb_sub_sentence=vg.vrb_sub_sentence[:len(vg.vrb_sub_sentence)-1]
-                            return phrase
-                        
-                #We delete the subsentence
-                phrase=phrase[:phrase.index(i)]
-                phrase=phrase+phrase[end_pos:]+['.']
                 
-                return phrase
+                #If it is 'where', it can be relative if before we have nominal group
+                if w=='where':
+                    position=phrase.index(w)-1
+                    gr=analyse_nominal_group.find_sn_pos(phrase, position)
+                    #We have to find the nominal group just before
+                    while position>0 and gr==[]:
+                        position=position-1
+                        gr=analyse_nominal_group.find_sn_pos(phrase, position)
+                    
+                if w!='where' or (len(gr)+position!=phrase.index(w) or (len(gr)==1 and other_functions.find_cap_lettre(gr[0])==0)):
+                    #We have to remove the proposal
+                    subsentence= phrase[begin_pos+1:begin_pos+end_pos]
+                    
+                    #We perform processing
+                    vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.dispatching(subsentence)]
+                    vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence'
+                    vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
+                     
+                    if w=='but':
+                        #If the main verb is not a verb but a part of verbal structure => we have nominal groups
+                        for k in ['.','?','!','']+proposal_list:
+                            if vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
+                                
+                                #We make changes and return the sentence with but of nominal groups
+                                phrase[phrase.index(w)]=':but'
+                                vg.vrb_sub_sentence=vg.vrb_sub_sentence[:len(vg.vrb_sub_sentence)-1]
+                                return phrase
+                            
+                    #We delete the subsentence
+                    phrase=phrase[:phrase.index(i)]
+                    phrase=phrase+phrase[end_pos:]+['.']
+                    
+                    return phrase
 
     return phrase
 

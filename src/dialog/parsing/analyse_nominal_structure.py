@@ -20,7 +20,7 @@ import analyse_sentence
 """
 Statement of lists
 """
-propo_rel_list=['who', 'which', 'that']
+propo_rel_list=['who', 'which', 'that','where','to+whom','whom','in+which']
 quantifier_list=[('a','SOME'),('an','SOME'),('no','NONE'),('those','SOME'),('these','SOME'),('any','ANY'),('all','ALL'),('some','SOME'),
        ('every','ALL'),('more','SOME'),('less','SOME'),('another','SOME')]
 noun_end_s_sing=['news','glass', 'bus','Laas','business']
@@ -111,7 +111,11 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     #There is a relative
     if begin_pos_rel!=-1:
         relative_phrase=phrase[begin_pos_rel+1:begin_pos_rel+end_pos_rel-1]
-        relative_phrase=analyse_nominal_group.complete_relative(relative_phrase,nom_gr)
+        
+        #If it is a place, we have not to duplicate the nominal group
+        if phrase[begin_pos_rel]!='where':
+            relative_phrase=analyse_nominal_group.complete_relative(relative_phrase,nom_gr)
+        
         relative = relative+[analyse_sentence.other_sentence('relative',phrase[begin_pos_rel],relative_phrase)]
 
     #If there is a nom_gr_compl, we must make a recursive process for embedded complement

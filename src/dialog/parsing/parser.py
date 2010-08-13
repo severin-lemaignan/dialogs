@@ -2209,5 +2209,65 @@ def unit_tests():
     compare_utterance(class_list,rslt,sentence_list)
     print ''     
     
+    
+    
+    """
+    ## Aim of this test : Using different cases of what question with relative 
+    """
+    print ''
+    print ('######################## test 6.7 ##############################')
+
+    utterance="I go to the place where I was born. I study where you studied. I study where you build your house where you put the bottle."
+    print 'The object of our test is this utterance :'
+    print utterance
+    print '#################################################################'
+    print ''
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+    rslt=[Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['go'], [],'present simple', 
+                [], 
+                [Indirect_Complement(['to'],[Nominal_Group(['the'],['place'],[],[],[Sentence('relative', 'where', 
+                    [Nominal_Group([],['I'],[],[],[])], 
+                    [Verbal_Group(['be'], [],'past simple', 
+                        [Nominal_Group([],[],['born'],[],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])])],
+                [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['study'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[Sentence('subsentence', 'where', 
+                    [Nominal_Group([],['you'],[],[],[])], 
+                    [Verbal_Group(['study'], [],'past simple', 
+                        [], 
+                        [],
+                        [], [] ,'affirmative',[])])])]),
+        Sentence('statement', '', 
+            [Nominal_Group([],['I'],[],[],[])], 
+            [Verbal_Group(['study'], [],'present simple', 
+                [], 
+                [],
+                [], [] ,'affirmative',[Sentence('subsentence', 'where', 
+                    [Nominal_Group([],['you'],[],[],[])], 
+                    [Verbal_Group(['build'], [],'present simple', 
+                        [Nominal_Group(['your'],['house'],[],[],[Sentence('relative', 'where', 
+                            [Nominal_Group([],['you'],[],[],[])], 
+                            [Verbal_Group(['put'], [],'present simple', 
+                                [Nominal_Group(['the'],['bottle'],[],[],[])], 
+                                [],
+                                [], [] ,'affirmative',[])])])], 
+                        [],
+                        [], [] ,'affirmative',[])])])])]
+  
+    compare_utterance(class_list,rslt,sentence_list)
+    print ''
+    
+    
+            
 if __name__ == '__main__':
     unit_tests()
