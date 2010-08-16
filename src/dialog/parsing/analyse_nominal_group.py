@@ -13,7 +13,8 @@
     adjective_pos : to return the position of the noun in the sentence             
     find_sn_pos : to return the nom_group in a given position with adjective_pos  
     find_sn : to return the first nominal group found in the sentence  
-    find_plural : to find if there is a plural and add 'a'    
+    find_the_plural : to find if there is a plural and add 'a'    
+    find_plural : to add 'a' for plural
     refine_nom_gr : to refine the nominal group if there is a mistake             
     return_det : to recover the determinant of the nominal group                  
     return_adj : to recover the adjectives of the nominal group                   
@@ -235,28 +236,47 @@ def find_sn (phrase):
 
 
 
-def find_plural(phrase):
+def find_the_plural(phrase, position):
     """
     This function find if there is a plural and add 'a'                     
-    Input=sentence and position of nominal group         Output=sentence            
+    Input=sentence and position of nominal group   Output=the position of plural or -1            
     """ 
+    
     if len(phrase)-1<0:
-        return phrase
+        return -1
     
     for i in end_s_list:
-        if i==phrase[0]:
-            return phrase
+        if i==phrase[position]:
+            return -1
     
-    if phrase[0].endswith("'s") or phrase[0].endswith("ous"):
-        return phrase
+    if is_an_adj(phrase[position])==1:
+        if find_the_plural(phrase, position+1)!=-1:
+            return position
     
-    if find_sn_pos(phrase, 0)==[] and phrase[0].endswith('s'):
-        #It can not be a verb
-        phrase=['a']+phrase
+    if phrase[0].endswith("'s") or phrase[position].endswith("ous"):
+        return -1
+    
+    if find_sn_pos(phrase, position)==[] and phrase[position].endswith('s'):
+        
+        return position
         
     for a in proposal_list:
-        if phrase[0]==a:
-            return [a]+find_plural(phrase[1:])
+        if phrase[position]==a:
+            return find_the_plural(phrase, position+1)
+
+    return -1
+
+
+
+def find_plural(phrase):
+    """
+    This function add 'a' for plural                    
+    Input=sentence                                   Output=sentence      
+    """ 
+    
+    position=find_the_plural(phrase,0)
+    if position!=-1:
+        phrase=phrase[:position]+['a']+phrase[position:]
     return phrase
 
 
