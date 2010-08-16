@@ -981,7 +981,7 @@ def unit_tests():
     
     print "*************  Nominal group adjective only ****************"
     print "Nominal_Group(['the'],['man'],[],[],[]) is adjective only: ", Nominal_Group(['the'],['man'],[],[],[]).adjectives_only()
-    print "Nominal_Group([],[],['blue'],[],[]) is adjective only: ", Nominal_Group([],[],['bluels'],[],[]).adjectives_only()
+    print "Nominal_Group([],[],['blue'],[],[]) is adjective only: ", Nominal_Group([],[],['blue'],[],[]).adjectives_only()
     
 if __name__ == '__main__':
     unit_tests()

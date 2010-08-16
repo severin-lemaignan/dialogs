@@ -32,7 +32,7 @@ class StatementBuilder:
         #This holds the statements created from the main clause of a sentence
         self._statements = []
         
-        #This holds the satements that are created from a sentence conjonctive clause
+        #This holds the satements that are created from a sentence Subordinating clause
         #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
         self._sub_statements = []
         
@@ -86,6 +86,7 @@ class StatementBuilder:
             vg_stmt_builder.process()
             
             self._statements.extend(vg_stmt_builder._statements)
+            self._sub_statements.extend(vg_stmt_builder._sub_statements)
             self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
             
         for sn in sentence.sn:
@@ -95,6 +96,7 @@ class StatementBuilder:
             vg_stmt_builder.process(subject_id = sn.id, subject_quantifier = sn._quantifier)
             
             self._statements.extend(vg_stmt_builder._statements)
+            self._sub_statements.extend(vg_stmt_builder._sub_statements)
             self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
 
 class NominalGroupStatementBuilder:
@@ -106,13 +108,8 @@ class NominalGroupStatementBuilder:
         #This field identifies the current speaker
         self._current_speaker = current_speaker
         
-        
         #This holds the statements created from the main clause of a sentence
         self._statements = []
-        
-        #This holds the satements that are created from a sentence conjonctive clause
-        #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
-        self._sub_statements = []
         
         #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
         #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
@@ -462,7 +459,7 @@ class VerbalGroupStatementBuilder:
         #This holds the statements created from the main clause of a sentence
         self._statements = []
         
-        #This holds the satements that are created from a sentence conjonctive clause
+        #This holds the satements that are created from a sentence Subordinating clause
         #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
         self._sub_statements = []
         
@@ -530,7 +527,7 @@ class VerbalGroupStatementBuilder:
             if vg.advrb:
                 self.process_sentence_adverb(vg)
             
-            # Conjunctive clause
+            # Subordinating clause
             if vg.vrb_sub_sentence:
                 self.process_vrb_subsentence(vg)   
 
@@ -809,8 +806,8 @@ class VerbalGroupStatementBuilder:
             
     def process_vrb_subsentence(self, verbal_group):
         """
-            This provides a solution to process conjunctives clauses,
-            by creating a subset of statements that is added in the ontology accroding to the conjunction clause
+            This provides a solution to process Subordinating clauses,
+            by creating a subset of statements that is added in the ontology according to the Subordinating conjunction
             
             E.g: I will go to Toulouse if you get the small car.
             
@@ -818,7 +815,7 @@ class VerbalGroupStatementBuilder:
              * performedBy current_speaker,
              * hasGoal TOULOUSE]
             
-            The statements above are added in the ontogy if those below are already in. Adding is performed in the module StatementSafeAdder
+            The statements above are created in the field of statements whereas the ones below are added in the field of sub_statements
             
             [* rdf:type Get,
              * performedBy myself,
@@ -827,9 +824,12 @@ class VerbalGroupStatementBuilder:
              ]
         """
         sub_builder = StatementBuilder(self._current_speaker)
+        stmts = []
         for sub in verbal_group.vrb_sub_sentence:
-            sub_builder.process_sentence(sub)
-            self._sub_statements.extend(sub_builder._statements)
+            stmts.append(sub.aim)
+            stmts.append(sub_builder.process_sentence(sub))
+        
+        self._sub_statements.append(stmts)
         
             
 """
@@ -967,6 +967,11 @@ def dump_resolved(sentence, current_speaker, current_listener):
                     res_i_cmpl = resolve_ng(i_cmpl.nominal_group, builder)                    
                     i_cmpl = res_i_cmpl[0]
                     sv._resolved = sv._resolved and res_i_cmpl[1]
+            
+            if sv.vrb_sub_sentence:
+                for sub in sv.vrb_sub_sentence:
+                    sub = dump_resolved(sub, current_speaker, current_listener)
+            
     
     print(sentence)
     print "Sentence resolved ... " , sentence.resolved()
@@ -2069,7 +2074,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    """
+    
     
     def test_26_subsentences(self):
         print "\n**** test_26_subsentences *** "
@@ -2099,21 +2104,19 @@ class TestStatementBuilder(unittest.TestCase):
                                             
         expected_result = [ '* rdf:type Drive',
                             '* performedBy myself',
-                            '* hasGoal twingo',
-                            # [A eventOccursIf B] means that the event B occurs if the event A occurs
-                            '* eventOccursIf *',
+                            '* involves twingo',
                             '* rdf:type Get',
                             '* performedBy myself',
-                            '* hasGoal twingo_key']   
+                            '* actsOnObject twingo_key']   
         return self.process(sentence, expected_result, display_statement_result = True)
-    
+    """
 
     def test_27_subsentences(self):
         print "\n**** test_27_subsentences *** "
         print "learn that apple are fruits."
         
         subsentence = Sentence('subsentence', 'that', 
-                                [Nominal_Group([],['Apple'],[],[],[])], 
+                                [Nominal_Group([],['apple'],[],[],[])], 
                                 [Verbal_Group(['be'], [],'present simple', 
                                     [Nominal_Group([],['fruit'],[],[],[])], 
                                     [],
@@ -2121,14 +2124,20 @@ class TestStatementBuilder(unittest.TestCase):
                                     [] ,
                                     'affirmative',
                                     [])])
+        #Quantifier
+        subsentence.sn[0]._quantifier = 'ALL' # Apples
+        subsentence.sv[0].d_obj[0]._quantifier = 'ALL' # Fruits
                                     
-        sentence = Sentence('statement', '', 
-                                [Verbal_Group(['learn'], [], 'present simple',[], [], [], 
-                                    [] ,
-                                    'affirmative',
+        sentence = Sentence('imperative', '', 
+                                [],
+                                [Verbal_Group(['learn'], [], 'present simple',[], [], [],[], 
+                                    'affirmative', 
                                     [subsentence])])
                                             
-        expected_result = ['Apple rdfs:subClassOf Fruit']
+        expected_result = [ '* rdf:type Learn',
+                            '* performedBy myself',
+                            'SPEAKER desires *',
+                            'Apple rdfs:subClassOf Fruit']
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
@@ -2151,13 +2160,13 @@ class TestStatementBuilder(unittest.TestCase):
                                 [Verbal_Group(['go'],
                                     [],
                                     'present processive', 
-                                    [Indirect_Complement(['on'], 
-                                                        [Nominal_Group(['a'],
-                                                                        ['tree'],
-                                                                        [],
-                                                                        [],
-                                                                        [])])], 
                                     [],
+                                    [Indirect_Complement(['to'], 
+                                                        [Nominal_Group([],
+                                                                        ['Toulouse'],
+                                                                        [],
+                                                                        [],
+                                                                        [])])],
                                     [], 
                                     [] ,
                                     'affirmative',
@@ -2166,21 +2175,28 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = ['* rdf:type Go',
                             '* performedBy SPEAKER', 
                             '* hasGoal id_toulouse',
-                            # [A eventOccursWhen B] means that the event B occurs when the event A occurs
-                            '* eventOccursWhen *', 
                             '* rdf:type Get',
                             '* performedBy myself',
-                            '* hasGoal twingo']   
+                            '* actsOnObject twingo']   
                             
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
     
     def process(self, sentence, expected_result, display_statement_result = False):
-         
+        #Dump resolution
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
+        
+        #StatementBuilder
         res = self.stmt.process_sentence(sentence)
-        res = self.adder.process(res, self.stmt._unresolved_ids)
+        
+        #Statement Safe Adder
+        self.adder._sub_statements = self.stmt._sub_statements
+        self.adder._unresolved_ids = self.stmt._unresolved_ids
+        self.adder._statements = res
+        res = self.adder.process()
+        
+        #Assert result
         self.assertTrue(self.check_results(res, expected_result))
         
         

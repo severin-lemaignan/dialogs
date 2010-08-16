@@ -9,27 +9,51 @@ class StatementSafeAdder():
     Handle inconsistency due to adding information in the ontology.
     """
     def __init__(self):
-        self._statements = None
-    
-    def process(self, statements, ids):        
-        self._statements = statements
+        #This holds the statements created from the main clause that have to be added in or removed from the ontology
+        self._statements = []
         
-        # Case of Statements to be identified then removed
-        if ids:
+        #This holds the satements that are created from a conjunctive clause
+        #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
+        self._sub_statements = []
+        
+        #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
+        #   Possibly in the case of a negative sentence involving an action that is to be identity.
+        self._unresolved_ids = []   
+        """
+        #When this field is set to True, statement that are being processed are removed from the ontology
+        self._process_on_removal = False
+        """
+        
+    def process(self):        
+        
+        # Case of Statement added regarding the sub_statements
+        if self._sub_statements:
+            self._statements = self.retrieve_main_clause(self._statements)
+            logging.info("Adding statements in the Ontology/")
+            self.safeAdd(self._statements)
+            return self._statements
+        """
+        # Case of Statements to be removed
+        if self._process_on_removal:
             logging.info("Found unidentified IDs... Trying to clarify " + str(ids))        
             if self.clarify(self._statements, ids):
                 self.remove(self._statements)
+            
+            return self._statements
 
         
         # Case of Statements to be added
-        else:
-            logging.info("Adding statements in the Ontology/")
-            self.safeAdd(self._statements)
+        logging.info("Adding statements in the Ontology/")
+        self.safeAdd(self._statements)
         
         return self._statements
-        
+        """
         
     def clarify(self, statements, ids):
+        """This attempts to identify the reference of the action described from the statements
+            - statements: the field of statements used to query the ontology
+            - ids: the field of references that are to be identified
+        """
         self._statements = statements
         while ids:
             id = ids.pop()
@@ -79,6 +103,46 @@ class StatementSafeAdder():
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
         logging.info("\t....................... <<<<")           
+        
+        
+    def process_main_clause_statements(self, statements):
+        """
+        
+        """
+        # For all the subordinative conjunctions See http://englishplus.com/grammar/00000377.htm 
+        #
+        # Case of 'if':
+        #   E.g: I will go to Toulouse if you get the small car
+        #
+        #   we create the statements s1 = [go_to_toulouse rdf:type Go, go_to_toulouse performedBy current_speaker, go_to_toulouse hasGoal TOULOUSE]
+        #   and the sub_statements s2 = [?xxx rdf:type Get , ?xxx performedBy myself, ?xxx actsOnObject SMALL_CAR]
+        #   Then, we add the statement s1 in the ontology if there exists a reference that matches the substatements s2.
+        #
+        # Case of 'when' or 'before'
+        #  E.g: I will go to Toulouse when you get the small car
+        #
+        #  We process as in the above example. 
+        #  However, there should be implemented a function that retrieve when the action described by the statement started
+        #
+        # Case of 'after'
+        #  E.g: I will go to Toulouse when you get the small car
+        #  We process likewise the above example. 
+        #  However, there should be implemented a function that retrieve when the action described by the statement ended
+        
+        # Case of 'while' or 'as long as'
+        #  We process likewise the 2 preceding examples with both an ending and starting point.
+        #
+        # Case of 'unless'
+        #   in this case, we remove the statements s1 if the s2 is retrieved
+        
+        
+        stmts = statements
+        
+        #TODO
+        for s in self._sub_statements:
+            stmts.extend(s[1])
+            
+        return stmts
         
         
         
