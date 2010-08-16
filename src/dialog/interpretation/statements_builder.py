@@ -22,16 +22,31 @@ from dialog.sentence import *
 class StatementBuilder:
     """ Build statements related to a sentence"""
     def __init__(self,current_speaker = None):
+        #This field keeps record of the sentence that is being processed
         self._sentence = None
+        
+        #This field identifies the current speaker
         self._current_speaker = current_speaker
+        
+        
+        #This holds the statements created from the main clause of a sentence
         self._statements = []
         
+        #This holds the satements that are created from a sentence conjonctive clause
+        #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
+        self._sub_statements = []
+        
+        #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
+        #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
         self._unresolved_ids = []
         
 
     def clear_statements(self):
         self._statements = []
     
+    def clear_sub_statements(self):
+        self._sub_statements = []
+        
     def set_current_speaker(self, current_speaker):
         self._current_speaker = current_speaker
     
@@ -52,7 +67,9 @@ class StatementBuilder:
     
     def process_nominal_groups(self, nominal_groups):
         ng_stmt_builder = NominalGroupStatementBuilder(nominal_groups, self._current_speaker)
-        self._statements.extend(ng_stmt_builder.process())
+        ng_stmt_builder.process()
+        
+        self._statements.extend(ng_stmt_builder._statements)
         self._unresolved_ids.extend(ng_stmt_builder._unresolved_ids)
         
     def process_verbal_groups(self, sentence):
@@ -66,28 +83,46 @@ class StatementBuilder:
         vg_stmt_builder._process_on_resolved_sentence = sentence.resolved()
         
         if not sentence.sn:
-            self._statements.extend(vg_stmt_builder.process())
+            vg_stmt_builder.process()
+            
+            self._statements.extend(vg_stmt_builder._statements)
             self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
             
         for sn in sentence.sn:
             if not sn.id:
                 raise EmptyNominalGroupId("Nominal group ID not resolved or not affected yet")
             
-            self._statements.extend(vg_stmt_builder.process(subject_id = sn.id, subject_quantifier = sn._quantifier))
+            vg_stmt_builder.process(subject_id = sn.id, subject_quantifier = sn._quantifier)
+            
+            self._statements.extend(vg_stmt_builder._statements)
             self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
 
 class NominalGroupStatementBuilder:
     """ Build statements related to a nominal group"""
     def __init__(self, nominal_groups, current_speaker = None):
+        #This field keeps record of the nominal group that is being processed
         self._nominal_groups = nominal_groups
+        
+        #This field identifies the current speaker
         self._current_speaker = current_speaker
+        
+        
+        #This holds the statements created from the main clause of a sentence
         self._statements = []
         
+        #This holds the satements that are created from a sentence conjonctive clause
+        #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
+        self._sub_statements = []
+        
+        #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
+        #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
         self._unresolved_ids = []
         
     def clear_statements(self):
         self._statements = []
-        
+    
+    def clear_sub_statements(self):
+        self._sub_statements = []
         
     def process(self):
         """ The following function builds a list of statement from a list of nominal group
@@ -418,10 +453,23 @@ class NominalGroupStatementBuilder:
 class VerbalGroupStatementBuilder:
     """ Build statements related to a verbal group"""
     def __init__(self, verbal_groups, current_speaker = None):
+        #This field keeps record of the verbal group that is being processed
         self._verbal_groups = verbal_groups
+        
+        #This field identifies the current speaker
         self._current_speaker = current_speaker
+        
+        #This holds the statements created from the main clause of a sentence
         self._statements = []
-        self._unresolved_ids = []
+        
+        #This holds the satements that are created from a sentence conjonctive clause
+        #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
+        self._sub_statements = []
+        
+        #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
+        #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
+        self._unresolved_ids = []        
+        
         #This field holds the value True when the active sentence is of yes_no_question or w_question data_type
         self._process_on_question = False
         
@@ -441,7 +489,10 @@ class VerbalGroupStatementBuilder:
             self._process_on_question = True
         
     def clear_statements(self):
-        self._statements = [] 
+        self._statements = []
+        
+    def clear_sub_statements(self):
+        self._sub_statements = []
     
     def process(self, subject_id = None, subject_quantifier = None):
         """This processes a sentence sv attribute, given the (resolved) ID and quantifier of the subject
@@ -457,7 +508,6 @@ class VerbalGroupStatementBuilder:
         if not subject_id:
             subject_id = '?concept'       
         
-            
         self.process_verbal_groups(self._verbal_groups, subject_id, subject_quantifier)                
         return self._statements
    
@@ -480,8 +530,9 @@ class VerbalGroupStatementBuilder:
             if vg.advrb:
                 self.process_sentence_adverb(vg)
             
+            # Conjunctive clause
             if vg.vrb_sub_sentence:
-                self.process_adverb(vg)   
+                self.process_vrb_subsentence(vg)   
 
     
     def process_state(self, verbal_group):
@@ -489,6 +540,7 @@ class VerbalGroupStatementBuilder:
             self._process_on_negative = True
         else:
             self._process_on_negative = False
+    
     
     def process_verb(self, verbal_group, subject_id, subject_quantifier):
          
@@ -755,20 +807,30 @@ class VerbalGroupStatementBuilder:
             self._statements.append(id + ' eventOccurs ' + tense)
             
             
+    def process_vrb_subsentence(self, verbal_group):
+        """
+            This provides a solution to process conjunctives clauses,
+            by creating a subset of statements that is added in the ontology accroding to the conjunction clause
             
+            E.g: I will go to Toulouse if you get the small car.
             
-    def process_vrb_subsentence(self, verbal_group, id):
-        
+            [* rdf:type Go,
+             * performedBy current_speaker,
+             * hasGoal TOULOUSE]
+            
+            The statements above are added in the ontogy if those below are already in. Adding is performed in the module StatementSafeAdder
+            
+            [* rdf:type Get,
+             * performedBy myself,
+             * actsOnObject SMALL_CAR,
+             ...,
+             ]
+        """
+        sub_builder = StatementBuilder(self._current_speaker)
         for sub in verbal_group.vrb_sub_sentence:
-            if sub.sn:
-                sub_ng_builder = NominalGroupStatementBuilder(sub.sn, self._current_speaker)
-                
-            if sub.sv:
-                sub_vg_builder = VerbalGroupStatementBuilder(sub.sv, self._current_speaker)
-                
+            sub_builder.process_sentence(sub)
+            self._sub_statements.extend(sub_builder._statements)
         
-        self._statements.extend(sub_ng_builder._statements)
-        self._statements.extend(sub_vg_builder._statements)
             
 """
     The following function are not implemented for a specific class
@@ -1012,7 +1074,7 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-    
+    """
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives the blue car"  
@@ -2112,7 +2174,7 @@ class TestStatementBuilder(unittest.TestCase):
                             
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    """
+    
     
     def process(self, sentence, expected_result, display_statement_result = False):
          
