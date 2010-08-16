@@ -141,13 +141,13 @@ Here, we discribe the latter case, and explain what feature of the sentence can 
         "Jido is not a Human".
         
         Here, we create the following statements:
-        [JIDO rdf:type NegativeAssertionOfHuman], JIDO is the reference of "jido" in the ontology.
+        [JIDO rdf:type ComplementOfHuman], JIDO is the reference of "jido" in the ontology.
         
         Also, we add these statements to ensure the consistency:
-        [NegativeAssertionOfHuman owl:complement of Human]
+        [ComplementOfHuman owl:complement of Human]
         
         and 
-        [NegativeAssertionOfHuman rdfs:subclassOf NegativeAssertions], where the latter is to help us retrieving easily all the Negatives types added in the ontology.
+        [ComplementOfHuman rdfs:subclassOf ComplementClasses], where the latter is to help us retrieve easily all the Complement types added in the ontology.
         
      }}}
      
@@ -156,29 +156,29 @@ Here, we discribe the latter case, and explain what feature of the sentence can 
         "Jido is not gray".
         
         Here, we create the following statements:
-        [JIDO NegativeAssertionOfHasColor gray]
-        But before doing so, we check in the onlogy that the assertion [JIDO hasColor gray] is false
+        [JIDO hasColor xxx,
+          xxx owl:differentFrom gray]
         
-        Inversively, if we were to add "Jido is blue", we should have checked as false the assertion [JIDO NegativeAssertionOfHasColor blue]
+        where xxx is a generated reference to a color different from gray.
+        
      }}}
      
      * Negation of actions
      {{{
         "Jido does not drive the blue car'.
         
-        This sentence holds numbers of ambiguities. It may be interpreted as "Jido drives a car, but the red one", or 
-        "Jido somehow acts on the blue car, but do not drive it" , or so on.
+        This sentence holds numbers of ambiguities. It may be interpreted as "Jido drives a car, but not the blue one", or 
+        "Jido somehow acts on the blue car, but does not drive it" , or so on.
         
-        Here we do not take into consideration any of those ambuiguties. We only create the negation of the action.
-        these are the statements:
+        Here we do not take into consideration any of those ambuiguties. We create the statements as if we were dealing with an
+        affirmative sentence.
         
-        [ACTION rdf:type Drive,
-         ACTION performedBy JIDO,
+        [?xxx rdf:type Drive,
+         ?xxx performedBy JIDO,
          ...
-         ACTION isNegativeAssertion "true"^^xsd:boolean]
-         
-        We can easily retrieve "the blue car", with question "What does Jido doesn't drive". Here, we do not check if there is an existing action reference stating that "Jido drives the blue car", as it may be interpreted as an event that occured earlier or later.
+         ]
         
+        Then, we remove these statements after identification of ?xxx in the ontology.
      }}}
      
      
