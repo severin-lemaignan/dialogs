@@ -1,0 +1,377 @@
+
+
+=== Data structure ===
+
+Our data structure consists on classes arranged in a tree; this facilitates searching and retrieving information.
+Since we deal with sentences containing several aftershocks following, we opted for the use of lists. Therefore, the data to be transmitted between the different modules will be a list of several classes Sentence. 
+A sentence is formed from:
+    sn : a nominal structure typed into a Nominal_group
+    sv : a verbal structure typed into a Verbal_Group
+    aim : is used for retrieveing the aim of a question
+    data_type: is the type of the sentence
+
+Nominal group class declaration
+    det : determinant
+    noun: a simple noun
+    adj: a list of adjectives describing the noun
+    noun_cmpl: a list of noun complements which is a nominal_group
+    relative: is a relative sentence typed into Sentence
+We can have also when the group is resolved an id which must be different from None
+self.id = None
+This field is True when this nominal group is resolved to a concept known by the robot.
+     self._resolved = False
+Also:
+self._conjunction = 'AND' #could be 'AND' or 'OR'... 
+     self._quantifier = 'ONE' #could be 'ONE' or 'SOME'...
+An indirect complement or adverbial is formed from:
+    Indirect complement class declaration
+    gn : nominal group
+    prep : preposition
+   
+Verbal_group class declaration
+    vrb_main: the main verb of a sentence
+    vrb_sec : an accompanying verb of the main verb
+    vrb_tense: the main verb tense
+    d_obj : the  direct object referred by the main verb
+    i_cmpl : the indirect object referred by the main verb or an adverbial formed from a nominal group
+    vrb_adv : an adverb describing the verb
+    advrb : an adverb used as an adverbial of the whole sentence
+   
+
+
+
+=== Input/Output system ===
+
+ * Global functionnality
+This module calls a chain of external functions to apply the rules of grammar to the sentence as a list of words.  The determination of nominal group is through this determinant, the personal pronoun or uppercase.
+Example:
+I play guitar ? Here, there is a mistake because "guitar" is not preceded by a determinant
+I play a guitar ? OK
+For every nominal group, we have derived information such as supplements or on behalf of.
+After that, it is necessary to remember the path of a sentence (for parsing or verbalization). So for a question, we have an inversion of subject and an imperative sentence, the subject is absent.
+
+
+ * is
+In preprocessing, all "'s" linked to a personal pronoun or a few proposals as "what" and "that" may not represent a relationship of possession but the verb state "is". So after this condition, change will be made or not.
+Utterance: "It's on the table."
+	"It is on the table." 
+
+In the opposite way, this processing will still be done. To have an output with "is" preceded by a pronoun.
+
+
+Extension of contractions
+It is making some changes that would eliminate a word to be replaced by other one or modify and add some others.
+Utterance: "I wanna play with my guitar. I'd like to go to the cinema."
+	"I want to play with my guitar. I would like to go to the cinema."
+
+In verbalization, this transformation does not include cases of "wanna" et "gonna". Otherwise all the others are still executed.
+
+
+ * Possession
+In preprocessing, we are processing "'s". Indeed, there is a relationship of possession that can be translated by the use of "of". We therefore must find the noun before and after "'s". Knowing that the noun after is not preceded by a determinant, it is necessary to add. We have therefore chosen the determinant "the" because the object is known.
+Utterance: "Jido's blue bottle is on the table". 
+	"The blue bottle of Jido is on the table." 
+
+In the opposite direction when we have a relationship of possession that can be translated by "of", we proceed to change automatically. It is impossible to have an output with "of" between nominal groups.
+
+This processing can be done cascade which allows us to have two or more ownership.
+Utterance: "You shouldn't drive his poorest uncle's wife's big new car." 
+	"You shouldn't drive the big new car of the wife of his poorest uncle."
+
+If we have a plural noun, the "'s" no longer maintained, in its place we have "s'".
+Example: the boys' ball is blue.
+
+
+ * Inversion of preposition
+Some prepositions follow the noun, It is therefore put forward.
+Utterance: "I played a guitar a year ago."
+	"I played a guitar ago a year."
+
+In the opposite way, this transformation has been implemented.
+
+
+ * Comma
+In preprocessing, a comma between two nominal groups can become "and" if and only if collecting all nouns after the last will be preceded by "and". 
+Utterance1: "I'll play a guitar, a piano and a violon."
+	"I'll play a guitar and a piano and a violon."
+Utterance2: "I will play a guitar, when the man is here."
+	There is no change because the comma is not followed by a nominal group.
+
+With a combination of relations of possession and commas, we can process:
+Utterance3: "I'll play Jido's guitar, a saxophone, a piano of the wife of my oncle and Patrick's violon."
+	"I'll play the guitar of Jido and a saxophone and a piano of the wife of my oncle and the violon of Patrick."
+
+In verbalization, while the component with more than two elements in their list the first will be separated by commas and the last two by a "and". We will have all time: "I'll play a guitar, a piano and a violon."
+
+
+ * Negation
+In preprocessing, all "n't" will be replaced by "not"
+Utterance: "don't give me the bottle."
+	"do not give me the bottle."
+
+There is an exception, for "won't" should be processed as for the extension contractions effect: 
+Utterance: "When won't the planning session take place?"
+	"When will not the planning session take place?"
+
+In the opposite way, this transformation has been implemented.
+
+
+ * Tense
+All times are implemented in the parsing and the verbalization.
+Present simple 
+	For singular "s"
+Present perfect
+	"has" or "have"+ past participal
+Present progressive
+	"is" or "are" or "am" + verb + "ing"
+Present passive
+	"is" or "are" or "am" + past participal
+Present conditional
+	Using modal in conditional or "would"
+Past simple
+	Verb in the past
+Past perfect
+	"had" + past participal
+Past progressive
+	"was" or "were" + verb + "ing"
+Past passive
+	"was" pr "were" + past participal
+Past conditional
+	Present conditional with the present perfect
+Future simple
+	Using "will"
+Passive conditional
+	If we have "be"+past participal preceded by conditional 
+
+
+ * Concatenate prepositions
+Some prepositions are composed of several words; it is putting them together with "+" instead of space.
+Utterance: "The bottle is next to the table in front of the kitchen."
+	"The bottle is next+to the table in+front+of the kitchen."
+
+In verbalization, "+" seront removed and replaced by spaces.
+
+
+ * Agent complement
+In a passive sentence form, we have an inversion between the subject and direct object. We have an additional officer who is preceded by "by", we shall be considered as an adverbial and so we will put it at the i_cmpl.
+Utterance: "the code is written by me."
+
+
+ * Conjunction
+This variable tells us the conjunction that precedes the noun. By default we have chosen to put "AND". For the first nominal group, this variable has no effect (if it is "AND"). This variable can be also: "OR" and "BUT".
+Where is the conjunction of adjectives or determinants, we have duplicated the nominal group to extend the conjunction of all the noun in question.
+Utterance1: "You'd like the blue bottle or the glass?"
+Utterance2: "The green or blue bottle is on the table."
+	"The green bottle or the blue bottle is on the table."
+Utterance3: "Give me two or three bottles."
+	"Give me two bottles or three bottles."
+
+We can thus have several nominal groups with different conjunctions
+Example: I'll play a guitar or a piano and a violon.
+
+
+ * recovery the adverb linken to the verb
+We may be facing a particular case. In fact, the adverb may be the end of sentences. It is therefore imperative to recover.
+Utterance: "Take the bottle carefully."
+	Vrb_adv=['carefully']
+
+
+
+=== Parsing ===
+
+ * Data type
+Once the preprocessing ends the first processing, phrases obtained by passing a function that makes them pass according to the type of different modules that depend on the shape of the sentence must be treated.
+This classification is done using a list that contains the words with which we can usually start a sentence.
+Example1: "is the bottle of my brother in your right?"
+	Using auxiliary, it is an yes or no question
+Example2: "good afternoon"
+	Using good or hello/hi, it is start dialog 
+Example3: "no."//"Sorry."
+	It is disagreeing
+Example3: "OK"
+	It is agreeing
+
+In the event that we have under interrogative, the sentence is a w question. The classification will therefore be the subject of the question. Examples :
+When must you take the bus ? => date
+Where is Broyen ? => place
+Where must Jido and you be from ? => origin
+Why should she go to Toulouse ? => reason
+Who could you talk to on the phone ? => people
+Whose blue bottle and red glass are these ? => owner
+To whom are you talking ? => people
+Which salesperson's competition won the award which we won in the last years ? => choice
+
+For questions constructed with "what" can be processed differently. Indeed, for the issues that concern objects or conditions reported directly after "what" returns aims as examples:
+What time is the news on TV? ? time
+What size do you wear? ? size
+Otherwise we proceed as for other w questions. However, we have to meet certain conditions:
+If verb = "happen" ? => situation
+If verb = "like" + tense is not conditional ? => description
+If verb = "go" + first i_compl ends with "ing" ? => explication
+If verb = "think" ? => opinion
+Else for all other cases it is ? => thing
+It the case when we have "what kind" or "what type" ? classification + object of the question. The processing of the issue is as for other w questions from the position of the object.
+Utterance: "What type of people doesn't read this magazine? What kind of music must he listen to everyday? What kind of sport is your favorite?"
+	We will have aim: classification+people, classification+music and classification+sport. The analysis is applied on "don't read this magazine?", "must he listen to everyday?" and "is your favorite?"
+
+For questions constructed with "how" can have a different processing. En Indeed, in matters concerning objects or conditions reported directly after "how", we have a similarity with "what questions". Examples:
+How old are you? ? => old
+How long is your uncle's store opened tonight ? => long
+How far is it from the hotel to the restaurant? ? => far 
+How soon can you be here? ? => soon
+How often does Jido go skiing? ? => often
+How mush ou How many ? => quantity
+How about going ? => invitation
+Otherwise we proceed as for other w questions. However, we have to meet certain conditions:
+If verb = "like" ? => opinion
+Else for all other cases it is ? => manner
+
+
+ * Upper case process 
+We can start sentences with capital letters or not. But when an imperative sentence, the verb must be known beforehand in a list if not implemented in the program must have recourse to a lowercase.
+
+
+ * Numbers
+The numbers are determinants. For compound numbers, we created a function that concatenates with "+".
+Utterance: "I take twenty two bottles."
+	"I take twenty+two bottles."
+
+
+ * State verb
+In the case of a verb of state, we note the absence of a direct object as opposed to adverbial. We have therefore chosen to use the variable d_obj to convey information related to adjectives.
+Utterance: "The bottle is on the table. The bottle is blue. The bottle is Blue."
+	For the first sentence, it is an adverbial
+	In the second, we have an adjective. We create, on the level  of d_obj, a Nominal_Group contained that adjective
+	In the third sentence, we have a proper name (any word in uppercase is considered a proper name) and so we use the d_obj
+
+
+ * Punctuation
+We detect the end of the sentence in an utterance with punctuation. At the end of the utterance, case of forgotten, the program automatically adds a declarative. Points can be attached or separated from the word that precedes.
+All commas arriving at the end of the treatment of preprocessing (no transformation), we delete it because it will not serve us.
+
+
+ * Adverbial case:
+Normally a user must define the adverbial by 2 commas. The first, which is normally before the proposal will be removed(So the user can omit). The second is at the end, is not essential if it is the end of the sentence. The program will automatically add the semicolon that marks the end of the conditional sentence is the end (in the case described above) or in place of the comma. 
+Utterance: "the man, who talks, has a new car. I play the guitar that I bought yesterday."
+	"the man who talks; has a new car. I play the guitar that I bought yesterday;."
+
+In the case when we have many adverbilas in the sentence, it is necessary to put as many commas as there are bounding adverbials.
+Utterance1: "The bottle that I bought from the store which is in the shopping center, , is yours."
+	"The bottle that I bought from the store which is in the shopping center; ; is yours."
+Utterance2: "The bottle that I bought from the store which is in the shopping center, is yours."
+	"The bottle that I bought from the store which is in the shopping center; is yours;." It is false.
+
+
+ * Adjectives
+All lists of adjectives with commas and "and", they will be removed.
+Utterance: "The bottle is blue, big and fanny."
+	"The bottle is blue big fanny."
+ 
+
+ * Modal
+To do this we used a list of all the modal form they are simple or conditional.
+The processing (for tense or other) will change if there is a modal in the sentence. The modal is used in its present form in the sentence with the main verb in vrb_main.
+Example: "You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? Shall I go?"
+	We will have vrb_main=['should+drive'], vrb_main=['should+give'] and vrb_main=['shall+go'].
+
+
+ * Duality between direct and indirect complement
+In processing, we distinguish a direct object with the absence of preposition. Otherwise, the nominal group and will be found at the i_cmpl.
+Example: I give it to you	
+_ direct object
+_ indirect object
+It is possible to have two groups with no nominal preposition and are not bound by "and". In this case, the first noun that is being d_obj will be copied i_cmpl for the second noun takes its place. In fact in every sentence there a single direct object
+Example: give me the bottle
+_ direct object
+_ indirect object
+
+
+ * Adverbial
+An adverbial is a sentence; it should be treated as such. The problem is to find its starting point and end point. For starting, every adverbial have to start with a proposition. Regarding the end, we used a semicolon (see punctuation).
+By combining the functions that deal "and" and adding the semicolons, so we can analyze sentences such as:
+Utterance: "don't quickly give me the bottle which is on the table, and the glass which I cleaned yesterday, at my left."
+
+For adverbials nested, we have to process the principal adverbial like a sentence and other adverbials will be processed recursively. During preprocessing, we encountered a problem with commas (see punctuation)
+
+
+ * Conditional sentence
+If the reply begins with "if", it is a case treated in classifying sentences. But if "if" is in the middle (at the second part of the conditional sentence), we analyze it as a regular subject.
+Utterance1: "If you do your job, you will be happy."
+Utterance2: "You will be happy if you do your job."
+
+
+ * Duality between nominal group and the conjunctive adverbial
+"that" can be used as a determinant for a noun, as a proposal for an adverbial conjonction. The differentiation was made, because "that" of the conjonction is necessarily followed by a noun (the subject) conjunctive and phrase must be preceded by the verb or a pronoun as "me"
+Utterance1: "Learn that I want you to give me the blue bottle." 
+Utterance2: "Give me that bottle."
+Utterance3: "Learn that I want you to give me the blue bottle that is blue."
+
+
+ * Relative
+The relative removes the redundancy through the proposal. If the latter replaces the subject, there is no problem. Otherwise it is necessary to recreate the redundancy to keep track of information sent. 
+Utterance: "I take that bottle that I drink in."
+	"I take that bottle that I drink in that bottle."
+
+
+ * Duality between w question and adverbial
+Some adverbial have a similar proposal after questioning, so it is important to put at the end of sentence.
+Example: "when you come, I give you the bottle." ? mistake
+Example: "I give you the bottle when you come." ? OK
+
+
+ * Duality between adverbial "But" and "But"
+At this stage of the project, we could not differentiate "but" between two nominal groups or one that represents a proposal of an adverbial. Hence we decided to put ":" before the first "but" to process it.
+Example: "The bottle is not blue but it is red."
+Example: "It is not the glass :but the bottle."
+
+
+ * Force question 
+A sentence may appear in a declarative but ends with a question mark. In this case, we force the query and retrieve a yes or no question in the stade of statement.
+Utterance: "Mahdi is gonna the Laas?"
+
+
+
+ * Demostrative pronoun
+In English, we have some demonstrative pronouns can be used as such or as as determinants. We have therefore reduced their scope of use. Indeed, a demonstrative pronoun can not be followed by the verb of state "be".
+Example1: this is a bottle
+Example2: there is a bottle on the table
+Example3: this bottle is blue
+Example4: this goes to the cinema 
+	The fourth example generates a mistake
+
+
+ * Déterminants and quantifier
+Normally a noun is detected by its determinant. If we have a plural at the beginning of a sentence or after a verb, we can detect. In fact the first case, we must be a verb that does not end with "s" So it is a noun or a proper name (For this case, we chose the noun plural). For the latter, as we get the rest of the sentence directly after analysis of tense, with the presence of the plural, we can identify the direct object.
+Example : "bananas are fruits."
+
+As regards quantification, we followed these rules:
+a/an ? SOME
+the+pluriel ? => ALL
+vide+pluriel ? => ALL
+no ? => NONE
+no+pluriel ? => ANY
+any ? => ANY
+those/these ? => SOME
+there+are ? => SOME
+every ? => ALL
+anything ? => ALL
+something ? => SOME
+some ? => SOME
+sinon ? => ONE
+
+
+ * Interjunction
+It finished the interjection with an exclamation point. Where we with a comma, we must know if the list of noun is the subject or not. To do this we must detect "and" knowing that after the last noun there is no comma.
+Example: "He Patrick, the bottle is on the table. Give it to me"
+Example: "Jido, give me the bottle. Jido, Patrick and you will go to the cinema. " 
+Example: "Jido, Patrick and you, give me the bottle"
+
+If we note the presence of an interjection, and in the following sentences in the utterance are imperative, there must be the noun of the interjection in the subject in sentences.
+
+
+
+=== Verbalise ===
+
+ * Type de phrases
+Thanks to data_type, we can pass them to functions that can reconstruct sentences. Following the same rules stated in the above. Except in respect of question with aim as "people" are always built with "who". For "how mush" and "haw many", we will have "how mush". "what kind" and "what type", we will have "what kind".
+
