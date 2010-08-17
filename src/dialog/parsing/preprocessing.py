@@ -28,6 +28,7 @@
     take_off_comma : to delete ';' if it is before relative or subsentence
     delete_empty : to delete '' from sentence
     remerge_sentences : to transform some sentences of the remerge part
+    add_scd_vrb : to 
     interjection : to find and create interjections
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
@@ -51,6 +52,7 @@ sub_list=['while', 'but','where', 'when', 'if', 'what', 'however', 'although', '
 adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to',
                 'next+to','in+front+of', 'into','in+spite+of','because+of','despite']
 superlative_number=['first','second','third','fifth','ninth']
+verb_preced_verb_list=['let']
 
 
 
@@ -680,7 +682,28 @@ def remerge_sentences(sentence):
         
     return sentence    
    
-   
+
+
+def add_scd_vrb(sentence):
+    """ 
+    This function transform the verb after the first verb into second verb                 
+    Input=sentence                              Output=sentence                      
+    """ 
+    #init
+    i=0
+    
+    while i < len(sentence):
+        for k in verb_preced_verb_list:
+            if k==sentence[i]:
+                nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
+                if nom_gr!=[]:
+                    sentence=sentence[:i+1]+['to']+sentence[i+1:]
+                else:
+                    sentence=sentence[:i+1]+['to']+sentence[i+1:]
+        i=i+1
+    return sentence
+    
+    
     
 def interjection(sentence):
     """ 
@@ -743,11 +766,11 @@ def processing(sentence):
     sentence = and_nom_group(sentence)
     sentence = move_prep(sentence)
     sentence = but(sentence)
-   
     sentence = subsentence_comma(sentence)
     sentence = remerge_sentences(sentence)
     sentence = take_off_comma(sentence)
-     
+    sentence = add_scd_vrb(sentence)
+    
     sentence = interjection(sentence)
     return sentence
 

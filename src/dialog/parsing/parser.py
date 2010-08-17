@@ -2178,6 +2178,35 @@ class TestParsing(unittest.TestCase):
     """
     
     
+    def test_70(self):
+        print ''
+        print ('######################## test 8.1 ##############################')
+        utterance="let the man go to the cinema. Is it the time to let you go."
+        print "Object of this test : Using adjectives wuth plural"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group([],['apple'],[['red',[]]],[],[])], 
+                [Verbal_Group(['grow'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[['green',[]]],[],[])]),
+                     Indirect_Complement(['on'],[Nominal_Group([],['plant'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                    [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
+                    [Verbal_Group(['.'], [],'present simple', 
+                        [], 
+                        [],
+                        [], [] ,'affirmative',[])])]
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
+    
+    
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")
