@@ -70,8 +70,9 @@ def dispatching(sentence):
                 #It's a w_question or subsentence
                 if x[1] == '2':
                     
-                    #Here we have the condition of the subsentences
-                    if analyse_nominal_group.find_sn_pos(sentence, 1)!=[]:
+                    #If there is which or no nominal group it is a question
+                    if sentence[0]!='which' and analyse_nominal_group.find_sn_pos(sentence, 1)!=[]:
+                        #Here we have the condition of the subsentences
                         return stc_start_subsentence(sentence)
                     
                     #For 'when'
@@ -82,7 +83,7 @@ def dispatching(sentence):
                     #For 'where'
                     elif x[2]=='2':
                         return w_quest_where('w_question', 'place', sentence)
-
+                    
                     #For 'what'
                     elif x[2]=='3':
                         #Here we have to use a specific processing for 'type' and 'kind'
@@ -193,7 +194,6 @@ def w_quest_where(type, request, stc):
 
     #If there is 'form' at the end => question about the origin
     if stc[len(stc)-1]=='from' or (stc[len(stc)-1]=='?' and stc[len(stc)-2]=='from'):
-
         #If we remove the first word => it becomes like y_n_question
         return y_n_ques(type, 'origin', stc[1:])
     else:
@@ -228,7 +228,7 @@ def w_quest_what(type, sentence):
                 analysis.aim='description'
 
             #The case when we have 'do' + ing form
-            elif vg.vrb_main[0].endswith('do') and vg.i_cmpl!=[] and vg.i_cmpl[0].nominal_group[0].adj!=[] and vg.i_cmpl[0].nominal_group[0].adj[0].endswith('ing'):
+            elif vg.vrb_main[0].endswith('do') and vg.i_cmpl!=[] and vg.i_cmpl[0].nominal_group[0].adj!=[] and vg.i_cmpl[0].nominal_group[0].adj[0][0].endswith('ing'):
                 analysis.aim='explication'
             
             return analysis
@@ -392,21 +392,22 @@ def y_n_ques(type, request, sentence):
     
     #If there is one element => it is an auxiliary => verb 'be'
     if len(sentence)==0:
-        vg.vrb_tense = analyse_verb.find_tense_statement(aux, vg.vrb_adv)
+        vg.vrb_tense = analyse_verb.find_tense_statement(aux)
         vg.vrb_main=['be']
     else:
-        
-        vg.vrb_adv=analyse_verbal_structure.find_vrb_adv(sentence)
-        vg.vrb_tense = analyse_verb.find_tense_question(sentence, aux, vg.vrb_adv)
+        sentence=analyse_verbal_structure.find_vrb_adv (sentence, vg)
+        vg.vrb_tense = analyse_verb.find_tense_question(sentence, aux)
 
         #We process the verb
-        verb=analyse_verb.find_verb_question(sentence, vg.vrb_adv, aux, vg.vrb_tense)
+        verb=analyse_verb.find_verb_question(sentence, aux, vg.vrb_tense)
         verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
         vg.vrb_main=[other_functions.convert_to_string(verb_main)]
         
         #We delete the verb if the aux is not the verb 'be'
         if vg.vrb_main!=['be']:
             sentence= sentence[sentence.index(verb[0])+len(verb_main):]
+        elif sentence[0]=='be':
+            sentence=sentence[1:]
         
         #Here we have special processing for different cases
         if sentence!=[]:
@@ -418,7 +419,8 @@ def y_n_ques(type, request, sentence):
             #For 'how' questions with often
             elif sentence[0].endswith('ing'):
                 vg.vrb_main[0]=vg.vrb_main[0]+'+'+sentence[0]
-    
+                sentence=sentence[1:]
+        
         #We recover the conjunctive subsentence
         sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
         
@@ -444,17 +446,16 @@ def y_n_ques(type, request, sentence):
     if modal!=[]:
         vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
     
-    #If there is a forgotten*
-    vg.vrb_adv=vg.vrb_adv+analyse_verbal_structure.find_vrb_adv (sentence)
+    #If there is a forgotten
+    sentence=analyse_verbal_structure.find_vrb_adv (sentence, vg)
     
     #In case there is a state verb followed by an adjective
     sentence=analyse_verbal_structure.state_adjective(sentence, vg)
     
     vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
-    
     while len(sentence)>1:
-        sentence=analyse_verbal_structure.add_it(sentence)
+        sentence=analyse_verbal_structure.add_it(sentence,request)
         #We recover the direct, indirect complement and the adverbial
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
     
@@ -515,28 +516,28 @@ def other_sentence(type, request, sentence):
     
                 #Before the negative form we have an auxiliary for the negation
                 if sentence[0]=='do' or sentence[0]=='does' or sentence[0]=='did' :
-                    vg.vrb_tense = analyse_verb.find_tense_statement([sentence[0]], [])
+                    vg.vrb_tense = analyse_verb.find_tense_statement([sentence[0]])
                     sentence=sentence[2:]
-                    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+                    sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
                 
                 #There is a modal
                 elif modal!=[]:
                     sentence=[sentence[0]]+sentence[2:]
-                    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
-                    vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
+                    sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
+                    vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
     
                 else:
                     #We remove 'not' and find the tense
                     sentence=sentence[:1]+ sentence[2:]
-                    vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
-                    vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
+                    sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
+                    vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
             
             #For the affirmative processing
             else:
-                vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
-                vg.vrb_tense = analyse_verb.find_tense_statement(sentence, vg.vrb_adv)
+                sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
+                vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
             
-            verb=analyse_verb.find_verb_statement(sentence,vg.vrb_adv, vg.vrb_tense)
+            verb=analyse_verb.find_verb_statement(sentence, vg.vrb_tense)
             verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
             vg.vrb_main=[other_functions.convert_to_string(verb_main)]
             
@@ -556,13 +557,13 @@ def other_sentence(type, request, sentence):
         #Negative form
         if sentence[1]=='not':
             sentence=sentence[sentence.index('not')+1:]
-            vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+            sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
             vg.state='negative'
         else:
-            vg.vrb_adv=analyse_verbal_structure.find_vrb_adv (sentence)
+            sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
 
         #We process the verb
-        verb=[sentence[0+len(vg.vrb_adv)]]
+        verb=[sentence[0]]
         vg.vrb_main=[other_functions.convert_to_string(analyse_verb.return_verb(sentence, verb, vg.vrb_tense))]
         
         #We delete the verb
@@ -590,14 +591,19 @@ def other_sentence(type, request, sentence):
     #We have to take off abverbs form the sentence
     sentence=analyse_verbal_structure.find_adv(sentence, vg)
     
-    #If there is a forgotten*
-    vg.vrb_adv=vg.vrb_adv+analyse_verbal_structure.find_vrb_adv (sentence)
-    
     #In case there is a state verb followed by an adjective
     sentence=analyse_verbal_structure.state_adjective(sentence, vg)
     
+    #If there is a forgotten
+    sentence=analyse_verbal_structure.find_vrb_adv (sentence, vg)
+    
     vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
+    while len(sentence)>1:
+        sentence=analyse_verbal_structure.add_it(sentence,request)
+        #We recover the direct, indirect complement and the adverbial
+        sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
+        
     analysis.sv=[vg]
     return analysis
 

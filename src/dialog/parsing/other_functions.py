@@ -92,8 +92,8 @@ def recover_end_pos_sub(phrase, propo_sub_list):
 
 def number(word):
     """
-    Function return 1 if the word is a number and 2 if it is a adjectif-number                    
-    Input=word          Output=flag(0 if no number or 1 if number or 2 adjectif-number)        
+    Function return 1 if the word is a number and 2 if it is a adjective-number                    
+    Input=word          Output=flag(0 if no number or 1 if number or 2 adjective-number)        
     """
     
     for n in number_list:
@@ -116,10 +116,10 @@ def word_to_digit(word):
     number=0
    
     for l in number_list:
-        if l[0]==word:
+        if word.startswith(l[0]):
             if word.endswith('teen'):
                 number=number+l[1]+10
-            elif word.endswith('ty'):
+            elif word.endswith('ty') and word!='twenty':
                 number=number+l[1]*10
             else:
                 number=number+l[1]
@@ -140,6 +140,7 @@ def convert_to_digit(det):
         if det[k]!='+':
             k=k+1
         else:
+            
             num=num+word_to_digit(det[:k])
             det=det[k+1:]
             k=0 

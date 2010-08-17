@@ -44,7 +44,7 @@ phrasal_vrb = ResourcePool().preposition_verbs
 
 
 
-def find_tense_statement (phrase, adverb):
+def find_tense_statement (phrase):
     """
     This function returns the time of conjugation of the verb in a statement         
     We have to know the list of adverbs before the verb                              
@@ -52,7 +52,7 @@ def find_tense_statement (phrase, adverb):
     """
     
     #processing for the simple past
-    if phrase[len(adverb)].endswith('ed'):
+    if phrase[0].endswith('ed'):
         return 'past simple'
     
     #processing for the future simple
@@ -62,66 +62,66 @@ def find_tense_statement (phrase, adverb):
     #processing for the present perfect
     if phrase[0]=='have' or phrase[0]=='has':
         #For regular forms
-        if phrase[1+len(adverb)].endswith('ed'):
+        if phrase[1].endswith('ed'):
             return 'present perfect'
         #For irregular forms
         for i in past_irreg_vrb:
-            if phrase[1+len(adverb)]==i[2]:
+            if phrase[1]==i[2]:
                 return 'present perfect'
     
     #processing for the past perfect
     if phrase[0]=='had':
         #For regular forms
-        if phrase[1+len(adverb)].endswith('ed'):
+        if phrase[1].endswith('ed'):
             return 'past perfect'
         #For irregular forms
         for i in past_irreg_vrb:
-            if phrase[1+len(adverb)]==i[2]:
+            if phrase[1]==i[2]:
                 return 'past perfect'
     
     #processing for the progressive form and passive form (in present)
     if phrase[0]=='is' or phrase[0]=='are' or phrase[0]=='am' or phrase[0]=='be' :
         #Progressive form in the present
-        if len(phrase)!=1 and phrase[1+len(adverb)].endswith('ing') and not(phrase[1+len(adverb)].endswith('thing')):
+        if len(phrase)!=1 and phrase[1].endswith('ing') and not(phrase[1].endswith('thing')):
             return 'present progressive'
         #Passive form in the present
-        elif find_tense_statement(['have']+phrase[1:], adverb)=='present perfect':
+        elif find_tense_statement(['have']+phrase[1:])=='present perfect':
             #If there is an adjective and not a verb
             for x in adj_ed_list:
-                if x==phrase[len(adverb)+1]:
+                if x==phrase[1]:
                     return  'present simple'
             return 'present passive'
     
     #processing for the progressive form and passive form (in past)
     if phrase[0]=='was' or phrase[0]=='were':
         #Progressive form in the past
-        if len(phrase)!=1 and phrase[1+len(adverb)].endswith('ing'):
+        if len(phrase)!=1 and phrase[1].endswith('ing'):
             return 'past progressive'
-        elif find_tense_statement(['have']+phrase[1:], adverb)=='present perfect':
+        elif find_tense_statement(['have']+phrase[1:])=='present perfect':
             #If there is an adjective and not a verb
             for x in adj_ed_list:
-                if x==phrase[len(adverb)+1]:
+                if x==phrase[1]:
                     return  'past simple'
             return 'past passive'
         
     #For using modal
     elif phrase[0]=='should' or phrase[0]=='might' or phrase[0]=='could':
-        if find_tense_statement(phrase[1:], adverb)=='present passive':
+        if find_tense_statement(phrase[1:])=='present passive':
             return 'passive conditional'
         return 'present conditional'
     
     #processing for the conditional form
     if phrase[0]=='would':
-        if find_tense_statement(phrase[1:], adverb)=='present passive':
+        if find_tense_statement(phrase[1:])=='present passive':
             return 'passive conditional'
-        elif find_tense_statement(phrase[1:], adverb)=='present simple':
+        elif find_tense_statement(phrase[1:])=='present simple':
             return 'present conditional'
         else:
             return 'past conditional'
 
     #For the irregular forms
     for i in past_irreg_vrb:
-        if phrase[len(adverb)]==i[1]:
+        if phrase[0]==i[1]:
             #Default case : if past form = present form we choose present simple
             if i[1]==i[0]:
                 return 'present simple'
@@ -133,7 +133,7 @@ def find_tense_statement (phrase, adverb):
 
 
 
-def find_verb_statement (phrase, adv, tense):
+def find_verb_statement (phrase, tense):
     """
     This function find the verb in a statement
     Input=sentence, tense and the adverb bound to the verb      Output=main verb     
@@ -144,22 +144,22 @@ def find_verb_statement (phrase, adv, tense):
         return []
 
     elif tense=='present simple' or tense=='past simple':
-        return [phrase[0+len(adv)]]
+        return [phrase[0]]
 
     elif tense=='present perfect' or tense=='past perfect' or tense=='future simple':
-        return [phrase[1+len(adv)]]
+        return [phrase[1]]
 
     elif tense=='present progressive' or tense=='past progressive':
-        return [phrase[1+len(adv)]]
+        return [phrase[1]]
 
     elif tense=='present passive' or tense=='past passive':
-        return [phrase[1+len(adv)]]
+        return [phrase[1]]
 
     elif tense=='present conditional':
-        return [phrase[1+len(adv)]]
+        return [phrase[1]]
     
     elif tense=='past conditional' or 'passive conditional':
-        return [phrase[2+len(adv)]]
+        return [phrase[2]]
         
 
     #Default case
@@ -167,7 +167,7 @@ def find_verb_statement (phrase, adv, tense):
 
 
 
-def find_tense_question (phrase, aux, adverb):
+def find_tense_question (phrase, aux):
     """
     This function returns the time of conjugation of the verb in a question          
     We have to know the list of adverbs before the verb                              
@@ -175,7 +175,7 @@ def find_tense_question (phrase, aux, adverb):
     """
    
     if phrase[0]=='be':
-        if find_tense_statement (phrase, adverb)=='present passive':
+        if find_tense_statement (phrase)=='present passive':
             #For using modal
             if aux=='should' or aux=='might' or aux=='could':
                 return 'passive conditional'
@@ -189,55 +189,55 @@ def find_tense_question (phrase, aux, adverb):
     #Duality between progressive, passive and present simple
     elif aux=='is' or aux=='are' or aux=='am':
   
-        if phrase[len(adverb)].endswith('ing'):
+        if phrase[0].endswith('ing'):
             return 'present progressive'
-        elif phrase[len(adverb)].endswith('ed'):
+        elif phrase[0].endswith('ed'):
             #If there is an adjective and not a verb
             for x in adj_ed_list:
-                if x==phrase[len(adverb)+1]:
+                if x==phrase[1]:
                     return  'present simple'
             return 'present passive'
         for i in past_irreg_vrb:
-            if phrase[len(adverb)]==i[2]:
+            if phrase[0]==i[2]:
                 return 'present passive'
         else:
             return 'present simple'
 
     #Duality between progressive, passive and past simple
     elif aux=='was' or aux=='were':
-        if phrase[len(adverb)].endswith('ing'):
+        if phrase[0].endswith('ing'):
             return 'past progressive'
-        elif phrase[len(adverb)].endswith('ed'):
+        elif phrase[0].endswith('ed'):
             #If there is an adjective and not a verb
             for x in adj_ed_list:
-                if x==phrase[len(adverb)+1]:
+                if x==phrase[1]:
                     return  'past simple'
             return 'past passive'
         for i in past_irreg_vrb:
-            if phrase[len(adverb)]==i[2]:
+            if phrase[0]==i[2]:
                 return 'past passive'
             else:
                 return 'past simple'
 
     #Processing for the present perfect
     elif aux=='have' or aux=='has':
-        if phrase[len(adverb)].endswith('ed'):
+        if phrase[0].endswith('ed'):
             return 'present perfect'
         for i in past_irreg_vrb:
-            if phrase[len(adverb)]==i[2]:
+            if phrase[0]==i[2]:
                 return 'present perfect'
 
     #Processing for the past perfect
     elif aux=='had':
-        if phrase[len(adverb)].endswith('ed'):
+        if phrase[0].endswith('ed'):
             return 'past perfect'
         for i in past_irreg_vrb:
-            if phrase[len(adverb)]==i[2]:
+            if phrase[0]==i[2]:
                 return 'past perfect'
 
     #Processing for the past perfect
     elif aux=='would':
-        return find_tense_statement(['would']+phrase, adverb)
+        return find_tense_statement(['would']+phrase)
     
     #For using modal
     elif aux=='should' or aux=='might' or aux=='could':
@@ -245,11 +245,11 @@ def find_tense_question (phrase, aux, adverb):
     
     #Default case
     else:
-        return find_tense_statement([aux], [])
+        return find_tense_statement([aux])
 
 
 
-def find_verb_question (phrase, adv, aux, tense):
+def find_verb_question (phrase, aux, tense):
     """
     This function find the verb in a question                                        
     Input=sentence, tense, auxiliary and the adverb bound to the verb                 
@@ -271,12 +271,12 @@ def find_verb_question (phrase, adv, aux, tense):
             return [aux]
     
     if tense=='past conditional' or tense=='passive conditional':
-        return [phrase[1+len(adv)]]
+        return [phrase[1]]
     
     if tense=='present passive' and phrase[0]=='be':
-        return [phrase[1+len(adv)]]
+        return [phrase[1]]
     #When others
-    return [phrase[0+len(adv)]]
+    return [phrase[0]]
 
 
 

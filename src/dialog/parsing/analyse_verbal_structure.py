@@ -42,30 +42,33 @@ direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean','make']
 complement_pronoun=['me','you','it']
 inderect_trans_verb_list=['tell', 'say']
 state_vrb_list=['be','become']
+rel_proposal_list=['in', 'on', 'at', 'from', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind',
+               'behind+to','next+to','in+front+of','as', 'into','in+spite+of','because+of','despite']
 
 
 
-def find_vrb_adv(phrase):
+def find_vrb_adv(phrase, vg):
     """
     This function recovers the list of adverbs bound to verb                         
-    Input=sentence                        Output=verb's adverb list                  
+    Input=sentence                        Output=sentence                 
     """
 
     #If phrase is empty
     if phrase==[]:
-        return []
+        return phrase
 
     #If there is an auxiliary
     for i in aux_list:
         if i == phrase[0]:
             if phrase[1].endswith('ly'):
-                return [phrase[1]]
-
+                vg.vrb_adv=vg.vrb_adv+[phrase[1]]
+                return [phrase[0]]+phrase[2:]
     else:
         if phrase[0].endswith('ly'):
-            return [phrase[0]]
+            vg.vrb_adv=vg.vrb_adv+[phrase[0]]
+            return phrase[1:]
 
-    return []
+    return phrase
 
 
 
@@ -84,17 +87,25 @@ def find_adv(phrase,vg):
     
     #If the adverb is in the list
     while i < len(phrase):
-        for j in adv_list:
-            if j==phrase[i]:
-                vg.advrb=[j]
-                phrase=phrase[:i]+phrase[i+1:]
-                phrase=find_adv(phrase,vg)
-                
+        
         #Using a rule of grammar
         if phrase[i].startswith('every'):
-            vg.advrb= [phrase[i]]
+            vg.advrb= vg.advrb+[phrase[i]]
             phrase=phrase[:i]+phrase[i+1:]
-            phrase=find_adv(phrase,vg)
+            
+        for j in adv_list:
+            if j==phrase[i]:
+                flg=0
+                for k in proposal_list:
+                    if i>0 and k==phrase[i-1]:
+                        vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([phrase[i-1]],[Nominal_Group([],[phrase[i]],[],[],[])])]
+                        phrase=phrase[:i-1]+phrase[i+1:]
+                        
+                        flg=1
+                if flg==0:
+                    vg.advrb=vg.advrb+[j]
+                    phrase=phrase[:i]+phrase[i+1:]
+                break   
         
         i=i+1
 
@@ -133,7 +144,7 @@ def recover_obj_iobj(phrase, vg):
    
     #We search the first nominal group in sentence
     object= analyse_nominal_group.find_sn(phrase)
-   
+    
     while object!=[]:
 
         #If it is not a direct object => there is a proposal
@@ -168,7 +179,13 @@ def recover_obj_iobj(phrase, vg):
                 
                 #If there is 'and', we need to duplicate the information with the proposal if there is
                 if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or' or phrase[0]==':but'):
-                    phrase=[phrase[0]]+proposal+phrase[1:]
+                    
+                    #We have not duplicate the proposal, it depends on the presence of the nominal group after  
+                    if analyse_nominal_group.find_sn_pos(phrase,1)!=[]:
+                        phrase=[phrase[0]]+proposal+phrase[1:]
+                    else:   
+                        phrase=[phrase[0]]+phrase[1:]
+                    
                     phrase=[phrase[0]]+analyse_nominal_group.find_plural(phrase[1:])
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
                     
@@ -186,9 +203,7 @@ def recover_obj_iobj(phrase, vg):
 
             vg.i_cmpl=vg.i_cmpl+[Indirect_Complement(proposal,gr_nom_list)]
 
-
         else:
-            
             #It is a direct complement
             gr_nom_list=[]
             #It reproduces the same code as above
@@ -260,7 +275,8 @@ def state_adjective(sentence, vg):
         for k in state_vrb_list:
             if vg.vrb_main[0]==k and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
                 pos=analyse_nominal_group.adjective_pos(sentence,0)
-                vg.d_obj=[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                adj_list=analyse_nominal_group.process_adj_quantifier(sentence[:pos-1])
+                vg.d_obj=[Nominal_Group([],[],adj_list,[],[])]
                 sentence=sentence[pos-1:]
                 while sentence[0]=='or' or sentence[0]==':but':
                     if sentence[0]=='or':
@@ -269,7 +285,8 @@ def state_adjective(sentence, vg):
                         conjunction='BUT'
                     sentence=sentence[1:]
                     pos=analyse_nominal_group.adjective_pos(sentence,0)
-                    vg.d_obj=vg.d_obj+[Nominal_Group([],[],sentence[:pos-1],[],[])]
+                    adj_list=analyse_nominal_group.process_adj_quantifier(sentence[:pos-1])
+                    vg.d_obj=vg.d_obj+[Nominal_Group([],[],adj_list,[],[])]
                     vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
                     sentence=sentence[pos-1:]
     return sentence
@@ -457,7 +474,7 @@ def correct_i_compl(phrase,verb):
             #init
             x=0
             while x<len(phrase):
-                for y in proposal_list:
+                for y in rel_proposal_list:
                     
                     #If there is a proposal with an adverbial
                     if x+1<len(phrase) and phrase[x]==y:
@@ -500,11 +517,14 @@ def DOC_to_IOC(vg):
 
 
 
-def add_it(sentence):
+def add_it(sentence,aim):
     """
     This function add it i there is an adverbial without nominal group
     Input=sentence                         Output=sentence       
     """
+    
+    if sentence[0]=='from' and aim=='origin':
+        return sentence[1:]
     
     for i in proposal_list:
         if i==sentence[0]:

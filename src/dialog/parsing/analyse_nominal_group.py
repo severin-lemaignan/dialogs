@@ -242,8 +242,15 @@ def find_the_plural(phrase, position):
     Input=sentence and position of nominal group   Output=the position of plural or -1            
     """ 
     
-    if len(phrase)-1<0:
+    if len(phrase)-position-1<0:
         return -1
+    
+    if other_functions.number(phrase[position])==1:
+        return -1
+    
+    for a in proposal_list:
+        if phrase[position]==a:
+            return find_the_plural(phrase, position+1)
     
     for i in end_s_list:
         if i==phrase[position]:
@@ -257,12 +264,7 @@ def find_the_plural(phrase, position):
         return -1
     
     if find_sn_pos(phrase, position)==[] and phrase[position].endswith('s'):
-        
         return position
-        
-    for a in proposal_list:
-        if phrase[position]==a:
-            return find_the_plural(phrase, position+1)
 
     return -1
 

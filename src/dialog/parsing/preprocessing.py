@@ -599,7 +599,8 @@ def reorganize_adj(sentence):
     while i < len(sentence)-1:
         if sentence[i] ==',' or sentence[i] =='and':
             if analyse_nominal_group.is_an_adj(sentence[i+1]) and analyse_nominal_group.is_an_adj(sentence[i-1]):
-                sentence=sentence[:i]+sentence[i+1:]
+                if other_functions.number(sentence[i+1])==0 and other_functions.number(sentence[i-1])==0:
+                    sentence=sentence[:i]+sentence[i+1:]
         
         i=i+1
     return sentence

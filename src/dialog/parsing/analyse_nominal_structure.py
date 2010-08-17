@@ -46,9 +46,11 @@ def recover_quantifier(nom_gr):
             nom_gr._quantifier='NONE'
     
     else:
+        
         #If it is a number
         if other_functions.number(nom_gr.det[0])==1:
             nom_gr._quantifier='DIGIT'
+            print nom_gr.det[0]
             nom_gr.det=[other_functions.convert_to_digit(nom_gr.det[0])]
             
         #Here we will use the quantifier list
