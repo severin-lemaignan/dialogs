@@ -606,7 +606,7 @@ class Verbal_Group:
                 and \
                 reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.i_cmpl), True) \
                 and \
-                (self.sv_sec.resolved() if self.sv_sec else True) \
+                reduce(lambda c1,c2: c1 and c2 , map(lambda x: x.resolved(), self.sv_sec), True)\
                 and \
                 reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
     

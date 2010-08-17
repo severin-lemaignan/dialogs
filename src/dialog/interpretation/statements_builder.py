@@ -510,7 +510,7 @@ class VerbalGroupStatementBuilder:
     
     
     
-    def process_verbal_groups(self, verbal_groups, subject_id, subject_quantifier):
+    def process_verbal_groups(self, verbal_groups, subject_id, subject_quantifier, second_verb_sit_id = None):
         """This processes every single verbal group in the sentence sv, given the (resolved) ID and quantifier of the subject.
         """
         for vg in verbal_groups:         
@@ -519,7 +519,7 @@ class VerbalGroupStatementBuilder:
             
             #Main verb
             if vg.vrb_main:
-                self.process_verb(vg, subject_id, subject_quantifier)
+                self.process_verb(vg, subject_id, subject_quantifier, second_verb_sit_id)
             
             if vg.advrb:
                 self.process_sentence_adverb(vg)
@@ -536,7 +536,7 @@ class VerbalGroupStatementBuilder:
             self._process_on_negative = False
     
     
-    def process_verb(self, verbal_group, subject_id, subject_quantifier):
+    def process_verb(self, verbal_group, subject_id, subject_quantifier, second_verb_sit_id):
          
         for verb in verbal_group.vrb_main:
          
@@ -549,17 +549,23 @@ class VerbalGroupStatementBuilder:
             
             goal_verbs = ResourcePool().goal_verbs 
             
+            
             #Case 1:
             if verb == "be":
                 sit_id = subject_id
                 
             else:
-                if self._process_on_question:
+                #Case : the verbal group that is being processed is the second verbs . i.e : it is held in the field sentence.sv.sv_sec
+                if second_verb_sit_id:
+                    sit_id = second_verb_sit_id
+                
+                # Case of question
+                elif self._process_on_question:
                     sit_id = '?event'
                 
                 #case of negation : Creating a fake ID that is to find in the ontology for later removal
                 #   Setting up the field process_statement_to_remove to True
-                if self._process_on_negative:
+                elif self._process_on_negative:
                     sit_id = generate_id(with_question_mark = True)
                     self._unclarified_ids.append(sit_id)
                     self.process_statements_to_remove = True
@@ -572,7 +578,7 @@ class VerbalGroupStatementBuilder:
                     self._statements.append(subject_id + " desires " + sit_id)
                     
                     if verbal_group.sv_sec:
-                        self.process_vrb_sec(verbal_group)                      
+                        self.process_vrb_sec(verbal_group, subject_id, subject_quantifier, sit_id)                      
                 #Case 3:   
                 else:
                     self._statements.append(sit_id + " rdf:type " + verb.capitalize())
@@ -601,10 +607,12 @@ class VerbalGroupStatementBuilder:
             if verbal_group.vrb_tense:
                 self.process_verb_tense(verbal_group.vrb_tense, verb, sit_id)
             
-    def process_vrb_sec(self, verbal_group):
-        for verb in verbal_group.vrb_sec:
-            #logging.debug("Found verb:\"" + verb + "\"")
-            pass
+            
+    def process_vrb_sec(self, verbal_group, subject_id, subject_quantifier, sit_id):
+        vrb_sec_builder = VerbalGroupStatementBuilder(verbal_group.sv_sec, self._current_speaker)
+        vrb_sec_builder.process_verbal_groups(verbal_group.sv_sec, subject_id, subject_quantifier, sit_id)
+        self._statements.extend(vrb_sec_builder._statements)
+        
             
     def process_direct_object(self, d_objects, verb, id, quantifier):
         """This processes the attribute d_obj of a sentence verbal groups."""
@@ -921,17 +929,10 @@ def dump_resolved(sentence, current_speaker, current_listener):
         return [ngs, resolved]
     
     
-    builder = NominalGroupStatementBuilder(None, current_speaker)
-        
-    if sentence.sn:
-        res_sn = resolve_ng(sentence.sn, builder)
-        sentence.sn = res_sn[0]
-        
-    
-    if sentence.sv:
-        for sv in sentence.sv:
+    def resolve_sv(vgs):
+        for sv in vgs:
             sv._resolved = True
-
+            
             if sv.d_obj:
                 res_d_obj = resolve_ng(sv.d_obj, builder)
                 sv.d_obj = res_d_obj[0]
@@ -946,6 +947,24 @@ def dump_resolved(sentence, current_speaker, current_listener):
             if sv.vrb_sub_sentence:
                 for sub in sv.vrb_sub_sentence:
                     sub = dump_resolved(sub, current_speaker, current_listener)
+                    
+                    
+            if sv.sv_sec:
+                sv.sv_sec = resolve_sv(sv.sv_sec)
+                
+        return vgs
+    
+    
+
+    builder = NominalGroupStatementBuilder(None, current_speaker)
+        
+    if sentence.sn:
+        res_sn = resolve_ng(sentence.sn, builder)
+        sentence.sn = res_sn[0]
+        
+    
+    if sentence.sv:
+        sentence.sv = resolve_sv(sentence.sv)
             
     
     print(sentence)
@@ -1054,7 +1073,7 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-    """
+    
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives the blue car"  
@@ -1079,7 +1098,8 @@ class TestStatementBuilder(unittest.TestCase):
                            '* involves volvo']
         
         return self.process(sentence, expected_result, display_statement_result = True)
-   
+    
+    
     def test_1_goal_verb(self):
         print "\n**** Test 1  *** "
         print "Danny wants the blue car"  
@@ -1102,8 +1122,44 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = ['id_danny desires *',
                             '* involves volvo']
         
-        return self.process(sentence, expected_result, display_statement_result = True)
-   
+        self.process(sentence, expected_result, display_statement_result = True)
+    
+        print "\n**** Test 1  second verb*** "
+        print "Danny wants to drive the blue car"  
+        self.stmt.clear_statements()
+        self.stmt._unclarified_ids = []
+        self.stmt._statements_to_remove = []
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['would+like'],
+                                           [Verbal_Group(['drive'],
+                                                                   [],
+                                                                   'present simple',
+                                                                   [Nominal_Group(['the'],['car'],['blue'],[],[])],
+                                                                   [],
+                                                                   [],
+                                                                   [],
+                                                                   'affirmative',
+                                                                   [])],
+                                           'present simple',
+                                           [],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])    
+        
+        expected_result = ['id_danny desires *',
+                            '* rdf:type Drive',
+                            '* involves volvo']
+        
+        self.process(sentence, expected_result, display_statement_result = True)
+    
+    
     def test_2(self):
         print "\n**** Test 2  *** "
         print "my car is blue"
@@ -1140,7 +1196,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [],
                                             [])],                                         
                              [Verbal_Group(['be'],
-                                           None,
+                                           [],
                                            'present simple',
                                            [Nominal_Group(['a'],['robot'],[],[],[])],
                                            [],
@@ -1702,7 +1758,7 @@ class TestStatementBuilder(unittest.TestCase):
                             '* eventOccurs FUTUR']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    """
+    
     #Negative approach
     def test_18_negative(self):
         
@@ -2080,6 +2136,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
         return self.process(sentence, expected_result, display_statement_result = True)
+    
     
     
     """
