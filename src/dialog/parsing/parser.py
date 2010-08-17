@@ -1003,7 +1003,7 @@ class TestParsing(unittest.TestCase):
     
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    """    
+    """
         
     """
     def test_31(self):
@@ -1125,8 +1125,8 @@ class TestParsing(unittest.TestCase):
                                 [Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])], 
                                 [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                                 [], [] ,'affirmative',[])],'present simple', 
-                            [], 
-                            [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
+                            [Nominal_Group([],['you'],[],[],[])], 
+                            [],
                             [], [] ,'affirmative',[])])])]),
             Sentence('statement', '', 
                     [Nominal_Group([],['you'],[],[],[])], 
@@ -1287,7 +1287,7 @@ class TestParsing(unittest.TestCase):
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     """
-    
+
     """
     def test_41(self):
         print ''
@@ -1354,8 +1354,8 @@ class TestParsing(unittest.TestCase):
                                         [], [] ,'affirmative',[])])])], 
                                 [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                                 [], [] ,'affirmative',[])],'present simple', 
-                            [], 
-                            [Indirect_Complement([],[Nominal_Group([],['you'],[],[],[])])],
+                            [Nominal_Group([],['you'],[],[],[])], 
+                            [],
                             [], [] ,'affirmative',[])])])])]
     
         result_test=compare_utterance(class_list,rslt,sentence_list)
@@ -1522,8 +1522,8 @@ class TestParsing(unittest.TestCase):
                     [Nominal_Group([],['something'],[],[],[])], 
                     [],
                     [], [] ,'affirmative',[])],'present simple', 
-                [], 
-                [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                [Nominal_Group([],['me'],[],[],[])], 
+                [],
                 [], [] ,'affirmative',[])]),
             Sentence('yes_no_question', '', 
                 [Nominal_Group(['any'],['person'],[],[],[])], 
@@ -2189,22 +2189,35 @@ class TestParsing(unittest.TestCase):
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
-        rslt=[Sentence('statement', '', 
-                [Nominal_Group([],['apple'],[['red',[]]],[],[])], 
-                [Verbal_Group(['grow'], [],'present simple', 
-                    [], 
-                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[['green',[]]],[],[])]),
-                     Indirect_Complement(['on'],[Nominal_Group([],['plant'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                    [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
-                    [Verbal_Group(['.'], [],'present simple', 
+        rslt=[Sentence('imperative', '', 
+                [], 
+                [Verbal_Group(['let'], [Verbal_Group(['go'], 
+                        [],'', 
                         [], 
+                        [Indirect_Complement(['to'],[Nominal_Group(['the'],['cinema'],[],[],[])])],
+                        [], [] ,'affirmative',[])],'present simple', 
+                    [Nominal_Group(['the'],['man'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('yes_no_question', '', 
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Verbal_Group(['be'], [Verbal_Group(['let'], 
+                        [Verbal_Group(['go'], 
+                            [],'', 
+                            [], 
+                            [],
+                            [], [] ,'affirmative',[])],'', 
+                        [Nominal_Group([],['you'],[],[],[])], 
                         [],
-                        [], [] ,'affirmative',[])])]
+                        [], [] ,'affirmative',[])],'present simple', 
+                    [Nominal_Group(['the'],['time'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])])]
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
+    
+    
     
     
 if __name__ == '__main__':

@@ -149,9 +149,10 @@ def recover_obj_iobj(phrase, vg):
 
         #If it is not a direct object => there is a proposal
         proposal=check_proposal(phrase, object)
-       
+        
+        
         if proposal!=[]:
-
+            
             gr_nom_list=[]
             #This 'while' is for duplicate with 'and'
             while object!=[]:
@@ -166,9 +167,9 @@ def recover_obj_iobj(phrase, vg):
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object,pos_object)
                 #We will take off the proposal
-              
+                
                 phrase=phrase[:phrase.index(proposal[0])]+phrase[phrase.index(proposal[0])+1:]
-
+                
                 #If there is a relative
                 begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,rel_list)
                 
@@ -180,13 +181,14 @@ def recover_obj_iobj(phrase, vg):
                 #If there is 'and', we need to duplicate the information with the proposal if there is
                 if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or' or phrase[0]==':but'):
                     
+                    phrase=[phrase[0]]+analyse_nominal_group.find_plural(phrase[1:])
+                    
                     #We have not duplicate the proposal, it depends on the presence of the nominal group after  
                     if analyse_nominal_group.find_sn_pos(phrase,1)!=[]:
                         phrase=[phrase[0]]+proposal+phrase[1:]
                     else:   
                         phrase=[phrase[0]]+phrase[1:]
                     
-                    phrase=[phrase[0]]+analyse_nominal_group.find_plural(phrase[1:])
                     object=analyse_nominal_group.find_sn_pos(phrase[1:], 0)
                     
                     #We process the 'or' like the 'and' and remove it
@@ -244,12 +246,8 @@ def recover_obj_iobj(phrase, vg):
                 else:
                     object=[]
             
-            #If there is a second verb there is no direct complement
-            if vg.sv_sec!=[]:
-                vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([],gr_nom_list)]
-            
             #In a sentence there is just one direct complement if there is no second verb
-            elif vg.d_obj==[]:
+            if vg.d_obj==[]:
                 vg.d_obj=gr_nom_list
             else:
                 #Else the first nominal group found is indirect and this one is direct complement
@@ -324,7 +322,7 @@ def process_scd_sentence(phrase, vg, sec_vrb):
     Input=sentence, verbal class and the second verb                                 
     Output=sentence and verbal class                                                 
     """
-
+    
     #We take off the part of the sentence after 'to'
     scd_sentence=phrase[phrase.index(sec_vrb[0]):]
     phrase=phrase[:phrase.index(sec_vrb[0])]
@@ -340,14 +338,15 @@ def process_scd_sentence(phrase, vg, sec_vrb):
         vg.sv_sec=vg.sv_sec+[Verbal_Group(scd_verb, [], '', [], [], [], [], 'affirmative',[])]
         #We delete the verb
         scd_sentence= scd_sentence[scd_sentence.index(scd_sentence[0])+1:]
-
+    
     #We recover the conjunctive subsentence
     scd_sentence=process_conjunctive_sub(scd_sentence, vg.sv_sec[0])
     
     #It verifies if there is a secondary verb
     sec_sec_vrb=find_scd_vrb(scd_sentence)
     if sec_sec_vrb!=[]:
-        scd_sentence=process_scd_sentence(scd_sentence, vg.sv_sec, sec_sec_vrb)
+        #print vg.sv_sec[0].sv_sec
+        scd_sentence=process_scd_sentence(scd_sentence, vg.sv_sec[0], sec_sec_vrb)
     
     #We recover the subsentence
     scd_sentence=process_subsentence(scd_sentence, vg)
@@ -358,7 +357,7 @@ def process_scd_sentence(phrase, vg, sec_vrb):
     #We process the end of the second sentence
     scd_sentence=find_adv(scd_sentence,vg.sv_sec[0])
     scd_sentence=recover_obj_iobj(scd_sentence, vg.sv_sec[0])
-
+    
     return phrase
 
 

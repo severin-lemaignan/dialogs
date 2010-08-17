@@ -697,10 +697,13 @@ def add_scd_vrb(sentence):
             if k==sentence[i]:
                 nom_gr=analyse_nominal_group.find_sn_pos(sentence, i+1)
                 if nom_gr!=[]:
-                    sentence=sentence[:i+1]+['to']+sentence[i+1:]
+                    sentence=sentence[:i+len(nom_gr)+1]+['to']+sentence[i+len(nom_gr)+1:]
+                    break
                 else:
                     sentence=sentence[:i+1]+['to']+sentence[i+1:]
+                    break
         i=i+1
+    
     return sentence
     
     
