@@ -32,21 +32,18 @@ class StatementBuilder:
         #This holds the statements created from the main clause of a sentence
         self._statements = []
         
-        #This holds the satements that are created from a sentence Subordinating clause
-        #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
-        self._sub_statements = []
+        #This holds the statements that are to be removed from the ontology
+        #   Possibly after processing a negative sentence
+        self._statements_to_remove = []
         
         #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
         #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
-        self._unresolved_ids = []
+        self._unclarified_ids = []
         
 
     def clear_statements(self):
         self._statements = []
     
-    def clear_sub_statements(self):
-        self._sub_statements = []
-        
     def set_current_speaker(self, current_speaker):
         self._current_speaker = current_speaker
     
@@ -70,7 +67,7 @@ class StatementBuilder:
         ng_stmt_builder.process()
         
         self._statements.extend(ng_stmt_builder._statements)
-        self._unresolved_ids.extend(ng_stmt_builder._unresolved_ids)
+        self._unclarified_ids.extend(ng_stmt_builder._unclarified_ids)
         
     def process_verbal_groups(self, sentence):
         #VerbalGroupStatementBuilder
@@ -86,8 +83,11 @@ class StatementBuilder:
             vg_stmt_builder.process()
             
             self._statements.extend(vg_stmt_builder._statements)
-            self._sub_statements.extend(vg_stmt_builder._sub_statements)
-            self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
+            self._unclarified_ids.extend(vg_stmt_builder._unclarified_ids)
+            
+            # Case of statement to remove due to some case of negation
+            if vg_stmt_builder.process_statements_to_remove:
+                self._statements_to_remove.extend(vg_stmt_builder._statements)
             
         for sn in sentence.sn:
             if not sn.id:
@@ -96,8 +96,11 @@ class StatementBuilder:
             vg_stmt_builder.process(subject_id = sn.id, subject_quantifier = sn._quantifier)
             
             self._statements.extend(vg_stmt_builder._statements)
-            self._sub_statements.extend(vg_stmt_builder._sub_statements)
-            self._unresolved_ids.extend(vg_stmt_builder._unresolved_ids)
+            self._unclarified_ids.extend(vg_stmt_builder._unclarified_ids)
+            
+            # Case of statement to remove due to some case of negation
+            if vg_stmt_builder.process_statements_to_remove:
+                self._statements_to_remove.extend(vg_stmt_builder._statements)
 
 class NominalGroupStatementBuilder:
     """ Build statements related to a nominal group"""
@@ -113,14 +116,11 @@ class NominalGroupStatementBuilder:
         
         #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
         #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
-        self._unresolved_ids = []
+        self._unclarified_ids = []
         
     def clear_statements(self):
         self._statements = []
     
-    def clear_sub_statements(self):
-        self._sub_statements = []
-        
     def process(self):
         """ The following function builds a list of statement from a list of nominal group
         A NominalGroupStatementBuilder has to be instantiated before"""
@@ -156,7 +156,7 @@ class NominalGroupStatementBuilder:
             return 'myself'
         
         id = generate_id()
-        self._unresolved_ids.append(id)
+        self._unclarified_ids.append(id)
         return id
     
     
@@ -437,14 +437,14 @@ class NominalGroupStatementBuilder:
                     rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng.id, None)
                     
                 self._statements.extend(rel_ng_stmt_builder._statements)
-                self._unresolved_ids.extend(rel_ng_stmt_builder._unresolved_ids)
+                self._unclarified_ids.extend(rel_ng_stmt_builder._unclarified_ids)
                 
             #case 2        
             else:
                 rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng_id, None)
             
             self._statements.extend(rel_vg_stmt_builder._statements)
-            self._unresolved_ids.extend(rel_vg_stmt_builder._unresolved_ids)
+            self._unclarified_ids.extend(rel_vg_stmt_builder._unclarified_ids)
                     
 
 class VerbalGroupStatementBuilder:
@@ -459,13 +459,9 @@ class VerbalGroupStatementBuilder:
         #This holds the statements created from the main clause of a sentence
         self._statements = []
         
-        #This holds the satements that are created from a sentence Subordinating clause
-        #    i.e when the attributes sentence.sv.vrb_sub_sentence is not empty
-        self._sub_statements = []
-        
         #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
         #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
-        self._unresolved_ids = []        
+        self._unclarified_ids = []        
         
         #This field holds the value True when the active sentence is of yes_no_question or w_question data_type
         self._process_on_question = False
@@ -478,6 +474,10 @@ class VerbalGroupStatementBuilder:
         
         #this field is True when the verbal group is in the negative form
         self._process_on_negative = False
+        
+        #this fiels is True when the sentence that is being processed holds a negative state and 
+        # more particualrly in the case of action verbs where a static situation reference is generated
+        self.process_statements_to_remove = False
 
     def set_attribute_on_data_type(self, data_type):
         if data_type == 'imperative':
@@ -487,9 +487,6 @@ class VerbalGroupStatementBuilder:
         
     def clear_statements(self):
         self._statements = []
-        
-    def clear_sub_statements(self):
-        self._sub_statements = []
     
     def process(self, subject_id = None, subject_quantifier = None):
         """This processes a sentence sv attribute, given the (resolved) ID and quantifier of the subject
@@ -560,10 +557,12 @@ class VerbalGroupStatementBuilder:
                 if self._process_on_question:
                     sit_id = '?event'
                 
-                #case of negation : Creating a fake ID that is to find in the ontology for removal
+                #case of negation : Creating a fake ID that is to find in the ontology for later removal
+                #   Setting up the field process_statement_to_remove to True
                 if self._process_on_negative:
                     sit_id = generate_id(with_question_mark = True)
-                    self._unresolved_ids.append(sit_id)
+                    self._unclarified_ids.append(sit_id)
+                    self.process_statements_to_remove = True
                     
                 else:
                     sit_id = generate_id(with_question_mark = not self._process_on_resolved_sentence)
@@ -652,7 +651,7 @@ class VerbalGroupStatementBuilder:
             d_obj_stmt_builder.process_nominal_group(d_obj, d_obj_id, d_obj_quantifier, self._process_on_negative)
             
         self._statements.extend(d_obj_stmt_builder._statements)
-        self._unresolved_ids.extend(d_obj_stmt_builder._unresolved_ids)
+        self._unclarified_ids.extend(d_obj_stmt_builder._unclarified_ids)
         
         
             
@@ -735,7 +734,7 @@ class VerbalGroupStatementBuilder:
                 i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id, None, False)
                 
             self._statements.extend(i_stmt_builder._statements)
-            self._unresolved_ids.extend(i_stmt_builder._unresolved_ids)
+            self._unclarified_ids.extend(i_stmt_builder._unclarified_ids)
             
                 
                 
@@ -805,31 +804,7 @@ class VerbalGroupStatementBuilder:
             
             
     def process_vrb_subsentence(self, verbal_group):
-        """
-            This provides a solution to process Subordinating clauses,
-            by creating a subset of statements that is added in the ontology according to the Subordinating conjunction
-            
-            E.g: I will go to Toulouse if you get the small car.
-            
-            [* rdf:type Go,
-             * performedBy current_speaker,
-             * hasGoal TOULOUSE]
-            
-            The statements above are created in the field of statements whereas the ones below are added in the field of sub_statements
-            
-            [* rdf:type Get,
-             * performedBy myself,
-             * actsOnObject SMALL_CAR,
-             ...,
-             ]
-        """
-        sub_builder = StatementBuilder(self._current_speaker)
-        stmts = []
-        for sub in verbal_group.vrb_sub_sentence:
-            stmts.append(sub.aim)
-            stmts.append(sub_builder.process_sentence(sub))
-        
-        self._sub_statements.append(stmts)
+        pass
         
             
 """
@@ -1727,11 +1702,40 @@ class TestStatementBuilder(unittest.TestCase):
                             '* eventOccurs FUTUR']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    
+    """
     #Negative approach
     def test_18_negative(self):
         
+        print "Danny drives the blue car"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['drive'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['the'],
+                                                          ['car'],
+                                                          ['blue'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = [ '* rdf:type Drive', 
+                            '* performedBy id_danny',
+                            '* involves volvo']   
+        self.process(sentence, expected_result, display_statement_result = True)
+        
+        
         print "\n**** test_18_negative *** "
+        self.stmt.clear_statements()
+        self.stmt._unclarified_ids = []
+        self.stmt._statements_to_remove = []
         print "Danny doesn't drive the blue car"
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
@@ -1761,6 +1765,9 @@ class TestStatementBuilder(unittest.TestCase):
         print "\n**** test_18_negative_bis *** "
         print "Danny is not in Toulouse"
         self.stmt.clear_statements()
+        self.stmt._unclarified_ids = []
+        self.stmt._statements_to_remove = []
+        
         sentence = Sentence("statement", "",
                              [Nominal_Group([],
                                             ['Danny'],
@@ -2075,7 +2082,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
-    
+    """
     def test_26_subsentences(self):
         print "\n**** test_26_subsentences *** "
         print "you will drive the car if you get the keys'."
@@ -2109,7 +2116,7 @@ class TestStatementBuilder(unittest.TestCase):
                             '* performedBy myself',
                             '* actsOnObject twingo_key']   
         return self.process(sentence, expected_result, display_statement_result = True)
-    """
+    
 
     def test_27_subsentences(self):
         print "\n**** test_27_subsentences *** "
@@ -2181,7 +2188,7 @@ class TestStatementBuilder(unittest.TestCase):
                             
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    
+    """
     
     def process(self, sentence, expected_result, display_statement_result = False):
         #Dump resolution
@@ -2191,9 +2198,9 @@ class TestStatementBuilder(unittest.TestCase):
         res = self.stmt.process_sentence(sentence)
         
         #Statement Safe Adder
-        self.adder._sub_statements = self.stmt._sub_statements
-        self.adder._unresolved_ids = self.stmt._unresolved_ids
+        self.adder._unclarified_ids = self.stmt._unclarified_ids
         self.adder._statements = res
+        self.adder._statements_to_remove = self.stmt._statements_to_remove
         res = self.adder.process()
         
         #Assert result
