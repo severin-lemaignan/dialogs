@@ -22,6 +22,7 @@
     refine_indirect_complement : to put indirect complements with same proposal together
     refine_subsentence : to transform some subsentence to relative
 """
+from dialog.resources_manager import ResourcePool
 from dialog.sentence import *
 import analyse_nominal_group
 import analyse_nominal_structure
@@ -34,19 +35,19 @@ import analyse_sentence
 Statement of lists
 """
 aux_list=['have', 'has', 'had', 'is', 'are', 'am', 'was', 'were', 'will']
-adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
-proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind',
-               'behind+to','next+to','in+front+of','as', 'into','in+spite+of','because+of','despite']
 rel_list=['who', 'which', 'that','where','to+whom','whom','in+which']
 sub_list=['while', 'but','where', 'when', 'if', 'what', 'however', 'although', 'because']
-pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean','make']
 complement_pronoun=['me','you','it']
 inderect_trans_verb_list=['tell', 'say']
 state_vrb_list=['be','become']
-rel_proposal_list=['in', 'on', 'at', 'from', 'about', 'for', 'next', 'last', 'ago', 'with', 'by', 'behind',
-               'behind+to','next+to','in+front+of','as', 'into','in+spite+of','because+of','despite']
 
+
+
+adv_list = ResourcePool().adverbs
+rel_proposal_list = ResourcePool().relative_proposals
+proposal_list = ResourcePool().proposals
+pronoun_list = ResourcePool().pronouns
 
 
 def find_vrb_adv(phrase, vg):

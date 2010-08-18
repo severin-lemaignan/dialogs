@@ -33,15 +33,9 @@ import other_functions
 """
 Statement of lists
 """
-modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
-det_dem_list=['this', 'there', 'these' , 'that', 'those']
-
-
-
-"""
-We have to read all words that sentence can begin with                           
-"""
 frt_wd = ResourcePool().sentence_starts
+det_dem_list = ResourcePool().demonstrative_det
+modal_list = ResourcePool().modal
 
 
 

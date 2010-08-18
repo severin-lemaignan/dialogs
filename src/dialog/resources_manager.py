@@ -159,10 +159,35 @@ class ThematicRolesDict:
         for name, verb in self.verbs.items():
             res += str(verb) + "\n"
         return res
-    
+
+
+        
+            
 @singleton
 class ResourcePool:
     
+    def split_list(self, word_list):
+                
+        #init
+        flag=0
+        list_list_word=our_list=[]
+        for i in word_list:
+            if i!=():
+                if i[0].startswith('#'):
+                    if flag==0:
+                        flag=1
+                        if our_list!=[]:
+                            list_list_word=list_list_word+[our_list]
+                            our_list=[]
+                    else:
+                        flag=0
+                else:
+                    if flag==0:
+                        our_list=our_list+[i]
+                            
+        list_list_word=list_list_word+[our_list]
+        return list_list_word
+
     def __init__(self, data_path = DATA_DIR, oro_host = ORO_HOST, oro_port = ORO_PORT):
         
         self.ontology_server = None
@@ -180,7 +205,16 @@ class ResourcePool:
         self.irregular_verbs_past = []
         self.irregular_verbs_present = []
         self.preposition_verbs = []
+        self.modal = []
+        self.adjective_verb = []
         self.special_nouns = []
+        self.pronouns = []
+        self.numbers = []
+        self.demonstrative_det = []
+        self.adverbs = []
+        self.proposals = []
+        self.relative_proposals = []
+        
 
         """list of tokens that can start a sentence"""
         self.sentence_starts = []
@@ -206,25 +240,51 @@ class ResourcePool:
                 cat = "Feature"
             self.adjectives[adj] = cat
         
-        self.irregular_verbs_past = [tuple(line.split()) 
-                                for line 
-                                in open (os.path.join(data_path, "irregular_verbs_past"))]
         
-        self.irregular_verbs_present = [tuple(line.split()) 
-                                for line 
-                                in open (os.path.join(data_path, "irregular_verbs_present"))]
         
-        self.preposition_verbs = [tuple(line.split()) 
+        verbs = [tuple(line.split()) 
                                 for line 
-                                in open (os.path.join(data_path, "preposition_verbs"))]
+                                in open (os.path.join(data_path, "verbs"))]
+        verbs = self.split_list(verbs)
+        self.irregular_verbs_past=verbs[0]
+        self.irregular_verbs_present=verbs[1]
+        self.preposition_verbs=verbs[2]
+        self.modal=verbs[3]
+        self.adjective_verb=verbs[4]
+                                
                                 
         self.sentence_starts = [tuple(line.split()) 
                                 for line 
                                 in open (os.path.join(data_path, "sentence_starts"))]       
          
-        self.special_nouns = [tuple(line.split()) 
-                                for line 
-                                in open (os.path.join(data_path, "special_nouns"))]   
+         
+        nouns = [tuple(line.split()) 
+                    for line 
+                    in open (os.path.join(data_path, "nouns"))]   
+        nouns = self.split_list(nouns)
+        self.special_nouns=nouns[0]
+        self.pronouns=nouns[1]
+        self.numbers=nouns[2]
+        self.demonstrative_det=nouns[3]
+        
+        
+        adverbials = [tuple(line.split()) 
+                    for line 
+                    in open (os.path.join(data_path, "adverbial"))]   
+        adverbials = self.split_list(adverbials)
+        self.adverbs=adverbials[0]
+        self.proposals=adverbials[1]
+        for k in self.proposals:
+            if k[1]==1:
+                self.relative_proposals=self.relative_proposals+k
+        
+        
+        grammatical_rules = [tuple(line.split()) 
+                    for line 
+                    in open (os.path.join(data_path, "grammatical_rules"))]   
+        grammatical_rules = self.split_list(grammatical_rules)
+        self.capital_letters=grammatical_rules[2]
+        
         
         self.goal_verbs = [line.strip()
                             for line 
@@ -241,6 +301,8 @@ class ResourcePool:
             if line.startswith("}"): #end of block
                 self.thematic_roles.add_verb(desc)
                 desc = ""
+        
+        
 
 
 if __name__ == '__main__':
@@ -256,8 +318,12 @@ if __name__ == '__main__':
     print(str(resources.adjectives))
     
     print
-    print("Irregular verbs:")
-    print(str(resources.irregular_verbs))
+    print("special nouns:")
+    print(str(ResourcePool().special_nouns))
+    
+    print
+    print("pronouns:")
+    print(str(ResourcePool().pronouns))
     
     print
     print("Preposition verbs:")
@@ -275,4 +341,4 @@ if __name__ == '__main__':
     print
     print("Thematic roles:")
     print(str(resources.thematic_roles))
-
+    

@@ -31,12 +31,8 @@ import other_functions
 """
 Statement of lists
 """
-pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
 det_list=['that','the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 
           'every', 'there', 'some', 'any', 'those','all','no','more','less', 'another']
-proposal_list=['in', 'on', 'at', 'from', 'to', 'about', 'for', 'next', 'last', 'ago', 
-               'with', 'by', 'behind','behind+to','next+to','in+front+of','as', 'into']
-adv_list=['here','tonight', 'yesterday', 'tomorrow', 'today', 'now']
 adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
 composed_noun=['some', 'any', 'no']
 end_s_list=['is', 'this','yes']
@@ -46,17 +42,11 @@ adj_quantifier=['very','much','many','so','too']
 
 
 
-"""
-We have to read all irregular adjectives before the processing                    
-"""
 adjective_list = ResourcePool().adjectives.keys()
-
-
-"""
-We have to read all nouns which have a confusion with regular adjectives        
-"""
 noun_list = ResourcePool().special_nouns
-
+pronoun_list = ResourcePool().pronouns
+adv_list = ResourcePool().adverbs
+proposal_list = ResourcePool().proposals
 
 
 def is_an_adj(word):

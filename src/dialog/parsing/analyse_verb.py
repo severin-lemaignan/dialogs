@@ -22,24 +22,9 @@ from dialog.resources_manager import ResourcePool
 """
 Statement of lists
 """
-adj_ed_list=['red']
-
-
-"""
-We have to read all past irregular verb forms       
-"""
+adj_ed_list = ResourcePool().adjective_verb
 past_irreg_vrb = ResourcePool().irregular_verbs_past
-
-
-"""
-We have to read all past irregular verb forms                                   
-"""
-present_irreg_vrb = ResourcePool().irregular_verbs_present
-
-
-"""
-We have to read all past irregular verb forms          
-"""                    
+present_irreg_vrb = ResourcePool().irregular_verbs_present        
 phrasal_vrb = ResourcePool().preposition_verbs
 
 

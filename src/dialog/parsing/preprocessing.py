@@ -56,15 +56,7 @@ verb_preced_verb_list=['let']
 
 
 
-"""
-We have to read all words that sentence can begin with                           
-"""
 frt_wd = ResourcePool().sentence_starts
-
-
-"""
-We have to read action verbs known by the robot                                  
-"""
 action_verb = ThematicRolesDict().get_all_verbs()
 
 
