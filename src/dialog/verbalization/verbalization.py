@@ -1952,11 +1952,10 @@ class TestVerbalization(unittest.TestCase):
                 [Nominal_Group([],['it'],[],[],[])], 
                 [Verbal_Group(['be'], [],'present simple', 
                     [], 
-                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])]),
-                     Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[]),Nominal_Group(['the'],['shelf'],[],[],[])])],
                     [], [] ,'negative',[])])]
         
-        sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="BUT"
+        sentences[1].sv[0].i_cmpl[0].nominal_group[1]._conjunction="BUT"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -2093,14 +2092,13 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="apples grow on trees and plants. give me 3 apples."
+        original_utterance="Apples grow on trees and plants. Give me 3 apples."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['apple'],[],[],[])], 
                 [Verbal_Group(['grow'], [],'present simple', 
                     [], 
-                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[],[],[])]),
-                     Indirect_Complement(['on'],[Nominal_Group([],['plant'],[],[],[])])],
+                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[],[],[]),Nominal_Group([],['plant'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
             Sentence('imperative', '', 
                 [], 
@@ -2111,7 +2109,7 @@ class TestVerbalization(unittest.TestCase):
         
         sentences[0].sn[0]._quantifier="ALL"
         sentences[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
-        sentences[0].sv[0].i_cmpl[1].nominal_group[0]._quantifier="ALL"
+        sentences[0].sv[0].i_cmpl[0].nominal_group[1]._quantifier="ALL"
         sentences[1].sv[0].d_obj[0]._quantifier="DIGIT"
         
         utterance=utterance_rebuilding.verbalising(sentences)
@@ -2172,7 +2170,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="the big and very strong man is on the corner. the too big and very strong man is on the corner."
+        original_utterance="The big very strong man is on the corner. The too big very strong man is on the corner."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group(['the'],['man'],[['big',[]],['strong',['very']]],[],[])], 
@@ -2207,8 +2205,7 @@ class TestVerbalization(unittest.TestCase):
                 [Nominal_Group([],['apple'],[['red',[]]],[],[])], 
                 [Verbal_Group(['grow'], [],'present simple', 
                     [], 
-                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[['green',[]]],[],[])]),
-                     Indirect_Complement(['on'],[Nominal_Group([],['plant'],[],[],[])])],
+                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[['green',[]]],[],[]),Nominal_Group([],['plant'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '', 
                     [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 

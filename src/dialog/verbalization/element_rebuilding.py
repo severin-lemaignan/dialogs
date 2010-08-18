@@ -110,7 +110,7 @@ def indirect_compl_rebuilding(indirect_compl):
     #We have 2 cases : with preposal and without
     if indirect_compl.prep!=[]:
         nom_gr= nom_struc_rebuilding(indirect_compl.nominal_group)
-        print nom_gr
+        
         if nom_gr!=[] and (nom_gr[0]=='and' or nom_gr[0]=='or' or nom_gr[0]=='but'):
             nom_gr=[nom_gr[0]]+indirect_compl.prep+nom_gr[1:]
         else:

@@ -19,6 +19,8 @@
     process_subsentence : to process the subsentence
     correct_i_compl : to transform indirect complement to relative
     DOC_to_IOC : to put the direct complement in the indirect
+    refine_indirect_complement : to put indirect complements with same proposal together
+    refine_subsentence : to transform some subsentence to relative
 """
 from dialog.sentence import *
 import analyse_nominal_group
@@ -529,3 +531,48 @@ def add_it(sentence,aim):
         if i==sentence[0]:
             return [sentence[0]]+['it']+sentence[1:]
     return sentence
+
+
+
+def refine_indirect_complement(vg):
+    """
+    This function put indirect complements with same proposal together
+    Input=verbal structure                         Output=verbal structure        
+    """
+    
+    #init
+    i=0
+    while i < len(vg.i_cmpl):
+        j=i+1
+        if vg.i_cmpl[i].prep!=[]:
+            while j < len(vg.i_cmpl):
+                if vg.i_cmpl[j].prep!=[] and vg.i_cmpl[i].prep==vg.i_cmpl[j].prep:
+                    vg.i_cmpl[i].nominal_group=vg.i_cmpl[i].nominal_group+vg.i_cmpl[j].nominal_group
+                    vg.i_cmpl=vg.i_cmpl[:j]+vg.i_cmpl[j+1:]
+                j=j+1
+        i=i+1
+    
+    return vg    
+
+
+
+def refine_subsentence(vg):
+    """
+    This function transform some subsentence to relative
+    Input=verbal structure                         Output=verbal structure        
+    """
+    
+    #init
+    i=0
+    while i < len(vg.vrb_sub_sentence):
+        if vg.vrb_sub_sentence[i].aim=='what':
+            vg.vrb_sub_sentence[i].aim='that'
+            vg.vrb_sub_sentence[i].data_type='relative'
+            gn=Nominal_Group(['the'],['thing'],[],[],[vg.vrb_sub_sentence[i]])
+            vg.d_obj=vg.d_obj+[gn]
+            vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
+            i=i-1
+        
+        i=i+1
+        
+    return vg

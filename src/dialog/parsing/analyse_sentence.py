@@ -459,6 +459,9 @@ def y_n_ques(type, request, sentence):
         #We recover the direct, indirect complement and the adverbial
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
     
+    vg=analyse_verbal_structure.refine_indirect_complement(vg)
+    vg=analyse_verbal_structure.refine_subsentence(vg)
+    
     analysis.sv=[vg]
     return analysis
 
@@ -603,7 +606,10 @@ def other_sentence(type, request, sentence):
         sentence=analyse_verbal_structure.add_it(sentence,request)
         #We recover the direct, indirect complement and the adverbial
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
-        
+    
+    vg=analyse_verbal_structure.refine_indirect_complement(vg)
+    vg=analyse_verbal_structure.refine_subsentence(vg)
+    
     analysis.sv=[vg]
     return analysis
 

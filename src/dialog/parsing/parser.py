@@ -1879,7 +1879,7 @@ class TestParsing(unittest.TestCase):
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     """
-    
+
     """
     def test_61(self):
         print ''
@@ -1907,11 +1907,10 @@ class TestParsing(unittest.TestCase):
                 [Nominal_Group([],['it'],[],[],[])], 
                 [Verbal_Group(['be'], [],'present simple', 
                     [], 
-                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])]),
-                     Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
+                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[]),Nominal_Group(['the'],['shelf'],[],[],[])])],
                     [], [] ,'negative',[])])]
         
-        rslt[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="BUT"
+        rslt[1].sv[0].i_cmpl[0].nominal_group[1]._conjunction="BUT"
       
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -1965,14 +1964,14 @@ class TestParsing(unittest.TestCase):
             Sentence('statement', '', 
                 [Nominal_Group([],['I'],[],[],[])], 
                 [Verbal_Group(['know'], [],'present simple', 
-                    [], 
-                    [],
-                    [], [] ,'negative',[Sentence('subsentence', 'what', 
+                    [Nominal_Group(['the'],['thing'],[],[],[Sentence('relative', 'that', 
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['talk'], [],'present progressive', 
                             [], 
                             [Indirect_Complement(['about'],[Nominal_Group([],['it'],[],[],[])])],
-                            [], [] ,'affirmative',[])])])])]
+                            [], [] ,'affirmative',[])])])], 
+                    [],
+                    [], [] ,'negative',[])])]
       
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)     
@@ -2045,8 +2044,7 @@ class TestParsing(unittest.TestCase):
                 [Nominal_Group([],['apple'],[],[],[])], 
                 [Verbal_Group(['grow'], [],'present simple', 
                     [], 
-                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[],[],[])]),
-                     Indirect_Complement(['on'],[Nominal_Group([],['plant'],[],[],[])])],
+                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[],[],[]),Nominal_Group([],['plant'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
             Sentence('imperative', '', 
                 [], 
@@ -2057,7 +2055,7 @@ class TestParsing(unittest.TestCase):
         
         rslt[0].sn[0]._quantifier="ALL"
         rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
-        rslt[0].sv[0].i_cmpl[1].nominal_group[0]._quantifier="ALL"
+        rslt[0].sv[0].i_cmpl[0].nominal_group[1]._quantifier="ALL"
         rslt[1].sv[0].d_obj[0]._quantifier="DIGIT"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
@@ -2150,8 +2148,7 @@ class TestParsing(unittest.TestCase):
                 [Nominal_Group([],['apple'],[['red',[]]],[],[])], 
                 [Verbal_Group(['grow'], [],'present simple', 
                     [], 
-                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[['green',[]]],[],[])]),
-                     Indirect_Complement(['on'],[Nominal_Group([],['plant'],[],[],[])])],
+                    [Indirect_Complement(['on'],[Nominal_Group([],['tree'],[['green',[]]],[],[]),Nominal_Group([],['plant'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '', 
                     [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
@@ -2168,7 +2165,7 @@ class TestParsing(unittest.TestCase):
         
         rslt[0].sn[0]._quantifier="ALL"
         rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
-        rslt[0].sv[0].i_cmpl[1].nominal_group[0]._quantifier="ALL"
+        rslt[0].sv[0].i_cmpl[0].nominal_group[1]._quantifier="ALL"
         rslt[1].sn[0]._quantifier="SOME"
         rslt[1].sn[0].noun_cmpl[0]._quantifier="SOME"
         rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
