@@ -156,30 +156,53 @@ class Resolver:
         
     def _resolve_references(self, nominal_group, matcher, current_speaker, current_object, onto = None):
         
-        if nominal_group._resolved: #already resolved: possible after asking human for more details.
+        # Case of a resolved nominal group
+        if nominal_group._resolved: 
             return nominal_group
         
-        if nominal_group.adjectives_only():#E.g, 'big' in 'the yellow banana is big'.
+        # Case of a nominal group built by only adjectives 
+        #   E.g, 'big' in 'the yellow banana is big'.
+        if nominal_group.adjectives_only():
             nominal_group.id = '*'
             nominal_group._resolved = True
             return nominal_group
         
-        
-        if nominal_group._quantifier != 'ONE': # means the nominal group holds an indefinite determiner. E.g a robot, every plant, fruits, ...
+        # Case of a quantifier different from ONE
+        #   means the nominal group holds an indefinite determiner. 
+        #   E.g a robot, every plant, fruits, ...
+        if nominal_group._quantifier != 'ONE': 
             nominal_group.id = get_class_name(nominal_group.noun[0], onto)
             nominal_group._resolved = True
             return nominal_group
         
+        # Case of an anaphoric word in the determiner
+        if nominal_group.det and nominal_group.det[0].lower in ['this', 'that']:
+            onto_focus = ''
+            try:
+                onto_focus = ResourcePool().ontology_server.findForAgent(current_speaker, 
+                                                                            '?concept', 
+                                                                            [current_speaker + ' focusesOn ?concept'])
+            except AttributeError:
+                pass
+            
+            if onto_focus:
+                nominal_group.id = onto_focus[0]
+                nominal_group._resolved = True
+
+            else:
+                nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, current_object)
+            
         
-        if not nominal_group.noun:# Nominal group with no noun.
+        # Case of a nominal group with no Noun
+        if not nominal_group.noun:
             return nominal_group
         
-        #In the following , if there are two nouns in the same sentence
-        #they will be split into two different nominal groups. Therefore we can use noun[0]
+        # Case of an existing ID in the Ontology
         if onto and [nominal_group.noun[0],"INSTANCE"] in onto:
             nominal_group.id = nominal_group.noun[0]
             nominal_group._resolved = True
-            
+        
+        # Case of personal prounouns
         if current_speaker and nominal_group.noun[0].lower() in ['me','i']:
             logging.debug("Replaced \"me\" or \"I\" by \"" + current_speaker + "\"")
             nominal_group.id = current_speaker
@@ -190,31 +213,10 @@ class Resolver:
             nominal_group.id = 'myself'
             nominal_group._resolved = True
         
-        
+        #Anaphoric words in the noun
         if nominal_group.noun[0].lower() in ['it', 'one']:
-            if current_object:
-                self._current_object = None
-                return current_object
-                
-                
-            if not self.sentences_store:
-                raise DialogError("Empty Dialog history")
-            
-            sf = SentenceFactory()
-            object = matcher.match_first_object(get_last(self.sentences_store, 3), nominal_group)
-            
-            # Case there exist only one nominal group identified from anaphora matching
-            if object and len(object[1]) <= 1:
-                nominal_group = object[0]
-            
-            # Ask confirmation to the user
-            else:
-                raise UnidentifiedAnaphoraError({'object':nominal_group,
-                                                'object_to_confirm':object[0],
-                                                'object_with_more_info':None,
-                                                'objects_list': object[1],
-                                                'sentence':self._current_sentence,
-                                                'question':sf.create_do_you_mean_reference(object[0])}) 
+            nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, current_object)
+
         return nominal_group
     
     def _resolve_groups_references(self, array_sn, matcher, current_speaker, current_object):
@@ -232,6 +234,44 @@ class Resolver:
            
         return resolved_sn
     
+    
+    def _references_resolution_with_anaphora_matcher(self, nominal_group, matcher, current_object):
+        """ This attempts to match the nominal group containing anaphoric words with an object identifed from 
+            the dialog history.
+            However, a confirmation is asked to user
+        """
+        if current_object:
+            self._current_object = None
+            return current_object
+        
+        # Trying to match anaphora
+        if not self.sentences_store:
+            raise DialogError("Empty Dialog history")
+            
+        sf = SentenceFactory()
+        
+        #object = [ng, [List]]
+        #       Where ng is the first nominal group to match with the anaphoric word
+        #       and List contains nominal group that are to be explored if ng is not confirmed from the user
+        
+        object = matcher.match_first_object(get_last(self.sentences_store, 10), nominal_group)
+        
+        # Case there exist only one nominal group identified from anaphora matching
+        if object and len(object[1]) <= 1:
+            nominal_group = object[0]
+        
+        # Ask confirmation to the user
+        else:
+            raise UnidentifiedAnaphoraError({'object':nominal_group,
+                                            'object_to_confirm':object[0],
+                                            'object_with_more_info':None,
+                                            'objects_list': object[1],
+                                            'sentence':self._current_sentence,
+                                            'question':sf.create_do_you_mean_reference(object[0])})
+                                            
+        return nominal_group
+        
+        
     
     def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
         """This attempts to resolve a single nominal by the use of discrimiation routines.
@@ -355,10 +395,11 @@ def get_last(list, nb):
     #Not empty list but, NB > len(list).
     last = len(list)
     if nb > last:
-        nb = 0
-    
+        stnts = list
+
     # last NB elements
-    stnts = list[(last - nb):last]
+    else:
+        stnts = list[(last - nb):last]
     
     #reverse    
     stnts.reverse()

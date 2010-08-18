@@ -200,6 +200,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         stmt = "the red apple is on the big tree"
         res = self.dialog.test('myself', stmt)
         
+        
         ##sentence2
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
@@ -238,7 +239,31 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* actsOnObject red_apple']
                             
         self.assertTrue(self.check_results(res, expected_result))
+    
+    
+    def test_sentence8(self):
         
+        print("\n##################### test_sentence8 - THIS NO FOCUS########################\n")
+        #Fill up History
+        self.oro.remove(['myself focusesOn y_banana'])
+        ##sentence2
+        stmt = "the green banana is next to the red apple"
+        res = self.dialog.test('myself', stmt)
+        
+        ##sentence3
+        stmt = "I see this"
+        ###
+        answer = "No. I mean the red apple"
+        res = self.dialog.test('myself', stmt, answer)
+        
+        expected_result = ['* rdf:type See',
+                            '* performedBy myself',
+                            '* actsOnObject red_apple']
+        
+        self.oro.add(['myself focusesOn y_banana'])
+        self.assertTrue(self.check_results(res, expected_result))
+    
+    
   
     def tearDown(self):
         self.dialog.stop()
@@ -809,6 +834,7 @@ if __name__ == '__main__':
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence5'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence6'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence7'))
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence8'))
    
         
     

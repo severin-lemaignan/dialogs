@@ -12,7 +12,7 @@ from helpers import colored_print
 
 from dialog_exceptions import UnsufficientInputError, UnidentifiedAnaphoraError
 
-from sentence import Sentence
+from dialog.sentence import *
 
 from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser
@@ -147,7 +147,7 @@ class Dialog(Thread):
             self._logger.info(colored_print("##########################################", 'green'))            
             self._logger.info(colored_print(input + "\n", 'blue'))
             
-            self._last_output['object_with_more_info'] = sentence.nom_gr_remerge(self._parser.parse(input, None),
+            self._last_output['object_with_more_info'] = nom_gr_remerge(self._parser.parse(input, None),
                                                                 self._last_output['status'],
                                                                 self._last_output['object'])
             #No more info needed
