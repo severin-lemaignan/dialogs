@@ -69,10 +69,16 @@ def nom_struc_rebuilding(nom_struc):
                     nn=[n[0]]
             if nom_struc[i].noun!=[] and nn==[]:
                 nn=[nom_struc[i].noun[0]+'s']
-            nominal_structure = nominal_structure + nom_struc[i].det + nom_struc[i].adj +nn
+            nominal_structure = nominal_structure + nom_struc[i].det
+            for z in nom_struc[i].adj:
+                nominal_structure = nominal_structure+z[1]+[z[0]]
+            nominal_structure = nominal_structure+nn
         else:
-            nominal_structure = nominal_structure + nom_struc[i].det + nom_struc[i].adj +nom_struc[i].noun
-        
+            nominal_structure = nominal_structure + nom_struc[i].det
+            for z in nom_struc[i].adj:
+                nominal_structure = nominal_structure+z[1]+[z[0]]
+            nominal_structure = nominal_structure+nom_struc[i].noun
+            
         if nom_struc[i].noun_cmpl!=[]:
             nominal_structure = nominal_structure + ['of']
             nominal_structure=nominal_structure+nom_struc_rebuilding(nom_struc[i].noun_cmpl)
@@ -104,7 +110,7 @@ def indirect_compl_rebuilding(indirect_compl):
     #We have 2 cases : with preposal and without
     if indirect_compl.prep!=[]:
         nom_gr= nom_struc_rebuilding(indirect_compl.nominal_group)
-        
+        print nom_gr
         if nom_gr!=[] and (nom_gr[0]=='and' or nom_gr[0]=='or' or nom_gr[0]=='but'):
             nom_gr=[nom_gr[0]]+indirect_compl.prep+nom_gr[1:]
         else:
@@ -177,8 +183,10 @@ def conjugate_vrb(tense, verb, sn, type, aim):
     elif tense=='past simple':
 
         if verb[0]=='be':
+            if sn[0].noun==['I']:
+                return ['was']+verb[1:]
             #Plural nouns
-            if other_functions.plural_noun(sn)==1:
+            elif other_functions.plural_noun(sn)==1:
                 return ['were']+verb[1:]
             else:
                 #Singular nouns
