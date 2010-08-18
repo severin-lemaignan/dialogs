@@ -155,8 +155,7 @@ class SentenceFactory:
                 prep = []
                 
             sentence.sv[0].i_cmpl = [Indirect_Complement(prep, nominal_groupL)]
-            
-        
+       
         return [sentence]
     
     
@@ -274,7 +273,10 @@ class SentenceFactory:
                 pass
                 
             if onto:
-                object_features.extend(onto)        
+                #Adjectives quantifiers
+                onto.append([])
+                object_features.append(onto)
+                
         
         # Object Location
         object_location = []
@@ -312,6 +314,7 @@ class SentenceFactory:
                 prep = 'at'
             
             for i_c_object in onto:
+                #TODO: Reduce recursivity so that we don't have , the bottle thais on the table, that is in Toulouse, that is in France, that is ...
                 object_location.append(Indirect_Complement([prep], [self.create_w_question_object(i_c_object)]))        
         
         #Keep Location in a relative description => relative
@@ -342,6 +345,7 @@ class SentenceFactory:
             pass
             
         for n_cmpl_object in onto:
+            #TODO: Reduce recursivity so that we don't have , the bottle of the table, of Toulouse, of France, of ...
             object_owner.append(self.create_w_question_object(n_cmpl_object))
         
             
@@ -360,7 +364,7 @@ class SentenceFactory:
         sentence = self.reverse_personal_pronoun(yes_no_question)
         
         if answer:
-            return [Sentence("agreement",
+            return [Sentence("agree",
                                 "", 
                                 [],
                                 []),
@@ -370,7 +374,7 @@ class SentenceFactory:
             for sv in sentence.sv:
                 sv.state = "negative"
                 
-            return [Sentence("disagreement",
+            return [Sentence("disagree",
                                 "",
                                 [],
                                 []),

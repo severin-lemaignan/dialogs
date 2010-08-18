@@ -347,7 +347,7 @@ class NominalGroupStatementBuilder:
             #Getting the object property if there exists a specific class
             object_property = ''
             try:
-                object_property = " has" + ResourcePool().adjectives[adj] + " "
+                object_property = " has" + ResourcePool().adjectives[adj[0]] + " "
             
             #Default case, creating hasFeature object Property
             except KeyError:
@@ -358,11 +358,11 @@ class NominalGroupStatementBuilder:
                 negative_adj = generate_id(with_question_mark = not nominal_group._resolved)
                 
                 self._statements.append(ng_id + object_property + negative_adj)
-                self._statements.append(negative_adj + ' owl:differentFrom ' + adj)
+                self._statements.append(negative_adj + ' owl:differentFrom ' + adj[0])
             
             #Case Affirmative assertion
             else:
-                self._statements.append(ng_id + object_property + adj)
+                self._statements.append(ng_id + object_property + adj[0])
                     
     
     
