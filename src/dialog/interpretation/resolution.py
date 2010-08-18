@@ -250,8 +250,15 @@ class Resolver:
         
         #Trying to discriminate 
         description = [[current_speaker, '?concept', stmts]]
+        
+        #   Features to skip from discrimination
+        features = []
+        if self._current_sentence.data_type in ['w_question', 'yes_no_question']:
+            features = [self._current_sentence.aim]
+            
+        #   Discriminate
         try:
-            id = discriminator.clarify(description)
+            id = discriminator.clarify(description, features)
         except UnsufficientInputError as uie:
             sf = SentenceFactory()
             uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
