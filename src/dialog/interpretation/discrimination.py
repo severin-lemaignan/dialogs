@@ -62,7 +62,7 @@ class Discrimination():
     # - zPartial: if 1, then partial discriminants are also returned
     # OUTPUT:
     # - discriminant: [C, discriminat] if complete, or [P, discriminant] if partial
-    #   The new discriminant should be different from the ones already known
+    #   The new discriminant should be different from the ones already known or ignored
     # -----------------------------------------------------------------------------#
     def get_discriminant(self, agent, objL, currentDesc, zPartial):
         if agent == "myself":
@@ -97,12 +97,14 @@ class Discrimination():
     # - description: 
     #   [[agent1 '?obj' oro_query]..[[agentN '?obj' oro_query]]
     #   (oro_query= ['?obj hasColor blue',.. ?obj hasShape box'])
+    # - ignoreFeatureL: list of features not to use as discriminants
+    #   [feat1 ..featN]
     # - allowPartialDesc: consider also partial discriminants (1) or not (0) (0 default)
     #
     # OUTPUT:
     # - descriptor or None (if no discriminant for any agent found)
     # -----------------------------------------------------------------------------#
-    def get_descriptor(self, description, partial_disc=0):
+    def get_descriptor(self, description, ignoreFeatureL, partial_disc=0):
         objL = self.get_all_objects_with_desc(description)
         descriptor = None
         agent = None
@@ -110,16 +112,18 @@ class Discrimination():
         # bug in oro doesn't allow to search discriminants base on other agents models!!
         # we cannot search in all agents, but only in robot's model
 #        for agent_desc in description:
+#            # list current descriptors to not to use them anymore
 #            currentDescriptors = map(lambda x: x.split()[1], agent_desc[2])
-#            descriptor = self.get_discriminant(agent_desc[0], objL, currentDescriptors, partial_disc)
+#            descriptor = self.get_discriminant(agent_desc[0], objL, currentDescriptors+ignoreFeatureL, partial_disc)
 #
 #            if descriptor:
 #                agent = agent_desc[0]
 #                break
 
         agent = "myself"
+        # list current descriptors to not to use them anymore
         currentDescriptors = map(lambda x: x.split()[1], description[0][2])
-        descriptor = self.get_discriminant(description[0][0], objL, currentDescriptors, partial_disc)
+        descriptor = self.get_discriminant(description[0][0], objL, currentDescriptors+ignoreFeatureL, partial_disc)
 
         return agent, descriptor
 
@@ -187,6 +191,7 @@ class Discrimination():
     # INPUT:
     # - description [['myself', '?obj', ['?obj rdf:type Bottle', '?obj hasColor blue']],
     #                ['agent1', '?obj', ['?obj isVisible True']]
+    # - ignoreFeatureL [feat1..featN] List of features not to use as discriminators.
     #
     # OUTPUT:
     # - objectID: ok
@@ -195,7 +200,8 @@ class Discrimination():
     #   - [SUCCESS, "Which value? ..."]: user should indicate value for descriptor (mantain previous description)
     #   - [SUCCESS, "additional info required"]: user should give additional info (mantain previous description)
     # -----------------------------------------------------------------------------#
-    def clarify(self, description):
+    def clarify(self, description, ignoreFeatureL):
+        
         logging.debug("> Looking in " + description[0][0] + "'s model for concepts matching " +  str(description[0][2]))
         objL = self.get_all_objects_with_desc(description)        
         logging.debug('> Got this list of concepts: ' +  str(colored_print(objL, 'blue')))
@@ -218,7 +224,7 @@ class Discrimination():
             return objL[0]
             
         else:
-            agent, descriptor = self.get_descriptor(description)
+            agent, descriptor = self.get_descriptor(description, ignotreFeatureL)
             object = self.get_type_description(description)
 
             if descriptor:
