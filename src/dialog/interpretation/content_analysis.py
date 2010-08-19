@@ -49,6 +49,10 @@ class ContentAnalyser:
         self.adder._statements_to_remove = self.builder._statements_to_remove
         stmts = self.adder.process()
         
+        # Class grounding
+        if self.builder.lear_more_concept:
+            self.output_sentence.extend(self.sfactory.create_what_is_a_reference(sentence, self.builder.lear_more_concept))
+        
         return stmts
     
     def process_question(self, sentence, current_speaker):

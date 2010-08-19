@@ -40,6 +40,9 @@ class StatementBuilder:
         #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
         self._unclarified_ids = []
         
+        #This field holds concepts for class grounding
+        self.lear_more_concept = []
+        
 
     def clear_statements(self):
         self._statements = []
@@ -68,6 +71,7 @@ class StatementBuilder:
         
         self._statements.extend(ng_stmt_builder._statements)
         self._unclarified_ids.extend(ng_stmt_builder._unclarified_ids)
+        self.lear_more_concept.extend(ng_stmt_builder.lear_more_concept)
         
     def process_verbal_groups(self, sentence):
         #VerbalGroupStatementBuilder
@@ -84,6 +88,7 @@ class StatementBuilder:
             
             self._statements.extend(vg_stmt_builder._statements)
             self._unclarified_ids.extend(vg_stmt_builder._unclarified_ids)
+            self.lear_more_concept.extend(vg_stmt_builder.lear_more_concept)
             
             # Case of statement to remove due to some case of negation
             if vg_stmt_builder.process_statements_to_remove:
@@ -97,6 +102,7 @@ class StatementBuilder:
             
             self._statements.extend(vg_stmt_builder._statements)
             self._unclarified_ids.extend(vg_stmt_builder._unclarified_ids)
+            self.lear_more_concept.extend(vg_stmt_builder.lear_more_concept)
             
             # Case of statement to remove due to some case of negation
             if vg_stmt_builder.process_statements_to_remove:
@@ -117,6 +123,9 @@ class NominalGroupStatementBuilder:
         #This holds unidentified IDs that are generated while creating the statements of a resolved sentence.
         #   Possibly in the case of a negative sentence involving an action that is to be identity in the module StatementSafeAdder
         self._unclarified_ids = []
+        
+        #This field holds concepts for class grounding
+        self.lear_more_concept = []
         
     def clear_statements(self):
         self._statements = []
@@ -180,9 +189,32 @@ class NominalGroupStatementBuilder:
                 
         # End of process_all_component_of_a_nominal_group()
         
+        def get_concept_to_learn(nom_grp):
+            if nom_grp._quantifier == 'ONE':
+                return [] #Concept already known for sure
+            
+            learn_more = []
+            
+            for noun in nom_grp.noun:
+                onto = ''
+                try:
+                    onto = ResourcePool().ontology_server.lookupForAgent(self._current_speaker, noun)
+                except AttributeError:
+                    pass
+                
+                if not onto: 
+                    learn_more.append(noun)
+            
+            return learn_more
+        # End of get_concept_to_learn ()
+        
         
         # Case of resolved nominal group
         if ng._resolved:
+            
+            #Trying to learn more concept
+            self.lear_more_concept = get_concept_to_learn(ng)
+            
             # Case: Adjectives only
             if ng.adjectives_only():
                 self.process_adjectives(ng, ng_id, negative_object)
@@ -336,7 +368,7 @@ class NominalGroupStatementBuilder:
                 # Case of affirmative sentence
                 else:
                     self._statements.append(ng_id + object_property + class_name)
-            
+                    
     
     def process_adjectives(self, nominal_group, ng_id, negative_object):
         """For any adjectives, we add it in the ontology with the objectProperty 
@@ -438,14 +470,14 @@ class NominalGroupStatementBuilder:
                     
                 self._statements.extend(rel_ng_stmt_builder._statements)
                 self._unclarified_ids.extend(rel_ng_stmt_builder._unclarified_ids)
-                
+                self.lear_more_concept.extend(rel_ng_stmt_builder.lear_more_concept)
             #case 2        
             else:
                 rel_vg_stmt_builder.process_verbal_groups(rel.sv, ng_id, None)
             
             self._statements.extend(rel_vg_stmt_builder._statements)
             self._unclarified_ids.extend(rel_vg_stmt_builder._unclarified_ids)
-                    
+            self.lear_more_concept.extend(rel_vg_stmt_builder.lear_more_concept)
 
 class VerbalGroupStatementBuilder:
     """ Build statements related to a verbal group"""
@@ -478,6 +510,9 @@ class VerbalGroupStatementBuilder:
         #this fiels is True when the sentence that is being processed holds a negative state and 
         # more particualrly in the case of action verbs where a static situation reference is generated
         self.process_statements_to_remove = False
+        
+        #This field holds concepts for class grounding
+        self.lear_more_concept = []
 
     def set_attribute_on_data_type(self, data_type):
         if data_type == 'imperative':
@@ -612,7 +647,8 @@ class VerbalGroupStatementBuilder:
         vrb_sec_builder = VerbalGroupStatementBuilder(verbal_group.sv_sec, self._current_speaker)
         vrb_sec_builder.process_verbal_groups(verbal_group.sv_sec, subject_id, subject_quantifier, sit_id)
         self._statements.extend(vrb_sec_builder._statements)
-        
+        self._unclarified_ids.extend(vrb_sec_builder._unclarified_ids)
+        self.lear_more_concept.extend(vrb_sec_builder.lear_more_concept)
             
     def process_direct_object(self, d_objects, verb, id, quantifier):
         """This processes the attribute d_obj of a sentence verbal groups."""
@@ -660,7 +696,7 @@ class VerbalGroupStatementBuilder:
             
         self._statements.extend(d_obj_stmt_builder._statements)
         self._unclarified_ids.extend(d_obj_stmt_builder._unclarified_ids)
-        
+        self.lear_more_concept.extend(d_obj_stmt_builder.lear_more_concept)
         
             
     def process_indirect_complement(self, indirect_cmpls,verb, sit_id):
@@ -743,7 +779,7 @@ class VerbalGroupStatementBuilder:
                 
             self._statements.extend(i_stmt_builder._statements)
             self._unclarified_ids.extend(i_stmt_builder._unclarified_ids)
-            
+            self.lear_more_concept.extend(i_stmt_builder.lear_more_concept)
                 
                 
     #TODO:      
@@ -822,10 +858,9 @@ def get_class_name(noun,conceptL):
     """Simple function to obtain the exact class name"""
     for c in conceptL:
         if 'CLASS' in c: return c[0]
-    #TODO: Learn_more.append(c)
     
     return noun.capitalize()
-
+     
 
 def generate_id(with_question_mark = True):
     sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

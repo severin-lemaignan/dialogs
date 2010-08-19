@@ -111,6 +111,20 @@ class SentenceFactory:
                     [Nominal_Group([],['you'],[],[],[])], 
                     [Verbal_Group(['mean'], [],'present simple', [object], [], [], [] ,'affirmative',[])])]
         
+    
+    def create_what_is_a_reference(self, object, objectL):
+        """ Creates sentences of type: 
+            "bottles are objects? What is a bottle?"
+        """
+        sentence = [object, Sentence('w_question', 'thing', 
+                        [], [Verbal_Group(['be'], [],'present simple', [], [], [], [] ,'affirmative',[])])]
+                        
+        for obj in objectL:
+            sentence[1].sn.append(Nominal_Group(['an' if obj[0].lower() in 'aeiou' else 'a'], 
+                                                [obj],[],[],[]))
+        
+        return sentence
+        
         
     
     def create_w_question_answer(self, w_question, w_answer, query_on_field):
