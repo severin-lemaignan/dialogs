@@ -5,6 +5,7 @@ import logging
 from dialog.helpers import colored_print
 
 from statements_builder import StatementBuilder
+from statements_builder import StatementSafeAdder
 from questions_handler import QuestionHandler
 from dialog.sentence import SentenceFactory
 from dialog.resources_manager import ResourcePool
@@ -15,6 +16,7 @@ from dialog.resources_manager import ResourcePool
 class ContentAnalyser:
     def __init__(self):
         self.builder = StatementBuilder()
+        self.adder = StatementSafeAdder()
         self.question_handler = QuestionHandler()
         self.sfactory = SentenceFactory()
         
@@ -42,10 +44,10 @@ class ContentAnalyser:
         
         logging.info("Adding New statements in Ontology")
         
-        try:
-            ResourcePool().ontology_server.safeAdd(stmts)
-        except AttributeError:
-            logging.info("Error with method safeAdd of ontology")
+        self.adder._unclarified_ids = self.builder._unclarified_ids
+        self.adder._statements = stmts
+        self.adder._statements_to_remove = self.builder._statements_to_remove
+        stmts = self.adder.process()
         
         return stmts
     
