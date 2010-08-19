@@ -1,15 +1,49 @@
 ## 
-This list holds adverbs
+This list holds numbers and there references
 ##
 
-sdqsdqs
+zero 0
+one 1
+two 2
+three 3
+four 4
+five 5 
+six 6
+seven 7
+eight 8
+nine 9
+ten 10
+eleven 11
+twelve 12
+thirt 3
+fift 5
+twent 20
+hundred 100
+thousand 1000
+million 1000000
+
+
 
 
 ## 
-This list holds adverbs
+This list holds quantifiers of determinant
 ##
 
-qsdqsdqsdqs
+a SOME
+an SOME
+no NONE
+those SOME
+these SOME
+any ANY
+all ALL
+some SOME
+every ALL
+more SOME
+less SOME
+another SOME
+
+
+
 
 ## 
 This list holds adverbs
@@ -41,3 +75,107 @@ W
 X
 Y
 Z
+
+
+
+
+## 
+This list holds adjective rules
+##
+
+al
+ous
+est
+ing
+y
+less
+ble
+ed
+ful
+ish
+ive
+ic
+
+
+
+
+## 
+This list holds proposals that we have to concatenate
+##
+
+next to
+behind to
+in front of
+in spite of
+because of
+to whom
+in which
+
+
+
+
+## 
+This list holds tuples that we have to change
+##
+
+; ; 1
+, , 1
+'m am 2
+'ve have 3
+'re are 3
+'ll will 3
+'d would 2
+n't not 3
+
+
+
+
+## 
+This list holds adjective numbers
+##
+
+first
+second
+third
+fifth
+ninth
+
+
+
+
+## 
+This list holds all forms of the verb be in present with a pronoun
+##
+
+he's
+she's
+it's
+that's
+what's
+who's
+how's
+
+
+
+
+## 
+This list holds quantifiers of adjectives
+##
+
+very
+much
+many
+so
+too
+
+
+
+
+## 
+This list holds tuples that we have to replace
+##
+
+won't will not
+wanna want to
+gonna going to
+can't can not

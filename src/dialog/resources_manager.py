@@ -172,7 +172,7 @@ class ResourcePool:
         flag=0
         list_list_word=our_list=[]
         for i in word_list:
-            if i!=():
+            if i!=[]:
                 if i[0].startswith('#'):
                     if flag==0:
                         flag=1
@@ -189,7 +189,7 @@ class ResourcePool:
         return list_list_word
 
     def __init__(self, data_path = DATA_DIR, oro_host = ORO_HOST, oro_port = ORO_PORT):
-        
+        """
         self.ontology_server = None
         
         try:
@@ -200,6 +200,7 @@ class ResourcePool:
         except OroServerError:
             logging.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
             ". Continuing without the ontology server. Amongst others, resolution won't work.")
+        """
         
         self.adjectives = {}
         self.irregular_verbs_past = []
@@ -213,8 +214,32 @@ class ResourcePool:
         self.demonstrative_det = []
         self.adverbs = []
         self.proposals = []
-        self.relative_proposals = []
-        
+        self.compelement_proposals = []
+        self.capital_letters = []
+        self.determinants = []
+        self.nouns_end_s = []
+        self.relatives = []
+        self.subsentences = []
+        self.det_quantifiers = []
+        self.adjective_rules = []
+        self.composed_nouns = []
+        self.plural_nouns = []
+        self.auxiliary = []
+        self.direct_transitive = []
+        self.indirect_transitive = []
+        self.state = []
+        self.complement_pronouns = []
+        self.concatenate_proposals = []
+        self.change_tuples = []
+        self.adjective_numbers = []
+        self.be_pronoun = []
+        self.noun_not_composed = []
+        self.adj_quantifiers = []
+        self.verb_need_to = []
+        self.prep_change_place = []
+        self.replace_tuples = []
+
+
 
         """list of tokens that can start a sentence"""
         self.sentence_starts = []
@@ -242,48 +267,72 @@ class ResourcePool:
         
         
         
-        verbs = [tuple(line.split()) 
+        verbs = [list(line.split()) 
                                 for line 
                                 in open (os.path.join(data_path, "verbs"))]
         verbs = self.split_list(verbs)
         self.irregular_verbs_past=verbs[0]
         self.irregular_verbs_present=verbs[1]
         self.preposition_verbs=verbs[2]
-        self.modal=verbs[3]
-        self.adjective_verb=verbs[4]
+        self.modal=[k[0] for k in verbs[3]]
+        self.adjective_verb=[k[0] for k in verbs[4]]
+        self.auxiliary=[k[0] for k in verbs[5]]
+        self.direct_transitive=[k[0] for k in verbs[6]]
+        self.indirect_transitive=[k[0] for k in verbs[7]]
+        self.state=[k[0] for k in verbs[8]]
+        self.verb_need_to=[k[0] for k in verbs[9]]
                                 
                                 
         self.sentence_starts = [tuple(line.split()) 
                                 for line 
                                 in open (os.path.join(data_path, "sentence_starts"))]       
-         
-         
-        nouns = [tuple(line.split()) 
+        
+        
+        nouns = [list(line.split()) 
                     for line 
-                    in open (os.path.join(data_path, "nouns"))]   
+                    in open (os.path.join(data_path, "nouns"))]
         nouns = self.split_list(nouns)
-        self.special_nouns=nouns[0]
-        self.pronouns=nouns[1]
-        self.numbers=nouns[2]
-        self.demonstrative_det=nouns[3]
+        self.special_nouns=[k[0] for k in nouns[0]]
+        self.pronouns=[k[0] for k in nouns[1]]
+        self.demonstrative_det=[k[0] for k in nouns[2]]
+        self.determinants=[k[0] for k in nouns[3]]
+        self.nouns_end_s=[k[0] for k in nouns[4]]
+        self.relatives=[k[0] for k in nouns[5]]
+        self.composed_nouns=[k[0] for k in nouns[6]]
+        self.plural_nouns=nouns[7]
+        self.complement_pronouns=[k[0] for k in nouns[8]]
+        self.noun_not_composed=[k[0] for k in nouns[9]]
         
         
-        adverbials = [tuple(line.split()) 
+        adverbials = [list(line.split()) 
                     for line 
                     in open (os.path.join(data_path, "adverbial"))]   
         adverbials = self.split_list(adverbials)
-        self.adverbs=adverbials[0]
-        self.proposals=adverbials[1]
-        for k in self.proposals:
-            if k[1]==1:
-                self.relative_proposals=self.relative_proposals+k
+        self.adverbs=[k[0] for k in adverbials[0]]
+        proposal=adverbials[1]
+        for k in proposal:
+            if k[1]=='1':
+                self.compelement_proposals=self.compelement_proposals+[k[0]]
+            self.proposals=self.proposals+[k[0]]
+        self.subsentences=[k[0] for k in adverbials[2]]
+        self.prep_change_place=[k[0] for k in adverbials[3]]
         
         
-        grammatical_rules = [tuple(line.split()) 
+        grammatical_rules = [list(line.split()) 
                     for line 
                     in open (os.path.join(data_path, "grammatical_rules"))]   
         grammatical_rules = self.split_list(grammatical_rules)
-        self.capital_letters=grammatical_rules[2]
+        self.numbers=grammatical_rules[0]
+        self.det_quantifiers=grammatical_rules[1]
+        self.capital_letters=[k[0] for k in grammatical_rules[2]]
+        self.adjective_rules=[k[0] for k in grammatical_rules[3]]
+        self.concatenate_proposals=grammatical_rules[4]
+        self.change_tuples=grammatical_rules[5]
+        self.adjective_numbers=[k[0] for k in grammatical_rules[6]]
+        self.be_pronoun=[k[0] for k in grammatical_rules[7]]
+        self.adj_quantifiers=[k[0] for k in grammatical_rules[8]]
+        for k in grammatical_rules[9]:
+            self.replace_tuples=self.replace_tuples+[[k[0],k[1:]]]
         
         
         self.goal_verbs = [line.strip()

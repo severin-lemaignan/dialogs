@@ -113,11 +113,11 @@ def word_to_digit(word):
     for l in number_list:
         if word.startswith(l[0]):
             if word.endswith('teen'):
-                number=number+l[1]+10
+                number=number+int(l[1])+10
             elif word.endswith('ty') and word!='twenty':
-                number=number+l[1]*10
+                number=number+int(l[1])*10
             else:
-                number=number+l[1]
+                number=number+int(l[1])
     return number
             
             

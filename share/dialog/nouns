@@ -48,33 +48,6 @@ him
 
 
 ## 
-This list holds numbers and there references
-##
-
-zero 0
-one 1
-two 2
-three 3
-four 4
-five 5 
-six 6
-seven 7
-eight 8
-nine 9
-ten 10
-eleven 11
-twelve 12
-thirt 3
-fift 5
-twent 20
-hundred 100
-thousand 1000
-million 1000000
-
-
-
-
-## 
 This list holds demonstrative determinants
 ##
 
@@ -83,3 +56,104 @@ there
 these
 that
 those
+
+
+
+
+## 
+This list holds determinants
+##
+
+that
+the
+a
+an
+your
+his
+my
+this
+her
+their
+these
+every
+there
+some
+any
+those
+all
+no
+more
+less
+another
+
+
+
+
+## 
+This list holds word ends with 's' and it is not a plural
+##
+
+news
+glass
+bus
+Laas
+business
+is
+this
+yes
+
+
+
+
+## 
+This list holds relative proposals
+##
+
+who
+which
+that
+where
+to+whom
+whom
+in+which
+
+
+
+
+## 
+This list holds composed noun (the start or end of noun)
+##
+
+some
+any
+no
+
+
+
+
+## 
+This list holds nouns which don't have a regular form in plural
+##
+
+glasses glass
+busses bus
+
+
+
+
+## 
+This list holds complement pronoun
+##
+
+me
+you
+it
+
+
+
+
+## 
+This list holds noun which can be composed noun (but it is false)
+##
+
+now

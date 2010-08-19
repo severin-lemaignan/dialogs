@@ -41,23 +41,18 @@ import other_functions
 """
 Statement of lists
 """
-apostrophe_s_to_is_list=["he's", "she's", "it's", "that's", "what's", "who's", "how's"]
-replacement_tuples=[("won't",['will', 'not']),("wanna",['want', 'to']),("gonna",['going', 'to']),("can't",['can', 'not'])]
-insertion_tuples=[(";", ';', 1),(",", ',', 1),("'m", 'am', 2),("'ve", 'have', 3),
-                  ("'re", 'are', 3),("'ll", 'will', 3),("'d", 'would', 2),("n't", 'not', 3)]
-prep_list=['ago']
-prep_concat_list=[['next','to'],['behind','to'],['in','front','of'],['in','spite','of'],['because','of'],['to','whom'],['in','which']]
-rel_list=['who', 'which', 'that','where','to+whom','whom','in+which']
-sub_list=['while', 'but','where', 'when', 'if', 'what', 'however', 'although', 'because']
-adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to',
-                'next+to','in+front+of', 'into','in+spite+of','because+of','despite']
-superlative_number=['first','second','third','fifth','ninth']
-verb_preced_verb_list=['let']
-
-
-
+superlative_number = ResourcePool().adjective_numbers
+adverbial_list = ResourcePool().compelement_proposals
+sub_list = ResourcePool().subsentences
 frt_wd = ResourcePool().sentence_starts
 action_verb = ThematicRolesDict().get_all_verbs()
+rel_list = ResourcePool().relatives
+insertion_tuples = ResourcePool().change_tuples
+prep_concat_list = ResourcePool().concatenate_proposals
+apostrophe_s_to_is_list = ResourcePool().be_pronoun
+replacement_tuples = ResourcePool().replace_tuples
+prep_list = ResourcePool().prep_change_place
+verb_preced_verb_list = ResourcePool().verb_need_to
 
 
 
@@ -117,10 +112,10 @@ def upper_to_lower(sentence):
     This function converts the upper case to lower case
     Input=sentence, beginning sentence list                  Output=sentence         
     """
-    
+      
     #If the sentence begins with upper case
     if other_functions.find_cap_lettre(sentence[0]):
-
+        
         #We convert upper case to lower case if it is not 'I'
         if sentence[0]=='I':
             sentence=expand_contractions(sentence)
@@ -134,7 +129,7 @@ def upper_to_lower(sentence):
         for i in action_verb:
             if sentence[0]==i:
                 return sentence
-            
+         
         #If we find the word in the Beginning_sentence list
         for v in frt_wd:
             if sentence[0]==v[0]:
@@ -246,7 +241,7 @@ def expand_contractions(sentence):
             
         for j in insertion_tuples:
             if sentence[i].endswith(j[0]):
-                sentence = concatenate_pos(sentence, i, [j[1]], j[2])
+                sentence = concatenate_pos(sentence, i, [j[1]], int(j[2]))
                 i=i+1
                 break
         i=i+1

@@ -31,22 +31,19 @@ import other_functions
 """
 Statement of lists
 """
-det_list=['that','the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 
-          'every', 'there', 'some', 'any', 'those','all','no','more','less', 'another']
-adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
-composed_noun=['some', 'any', 'no']
-end_s_list=['is', 'this','yes']
-word_list=['now']
-superlative_number=['first','second','third','fifth','ninth']
-adj_quantifier=['very','much','many','so','too']
-
-
-
+word_list = ResourcePool().noun_not_composed
+adj_quantifier = ResourcePool().adj_quantifiers
+end_s_list = ResourcePool().nouns_end_s
+adj_rules = ResourcePool().adjective_rules
 adjective_list = ResourcePool().adjectives.keys()
 noun_list = ResourcePool().special_nouns
 pronoun_list = ResourcePool().pronouns
 adv_list = ResourcePool().adverbs
 proposal_list = ResourcePool().proposals
+det_list = ResourcePool().determinants
+composed_noun = ResourcePool().composed_nouns
+superlative_number = ResourcePool().adjective_numbers
+
 
 
 def is_an_adj(word):
@@ -57,7 +54,7 @@ def is_an_adj(word):
     
     #It is a noun so we have to return 1
     for j in noun_list:
-        if word==j[0]:
+        if word==j:
             return 0
     
     #For the regular adjectives
@@ -92,7 +89,7 @@ def adjective_pos(phrase, word_pos):
 
     #It is a noun so we have to return 1
     for j in noun_list:
-        if phrase[word_pos]==j[0]:
+        if phrase[word_pos]==j:
             return 1
     
     #For the regular adjectives

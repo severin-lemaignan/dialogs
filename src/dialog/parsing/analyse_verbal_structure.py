@@ -34,20 +34,18 @@ import analyse_sentence
 """
 Statement of lists
 """
-aux_list=['have', 'has', 'had', 'is', 'are', 'am', 'was', 'were', 'will']
-rel_list=['who', 'which', 'that','where','to+whom','whom','in+which']
-sub_list=['while', 'but','where', 'when', 'if', 'what', 'however', 'although', 'because']
-direct_trans_verb_list=['give', 'want', 'talk', 'say', 'mean','make']
-complement_pronoun=['me','you','it']
-inderect_trans_verb_list=['tell', 'say']
-state_vrb_list=['be','become']
-
-
-
+aux_list = ResourcePool().auxiliary
+complement_pronoun = ResourcePool().complement_pronouns
+direct_trans_verb_list = ResourcePool().direct_transitive
+inderect_trans_verb_list = ResourcePool().indirect_transitive
+state_vrb_list = ResourcePool().state
 adv_list = ResourcePool().adverbs
-rel_proposal_list = ResourcePool().relative_proposals
+rel_proposal_list = ResourcePool().compelement_proposals
 proposal_list = ResourcePool().proposals
 pronoun_list = ResourcePool().pronouns
+rel_list = ResourcePool().relatives
+sub_list = ResourcePool().subsentences
+
 
 
 def find_vrb_adv(phrase, vg):

@@ -11,6 +11,7 @@
     fill_nom_gr : to fulfill a structure Nominal_Group
     recover_ns : to recovers the nominal structure of the sentence                
 """
+from dialog.resources_manager import ResourcePool
 from dialog.sentence import *
 import analyse_nominal_group
 import other_functions
@@ -20,12 +21,10 @@ import analyse_sentence
 """
 Statement of lists
 """
-propo_rel_list=['who', 'which', 'that','where','to+whom','whom','in+which']
-quantifier_list=[('a','SOME'),('an','SOME'),('no','NONE'),('those','SOME'),('these','SOME'),('any','ANY'),('all','ALL'),('some','SOME'),
-       ('every','ALL'),('more','SOME'),('less','SOME'),('another','SOME')]
-noun_end_s_sing=['news','glass', 'bus','Laas','business']
-irreg_plur_noun=[('glasses','glass'),('busses','bus')]
-
+propo_rel_list = ResourcePool().relatives
+noun_end_s_sing = ResourcePool().nouns_end_s
+quantifier_list = ResourcePool().det_quantifiers
+irreg_plur_noun = ResourcePool().plural_nouns
 
 def recover_quantifier(nom_gr):
     """
@@ -50,7 +49,6 @@ def recover_quantifier(nom_gr):
         #If it is a number
         if other_functions.number(nom_gr.det[0])==1:
             nom_gr._quantifier='DIGIT'
-            print nom_gr.det[0]
             nom_gr.det=[other_functions.convert_to_digit(nom_gr.det[0])]
             
         #Here we will use the quantifier list
