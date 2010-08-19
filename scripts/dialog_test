@@ -70,6 +70,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'y_banana rdf:type Banana',
                         'y_banana hasColor yellow',
                         'y_banana isOn shelf',
+                        'y_banana belongsTo myself',
                         'green_banana rdf:type Banana',
                         'green_banana hasColor green',
                         'green_banana isOn table2',
@@ -173,11 +174,9 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ####
         res = self.dialog.test('myself', stmt)
         ###
-        print(res)
         expected_result = ['y_banana belongsTo myself']
         self.assertTrue(self.check_results(res, expected_result))
         
-        """
         stmt = "This is a green banana" ## ERROR -> y_banana can not be green
         ####
         res = self.dialog.test('myself', stmt)
@@ -190,7 +189,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ###
         expected_result = ['y_banana rdf:type Fruit']
         self.assertTrue(self.check_results(res, expected_result))
-        """
+        
     def test_sentence6(self):
         
         print("\n##################### test_sentence6 - it ########################\n")
@@ -214,7 +213,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
         expected_result = ['* rdf:type See',
                             '* performedBy myself',
                             '* actsOnObject green_banana']
-                            
+        print(res)
+        
         self.assertTrue(self.check_results(res, expected_result))
         
     
