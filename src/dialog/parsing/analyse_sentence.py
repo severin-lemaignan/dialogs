@@ -50,7 +50,7 @@ def dispatching(sentence):
         
         #For ending dialogue
         if sentence[0].endswith('bye'):
-            return Sentence('end', '', [], [])
+            return [Sentence('end', '', [], [])]
         
         #When others
         for x in frt_wd:
@@ -59,7 +59,7 @@ def dispatching(sentence):
 
                 #For
                 if x[1] == '1':
-                    return Sentence('start', '', [], [])
+                    return [Sentence('start', '', [], [])]
                 
                 #It's a w_question or subsentence
                 if x[1] == '2':
@@ -67,95 +67,104 @@ def dispatching(sentence):
                     #If there is which or no nominal group it is a question
                     if sentence[0]!='which' and analyse_nominal_group.find_sn_pos(sentence, 1)!=[]:
                         #Here we have the condition of the subsentences
-                        return stc_start_subsentence(sentence)
+                        return [stc_start_subsentence(sentence)]
                     
                     #For 'when'
                     if x[2]=='1':
                         #If we remove the first word => it becomes like y_n_question
-                        return y_n_ques('w_question', 'date', sentence[1:])
+                        return [y_n_ques('w_question', 'date', sentence[1:])]
 
                     #For 'where'
                     elif x[2]=='2':
-                        return w_quest_where('w_question', 'place', sentence)
+                        return [w_quest_where('w_question', 'place', sentence)]
                     
                     #For 'what'
                     elif x[2]=='3':
                         #Here we have to use a specific processing for 'type' and 'kind'
                         if sentence[1]=='type' or sentence[1]=='kind':
                             #We start by processing the end of the sentence like a y_n_question
-                            return y_n_ques('w_question', 'classification'+'+'+sentence[4],sentence[5:])
+                            return [y_n_ques('w_question', 'classification'+'+'+sentence[4],sentence[5:])]
 
                         #For other type of 'what' question
                         else:
-                            return w_quest_what('w_question', sentence)
+                            return [w_quest_what('w_question', sentence)]
 
                     #For 'how'
                     elif x[2]=='4':
 
                         if sentence[1]=='many' or sentence[1]=='much' :
-                            return w_quest_quant('w_question', 'quantity', sentence)
+                            return [w_quest_quant('w_question', 'quantity', sentence)]
                         
                         elif sentence[1]=='about':
                             #We replace 'about' by 'is' to have a y_n_question
                             sentence[1]='is'
-                            return y_n_ques('w_question', 'invitation', sentence[1:])
+                            return [y_n_ques('w_question', 'invitation', sentence[1:])]
 
                         #For other type of 'how' question
                         else:
-                            return w_quest_how('w_question', sentence)
+                            return [w_quest_how('w_question', sentence)]
 
                     #For 'why'
                     elif x[2]=='5':
-                        return y_n_ques('w_question', 'reason', sentence[1:])
+                        return [y_n_ques('w_question', 'reason', sentence[1:])]
 
                     #For 'whose'
                     elif x[2]=='6':
-                        return w_quest_whose('w_question', 'owner', sentence)
+                        return [w_quest_whose('w_question', 'owner', sentence)]
 
                     #For 'who'
                     elif x[2]=='7':
-                        return y_n_ques('w_question', 'people', sentence[1:])
+                        return [y_n_ques('w_question', 'people', sentence[1:])]
 
                     #For 'which'
                     elif x[2]=='8':
-                        return other_sentence('w_question', 'choice', sentence[1:])
+                        return [other_sentence('w_question', 'choice', sentence[1:])]
                     
                     #For 'to whom'
                     elif x[2]=='9':
-                        return w_quest_whom('w_question', 'people', sentence[1:])
+                        return [w_quest_whom('w_question', 'people', sentence[1:])]
 
                 #It's a y_n_question
                 elif x[1] == '3':
-                    return y_n_ques('yes_no_question', '', sentence)
+                    return [y_n_ques('yes_no_question', '', sentence)]
 
                 #It's a conditional sentence
                 elif x[1]=='4':
-                    return stc_start_subsentence(sentence)
+                    return [stc_start_subsentence(sentence)]
 
                 #Agree
                 elif x[1]=='5':
-                    return Sentence('agree', '', [], [])
-
+                    return separ_sentence(sentence, 'agree')
+                    
                 #Disagree
                 elif x[1]=='6':
-                    return Sentence('disagree', '', [], [])
+                    return separ_sentence(sentence, 'disagree')
 
                 #It's a y_n_question
                 elif x[1]=='7':
-                    return Sentence('gratulation', '', [], [])
+                    return separ_sentence(sentence, 'gratulation')
                 
         #For exclamatively
         if sentence[len(sentence)-1]=='!':
-            return exclama_sentence(sentence)
+            return [exclama_sentence(sentence)]
         
         #It's a statement or an imperative sentence
         if sentence[len(sentence)-1]=='?':
-            return other_sentence('yes_no_question', '', sentence)
+            return [other_sentence('yes_no_question', '', sentence)]
         else:
-            return other_sentence('', '', sentence)
+            return [other_sentence('', '', sentence)]
 
     #Default case
     return []
+
+
+
+def separ_sentence(sentence, data_type):
+    sentences=[Sentence(data_type, '', [], [])]
+    for i in sentence:
+        if i==';':
+            sentences = sentences + dispatching(sentence[sentence.index(i)+1:])
+    return sentences
 
 
 
@@ -532,9 +541,13 @@ def other_sentence(type, request, sentence):
                     sentence=sentence[:1]+ sentence[2:]
                     sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
                     vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
-            
+                
             #For the affirmative processing
             else:
+                if sentence[0]=='not':
+                    vg.state='negative'
+                    sentence=sentence[1:]
+                    
                 sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
                 vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
             
@@ -636,7 +649,7 @@ def sentences_analyzer(sentences):
         if i[len(i)-1]!='.' and i[len(i)-1]!='?' and i[len(i)-1]!='!':
             i=i+['.']
         
-        class_sentence_list=class_sentence_list+[dispatching(i)]
+        class_sentence_list=class_sentence_list+dispatching(i)
     
     while y < len(class_sentence_list):
         #If there is an interjection we have to take the nominal group

@@ -185,7 +185,8 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
         while i < len(rslt_utterance):
             
             print "The sentence after the analyse utterance is :"
-            print sentence_list[i]
+            if i<len (sentence_list):
+                print sentence_list[i]
             
             print (str(utterance[i]))
             
@@ -486,7 +487,7 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     
-    """
+    
     def test_11(self):
         print ''
         print ('######################## test 2.1 ##############################')
@@ -751,9 +752,9 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    """
     
-    """
+
+    
     def test_21(self):
         print ''
         print ('######################## test 3.1 ##############################')
@@ -1003,9 +1004,9 @@ class TestParsing(unittest.TestCase):
     
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    """
+    
         
-    """
+    
     def test_31(self):
         print ''
         print ('######################## test 4.1 ##############################')
@@ -1286,9 +1287,9 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    """
+    
 
-    """
+    
     def test_41(self):
         print ''
         print ('######################## test 5.1 ##############################')
@@ -1570,9 +1571,9 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    """
     
-    """
+    
+    
     def test_51(self):
         print ''
         print ('######################## test 6.1 ##############################')
@@ -2172,14 +2173,14 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    """
     
-    """
+    
+    
     def test_70(self):
         print ''
         print ('######################## test 8.1 ##############################')
         utterance="let the man go to the cinema. Is it the time to let you go. And where is the other tape."
-        print "Object of this test : Using adjectives wuth plural"
+        print "Object of this test : Porcess verb with many second verbs"
         print utterance
         print '#################################################################'
         print ''
@@ -2224,7 +2225,7 @@ class TestParsing(unittest.TestCase):
         print ''
         print ('######################## test 8.2 ##############################')
         utterance="And now, can you reach the tape. it could have been them. It is just me at the door. A strong clause can stand on its own"
-        print "Object of this test : Using adjectives wuth plural"
+        print "Object of this test : Process with 'and' in the beginning and more examples"
         print utterance
         print '#################################################################'
         print ''
@@ -2260,7 +2261,30 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)    
-    """
+    
+    def test_72(self):
+        print ''
+        print ('######################## test 8.3 ##############################')
+        utterance="No, I can not reach it"
+        print "Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+        rslt=[Sentence('disagree', '',[],[]), 
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['can+reach'], [],'present simple', 
+                    [Nominal_Group([],['it'],[],[],[])], 
+                    [],
+                    [], [] ,'negative',[])])]
+
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)            
+        
+
     
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,

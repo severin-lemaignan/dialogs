@@ -400,7 +400,7 @@ def process_subsentence(phrase,vg):
                     subsentence= phrase[begin_pos+1:begin_pos+end_pos]
                     
                     #We perform processing
-                    vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.dispatching(subsentence)]
+                    vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
                     vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence'
                     vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
                      
