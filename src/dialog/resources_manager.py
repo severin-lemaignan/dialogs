@@ -189,7 +189,7 @@ class ResourcePool:
         return list_list_word
 
     def __init__(self, data_path = DATA_DIR, oro_host = ORO_HOST, oro_port = ORO_PORT):
-        """
+    
         self.ontology_server = None
         
         try:
@@ -200,7 +200,7 @@ class ResourcePool:
         except OroServerError:
             logging.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
             ". Continuing without the ontology server. Amongst others, resolution won't work.")
-        """
+        
         
         self.adjectives = {}
         self.irregular_verbs_past = []

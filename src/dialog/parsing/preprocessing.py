@@ -53,6 +53,26 @@ apostrophe_s_to_is_list = ResourcePool().be_pronoun
 replacement_tuples = ResourcePool().replace_tuples
 prep_list = ResourcePool().prep_change_place
 verb_preced_verb_list = ResourcePool().verb_need_to
+adv_list = ResourcePool().adverbs
+
+
+
+def process_and_beginning_sentence(sentence):
+    if sentence[0]!=',' and (sentence[0]=='and' or sentence[0]=='And'):
+        sentence=sentence[1:]
+        for j in adv_list:
+            if sentence[0]==j:
+                if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
+                    sentence=sentence[1:len(sentence)-1]+[sentence[0]]+[sentence[len(sentence)-1]]
+                    sentence=process_and_beginning_sentence(sentence)
+                    break
+                else:   
+                    sentence=sentence[1:]+[sentence[0]]
+                    sentence=process_and_beginning_sentence(sentence)
+                    break
+    elif sentence[0]==',':
+        sentence=sentence[1:]
+    return sentence
 
 
 
@@ -124,6 +144,7 @@ def upper_to_lower(sentence):
             sentence[0]=sentence[0][0].lower()+sentence[0][1:]
         
         sentence=expand_contractions(sentence)
+        sentence = process_and_beginning_sentence(sentence)
         
         #We find an action verb => it is an imperative sentence        
         for i in action_verb:
@@ -150,6 +171,7 @@ def upper_to_lower(sentence):
     #If the sentence begins with lower case
     else:
         sentence=expand_contractions(sentence)
+        sentence = process_and_beginning_sentence(sentence)
         sentence=analyse_nominal_group.find_plural(sentence)
     
     return sentence
@@ -760,7 +782,6 @@ def processing(sentence):
     sentence = remerge_sentences(sentence)
     sentence = take_off_comma(sentence)
     sentence = add_scd_vrb(sentence)
-    
     sentence = interjection(sentence)
     return sentence
 

@@ -206,7 +206,7 @@ class TestParsing(unittest.TestCase):
     """
     Function to perform unit tests                                                   
     """ 
-    """
+    
     def test_01(self):
         print''
         print ('######################## test 1.1 ##############################')
@@ -484,7 +484,7 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    """
+    
     
     """
     def test_11(self):
@@ -1249,7 +1249,7 @@ class TestParsing(unittest.TestCase):
         print ''
         print ('######################## test 4.8 ##############################')
         utterance="To whom are you talking? you should have the bottle. would you have played a guitar. you would have played a guitar"
-        print "Object of this test : Using 'to whom' and past conditional"
+        print "Object of this test : Using 'to whom' and passive conditional"
         print utterance
         print '#################################################################'
         print ''
@@ -1878,9 +1878,9 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    """
+    
 
-    """
+    
     def test_61(self):
         print ''
         print ('######################## test 7.1 ##############################')
@@ -2174,11 +2174,11 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     """
     
-    
+    """
     def test_70(self):
         print ''
         print ('######################## test 8.1 ##############################')
-        utterance="let the man go to the cinema. Is it the time to let you go."
+        utterance="let the man go to the cinema. Is it the time to let you go. And where is the other tape."
         print "Object of this test : Using adjectives wuth plural"
         print utterance
         print '#################################################################'
@@ -2209,13 +2209,58 @@ class TestParsing(unittest.TestCase):
                         [], [] ,'affirmative',[])],'present simple', 
                     [Nominal_Group(['the'],['time'],[],[],[])], 
                     [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('w_question', 'place', 
+                [Nominal_Group(['the'],['tape'],[['other',[]]],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [], 
+                    [],
                     [], [] ,'affirmative',[])])]
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     
-    
-    
+    def test_71(self):
+        print ''
+        print ('######################## test 8.2 ##############################')
+        utterance="And now, can you reach the tape. it could have been them. It is just me at the door. A strong clause can stand on its own"
+        print "Object of this test : Using adjectives wuth plural"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+        rslt=[Sentence('yes_no_question', '', 
+                [Nominal_Group([],['you'],[],[],[])], 
+                [Verbal_Group(['can+reach'], [],'present simple', 
+                    [Nominal_Group(['the'],['tape'],[],[],[])], 
+                    [],
+                    [], ['now'] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Verbal_Group(['could+be'], [],'passive conditional', 
+                    [Nominal_Group([],['them'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [Nominal_Group([],['me'],[],[],[])], 
+                    [Indirect_Complement(['at'],[Nominal_Group(['the'],['door'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group(['a'],['clause'],[['strong',[]]],[],[])], 
+                [Verbal_Group(['can+stand'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['on'],[Nominal_Group(['its'],['own'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        rslt[3].sn[0]._quantifier="SOME"
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)    
+    """
     
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,

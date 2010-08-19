@@ -91,7 +91,7 @@ def find_tense_statement (phrase):
         
     #For using modal
     elif phrase[0]=='should' or phrase[0]=='might' or phrase[0]=='could':
-        if find_tense_statement(phrase[1:])=='present passive':
+        if find_tense_statement(phrase[1:])=='present perfect' or find_tense_statement(phrase[1:])=='present passive':
             return 'passive conditional'
         return 'present conditional'
     

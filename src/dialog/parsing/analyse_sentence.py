@@ -185,7 +185,7 @@ def w_quest_where(type, request, stc):
     This function process many different type of where question                       
     Input=type and requesting of sentence, the sentence      Output=class Sentence   
     """
-
+    
     #If there is 'form' at the end => question about the origin
     if stc[len(stc)-1]=='from' or (stc[len(stc)-1]=='?' and stc[len(stc)-2]=='from'):
         #If we remove the first word => it becomes like y_n_question
@@ -447,11 +447,15 @@ def y_n_ques(type, request, sentence):
     sentence=analyse_verbal_structure.state_adjective(sentence, vg)
     
     vg=analyse_verbal_structure.DOC_to_IOC(vg)
-    
+
     while len(sentence)>1:
-        sentence=analyse_verbal_structure.add_it(sentence,request)
+        stc=analyse_verbal_structure.add_it(sentence,request)
         #We recover the direct, indirect complement and the adverbial
-        sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
+        stc=analyse_verbal_structure.recover_obj_iobj(stc, vg)
+        if stc==sentence:
+            break
+        else:
+            sentence=stc
     
     vg=analyse_verbal_structure.refine_indirect_complement(vg)
     vg=analyse_verbal_structure.refine_subsentence(vg)
@@ -597,9 +601,13 @@ def other_sentence(type, request, sentence):
     vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
     while len(sentence)>1:
-        sentence=analyse_verbal_structure.add_it(sentence,request)
+        stc=analyse_verbal_structure.add_it(sentence,request)
         #We recover the direct, indirect complement and the adverbial
-        sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)
+        stc=analyse_verbal_structure.recover_obj_iobj(stc, vg)
+        if stc==sentence:
+            break
+        else:
+            sentence=stc
     
     vg=analyse_verbal_structure.refine_indirect_complement(vg)
     vg=analyse_verbal_structure.refine_subsentence(vg)
