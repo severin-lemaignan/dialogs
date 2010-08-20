@@ -651,6 +651,7 @@ def sentences_analyzer(sentences):
         
         class_sentence_list=class_sentence_list+dispatching(i)
     
+    #Add some information if there is an interjection
     while y < len(class_sentence_list):
         #If there is an interjection we have to take the nominal group
         if class_sentence_list[y].data_type=='interjection':
@@ -659,5 +660,11 @@ def sentences_analyzer(sentences):
         if nom_gr!=[] and class_sentence_list[y].data_type=='imperative':
             class_sentence_list[y].sn=class_sentence_list[y].sn+nom_gr
         y=y+1
+    
+    #To simplify the interpretation, we have to perform some changes
+    for k in class_sentence_list:
+        if k.data_type!='imperative' and k.sn[0].det==['there']:
+            k.sn[0]=k.sv[0].d_obj
+            k.sv[0].d_obj=[]
         
     return class_sentence_list
