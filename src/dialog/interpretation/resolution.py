@@ -225,22 +225,29 @@ class Resolver:
             nominal_group.id = 'myself'
             nominal_group._resolved = True
         
+        #Anaphoric words as attribute of the noun
+        for adj in nominal_group.adj:
+            if "other" in adj:
+                # Other + noun:  E.g: The other cube
+                if nominal_group.noun[0] != 'one': 
+                    refered_nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
+                                                                                            current_speaker, current_object, 
+                                                                                            True, onto)
+                # Other + one:  E.g: The other one
+                else:
+                    refered_nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
+                                                                                            current_speaker, current_object, 
+                                                                                            False, None)
+                                                                                            
+                nominal_group.id = refered_nominal_group.id
+                nominal_group._resolved = False
+                break
+        
         #Anaphoric words in the noun
         if nominal_group.noun[0].lower() in ['it', 'one']:
             nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
                                                                                     current_speaker, 
                                                                                     current_object, False, None)
-        #Anaphoric words as attribute of the noun
-        # E.g: The other cube
-        for adj in nominal_group.adj:
-            if "other" in adj and nominal_group.noun[0] != 'one': 
-                refered_nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
-                                                                                            current_speaker, current_object, 
-                                                                                            True, onto)
-                nominal_group.id = refered_nominal_group.id
-                nominal_group._resolved = False
-                break
-
         return nominal_group
     
     def _resolve_groups_references(self, array_sn, matcher, current_speaker, current_object):
@@ -316,8 +323,15 @@ class Resolver:
                 nominal_group.det[0].lower() in ['this', 'that'] and \
                 not object[0]:  
                 object[0] = object[1][0]
-            object[0].det = ['the'] 
-            #TODO: REMOVE UNTILL HERE
+            object[0].det = ['the']
+            
+            if nominal_group.adj and \
+                ["other", []] in nominal_group.adj and \
+                not object[0]:  
+                object[0] = object[1][0]
+            object[0].det = ['the']
+            object[0].adj = [["other",[]]]
+            #TODO: REMOVE UNTIL HERE
             
             raise UnidentifiedAnaphoraError({'object':nominal_group,
                                             'object_to_confirm':object[0],

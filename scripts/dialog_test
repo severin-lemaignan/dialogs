@@ -337,10 +337,10 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ##sentence2
         stmt = "the other one is on the shelf."
         ###
-        ### expected question: Do you mean the banana that is not green? or Do you mean the other banana?
+        ### expected question: Do you mean the other banana?
         answer = "yes. the yellow banana"
         res = self.dialog.test('myself', stmt, answer)
-        print(res)
+        
         expected_result = ['y_banana isOn shelf1']
         self.assertTrue(self.check_results(res, expected_result))
     
