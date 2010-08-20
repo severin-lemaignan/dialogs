@@ -160,18 +160,18 @@ class Resolver:
         if nominal_group._resolved: 
             return nominal_group
         
-        # Case of a nominal group built by only adjectives 
-        #   E.g, 'big' in 'the yellow banana is big'.
-        if nominal_group.adjectives_only():
-            nominal_group.id = '*'
-            nominal_group._resolved = True
-            return nominal_group
-        
         # Case of a quantifier different from ONE
         #   means the nominal group holds an indefinite determiner. 
         #   E.g a robot, every plant, fruits, ...
         if nominal_group._quantifier != 'ONE': 
             nominal_group.id = get_class_name(nominal_group.noun[0], onto)
+            nominal_group._resolved = True
+            return nominal_group
+        
+        # Case of a nominal group built by only adjectives 
+        #   E.g, 'big' in 'the yellow banana is big'.
+        if nominal_group.adjectives_only():
+            nominal_group.id = '*'
             nominal_group._resolved = True
             return nominal_group
         
@@ -190,7 +190,9 @@ class Resolver:
                 nominal_group._resolved = True
 
             else:
-                nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, current_object)
+                nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
+                                                                                    current_speaker, 
+                                                                                    current_object, False, None)
             
         
         # Case of a nominal group with no Noun
@@ -215,7 +217,19 @@ class Resolver:
         
         #Anaphoric words in the noun
         if nominal_group.noun[0].lower() in ['it', 'one']:
-            nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, current_object)
+            nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
+                                                                                    current_speaker, 
+                                                                                    current_object, False, None)
+        #Anaphoric words as attribute of the noun
+        # E.g: The other cube
+        for adj in nominal_group.adj:
+            if "other" in adj:
+                refered_nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
+                                                                                            current_speaker, current_object, 
+                                                                                            True, onto)
+                nominal_group.id = refered_nominal_group.id
+                nominal_group._resolved = False
+                break
 
         return nominal_group
     
@@ -235,7 +249,7 @@ class Resolver:
         return resolved_sn
     
     
-    def _references_resolution_with_anaphora_matcher(self, nominal_group, matcher, current_object):
+    def _references_resolution_with_anaphora_matcher(self, nominal_group, matcher, current_speaker, current_object, with_check_class_name, onto):
         """ This attempts to match the nominal group containing anaphoric words with an object identifed from 
             the dialog history.
             However, a confirmation is asked to user
@@ -256,8 +270,31 @@ class Resolver:
         
         object = matcher.match_first_object(get_last(self.sentences_store, 10), nominal_group)
         
+        # Case of check class name
+        # E.g: the other tape.
+        # Here, we check that the class of object[0] or any element in the object[1] is 'Tape'
+    
+        if object and with_check_class_name:
+            # Class to be checked
+            nominal_group_class = get_class_name(nominal_group.noun[0], onto)
+            
+            # list object that are to be checked
+            list_object = []
+            #list_object.append(object[0]) #TODO: UNCOMMENT THIS LINE WHEN ANAPHORA MATCHING IS OK
+            list_object.extend(object[1])
+            
+            for obj in list_object:
+                onto_class = ''
+                try:
+                    onto_class = ResourcePool().ontology_server.lookupForAgent(current_speaker,obj.noun[0])
+                except AttributeError:
+                    pass
+                
+                if nominal_group_class == get_class_name(obj.noun[0], onto_class):
+                    return obj
+    
         # Case there exist only one nominal group identified from anaphora matching
-        if object and len(object[1]) <= 1:
+        elif object and len(object[1]) <= 1:
             nominal_group = object[0]
         
         # Ask confirmation to the user

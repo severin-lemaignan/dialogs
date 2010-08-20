@@ -69,7 +69,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'Banana rdfs:subClassOf Plant',
                         'y_banana rdf:type Banana',
                         'y_banana hasColor yellow',
-                        'y_banana isOn shelf',
+                        'y_banana isOn shelf1',
                         'y_banana belongsTo myself',
                         'green_banana rdf:type Banana',
                         'green_banana hasColor green',
@@ -96,7 +96,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* rdf:type Place',
                             '* performedBy myself',
                             '* actsOnObject y_banana',
-                            '* receivedBy shelf']
+                            '* receivedBy shelf1']
         ###
         res = self.dialog.test('myself', stmt)
         self.assertTrue(self.check_results(res, expected_result))
@@ -261,6 +261,22 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* actsOnObject red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
+        self.assertTrue(self.check_results(res, expected_result))
+        
+    def test_sentence9(self):
+        
+        print("\n##################### test_sentence9 - OTHER ########################\n")
+        #Fill up History
+        ##sentence1
+        stmt = "the green banana is next to the red apple"
+        res = self.dialog.test('myself', stmt)
+        
+        ##sentence2
+        stmt = "the other banana is on the shelf."
+        ###
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['y_banana isOn shelf1']
         self.assertTrue(self.check_results(res, expected_result))
     
     
@@ -611,7 +627,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                         'Banana rdfs:subClassOf Plant',
                         'y_banana rdf:type Banana',
                         'y_banana hasColor yellow',
-                        'y_banana isOn shelf',
+                        'y_banana isOn shelf1',
                         'green_banana rdf:type Banana',
                         'green_banana hasColor green',
                         'green_banana isOn table2',
@@ -835,7 +851,7 @@ if __name__ == '__main__':
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence6'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence7'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence8'))
-   
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9'))
         
     
     suiteVerbalization = unittest.TestSuite()

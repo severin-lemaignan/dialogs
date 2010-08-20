@@ -376,26 +376,37 @@ class NominalGroupStatementBuilder:
         adjectives list.
         """
         for adj in nominal_group.adj:
-            #Getting the object property if there exists a specific class
-            object_property = ''
-            try:
-                object_property = " has" + ResourcePool().adjectives[adj[0]] + " "
-            
-            #Default case, creating hasFeature object Property
-            except KeyError:
-                object_property = " hasFeature "
+            #Case of 'other'
+            # E.g: the other cube:
+            if adj[0].lower() == "other":
+                self._statements.append(ng_id + " owl:differentFrom " + nominal_group.id)
                 
-            #Case negative assertion
-            if negative_object:
-                negative_adj = generate_id(with_question_mark = not nominal_group._resolved)
-                
-                self._statements.append(ng_id + object_property + negative_adj)
-                self._statements.append(negative_adj + ' owl:differentFrom ' + adj[0])
             
-            #Case Affirmative assertion
+            #TODO: case of class Feature
+            # Apple are yellow fruits
+            
+            # Case of features
             else:
-                self._statements.append(ng_id + object_property + adj[0])
+                #Getting the object property if there exists a specific class
+                object_property = ''
+                try:
+                    object_property = " has" + ResourcePool().adjectives[adj[0]] + " "
+                
+                #Default case, creating hasFeature object Property
+                except KeyError:
+                    object_property = " hasFeature "
                     
+                #Case negative assertion
+                if negative_object:
+                    negative_adj = generate_id(with_question_mark = not nominal_group._resolved)
+                    
+                    self._statements.append(ng_id + object_property + negative_adj)
+                    self._statements.append(negative_adj + ' owl:differentFrom ' + adj[0])
+                
+                #Case Affirmative assertion
+                else:
+                    self._statements.append(ng_id + object_property + adj[0])
+                        
     
     
     def process_noun_cmpl(self, nominal_group, ng_id, negative_object):
