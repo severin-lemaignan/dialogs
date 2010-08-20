@@ -31,7 +31,7 @@ Features
 [TODO:3] processing the pronouns 'its'
 -> "the bottle is in its box"
 
-[TODO:3] processing "other"
+[DONE v0.5] processing "other"
 -> "the other one..."
 
 [TODO:3] Create an appropriate object property to the preposition 'for'
@@ -41,14 +41,17 @@ Features
 [TODO:3]{Complete By End-August} subsentence
 -> "learn that..."
 
-[TODO:3]{Complete By End-August} second verb
--> "I want you to do something" (currently somehow hardcoded for 'want')
+[PARTIALLY DONE]{Complete By End-August} second verb
+-> "I want you to do something" (for goal verbs)
 
 [TODO:3-4] There is
 
-[TODO:3-4] Modal verbs
-    -> can, must, might, should
-
+[DONE v0.5] Modal verbs
+-> can, must, might, should
+    for action verbs.
+    create object property modal+Performs 
+    E.g: canPerforms, (Although, mustPerforms, shouldPerforms are not relation in the ontology, they are created anyway).
+    
 [TODO:3] complete resources pool
 -> merge in resourcepool word lists that are currently spread out
 
@@ -72,8 +75,9 @@ Features
                                 + id_apple rdf:type Apple]
                                 
 
-[TODO] Managing unknown concepts: "Jido is a schtroumph" -> what is a schtroumph ?
+[DONE v0.5] Managing unknown concepts: "Jido is a schtroumph" -> what is a schtroumph ?
 -> looping on unknown concepts
+    output toward human but no looping yet
 
 [TODO] What do we do when a statement brings an inconsistency?
 
