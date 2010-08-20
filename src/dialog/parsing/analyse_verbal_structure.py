@@ -564,14 +564,32 @@ def refine_subsentence(vg):
     #init
     i=0
     while i < len(vg.vrb_sub_sentence):
+        
         if vg.vrb_sub_sentence[i].aim=='what':
+            #We have to make some changers
             vg.vrb_sub_sentence[i].aim='that'
             vg.vrb_sub_sentence[i].data_type='relative'
-            gn=Nominal_Group(['the'],['thing'],[],[],[vg.vrb_sub_sentence[i]])
+            #We create a nominal group
+            gn=Nominal_Group(['the'],['thing'],[],[],[])
+            #We add it in relative as direct object
+            vg.vrb_sub_sentence[i].sv.d_obj=[gn]
+            #We add the relative and the nominal group into the sentence
+            gn.relative=gn.relative+[vg.vrb_sub_sentence[i]]
             vg.d_obj=vg.d_obj+[gn]
+            #We delete the subsebtebce
+            vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
+            i=i-1
+            
+        if i>0 and vg.vrb_sub_sentence[i].aim=='where':
+            #We have to make some changers
+            vg.vrb_sub_sentence[i].data_type='relative'
+            #We create a nominal group
+            gn=Nominal_Group(['the'],['location'],[],[],[vg.vrb_sub_sentence[i]])
+            #We add the relative and the nominal group into the sentence
+            vg.i_cmpl=vg.i_cmpl+[Indirect_Complement(['in'],[gn])]
+            #We delete the subsebtebce
             vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
             i=i-1
         
-        i=i+1
-        
+        i=i+1  
     return vg
