@@ -429,29 +429,45 @@ class Resolver:
             return verbal_group
         
         resolved_verbs = []
+        modal =''
+        
         for verb in verbal_group.vrb_main:
             logging.debug("* \"" + verb + "\"")
-            try:
-                if verb == "be":
-                    resolved_verb = "be"
-                else: 
-                    resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
+            # Case of modal verbs. E.g: can, must
+            if '+' in verb:
+                [modal, verb] = verb.split('+')
+            
+            # Case of to be
+            if verb == "be":
+                resolved_verb = "be"
                 
-                if verb == resolved_verb:
-                    logging.debug("Keeping \"" + verb + "\"")
-                else:
-                    logging.debug("Replacing \"" + verb + "\" by synonym \"" + 
-                              resolved_verb + "\"")
-                verbal_group._resolved = True
-            except UnknownVerb:
-                resolved_verb = verb
-                logging.debug("Unknown verb \"" + verb + "\": keeping it like that, but I won't do much with it.")
+            # Trying to resolve verb from thematic roles
+            else:
+                try:
+                    resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
+                    logging.debug("Keeping \"" + verb + "\"" ) \
+                                    if verb == resolved_verb else \
+                                    ("Replacing \"" + verb + "\" by synonym \"" + resolved_verb + "\"")
+                    
+                    verb = resolved_verb
+                    
+                except UnknownVerb:
+                    logging.debug("Unknown verb \"" + verb + "\": keeping it like that, but I won't do much with it.")
+                    resolved_verb = verb
+                
+            if modal:
+                resolved_verb = modal + '+' + resolved_verb
+                
             resolved_verbs.append(resolved_verb)
         
         verbal_group.vrb_main = resolved_verbs
         
-        if verbal_group.sv_sec:
-            verbal_group.sv_sec = self._resolve_verbs(verbal_group.sv_sec)
+        # Secondary verbal group
+        for sv_sec in verbal_group.sv_sec:
+            sv_sec = self._resolve_verbs(sv_sec)
+        
+        #Forcing resolution to True
+        verbal_group._resolved = True
             
         return verbal_group
 

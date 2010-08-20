@@ -627,8 +627,15 @@ class VerbalGroupStatementBuilder:
                         self.process_vrb_sec(verbal_group, subject_id, subject_quantifier, sit_id)                      
                 #Case 3:   
                 else:
-                    self._statements.append(sit_id + " rdf:type " + verb.capitalize())
-                    self._statements.append(sit_id + " performedBy " + subject_id)
+                    # Modals verbs. E.g: can, must, ...
+                    if '+' in verb:
+                        [modal, verb] = verb.split('+')
+                        self._statements.append(sit_id + " rdf:type " + verb.capitalize())
+                        self._statements.append(subject_id+ " " + modal +"Performs " + sit_id)
+                    
+                    else:
+                        self._statements.append(sit_id + " rdf:type " + verb.capitalize())
+                        self._statements.append(sit_id + " performedBy " + subject_id)
             
             #Imperative specification, add the goal verb 'desire'
             if self._process_on_imperative:
