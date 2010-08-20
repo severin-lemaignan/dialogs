@@ -9,6 +9,9 @@
     convert_to_string : to convert a list to string with '+' in place of ' '      
     recover_end_pos_sub : to find the end position of the subsentence             
     number : to return 1 if the word is a number and 2 if it is a adjectif-number 
+    word_to_digit : to convert the number from literal to digit
+    convert_to_digit : to convert the determinant to digit  
+    recover_aux_list : to recover the auxiliary list
 """
 from dialog.resources_manager import ResourcePool
 
@@ -109,7 +112,10 @@ def word_to_digit(word):
     
     #init
     number=0
-   
+    
+    if word.endswith('th'):
+        word=word[:len(word)-2]
+        
     for l in number_list:
         if word.startswith(l[0]):
             if word.endswith('teen'):

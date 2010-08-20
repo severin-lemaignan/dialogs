@@ -17,7 +17,9 @@
     find_plural : to add 'a' for plural
     refine_nom_gr : to refine the nominal group if there is a mistake             
     return_det : to recover the determinant of the nominal group                  
-    return_adj : to recover the adjectives of the nominal group                   
+    return_adj : to recover the adjectives of the nominal group        
+    convert_adj_to_digit : to return the list of adjectives after change number to digit
+    process_adj_quantifier : to return adjectives of the nominal group organized with quantifier
     return_noun : to recover the noun of the nominal group                        
     find_nom_gr_compl : to recover the complement noun of the nominal group       
     take_off_nom_gr : to take off a nominal group from the sentence               
@@ -337,6 +339,20 @@ def return_adj (nom_gr):
                 if is_an_adj(nom_gr[k])==1:
                     adj_list=adj_list+[nom_gr[k]]
                 k=k+1
+    return adj_list
+
+
+
+def convert_adj_to_digit(adj_list):
+    """
+    This function returns the list of adjectives after change number to digit                           
+    Input=the adjective                               Output=the adjective            
+    """
+    
+    for i in adj_list:
+        if i.endswith('th') and other_functions.number(i)==2:
+            adj_list[adj_list.index(i)]=other_functions.convert_to_digit(i)+'th'
+    
     return adj_list
 
 
