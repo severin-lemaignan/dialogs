@@ -159,7 +159,7 @@ class Resolver:
         # Case of a resolved nominal group
         if nominal_group._resolved: 
             return nominal_group
-        
+            
         # Case of a quantifier different from ONE
         #   means the nominal group holds an indefinite determiner. 
         #   E.g a robot, every plant, fruits, ...
@@ -176,7 +176,7 @@ class Resolver:
             return nominal_group
         
         # Case of an anaphoric word in the determiner
-        if nominal_group.det and nominal_group.det[0].lower in ['this', 'that']:
+        if nominal_group.det and nominal_group.det[0].lower() in ['this', 'that']:
             onto_focus = ''
             try:
                 onto_focus = ResourcePool().ontology_server.findForAgent(current_speaker, 
@@ -185,16 +185,26 @@ class Resolver:
             except AttributeError:
                 pass
             
+            # Case of existing focus
             if onto_focus:
                 nominal_group.id = onto_focus[0]
                 nominal_group._resolved = True
-
-            else:
-                nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
+            
+            # otherwise possible reference to an object mentioned previously in the dialog
+            else:                
+                # Case of this + noun and noun != 'one' : E.g: Take this cube
+                if nominal_group.noun and nominal_group.noun[0].lower() != 'one':
+                    nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
+                                                                                    current_speaker, 
+                                                                                    current_object, True, onto)
+                # Case of this + one: E.g: Take this one
+                #      or this + None: E.g: Take this
+                #          
+                else:
+                    nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
                                                                                     current_speaker, 
                                                                                     current_object, False, None)
-            
-        
+                
         # Case of a nominal group with no Noun
         if not nominal_group.noun:
             return nominal_group
@@ -223,7 +233,7 @@ class Resolver:
         #Anaphoric words as attribute of the noun
         # E.g: The other cube
         for adj in nominal_group.adj:
-            if "other" in adj:
+            if "other" in adj and nominal_group.noun[0] != 'one': 
                 refered_nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
                                                                                             current_speaker, current_object, 
                                                                                             True, onto)
@@ -294,11 +304,21 @@ class Resolver:
                     return obj
     
         # Case there exist only one nominal group identified from anaphora matching
-        elif object and len(object[1]) <= 1:
-            nominal_group = object[0]
         
-        # Ask confirmation to the user
+        #TODO: UNCOMMENT the lines below when Anaphora mather done 
+        #elif object and len(object[1]) <= 1:
+        #    nominal_group = object[0]
+        
+        # Ask for confirmation to the user
         else:
+            #TODO: REMOVE FROM HERE the line WHEN FIXED in ANAPHORA DEALS WITH "this and other"
+            if nominal_group.det and \
+                nominal_group.det[0].lower() in ['this', 'that'] and \
+                not object[0]:  
+                object[0] = object[1][0]
+            object[0].det = ['the'] 
+            #TODO: REMOVE UNTILL HERE
+            
             raise UnidentifiedAnaphoraError({'object':nominal_group,
                                             'object_to_confirm':object[0],
                                             'object_with_more_info':None,
