@@ -175,7 +175,7 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
     """
     Function to compare 2 replies                                                    
     """ 
-
+    
     #init
     i=0
 
@@ -1202,14 +1202,14 @@ class TestParsing(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '',
-                [Nominal_Group(['there'],[],[],[],[])],
+                [Nominal_Group(['a'],['bottle'],[],[],[])],
                 [Verbal_Group(['be'], [],'present simple',
-                    [Nominal_Group(['a'],['bottle'],[],[],[])], 
+                    [], 
                     [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
         
         rslt[0].sv[0].d_obj[0]._quantifier="SOME"
-        rslt[1].sv[0].d_obj[0]._quantifier="SOME"
+        rslt[1].sn[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -1768,9 +1768,9 @@ class TestParsing(unittest.TestCase):
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
         rslt=[Sentence('statement', '', 
-                [Nominal_Group(['there'],[],[],[],[])], 
+                [Nominal_Group(['no'],['banana'],[],[],[])], 
                 [Verbal_Group(['be'], [],'present simple', 
-                    [Nominal_Group(['no'],['banana'],[],[],[])], 
+                    [], 
                     [],
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '', 
@@ -1792,7 +1792,7 @@ class TestParsing(unittest.TestCase):
                     [], [] ,'affirmative',[])])]
         
         rslt[0].sn[0]._quantifier="SOME"
-        rslt[0].sv[0].d_obj[0]._quantifier="ANY"
+        rslt[0].sn[0]._quantifier="ANY"
         rslt[1].sn[0]._quantifier="ALL"
         rslt[2].sv[0].d_obj[0]._quantifier="SOME"
         
@@ -1817,19 +1817,20 @@ class TestParsing(unittest.TestCase):
                 [Nominal_Group([],['Jido'],[],[],[])], 
                 [Verbal_Group(['tell'], [],'present simple', 
                     [], 
-                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
-                    [], [] ,'affirmative',[Sentence('subsentence', 'where', 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                     Indirect_Complement([],[Nominal_Group(['the'],['location'],[],[],[Sentence('relative', 'where', 
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['go'], [],'present simple', 
                             [], 
                             [],
-                            [], [] ,'affirmative',[])])])]),
+                            [], [] ,'affirmative',[])])])])],
+                    [], [] ,'affirmative',[])]),
             Sentence('end', '', [], []),
             Sentence('end', '', [], []),
             Sentence('statement', '', 
-                [Nominal_Group(['there'],[],[],[],[])], 
+                [Nominal_Group([],['nothing'],[],[],[])], 
                 [Verbal_Group(['be'], [],'present simple', 
-                    [Nominal_Group([],['nothing'],[],[],[])], 
+                    [], 
                     [],
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '', 
@@ -1839,7 +1840,7 @@ class TestParsing(unittest.TestCase):
                     [],
                     [], [] ,'affirmative',[])])]
         
-        rslt[4].sv[0].d_obj[0]._quantifier="NONE"
+        rslt[4].sn[0]._quantifier="NONE"
         rslt[5].sv[0].d_obj[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
@@ -1879,8 +1880,8 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    
 
+    
     
     def test_61(self):
         print ''
@@ -1930,15 +1931,15 @@ class TestParsing(unittest.TestCase):
         rslt=[Sentence('imperative', '', 
                 [], 
                 [Verbal_Group(['give'], [],'present simple', 
-                    [Nominal_Group(['the'],['bottle'],[['fourth',[]]],[],[]),
-                     Nominal_Group(['the'],['bottle'],[['seventh',[]]],[],[])], 
+                    [Nominal_Group(['the'],['bottle'],[['4th',[]]],[],[]),
+                     Nominal_Group(['the'],['bottle'],[['7th',[]]],[],[])], 
                     [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
             Sentence('imperative', '', 
                 [], 
                 [Verbal_Group(['give'], [],'present simple', 
-                    [Nominal_Group(['the'],['bottle'],[['one+thousand+ninth',[]]],[],[]),
-                     Nominal_Group(['the'],['bottle'],[['thirty+thousand+twenty+eighth',[]]],[],[])], 
+                    [Nominal_Group(['the'],['bottle'],[['1009th',[]]],[],[]),
+                     Nominal_Group(['the'],['bottle'],[['30028th',[]]],[],[])], 
                     [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
       
@@ -1968,7 +1969,7 @@ class TestParsing(unittest.TestCase):
                     [Nominal_Group(['the'],['thing'],[],[],[Sentence('relative', 'that', 
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['talk'], [],'present progressive', 
-                            [], 
+                            [Nominal_Group(['the'],['thing'],[],[],[])], 
                             [Indirect_Complement(['about'],[Nominal_Group([],['it'],[],[],[])])],
                             [], [] ,'affirmative',[])])])], 
                     [],
@@ -1976,6 +1977,7 @@ class TestParsing(unittest.TestCase):
       
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)     
+    
     
     def test_64(self):
         print ''
@@ -2003,19 +2005,18 @@ class TestParsing(unittest.TestCase):
                 [Nominal_Group([],['I'],[],[],[])], 
                 [Verbal_Group(['study'], [],'present simple', 
                     [], 
-                    [],
-                    [], [] ,'affirmative',[Sentence('subsentence', 'where', 
+                    [Indirect_Complement(['in'],[Nominal_Group(['the'],['location'],[],[],[Sentence('relative', 'where', 
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['study'], [],'past simple', 
                             [], 
                             [],
-                            [], [] ,'affirmative',[])])])]),
+                            [], [] ,'affirmative',[])])])])],
+                    [], [] ,'affirmative',[])]),
             Sentence('statement', '', 
                 [Nominal_Group([],['I'],[],[],[])], 
                 [Verbal_Group(['study'], [],'present simple', 
                     [], 
-                    [],
-                    [], [] ,'affirmative',[Sentence('subsentence', 'where', 
+                    [Indirect_Complement(['in'],[Nominal_Group(['the'],['location'],[],[],[Sentence('relative', 'where', 
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['build'], [],'present simple', 
                             [Nominal_Group(['your'],['house'],[],[],[Sentence('relative', 'where', 
@@ -2025,7 +2026,8 @@ class TestParsing(unittest.TestCase):
                                     [],
                                     [], [] ,'affirmative',[])])])], 
                             [],
-                            [], [] ,'affirmative',[])])])])]
+                            [], [] ,'affirmative',[])])])])],
+                    [], [] ,'affirmative',[])])]
       
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2137,7 +2139,7 @@ class TestParsing(unittest.TestCase):
     def test_68(self):
         print ''
         print ('######################## test 7.8 ##############################')
-        utterance="red apples grow on green trees and plants. a kind of thing. It can be played by twenty players."
+        utterance="red apples grow on green trees and plants. a kind of thing. It can be played by thirty thousand twenty eight players."
         print "Object of this test : Using adjectives wuth plural"
         print utterance
         print '#################################################################'
@@ -2161,7 +2163,7 @@ class TestParsing(unittest.TestCase):
                         [Nominal_Group([],['it'],[],[],[])],  
                         [Verbal_Group(['can+play'],[],'present passive', 
                             [], 
-                            [Indirect_Complement(['by'],[Nominal_Group(['20'],['player'],[],[],[])])],
+                            [Indirect_Complement(['by'],[Nominal_Group(['30028'],['player'],[],[],[])])],
                             [], [] ,'affirmative',[])])]
         
         rslt[0].sn[0]._quantifier="ALL"
@@ -2265,7 +2267,7 @@ class TestParsing(unittest.TestCase):
     def test_72(self):
         print ''
         print ('######################## test 8.3 ##############################')
-        utterance="No, I can not reach it"
+        utterance="tell me what to do. No, I can not reach it."
         print "Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)"
         print utterance
         print '#################################################################'
@@ -2273,17 +2275,31 @@ class TestParsing(unittest.TestCase):
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
-        rslt=[Sentence('disagree', '',[],[]), 
+        rslt=[Sentence('imperative', '', 
+                [], 
+                [Verbal_Group(['tell'], [],'present simple', 
+                    [Nominal_Group(['the'],['thing'],[],[],[Sentence('relative', 'that', 
+                        [], 
+                        [Verbal_Group(['be'], [Verbal_Group(['do'], [],'', 
+                                [], 
+                                [],
+                                [], [] ,'affirmative',[])],'present simple', 
+                            [], 
+                            [],
+                            [], [] ,'affirmative',[])])])], 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('disagree', '',[],[]), 
             Sentence('statement', '', 
                 [Nominal_Group([],['I'],[],[],[])], 
                 [Verbal_Group(['can+reach'], [],'present simple', 
                     [Nominal_Group([],['it'],[],[],[])], 
                     [],
                     [], [] ,'negative',[])])]
-
+        
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)            
-        
+    
 
     
 if __name__ == '__main__':

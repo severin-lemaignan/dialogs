@@ -30,6 +30,7 @@
     remerge_sentences : to transform some sentences of the remerge part
     add_scd_vrb : to 
     interjection : to find and create interjections
+    what_to_relative : to change what+to into relative form 
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
@@ -44,9 +45,9 @@ Statement of lists
 superlative_number = ResourcePool().adjective_numbers
 adverbial_list = ResourcePool().compelement_proposals
 sub_list = ResourcePool().subsentences
+rel_list = ResourcePool().relatives
 frt_wd = ResourcePool().sentence_starts
 action_verb = ThematicRolesDict().get_all_verbs()
-rel_list = ResourcePool().relatives
 insertion_tuples = ResourcePool().change_tuples
 prep_concat_list = ResourcePool().concatenate_proposals
 apostrophe_s_to_is_list = ResourcePool().be_pronoun
@@ -757,6 +758,23 @@ def interjection(sentence):
     return [sentence]
    
    
+def what_to_relative(sentence):
+    """ 
+    This function change what+to into relative form                 
+    Input=sentence                              Output=sentence                      
+    """ 
+    
+    #init
+    i=0
+    
+    while i<len(sentence):
+        if sentence[i]=='what' and sentence[i+1]=='to':
+            sentence=sentence[:i]+['the','thing','that','is']+sentence[i+1:]
+            
+        i=i+1
+    return sentence
+    
+
     
 def processing(sentence):
     """ 
@@ -781,12 +799,13 @@ def processing(sentence):
     sentence = subsentence_comma(sentence)
     sentence = remerge_sentences(sentence)
     sentence = take_off_comma(sentence)
+    sentence = what_to_relative(sentence)
     sentence = add_scd_vrb(sentence)
     sentence = interjection(sentence)
     return sentence
 
-
-
+    
+    
 def process_sentence(utterance):
     """
     This function breaks the utterance (as a list) into sentences                        

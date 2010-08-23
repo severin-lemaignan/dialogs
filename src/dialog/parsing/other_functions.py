@@ -12,6 +12,8 @@
     word_to_digit : to convert the number from literal to digit
     convert_to_digit : to convert the determinant to digit  
     recover_aux_list : to recover the auxiliary list
+    find_scd_verb_sub : to find 'to' of probably second verb and transform it into ':to'               
+    recover_scd_verb_sub : to transform ':to' into 'to' if it isn't in subsentence of the subsentence
 """
 from dialog.resources_manager import ResourcePool
 
@@ -22,6 +24,9 @@ Statement of lists
 frt_wd = ResourcePool().sentence_starts
 number_list = ResourcePool().numbers
 cap_let_list = ResourcePool().capital_letters
+superlative_number = ResourcePool().adjective_numbers_digit
+sub_list = ResourcePool().subsentences
+rel_list = ResourcePool().relatives
 
 
 
@@ -104,26 +109,37 @@ def number(word):
 
 
 
-def word_to_digit(word):
+def word_to_digit(word, number):
     """
     Function convert the number from literal to digit                    
     Input=word                          Output=digit (string form)   
     """
     
-    #init
-    number=0
+    for i in superlative_number:
+        if i[0]==word:
+            number=number+int(i[1])
     
     if word.endswith('th'):
-        word=word[:len(word)-2]
-        
+        if word=='eighth':
+            word=word[:len(word)-1]
+        else:
+            word=word[:len(word)-2]
+    
     for l in number_list:
         if word.startswith(l[0]):
             if word.endswith('teen'):
                 number=number+int(l[1])+10
             elif word.endswith('ty') and word!='twenty':
                 number=number+int(l[1])*10
+            elif l[0]=='hundred':
+                number=number*int(l[1])
+            elif l[0]=='thousand':   
+                number=number*int(l[1])
+            elif l[0]=='million':
+                number=number*int(l[1])
             else:
                 number=number+int(l[1])
+              
     return number
             
             
@@ -142,11 +158,11 @@ def convert_to_digit(det):
             k=k+1
         else:
             
-            num=num+word_to_digit(det[:k])
+            num=word_to_digit(det[:k], num)
             det=det[k+1:]
             k=0 
-                
-    num=num+word_to_digit(det)
+               
+    num=word_to_digit(det, num)
     return str(num)
                 
                 
@@ -162,3 +178,56 @@ def recover_aux_list():
         if x[1]=='3':
             aux_list=aux_list+[x[0]]
     return aux_list
+
+
+
+def find_scd_verb_sub(sentence):
+    """ 
+    This function find 'to' of probably second verb and transform it into ':to'               
+    Input=sentence                              Output=sentence                      
+    """ 
+    
+    #init
+    i=flag=0
+    
+    while i<len(sentence):
+        
+        for j in sub_list+rel_list:
+            if sentence[i]==j:
+                flag=flag+1
+                break
+        if sentence[i]==';':
+            flag=flag-1
+            
+        if sentence[i]=='to' and flag>0:
+            sentence[i]=':to'
+            
+        i=i+1
+    return sentence
+
+
+
+def recover_scd_verb_sub(sentence):
+    """ 
+    This function transform ':to' into 'to' if it isn't in subsentence of the subsentence                 
+    Input=sentence                              Output=sentence                      
+    """ 
+    
+    #init
+    i=flag=0
+    
+    while i<len(sentence):
+        
+        for j in sub_list+rel_list:
+            if sentence[i]==j:
+                flag=flag+1
+                break
+        if sentence[i]==';':
+            flag=flag-1
+            
+        if sentence[i]==':to' and flag==0:
+            sentence[i]='to'
+            
+        i=i+1
+        
+    return sentence

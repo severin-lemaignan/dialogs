@@ -360,7 +360,10 @@ def y_n_ques(type, request, sentence):
     vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])
     analysis=Sentence(type, request, [], [])
     modal=[]
-
+    
+    #We start with determination of probably second verb in subsentence
+    sentence=other_functions.find_scd_verb_sub(sentence)
+    
     #We recover the auxiliary 
     aux=sentence[0]
     
@@ -480,16 +483,22 @@ def other_sentence(type, request, sentence):
     Input=type and requesting of sentence and the sentence                               
     Output=class Sentence                                                            
     """
-    
+
     #init
     vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])
     analysis=Sentence(type, request, [], [])
     modal=[]
     
+    if sentence==[]:
+        return []
+    
     #We have to add punctuation if there is not
     if sentence[len(sentence)-1]!='.' and sentence[len(sentence)-1]!='?' and sentence[len(sentence)-1]!='!':
         sentence=sentence+['.']
-            
+        
+    #We start with determination of probably second verb in subsentence
+    sentence=other_functions.find_scd_verb_sub(sentence)
+    
     #We search the subject
     sbj=analyse_nominal_group.find_sn_pos(sentence, 0)
     if sbj!=[] or type=='relative' :
@@ -663,8 +672,8 @@ def sentences_analyzer(sentences):
     
     #To simplify the interpretation, we have to perform some changes
     for k in class_sentence_list:
-        if k.data_type!='imperative' and k.sn[0].det==['there']:
-            k.sn[0]=k.sv[0].d_obj
+        if k.sn!=[] and k.sn[0].det==['there']:
+            k.sn=k.sv[0].d_obj
             k.sv[0].d_obj=[]
         
     return class_sentence_list

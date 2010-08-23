@@ -398,6 +398,7 @@ def process_subsentence(phrase,vg):
                 if w!='where' or (len(gr)+position!=phrase.index(w) or (len(gr)==1 and other_functions.find_cap_lettre(gr[0])==0)):
                     #We have to remove the proposal
                     subsentence= phrase[begin_pos+1:begin_pos+end_pos]
+                    subsentence=other_functions.recover_scd_verb_sub(subsentence)
                     
                     #We perform processing
                     vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
@@ -448,6 +449,7 @@ def process_conjunctive_sub(phrase,vg):
         
         #We have to remove the proposal
         subsentence= phrase[begin_pos+1:end_pos]
+        subsentence=other_functions.recover_scd_verb_sub(subsentence)
         
         #We perform processing
         vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', 'that' ,subsentence)]
@@ -569,24 +571,29 @@ def refine_subsentence(vg):
             #We have to make some changers
             vg.vrb_sub_sentence[i].aim='that'
             vg.vrb_sub_sentence[i].data_type='relative'
+            #We add nominal group in relative as direct object
+            vg.vrb_sub_sentence[i].sv[0].d_obj=vg.vrb_sub_sentence[i].sv[0].d_obj+[Nominal_Group(['the'],['thing'],[],[],[])]
             #We create a nominal group
-            gn=Nominal_Group(['the'],['thing'],[],[],[])
-            #We add it in relative as direct object
-            vg.vrb_sub_sentence[i].sv.d_obj=[gn]
-            #We add the relative and the nominal group into the sentence
-            gn.relative=gn.relative+[vg.vrb_sub_sentence[i]]
+            gn=Nominal_Group(['the'],['thing'],[],[],[vg.vrb_sub_sentence[i]])
             vg.d_obj=vg.d_obj+[gn]
             #We delete the subsebtebce
             vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
             i=i-1
             
-        if i>0 and vg.vrb_sub_sentence[i].aim=='where':
+        if i>=0 and vg.vrb_sub_sentence[i].aim=='where':
+
             #We have to make some changers
             vg.vrb_sub_sentence[i].data_type='relative'
             #We create a nominal group
             gn=Nominal_Group(['the'],['location'],[],[],[vg.vrb_sub_sentence[i]])
             #We add the relative and the nominal group into the sentence
             vg.i_cmpl=vg.i_cmpl+[Indirect_Complement(['in'],[gn])]
+            
+            for l in inderect_trans_verb_list:
+                if l==vg.vrb_main[0]:
+                    vg.i_cmpl[len(vg.i_cmpl)-1].prep=[]
+                    break
+                
             #We delete the subsebtebce
             vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
             i=i-1

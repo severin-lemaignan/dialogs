@@ -189,7 +189,7 @@ class ResourcePool:
         return list_list_word
 
     def __init__(self, data_path = DATA_DIR, oro_host = ORO_HOST, oro_port = ORO_PORT):
-    
+        
         self.ontology_server = None
         
         try:
@@ -238,6 +238,7 @@ class ResourcePool:
         self.verb_need_to = []
         self.prep_change_place = []
         self.replace_tuples = []
+        self.adjective_numbers_digit = []
 
 
 
@@ -328,6 +329,7 @@ class ResourcePool:
         self.adjective_rules=[k[0] for k in grammatical_rules[3]]
         self.concatenate_proposals=grammatical_rules[4]
         self.change_tuples=grammatical_rules[5]
+        self.adjective_numbers_digit=grammatical_rules[6]
         self.adjective_numbers=[k[0] for k in grammatical_rules[6]]
         self.be_pronoun=[k[0] for k in grammatical_rules[7]]
         self.adj_quantifiers=[k[0] for k in grammatical_rules[8]]
