@@ -31,6 +31,7 @@
     add_scd_vrb : to 
     interjection : to find and create interjections
     what_to_relative : to change what+to into relative form 
+    day_month : to find day or month to put them with upper case  
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
@@ -55,6 +56,8 @@ replacement_tuples = ResourcePool().replace_tuples
 prep_list = ResourcePool().prep_change_place
 verb_preced_verb_list = ResourcePool().verb_need_to
 adv_list = ResourcePool().adverbs
+day_list = ResourcePool().days_list
+month_list = ResourcePool().months_list
 
 
 
@@ -775,6 +778,20 @@ def what_to_relative(sentence):
     return sentence
     
 
+
+def day_month(sentence):
+    """ 
+    This function find day or month to put them with upper case                   
+    Input=sentence                            Output=sentence                      
+    """ 
+
+    for i in sentence:
+        for j in day_list+month_list:
+            if j[0].lower()==i:
+                sentence[sentence.index(i)]=i[0].upper()+i[1:]  
+    return sentence
+        
+        
     
 def processing(sentence):
     """ 
@@ -801,6 +818,7 @@ def processing(sentence):
     sentence = take_off_comma(sentence)
     sentence = what_to_relative(sentence)
     sentence = add_scd_vrb(sentence)
+    sentence = day_month(sentence)
     sentence = interjection(sentence)
     return sentence
 

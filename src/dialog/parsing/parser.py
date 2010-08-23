@@ -2298,7 +2298,30 @@ class TestParsing(unittest.TestCase):
                     [], [] ,'negative',[])])]
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
-        self.assertEquals(result_test, 0)            
+        self.assertEquals(result_test, 0)
+
+
+
+    def test_73(self):
+        print ''
+        print ('######################## test 8.4 ##############################')
+        utterance="I will come back on monday."
+        print "Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come+back'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['on'],[Nominal_Group([],['Monday'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)                   
     
 
     
