@@ -239,6 +239,8 @@ class ResourcePool:
         self.prep_change_place = []
         self.replace_tuples = []
         self.adjective_numbers_digit = []
+        self.days_list = []
+        self.months_list = [] 
 
 
 
@@ -303,6 +305,8 @@ class ResourcePool:
         self.plural_nouns=nouns[7]
         self.complement_pronouns=[k[0] for k in nouns[8]]
         self.noun_not_composed=[k[0] for k in nouns[9]]
+        self.days_list=nouns[10]
+        self.months_list=nouns[11]
         
         
         adverbials = [list(line.split()) 
