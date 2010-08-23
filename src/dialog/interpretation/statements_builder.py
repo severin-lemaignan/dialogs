@@ -127,6 +127,10 @@ class NominalGroupStatementBuilder:
         #This field holds concepts for class grounding
         self.lear_more_concept = []
         
+        #This field is True when the special case of "other" occurs
+        #   E.g: Give me the "other" tape
+        self.process_on_other = False
+        
     def clear_statements(self):
         self._statements = []
     
@@ -248,7 +252,7 @@ class NominalGroupStatementBuilder:
             #logging.debug("Found determiner:\"" + det + "\"")
             # Case 1: definite article : the"""
             # Case 2: demonstratives : this, that, these, those"""
-            if det in ['this', 'that', 'these', 'those']:
+            if det in ResourcePool().demonstrative_det: #['this', 'that', 'these', 'those']:
                 self._statements.append(self._current_speaker + " focusesOn " + ng_id)
             # Case 3: possessives : my, your, his, her, its, our, their """
             if det == "my" and not negative_object:
@@ -379,7 +383,9 @@ class NominalGroupStatementBuilder:
             #Case of 'other'
             # E.g: the other cube:
             if adj[0].lower() == "other":
-                self._statements.append(ng_id + " owl:differentFrom " + nominal_group.id)
+                self.process_on_other = True
+                pass
+                #self._statements.append(ng_id + " owl:differentFrom " + nominal_group.id)
                 
             
             #TODO: case of class Feature
@@ -628,6 +634,7 @@ class VerbalGroupStatementBuilder:
                 #Case 3:   
                 else:
                     # Modals verbs. E.g: can, must, ...
+                    #                   verb = must+do 
                     if '+' in verb:
                         [modal, verb] = verb.split('+')
                         self._statements.append(sit_id + " rdf:type " + verb.capitalize())
@@ -775,6 +782,8 @@ class VerbalGroupStatementBuilder:
                         elif ic.prep[0].lower() == 'behind':
                             icmpl_role = " isLocated "
                             ic_noun_id = "BACK"
+                        elif ic.prep[0].lower() == 'for' :
+                            icmpl_role = " isRelatedTo "
                     
                 # Case of prepostion but thematic roles not found
                 if not icmpl_role and ic.prep:
@@ -1126,7 +1135,7 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-    
+    """
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives the blue car"  
@@ -1486,7 +1495,7 @@ class TestStatementBuilder(unittest.TestCase):
         
 
         return self.process(sentence, expected_resut, display_statement_result = True)
-    
+    """
     def test_9_this(self):
         
         print "\n**** test_9_this  *** "
@@ -1629,7 +1638,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_resut, display_statement_result = True)
     
     
-    
+    """
     def test_13_this(self):
         
         print "\n**** test_13_this  *** "
@@ -2190,7 +2199,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    
+    """
     
     """
     def test_26_subsentences(self):

@@ -224,7 +224,7 @@ class Discrimination():
             return objL[0]
             
         else:
-            agent, descriptor = self.get_descriptor(description, ignotreFeatureL)
+            agent, descriptor = self.get_descriptor(description, ignoreFeatureL)
             object = self.get_type_description(description)
 
             if descriptor:

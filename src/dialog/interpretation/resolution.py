@@ -9,7 +9,7 @@ from dialog.dialog_exceptions import UnsufficientInputError, UnknownVerb, Uniden
 from dialog.resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name #for nominal group discrimination
 from discrimination import Discrimination
-from anaphora_matching import AnaphoraMatcher
+from anaphora_matching import AnaphoraMatcher, recover_nom_gr_list, first_replacement
 from dialog.sentence import SentenceFactory, Comparator
 
 class Resolver:
@@ -224,7 +224,7 @@ class Resolver:
             logging.debug("Replaced \"you\" by \"myself\"")
             nominal_group.id = 'myself'
             nominal_group._resolved = True
-        
+        """
         #Anaphoric words as attribute of the noun
         for adj in nominal_group.adj:
             if "other" in adj:
@@ -242,6 +242,7 @@ class Resolver:
                 nominal_group.id = refered_nominal_group.id
                 nominal_group._resolved = False
                 break
+        """
         
         #Anaphoric words in the noun
         if nominal_group.noun[0].lower() in ['it', 'one']:
@@ -297,7 +298,6 @@ class Resolver:
             
             # list object that are to be checked
             list_object = []
-            #list_object.append(object[0]) #TODO: UNCOMMENT THIS LINE WHEN ANAPHORA MATCHING IS OK
             list_object.extend(object[1])
             
             for obj in list_object:
@@ -312,12 +312,12 @@ class Resolver:
     
         # Case there exist only one nominal group identified from anaphora matching
         
-        #TODO: UNCOMMENT the lines below when Anaphora mather done 
-        #elif object and len(object[1]) <= 1:
-        #    nominal_group = object[0]
+        elif object and len(object[1]) <= 1:
+            nominal_group = object[0]
         
         # Ask for confirmation to the user
         else:
+            """
             #TODO: REMOVE FROM HERE the line WHEN FIXED in ANAPHORA DEALS WITH "this and other"
             if nominal_group.det and \
                 nominal_group.det[0].lower() in ['this', 'that'] and \
@@ -332,7 +332,7 @@ class Resolver:
             object[0].det = ['the']
             object[0].adj = [["other",[]]]
             #TODO: REMOVE UNTIL HERE
-            
+            """
             raise UnidentifiedAnaphoraError({'object':nominal_group,
                                             'object_to_confirm':object[0],
                                             'object_with_more_info':None,
@@ -359,6 +359,31 @@ class Resolver:
         builder.clear_statements()
         logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
         
+        
+        # Special case of "other" occuring in the nominal group
+        if builder.process_on_other:
+            #TODO ENCAPSULATE THIS
+            obj_list = []
+            try:
+                obj_list = ResourcePool().ontology_server.findForAgent('?concept', stmts)
+            except AttributeError:
+                pass
+                
+            if not obj_list:
+                pass
+                
+            elif len(obj_list) == 1:
+                nominal_group.id = obj_list[0]
+                nominal_group._resolved = True
+                return nominal_group
+            else:
+                anaphoric_objects_list = recover_nom_gr_list(get_last(self.sentences_store), 10)
+                if anaphoric_objects_list:
+                    obj_candidate = [obj for obj in anaphoric_objects_list if obj.id in obj_list][0]
+                    stmts.append("?concept owl:differentFrom " + obj_candidate.id)
+            
+            #UNTIL HERE
+        
         #Trying to discriminate 
         description = [[current_speaker, '?concept', stmts]]
         
@@ -366,7 +391,7 @@ class Resolver:
         features = []
         if self._current_sentence.data_type in ['w_question', 'yes_no_question']:
             features = [self._current_sentence.aim]
-            
+        
         #   Discriminate
         try:
             id = discriminator.clarify(description, features)
