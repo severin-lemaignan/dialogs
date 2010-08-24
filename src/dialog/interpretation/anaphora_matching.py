@@ -15,14 +15,10 @@ from dialog.sentence import *
 
 class AnaphoraMatcher:
     
-    def match_list_group_object(self, sentences):
-        list_gr=recover_nom_gr_list(sentences)
-        return list_gr
-     
     def match_first_object(self, sentences, c_gr):
         list_gr=recover_nom_gr_list(sentences)
         gr = first_replacement(list_gr, c_gr)
-        
+            
         return [gr, list_gr]
         
 """

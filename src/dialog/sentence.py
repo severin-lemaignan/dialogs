@@ -107,6 +107,12 @@ class SentenceFactory:
             "Do you mean the bottle?"
         """
         
+        # Special case of an occurence of "other" in adjectives
+        if object and ['other', []] in object.adj:
+            object.adj = [['other', []]]
+            object.noun_cmpl = []
+            object.relative = []
+            
         return [Sentence('yes_no_question', '', 
                     [Nominal_Group([],['you'],[],[],[])], 
                     [Verbal_Group(['mean'], [],'present simple', [object], [], [], [] ,'affirmative',[])])]

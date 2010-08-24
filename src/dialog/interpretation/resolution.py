@@ -72,10 +72,6 @@ class Resolver:
         
         return sentence
         
-    
-    
-    
-    
         
     def noun_phrases_resolution(self, sentence, current_speaker, uie_object, uie_object_with_more_info):
         logging.info(colored_print("-> Resolving noun phrases", 'green'))
@@ -175,8 +171,12 @@ class Resolver:
             nominal_group._resolved = True
             return nominal_group
         
+        
         # Case of an anaphoric word in the determiner
-        if nominal_group.det and nominal_group.det[0].lower() in ['this', 'that']:
+        # E.g: This , that cube
+        if nominal_group.det and \
+            nominal_group.det[0].lower() in ResourcePool().demonstrative_det:
+            
             onto_focus = ''
             try:
                 onto_focus = ResourcePool().ontology_server.findForAgent(current_speaker, 
@@ -185,26 +185,24 @@ class Resolver:
             except AttributeError:
                 pass
             
-            # Case of existing focus
             if onto_focus:
                 nominal_group.id = onto_focus[0]
                 nominal_group._resolved = True
+                return nominal_group
             
-            # otherwise possible reference to an object mentioned previously in the dialog
-            else:                
-                # Case of this + noun and noun != 'one' : E.g: Take this cube
-                if nominal_group.noun and nominal_group.noun[0].lower() != 'one':
-                    nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
-                                                                                    current_speaker, 
-                                                                                    current_object, True, onto)
-                # Case of this + one: E.g: Take this one
-                #      or this + None: E.g: Take this
-                #          
-                else:
-                    nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
+            # Case of 
+            #   this + noun - E.g: Take this cube:
+            if nominal_group.noun and nominal_group.noun[0].lower() != 'one':
+                pass # Nothing to do here at the moment. See what comes next on _resolve_noun_with_dialog_history
+            
+            # Case of 
+            #   this + one -  E.g: Take this
+            #   this + None - E.g: Take this one
+            else:
+                nominal_group.noun = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
                                                                                     current_speaker, 
                                                                                     current_object, False, None)
-                
+            
         # Case of a nominal group with no Noun
         if not nominal_group.noun:
             return nominal_group
@@ -224,25 +222,6 @@ class Resolver:
             logging.debug("Replaced \"you\" by \"myself\"")
             nominal_group.id = 'myself'
             nominal_group._resolved = True
-        """
-        #Anaphoric words as attribute of the noun
-        for adj in nominal_group.adj:
-            if "other" in adj:
-                # Other + noun:  E.g: The other cube
-                if nominal_group.noun[0] != 'one': 
-                    refered_nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
-                                                                                            current_speaker, current_object, 
-                                                                                            True, onto)
-                # Other + one:  E.g: The other one
-                else:
-                    refered_nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
-                                                                                            current_speaker, current_object, 
-                                                                                            False, None)
-                                                                                            
-                nominal_group.id = refered_nominal_group.id
-                nominal_group._resolved = False
-                break
-        """
         
         #Anaphoric words in the noun
         if nominal_group.noun[0].lower() in ['it', 'one']:
@@ -287,52 +266,13 @@ class Resolver:
         #       and List contains nominal group that are to be explored if ng is not confirmed from the user
         
         object = matcher.match_first_object(get_last(self.sentences_store, 10), nominal_group)
-        
-        # Case of check class name
-        # E.g: the other tape.
-        # Here, we check that the class of object[0] or any element in the object[1] is 'Tape'
-    
-        if object and with_check_class_name:
-            # Class to be checked
-            nominal_group_class = get_class_name(nominal_group.noun[0], onto)
             
-            # list object that are to be checked
-            list_object = []
-            list_object.extend(object[1])
-            
-            for obj in list_object:
-                onto_class = ''
-                try:
-                    onto_class = ResourcePool().ontology_server.lookupForAgent(current_speaker,obj.noun[0])
-                except AttributeError:
-                    pass
-                
-                if nominal_group_class == get_class_name(obj.noun[0], onto_class):
-                    return obj
-    
         # Case there exist only one nominal group identified from anaphora matching
-        
-        elif object and len(object[1]) <= 1:
+        if object and len(object[1]) <= 1:
             nominal_group = object[0]
         
         # Ask for confirmation to the user
         else:
-            """
-            #TODO: REMOVE FROM HERE the line WHEN FIXED in ANAPHORA DEALS WITH "this and other"
-            if nominal_group.det and \
-                nominal_group.det[0].lower() in ['this', 'that'] and \
-                not object[0]:  
-                object[0] = object[1][0]
-            object[0].det = ['the']
-            
-            if nominal_group.adj and \
-                ["other", []] in nominal_group.adj and \
-                not object[0]:  
-                object[0] = object[1][0]
-            object[0].det = ['the']
-            object[0].adj = [["other",[]]]
-            #TODO: REMOVE UNTIL HERE
-            """
             raise UnidentifiedAnaphoraError({'object':nominal_group,
                                             'object_to_confirm':object[0],
                                             'object_with_more_info':None,
@@ -359,31 +299,12 @@ class Resolver:
         builder.clear_statements()
         logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
         
-        
         # Special case of "other" occuring in the nominal group
-        if builder.process_on_other:
-            #TODO ENCAPSULATE THIS
-            obj_list = []
-            try:
-                obj_list = ResourcePool().ontology_server.findForAgent('?concept', stmts)
-            except AttributeError:
-                pass
-                
-            if not obj_list:
-                pass
-                
-            elif len(obj_list) == 1:
-                nominal_group.id = obj_list[0]
-                nominal_group._resolved = True
-                return nominal_group
-            else:
-                anaphoric_objects_list = recover_nom_gr_list(get_last(self.sentences_store), 10)
-                if anaphoric_objects_list:
-                    obj_candidate = [obj for obj in anaphoric_objects_list if obj.id in obj_list][0]
-                    stmts.append("?concept owl:differentFrom " + obj_candidate.id)
+        # Special case of "this" occuring in determiner with no focus
+        if builder.process_on_other or builder.process_on_demonstrative_det:
+            nominal_group, stmts = self._resolve_nouns_with_dialog_history(nominal_group, current_speaker, stmts, builder)
+            if nominal_group._resolved: return nominal_group
             
-            #UNTIL HERE
-        
         #Trying to discriminate 
         description = [[current_speaker, '?concept', stmts]]
         
@@ -447,6 +368,46 @@ class Resolver:
             
         return resolved_sn
     
+    
+    def _resolve_nouns_with_dialog_history(self, nominal_group, current_speaker, current_stmts, builder):
+        """This attempts to resolve nouns that involve both a discrimination processing and searching the dialog history
+            E.g: the 'other' cup.
+            - if there is only one cup existing in the ontology, then we identify it by a discrimination processing.
+            - if there are several cups known in the ontology, then we possibly mean a cup different from the one that has been stated earlier in the dialog.
+        """
+        
+        obj_list = []
+        try:
+            obj_list = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', current_stmts)
+        except AttributeError:
+            pass
+            
+        
+        if obj_list:
+            if len(obj_list) == 1:
+                nominal_group.id = obj_list[0]
+                nominal_group._resolved = True
+            
+            else:
+                historic_objects_list = recover_nom_gr_list(get_last(self.sentences_store, 10))
+                if not historic_objects_list:
+                    raise DialogError("Error: possibly due to an empty dialog history")
+                
+                obj_candidate = [obj for obj in historic_objects_list if obj.id in obj_list][0]
+                
+                # Case of processing on other
+                if builder.process_on_other:
+                    current_stmts.append("?concept owl:differentFrom " + obj_candidate.id)
+                    return nominal_group, current_stmts
+                
+                # Case of processing on demonstrative determiner
+                if builder.process_on_demonstrative_det:
+                    nominal_group.id = obj_candidate.id
+                    nominal_group._resolved = True
+                    return nominal_group, current_stmts
+                        
+        return nominal_group, current_stmts
+        
     
     
     def _resolve_verbs(self, verbal_group):        

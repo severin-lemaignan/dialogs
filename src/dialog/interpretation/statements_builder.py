@@ -127,9 +127,13 @@ class NominalGroupStatementBuilder:
         #This field holds concepts for class grounding
         self.lear_more_concept = []
         
-        #This field is True when the special case of "other" occurs
+        #This field is True when the special case of "other" occurs in adjectives
         #   E.g: Give me the "other" tape
         self.process_on_other = False
+        
+        #This field is True when the determiners "this", "that" occur
+        #   E.g: Give me this tape
+        self.process_on_demonstrative_det = False
         
     def clear_statements(self):
         self._statements = []
@@ -253,7 +257,8 @@ class NominalGroupStatementBuilder:
             # Case 1: definite article : the"""
             # Case 2: demonstratives : this, that, these, those"""
             if det in ResourcePool().demonstrative_det: #['this', 'that', 'these', 'those']:
-                self._statements.append(self._current_speaker + " focusesOn " + ng_id)
+                self.process_on_demonstrative_det = True
+                
             # Case 3: possessives : my, your, his, her, its, our, their """
             if det == "my" and not negative_object:
                 self._statements.append(ng_id + " belongsTo " + self._current_speaker)
@@ -387,7 +392,10 @@ class NominalGroupStatementBuilder:
                 pass
                 #self._statements.append(ng_id + " owl:differentFrom " + nominal_group.id)
                 
-            
+            elif adj[0].lower() == "same":
+                pass
+                
+                
             #TODO: case of class Feature
             # Apple are yellow fruits
             

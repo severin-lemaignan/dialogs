@@ -213,8 +213,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         expected_result = ['* rdf:type See',
                             '* performedBy myself',
                             '* actsOnObject green_banana']
-        print(res)
-        
+                            
         self.assertTrue(self.check_results(res, expected_result))
         
     
@@ -245,41 +244,43 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         print("\n##################### test_sentence8 - THIS NO FOCUS########################\n")
         #Fill up History
-        self.oro.remove(['myself focusesOn y_banana'])
         ##sentence2
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
         
         ##sentence3
+        self.oro.remove(['myself focusesOn y_banana'])
+        
         stmt = "I see this"
         ###
         ### Expected Question: Do you mean the green banana?
         answer = "No. I mean the red apple"
         res = self.dialog.test('myself', stmt, answer)
-        print(res)
         expected_result = ['* rdf:type See',
                             '* performedBy myself',
                             '* actsOnObject red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
+        
         self.assertTrue(self.check_results(res, expected_result))
-    
+        
+        
     def test_sentence8_bis(self):
         
         print("\n##################### test_sentence8 bis - THIS NO FOCUS########################\n")
         #Fill up History
-        self.oro.remove(['myself focusesOn y_banana'])
         ##sentence2
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
         
         ##sentence3
+        self.oro.remove(['myself focusesOn y_banana'])
+        
         stmt = "I see this one"
         ###
         ### Expected Question: Do you mean the green banana?
         answer = "No. I mean the red apple"
         res = self.dialog.test('myself', stmt, answer)
-        
         expected_result = ['* rdf:type See',
                             '* performedBy myself',
                             '* actsOnObject red_apple']
@@ -291,13 +292,13 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         print("\n##################### test_sentence8 ter - THIS NO FOCUS########################\n")
         #Fill up History
-        self.oro.remove(['myself focusesOn y_banana'])
-        self.oro.removeForAgent("myself", ['myself focusesOn y_banana'])
         ##sentence2
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
         
         ##sentence3
+        self.oro.remove(['myself focusesOn y_banana'])
+        
         stmt = "I see this apple"
         ###
         res = self.dialog.test('myself', stmt)
@@ -344,10 +345,106 @@ class TestBaseSentenceDialog(unittest.TestCase):
         expected_result = ['y_banana isOn shelf1']
         self.assertTrue(self.check_results(res, expected_result))
     
+    def test_sentence9_ter(self):
+        
+        print("\n##################### test_sentence9_ter - THIS OTHER ########################\n")
+        #Fill up History
+        ##sentence1
+        stmt = "the green banana is next to the red apple"
+        res = self.dialog.test('myself', stmt)
+        
+        ##sentence2
+        self.oro.remove(['myself focusesOn y_banana'])
+        
+        stmt = "this other one is on the shelf."
+        ###
+        ### expected question: Do you mean the other banana?
+        answer = "yes. the yellow banana"
+        res = self.dialog.test('myself', stmt, answer)
+        
+        expected_result = ['y_banana isOn shelf1']
+        
+        self.oro.add(['myself focusesOn y_banana'])
+        self.assertTrue(self.check_results(res, expected_result))
+    
+    def test_sentence9_quater(self):
+        
+        print("\n##################### test_sentence9_quater - THIS OTHER ########################\n")
+        #Fill up History
+        ##sentence1
+        stmt = "the green banana is next to the red apple"
+        res = self.dialog.test('myself', stmt)
+        
+        ##sentence2
+        self.oro.remove(['myself focusesOn y_banana'])
+        
+        stmt = "this other banana is on the shelf."
+        ###
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['y_banana isOn shelf1']
+        
+        self.oro.add(['myself focusesOn y_banana'])
+        self.assertTrue(self.check_results(res, expected_result))
+    
     
     def test_sentence10(self):
         
-        print("\n##################### test_sentence10 - MODALS ########################\n")
+        print("\n##################### test_sentence10 - SAME ########################\n")
+        #Fill up History
+        
+        ##sentence1
+        stmt = "the red apple is on the big tree"
+        res = self.dialog.test('myself', stmt)
+        
+        
+        ##sentence2
+        stmt = "the green banana is next to the red apple"
+        res = self.dialog.test('myself', stmt)
+        
+        ##sentence3
+        stmt = "I see the same one"
+        ###
+        answer = "yes. I meant the green one"
+        res = self.dialog.test('myself', stmt, answer)
+        
+        expected_result = ['* rdf:type See',
+                            '* performedBy myself',
+                            '* actsOnObject green_banana']
+        
+        
+        self.assertTrue(self.check_results(res, expected_result))
+    
+    def test_sentence10_bis(self):
+        
+        print("\n##################### test_sentence10_bis - SAME ########################\n")
+        #Fill up History
+        
+        ##sentence1
+        stmt = "the red apple is on the big tree"
+        res = self.dialog.test('myself', stmt)
+        
+        
+        ##sentence2
+        stmt = "the green banana is next to the red apple"
+        res = self.dialog.test('myself', stmt)
+        
+        ##sentence3
+        stmt = "I see the same apple"
+        ###
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['* rdf:type See',
+                            '* performedBy myself',
+                            '* actsOnObject red_apple']
+        
+        
+        self.assertTrue(self.check_results(res, expected_result))
+    
+    
+    def test_sentence11(self):
+        
+        print("\n##################### test_sentence11 - MODALS ########################\n")
         #Fill up History
         ##sentence1
         stmt = "I can take the green banana"
@@ -934,7 +1031,11 @@ if __name__ == '__main__':
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence8_ter'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9_bis'))
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9_ter'))
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9_quater'))
     suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence10'))
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence10_bis'))
+    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence11'))
     
     suiteVerbalization = unittest.TestSuite()
     suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize1'))
