@@ -193,7 +193,7 @@ class Resolver:
             # Case of 
             #   this + noun - E.g: Take this cube:
             if nominal_group.noun and nominal_group.noun[0].lower() != 'one':
-                pass # Nothing to do here at the moment. See what comes next on _resolve_noun_with_dialog_history
+                pass # Nothing to do appart from processing "this" as "the"
             
             # Case of 
             #   this + one -  E.g: Take this
@@ -201,7 +201,7 @@ class Resolver:
             else:
                 nominal_group.noun = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
                                                                                     current_speaker, 
-                                                                                    current_object, False, None)
+                                                                                    current_object)
             
         # Case of a nominal group with no Noun
         if not nominal_group.noun:
@@ -227,7 +227,7 @@ class Resolver:
         if nominal_group.noun[0].lower() in ['it', 'one']:
             nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
                                                                                     current_speaker, 
-                                                                                    current_object, False, None)
+                                                                                    current_object)
         return nominal_group
     
     def _resolve_groups_references(self, array_sn, matcher, current_speaker, current_object):
@@ -246,7 +246,7 @@ class Resolver:
         return resolved_sn
     
     
-    def _references_resolution_with_anaphora_matcher(self, nominal_group, matcher, current_speaker, current_object, with_check_class_name, onto):
+    def _references_resolution_with_anaphora_matcher(self, nominal_group, matcher, current_speaker, current_object):
         """ This attempts to match the nominal group containing anaphoric words with an object identifed from 
             the dialog history.
             However, a confirmation is asked to user
@@ -300,8 +300,7 @@ class Resolver:
         logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
         
         # Special case of "other" occuring in the nominal group
-        # Special case of "this" occuring in determiner with no focus
-        if builder.process_on_other or builder.process_on_demonstrative_det:
+        if builder.process_on_other:
             nominal_group, stmts = self._resolve_nouns_with_dialog_history(nominal_group, current_speaker, stmts, builder)
             if nominal_group._resolved: return nominal_group
             
@@ -395,16 +394,8 @@ class Resolver:
                 
                 obj_candidate = [obj for obj in historic_objects_list if obj.id in obj_list][0]
                 
-                # Case of processing on other
-                if builder.process_on_other:
-                    current_stmts.append("?concept owl:differentFrom " + obj_candidate.id)
-                    return nominal_group, current_stmts
-                
-                # Case of processing on demonstrative determiner
-                if builder.process_on_demonstrative_det:
-                    nominal_group.id = obj_candidate.id
-                    nominal_group._resolved = True
-                    return nominal_group, current_stmts
+                # Discriminate everything different from this ID
+                current_stmts.append("?concept owl:differentFrom " + obj_candidate.id)
                         
         return nominal_group, current_stmts
         
