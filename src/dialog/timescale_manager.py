@@ -23,6 +23,28 @@ def refine_val(x,y,time,valeur):
     return time
 
 
+def negative_day(time):
+    i=len(month_list)-1
+    while i >= 0: 
+        if int(time['day'])<=0:
+            if month_list[i][0]==time['month']:
+                if i==0:
+                    i=len(month_list)-1
+                    time['year']=str(int(time['year'])-1)
+                else:
+                    i=i-1
+                if month_list[i][0]=='February' and int(time['year'])%4==0 and int(time['year'])%100!=0:
+                    time['day']=str(int(time['day'])+29)
+                else:
+                    time['day']=str(int(time['day'])+int(month_list[i][1]))
+                time['month']=month_list[i][0]
+            else:
+                i=i-1
+        else:
+            return time
+    
+    
+    
 
 def refine_clock(time):
     i=0
@@ -35,13 +57,13 @@ def refine_clock(time):
           
             if time['month']=='February' and int(time['year'])%4==0 and int(time['year'])%100!=0:
                 if int(time['day'])<=29:
-                    return time
+                    return negative_day(time)
                 else:
                     time['day']=str(int(time['day'])-29)
                     time['month']=month_list[i+1][0]
             else:
                 if int(time['day'])<=int(month_list[i][1]):
-                    return time
+                    return negative_day(time)
                 else:
                     time['day']=str(int(time['day'])-int(month_list[i][1]))
                     if i==11:
@@ -54,7 +76,7 @@ def refine_clock(time):
 
         i=i+1
   
-    return time
+    return negative_day(time)
 
 
 
@@ -121,30 +143,20 @@ def print_time(time):
     print 'second: ', time['second']
 
 
-time1={'year':'2011','month':'December','day':'90','hour':'22','minute':'61','second':'3623'}
+time1={'year':'2011','month':'December','day':'1','hour':'22','minute':'0','second':'-60'}
 time2={'year':'2011','month':'December','day':'91','hour':'22','minute':'62','second':'3622'}
 time3={'year':'2010','month':'December','day':'91','hour':'22','minute':'63','second':'3610'}
+time4={'year':'0','month':'January','day':'1','hour':'15','minute':'0','second':'0'}
 """
 action_time2=timescale_adverb(time2, 'yesterday')
 action_time3=timescale_adverb(time3, 'tomorrow')
-
-time1=refine_clock(time1)
-time2=refine_clock(time2)
-time3=refine_clock(time3)
-"""
-"""
-print_time(time1)
-print_time(time2)
-print_time(time3)
-
 """
 
-refine_clock(time1)
 #action_time=adverbs_interpretation(time1, ['here', 'now'])
 #action_time=adverbs_interpretation(time1, ['here', 'tomorrow'])
-#action_time=adverbs_interpretation(time1, ['here', 'yesterday'])
+action_time=adverbs_interpretation(time4, ['here', 'yesterday'])
 #action_time=adverbs_interpretation(time1, ['yesterday', 'tomorrow'])
-action_time=adverbs_interpretation(time1, ['here','yesterday','tonight'])
+#action_time=adverbs_interpretation(time1, ['here','yesterday','tonight'])
 print_time(action_time['time_begin'])
 print_time(action_time['time_end'])
 
