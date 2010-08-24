@@ -200,7 +200,7 @@ class ResourcePool:
         except OroServerError:
             logging.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
             ". Continuing without the ontology server. Amongst others, resolution won't work.")
-        
+    
         
         self.adjectives = {}
         self.irregular_verbs_past = []
@@ -241,6 +241,7 @@ class ResourcePool:
         self.adjective_numbers_digit = []
         self.days_list = []
         self.months_list = [] 
+        self.time_adverbs = []
 
 
 
@@ -314,6 +315,7 @@ class ResourcePool:
                     in open (os.path.join(data_path, "adverbial"))]   
         adverbials = self.split_list(adverbials)
         self.adverbs=[k[0] for k in adverbials[0]]
+        self.time_adverbs=adverbials[0]
         proposal=adverbials[1]
         for k in proposal:
             if k[1]=='1':
