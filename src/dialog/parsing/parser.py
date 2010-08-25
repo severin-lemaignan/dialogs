@@ -2305,7 +2305,7 @@ class TestParsing(unittest.TestCase):
     def test_73(self):
         print ''
         print ('######################## test 8.4 ##############################')
-        utterance="I will come back on monday."
+        utterance="I will come back on monday. I'll play with guitar. I'll play football"
         print "Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)"
         print utterance
         print '#################################################################'
@@ -2318,13 +2318,69 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['come+back'], [],'future simple', 
                     [], 
                     [Indirect_Complement(['on'],[Nominal_Group([],['Monday'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [Nominal_Group(['a'],['football'],[],[],[])], 
+                    [],
                     [], [] ,'affirmative',[])])]
+        
+        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        rslt[2].sv[0].d_obj[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)                   
     
+    def test_74(self):
+        print''
+        print ('######################## test 8.5 ##############################')
+        utterance="I'll play guitar, piano and violon. I'll play with guitar, piano and violon. give me everything"
+        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[]),
+                                                   Nominal_Group(['a'],['piano'],[],[],[]),
+                                                   Nominal_Group(['a'],['violon'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        rslt[0].sv[0].d_obj[0]._quantifier="SOME"
+        rslt[0].sv[0].d_obj[1]._quantifier="SOME"
+        rslt[0].sv[0].d_obj[2]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].nominal_group[1]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].nominal_group[2]._quantifier="SOME"
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
 
-    
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")

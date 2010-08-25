@@ -19,6 +19,7 @@
     process_subsentence : to process the subsentence
     correct_i_compl : to transform indirect complement to relative
     DOC_to_IOC : to put the direct complement in the indirect
+    create_nom_gr : to add it or a determinant if it is necessary
     refine_indirect_complement : to put indirect complements with same proposal together
     refine_subsentence : to transform some subsentence to relative
 """
@@ -45,6 +46,7 @@ proposal_list = ResourcePool().proposals
 pronoun_list = ResourcePool().pronouns
 rel_list = ResourcePool().relatives
 sub_list = ResourcePool().subsentences
+unusable_word = ResourcePool().unusable_words
 
 
 
@@ -519,18 +521,64 @@ def DOC_to_IOC(vg):
 
 
 
-def add_it(sentence,aim):
+
+def create_nom_gr_and(sentence):
+    """ 
+    This function creates a nominal group before and after the 'or'                  
+    Input=sentence and the conjunction                     Output=sentence                      
+    """ 
+    #init
+    i=0
+    
+    while i < len(sentence):
+        nom_gr=analyse_nominal_group.find_sn_pos(sentence, i)
+        i=i+len(nom_gr)
+    
+        while i < len(sentence) and (sentence[i]=='and' or sentence[i]==';'):
+            if sentence[i]==';':
+                sentence[i]='and'
+            sentence=sentence[:i+1]+['a']+sentence[i+1:]
+            i=i+1
+            nom_gr=analyse_nominal_group.find_sn_pos(sentence, i)
+            i=i+len(nom_gr)
+        i=i+1
+
+    return sentence
+
+
+
+def create_nom_gr(sentence,aim):
     """
-    This function add it i there is an adverbial without nominal group
+    This function add it or a determinant if it is necessary
     Input=sentence                         Output=sentence       
     """
     
+    #init
+    flag=0
+    
+    if sentence[0]=='.' or sentence[0]=='?' or sentence[0]=='!' or sentence[0]==';':
+        return sentence[1:] 
+    
+    for j in unusable_word:
+        if j==sentence[0]:
+            return sentence[1:] 
+        
     if sentence[0]=='from' and aim=='origin':
         return sentence[1:]
     
     for i in proposal_list:
         if i==sentence[0]:
+            flag=1
+    if flag==1:
+        if sentence[1]!='.' and sentence[1]!='?' and sentence[1]!='!' and sentence[1]!=';':
+            sentence = [sentence[0]]+['a']+sentence[1:]
+            sentence = [sentence[0]]+ create_nom_gr_and(sentence[1:])
+        else:
             return [sentence[0]]+['it']+sentence[1:]
+    else:
+        sentence = ['a']+sentence
+        sentence = create_nom_gr_and(sentence)
+    
     return sentence
 
 
@@ -550,7 +598,8 @@ def refine_indirect_complement(vg):
                 if vg.i_cmpl[j].prep!=[] and vg.i_cmpl[i].prep==vg.i_cmpl[j].prep:
                     vg.i_cmpl[i].nominal_group=vg.i_cmpl[i].nominal_group+vg.i_cmpl[j].nominal_group
                     vg.i_cmpl=vg.i_cmpl[:j]+vg.i_cmpl[j+1:]
-                j=j+1
+                else:
+                    j=j+1
         i=i+1
     
     return vg    

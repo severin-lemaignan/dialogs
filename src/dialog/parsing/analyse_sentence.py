@@ -461,7 +461,7 @@ def y_n_ques(type, request, sentence):
     vg=analyse_verbal_structure.DOC_to_IOC(vg)
 
     while len(sentence)>1:
-        stc=analyse_verbal_structure.add_it(sentence,request)
+        stc=analyse_verbal_structure.create_nom_gr(sentence,request)
         #We recover the direct, indirect complement and the adverbial
         stc=analyse_verbal_structure.recover_obj_iobj(stc, vg)
         if stc==sentence:
@@ -623,7 +623,7 @@ def other_sentence(type, request, sentence):
     vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
     while len(sentence)>1:
-        stc=analyse_verbal_structure.add_it(sentence,request)
+        stc=analyse_verbal_structure.create_nom_gr(sentence,request)
         #We recover the direct, indirect complement and the adverbial
         stc=analyse_verbal_structure.recover_obj_iobj(stc, vg)
         if stc==sentence:
