@@ -322,7 +322,7 @@ class NominalGroupStatementBuilder:
                     pass
             
             # Case : Personal pronoun
-            elif not nominal_group.det and noun in ["I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "their"]:
+            elif not nominal_group.det and noun in ResourcePool().pronouns:
                 # Case of negation
                 if negative_object:
                     # assign noun_id == current_speaker ID or Current receipient, or so on
@@ -689,20 +689,17 @@ class VerbalGroupStatementBuilder:
         d_obj_stmt_builder = NominalGroupStatementBuilder(d_objects, self._current_speaker)
         
         #Thematic roles
+        d_obj_role = ResourcePool().thematic_roles.get_next_cmplt_role(verb, True)
+        
         """
-        #TODO: Bug on Thematic Role - Need to check deterministic behaviour with the roles given by Resources pool manager
-        thematic_roles = ResourcePool().thematic_roles
-       
-        try:
-            d_obj_role = thematic_roles.get_next_cmplt_role(verb, True)
-        except:
-            d_obj_role = " involves "
-        """
-        #TODO with thematic Role
+        #TODO FROM HERE with thematic Role
         if verb.lower() in ['get','take','pick', 'put', 'give', 'see', 'show', 'bring', 'move', 'go', 'hide', 'place']:
             d_obj_role = " actsOnObject "
         else:
             d_obj_role = " involves "
+            
+        #TODO UNTIL HERE
+        """
         #nominal groups
         for d_obj in d_objects:
             #Case 1: The direct object follows the verb 'to be'.
@@ -1143,7 +1140,7 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-    """
+    
     def test_1(self):
         print "\n**** Test 1  *** "
         print "Danny drives the blue car"  
@@ -1167,9 +1164,69 @@ class TestStatementBuilder(unittest.TestCase):
                            '* performedBy id_danny',
                            '* involves volvo']
         
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
+        
+        print "\n**** Test 1 Thematic roles direct object*** "
+        self.stmt.clear_statements()
+        self.stmt._unclarified_ids = []
+        self.stmt._statements_to_remove = []
+        print "Danny doesn't drive the blue car"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['drive'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['the'],
+                                                          ['car'],
+                                                          ['blue'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = [ '* rdf:type Drive',
+                            '* performedBy id_danny',
+                            '* involves volvo']   
+        self.process(sentence, expected_result, display_statement_result = True)
+        
+        
+        print "\n**** Test 1 Thematic roles indirect object*** "
+        self.stmt.clear_statements()
+        self.stmt._unclarified_ids = []
+        self.stmt._statements_to_remove = []
+        print "Danny doesn't drive the blue car"
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group([],
+                                            ['Danny'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['drive'],
+                                           [],
+                                           'present simple',
+                                           [Nominal_Group(['the'],
+                                                          ['car'],
+                                                          ['blue'],
+                                                          [],
+                                                          [])],
+                                           [],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = [ '* rdf:type Drive', 
+                            '* performedBy id_danny',
+                            '* involves volvo']   
+        self.process(sentence, expected_result, display_statement_result = True)
+        
     
-    
+    """
     def test_1_goal_verb(self):
         print "\n**** Test 1  *** "
         print "Danny wants the blue car"  
@@ -1503,7 +1560,7 @@ class TestStatementBuilder(unittest.TestCase):
         
 
         return self.process(sentence, expected_resut, display_statement_result = True)
-    """
+    
     def test_9_this(self):
         
         print "\n**** test_9_this  *** "
@@ -1646,7 +1703,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_resut, display_statement_result = True)
     
     
-    """
+    
     def test_13_this(self):
         
         print "\n**** test_13_this  *** "

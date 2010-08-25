@@ -31,20 +31,24 @@ vacancy
 This list holds all pronouns
 ##
 
-you
-I
-we
-he
-she
-me
-it
-they
-yours
-mine
-him
-her
-them
-
+it 1
+you 1
+I 0
+we 0
+he 0
+she 0
+me 1
+us 1
+they 0
+yours 0
+mine 0
+him 1
+her 1
+them 1
+ours 0
+theirs 0
+his 0
+hers 0
 
 
 
@@ -135,22 +139,11 @@ no
 
 
 ## 
-This list holds nouns which don't have a regular form in plural
+This list holds nouns with no regular form in plural
 ##
 
 glasses glass
 busses bus
-
-
-
-
-## 
-This list holds complement pronoun
-##
-
-me
-you
-it
 
 
 
