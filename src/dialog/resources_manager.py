@@ -298,16 +298,18 @@ class ResourcePool:
         nouns = self.split_list(nouns)
         self.special_nouns=[k[0] for k in nouns[0]]
         self.pronouns=[k[0] for k in nouns[1]]
+        for i in nouns[1]:
+            if i[1]=='1':
+                self.complement_pronouns=self.complement_pronouns+[i[0]]
         self.demonstrative_det=[k[0] for k in nouns[2]]
         self.determinants=[k[0] for k in nouns[3]]
         self.nouns_end_s=[k[0] for k in nouns[4]]
         self.relatives=[k[0] for k in nouns[5]]
         self.composed_nouns=[k[0] for k in nouns[6]]
         self.plural_nouns=nouns[7]
-        self.complement_pronouns=[k[0] for k in nouns[8]]
-        self.noun_not_composed=[k[0] for k in nouns[9]]
-        self.days_list=nouns[10]
-        self.months_list=nouns[11]
+        self.noun_not_composed=[k[0] for k in nouns[8]]
+        self.days_list=nouns[9]
+        self.months_list=nouns[10]
         
         
         adverbials = [list(line.split()) 
