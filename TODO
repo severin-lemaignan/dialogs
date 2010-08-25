@@ -52,7 +52,7 @@ Features
     create object property modal+Performs 
     E.g: canPerforms, (Although, mustPerforms, shouldPerforms are not relation in the ontology, they are created anyway).
     
-[TODO:3] complete resources pool
+[DONE v0.5] complete resources pool
 -> merge in resourcepool word lists that are currently spread out
 
 [TODO:2] Quantifier

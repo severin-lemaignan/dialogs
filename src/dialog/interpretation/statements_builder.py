@@ -911,10 +911,14 @@ def dump_resolved(sentence, current_speaker, current_listener):
             else:
                 #Statement for resolution
                 logging.info("Statements sended to Resolution for discrmination for this nominal group...")
-                print(ng)
                 builder.process_nominal_group(ng, '?concept', None, False)
                 stmts = builder.get_statements()
+                
+                if builder.process_on_demonstrative_det:# More complicated processing of "this" in Resolution module
+                    stmts.append(current_speaker + " focusesOn ?concept")
+                
                 builder.clear_statements()
+                
                 for s in stmts:
                     logging.info("\t>>" + s)
                     

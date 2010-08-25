@@ -4,8 +4,10 @@
 import logging
 import unittest
 from resolution import Resolver
-from statements_builder import StatementBuilder, NominalGroupStatementBuilder, VerbalGroupStatementBuilder
-
+from statements_builder import StatementBuilder
+from statements_builder import NominalGroupStatementBuilder
+from statements_builder import VerbalGroupStatementBuilder
+from statements_builder import dump_resolved
 from dialog.sentence import *
 from dialog.resources_manager import ResourcePool
 
@@ -63,6 +65,7 @@ class QuestionHandler:
             self._statements = self._extend_statement_from_sentence_aim(self._statements)
             
             if self._statements:
+                print(self._statements)
                 try:
                     logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
                     self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
@@ -140,6 +143,54 @@ class QuestionHandler:
             
     
     def get_role_from_sentence_aim(self, query_on_field, verb):
+        dic_aim = QuestionAimDict().dic_aim
+        try:
+            if verb.lower() in dic_aim[self._sentence.aim][query_on_field]:
+                role = dic_aim[self._sentence.aim][query_on_field][verb.lower()]
+            else:
+                role = dic_aim[self._sentence.aim][query_on_field][None]
+        except KeyError:
+            if verb.lower() in dic_aim[self._sentence.aim][None]:
+                role = dic_aim[self._sentence.aim][None][verb.lower()]
+            else:
+                role = dic_aim[self._sentence.aim][None][None]
+
+        return role
+    
+    
+    """            
+        what aim => 'thing'
+            what kind => aim = 'thing', sn = [the kind of]
+            what type => aim = 'thing' , sn = [the type of]
+            what time => aim = 'time'
+        which aim => 'choice'
+        when  aim => 'date'
+        where aim => 'Place'
+            where (from) => 'origin'
+        why   aim => 'reason'
+        who   aim => 'person'
+        whose aim => 'owner'
+        whom  aim => 'person'
+        how   aim => 'place'
+            how long  => aim = 'duration'
+            how far   => aim = 'distance'
+             how often => aim = 'Frequency'
+             How much  => aim = 'Quantity'
+            How many  => aim = 'Quantity'
+    """    
+
+    
+    def _remove_statements_with_no_unbound_tokens(self, statements):
+        stmts = []
+        for s in statements:
+            if '?' in s:
+                stmts.append(s)
+                
+        return stmts
+    
+
+class QuestionAimDict:
+    def __init__(self):
         """
         Info:
             (A): A is optional
@@ -187,97 +238,60 @@ class QuestionHandler:
                 e.g: who does the man give a cube
                 append in statement [* receivedBy ?concept]         
         """
-        #TODO in resource pool: Create dictionary files
-        dic_on_indirect_obj = {'be':None,
-                            'put':'hasGoal',
-                            'give':'hasGoal',
-                            'show':'hasGoal', 
-                            None:'receivedBy'}
-                            
-        dic_on_direct_obj = {'be':'owl:sameAs',
-                            'put':'actsOnObject',
-                            'give':'actsOnObject',
-                            'show':'actsOnObject', 
-                            None:'involves'}
+        
+        self.dic_aim = {}
+        
+        
+        #Dictionaries related to thematice roles verbs
+        verbs_dic = ResourcePool().thematic_roles.verbs
+        self.dic_on_direct_obj = dict([(verb , role.id) for verb in verbs_dic.keys() for role in verbs_dic[verb].roles[0:1]])
+        self.dic_on_direct_obj[None] = 'involves'
+        self.dic_on_direct_obj['be'] = 'owl:sameAs'
+
+        self.dic_on_indirect_obj = dict([(verb , role.id) for verb in verbs_dic.keys() for role in verbs_dic[verb].roles[1:2]])
+        self.dic_on_indirect_obj['be'] = None
+        self.dic_on_indirect_obj[None] = 'owl:sameAs'
     
         #Dictionary for sentence.aim = 'place' 
-        dic_place={None:dic_on_indirect_obj.copy()}
-        dic_place[None]['be'] = 'isAt'
+        self.dic_place={None:self.dic_on_indirect_obj.copy()}
+        self.dic_place[None]['be'] = 'isAt'
                         
         #Dictionary for sentence.aim = 'thing' 
-        dic_thing={None:dic_on_direct_obj.copy()}
+        self.dic_thing={None:self.dic_on_direct_obj.copy()}
                 
         #Dictionary for sentence.aim = 'manner' 
-        dic_manner={'be':'?sub_feature'}
+        self.dic_manner={}
         
         #Dictionary for sentence.aim = 'people'
-        dic_people={'QUERY_ON_DIRECT_OBJ':dic_on_direct_obj.copy(),                                                                                              
-                    'QUERY_ON_INDIRECT_OBJ':dic_on_indirect_obj.copy()}
+        self.dic_people={'QUERY_ON_DIRECT_OBJ':self.dic_on_direct_obj.copy(),                                                                                              
+                    'QUERY_ON_INDIRECT_OBJ':self.dic_on_indirect_obj.copy()}
         
-        #Dictionary for all
-        #dic_aim = resourcePool.Dictionary(dic_aim)
-        dic_aim = {
-                   #What-question
-                   'thing':dic_thing,
-                   'color':{None:{'be':'hasColor'}},
-                   'size':{None:{'be':'hasSize'}},
-                   
-                   #Who-question
-                   'people':dic_people,
-                   
-                   #Where-question
-                   'place':dic_place,
-                   
-                   #How-Question
-                   'manner':dic_manner                   
-                   }
+        #Dictionary for all question aims
+        #
+        adjectives_list = [ResourcePool().adjectives[adj] for adj in ResourcePool().adjectives]
+
+        adj_s = []
+        for adj in adjectives_list:
+            if not adj in adj_s:
+                adj_s.append(adj)
+
+        adjectives_list = adj_s
+        
+        #What-question in Features
+        self.dic_aim = dict([(feature.lower(), {None:{"be":"has"+feature.capitalize()}}) for feature in adjectives_list])
+        #What-question
+        self.dic_aim['thing'] = self.dic_thing
+        #Who-question
+        self.dic_aim['people'] = self.dic_people
+        #Where-question
+        self.dic_aim['place'] = self.dic_place
+        #How-Question
+        self.dic_aim['manner'] = self.dic_manner
         
         
-        try:
-            if verb.lower() in dic_aim[self._sentence.aim][query_on_field]:
-                role = dic_aim[self._sentence.aim][query_on_field][verb.lower()]
-            else:
-                role = dic_aim[self._sentence.aim][query_on_field][None]
-        except KeyError:
-            if verb.lower() in dic_aim[self._sentence.aim][None]:
-                role = dic_aim[self._sentence.aim][None][verb.lower()]
-            else:
-                role = dic_aim[self._sentence.aim][None][None]
-
-        return role
-    
-    
-    """            
-        what aim => 'thing'
-            what kind => aim = 'thing', sn = [the kind of]
-            what type => aim = 'thing' , sn = [the type of]
-            what time => aim = 'time'
-        which aim => 'choice'
-        when  aim => 'date'
-        where aim => 'Place'
-            where (from) => 'origin'
-        why   aim => 'reason'
-        who   aim => 'person'
-        whose aim => 'owner'
-        whom  aim => 'person'
-        how   aim => 'place'
-            how long  => aim = 'duration'
-            how far   => aim = 'distance'
-             how often => aim = 'Frequency'
-             How much  => aim = 'Quantity'
-            How many  => aim = 'Quantity'
-    """    
-
-    
-    def _remove_statements_with_no_unbound_tokens(self, statements):
-        stmts = []
-        for s in statements:
-            if '?' in s:
-                stmts.append(s)
-                
-        return stmts
-    
-
+        
+                   
+        
     
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):
@@ -303,7 +317,6 @@ class TestQuestionHandler(unittest.TestCase):
         
         try:
             ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
-                     
                      'blue_cube rdf:type Cube',
                      'blue_cube hasColor blue',
                      'blue_cube isOn table1',
@@ -318,7 +331,7 @@ class TestQuestionHandler(unittest.TestCase):
                      
                      'see_shelf rdf:type See',
                      'see_shelf performedBy myself',
-                     'see_shelf involves shelf1',
+                     'see_shelf actsOnObject shelf1',
                      
                      'take_blue_cube performedBy myself',
                      'take_blue_cube rdf:type Get',
@@ -334,28 +347,59 @@ class TestQuestionHandler(unittest.TestCase):
                      
                      'give_another_cube rdf:type Give',
                      'give_another_cube performedBy id_danny',
-                     'give_another_cube hasGoal SPEAKER',
+                     'give_another_cube receivedBy SPEAKER',
                      'give_another_cube actsOnObject another_cube',
                      
                      'see_some_one rdf:type See',
                      'see_some_one performedBy id_danny',
                      'see_some_one actsOnObject SPEAKER',
                      ])
-        except AttributeError: #the ontology server is not started of doesn't know the method
+        except AttributeError: #the ontology server is not started or doesn't know the method
             pass
-        
         
         try:
-            ResourcePool().ontology_server.addForAgent('SPEAKER', ['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
+            ResourcePool().ontology_server.addForAgent('SPEAKER',
+                    [
+                     'SPEAKER rdfs:label "Patrick"',
                      'blue_cube rdf:type Cube',
-                     'shelf1 rdf:type Shelf',
-                     'id_danny rdfs:label "Danny"',
+                     'blue_cube hasColor blue',
+                     'blue_cube isOn table1',
+                     
                      'another_cube rdf:type Cube',
+                     'another_cube isAt shelf1',
+                     'another_cube belongsTo SPEAKER',
+                     'another_cube hasSize small',
+                     
+                     'shelf1 rdf:type Shelf',
+                     'table1 rdf:type Table',
+                     
+                     'see_shelf rdf:type See',
+                     'see_shelf performedBy myself',
+                     'see_shelf actsOnObject shelf1',
+                     
+                     'take_blue_cube performedBy myself',
+                     'take_blue_cube rdf:type Get',
+                     'take_blue_cube actsOnObject blue_cube',
+                     
+                     'take_my_cube canBePerformedBy SPEAKER',
+                     'take_my_cube involves another_cube',
+                     'take_my_cube rdf:type Take',
+                     
+                     'SPEAKER focusesOn another_cube',
+                     
+                     'id_danny rdfs:label "Danny"',
+                     
+                     'give_another_cube rdf:type Give',
+                     'give_another_cube performedBy id_danny',
+                     'give_another_cube receivedBy SPEAKER',
+                     'give_another_cube actsOnObject another_cube',
+                     
+                     'see_some_one rdf:type See',
+                     'see_some_one performedBy id_danny',
+                     'see_some_one actsOnObject SPEAKER',
                      ])
-        except AttributeError: #the ontology server is not started of doesn't know the method
+        except AttributeError: #the ontology server is not started or doesn't know the method
             pass
-                
-                
         
         self.qhandler = QuestionHandler("SPEAKER")
         self.sfactory = SentenceFactory()
@@ -366,7 +410,7 @@ class TestQuestionHandler(unittest.TestCase):
         sentence = Sentence("w_question", "place", 
                              [Nominal_Group(['the'],
                                             ['cube'],
-                                            ['blue'],
+                                            [['blue',[]]],
                                             [],
                                             [])],                                         
                              [Verbal_Group(['be'],
@@ -388,7 +432,7 @@ class TestQuestionHandler(unittest.TestCase):
         sentence = Sentence("w_question", "place", 
                              [Nominal_Group(['the'],
                                             ['cube'],
-                                            ['small'],
+                                            [['small',[]]],
                                             [],
                                             [])],                                         
                              [Verbal_Group(['be'],
@@ -432,7 +476,7 @@ class TestQuestionHandler(unittest.TestCase):
         expected_result = ['shelf1']
         
         self.process(sentence , statement_query, expected_result)
-
+    
     def test_8_what_question(self):
         print "\n*************  test_8_what_question ******************"
         print "what is blue?"
@@ -443,7 +487,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group([],
                                                           [],
-                                                          ['blue'],
+                                                          [['blue',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -454,8 +498,6 @@ class TestQuestionHandler(unittest.TestCase):
         statement_query = ['blue_cube owl:sameAs ?concept']
         expected_result = ['blue_cube']        
         self.process(sentence , statement_query, expected_result) 
-    
-
     
     def test_9_what_question_this(self):
         print "\n*************  test_9_what_question_this ******************"
@@ -479,7 +521,6 @@ class TestQuestionHandler(unittest.TestCase):
         expected_result = ['another_cube']        
         self.process(sentence , statement_query, expected_result) 
     
-    
     def test_10_what_question(self):
         print "\n*************  test_10_w_question ******************"
         print "what object is blue?"
@@ -490,7 +531,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group([],
                                                           [],
-                                                          ['blue'],
+                                                          [['blue',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -593,6 +634,7 @@ class TestQuestionHandler(unittest.TestCase):
         expected_result = ['id_danny']        
         self.process(sentence , statement_query, expected_result)
     
+    
     def test_15_who_question(self):
         print "\n*************  test_15_who_question ******************"
         print "who does Danny give the small cube?"
@@ -605,9 +647,9 @@ class TestQuestionHandler(unittest.TestCase):
                              [Verbal_Group(['give'],
                                            [],
                                            'present simple',
-                                           [Nominal_Group(['a'],
+                                           [Nominal_Group(['the'],
                                                           ['cube'],
-                                                          ['small'],
+                                                          [['small',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -622,7 +664,7 @@ class TestQuestionHandler(unittest.TestCase):
                             
         expected_result = ['SPEAKER']        
         self.process(sentence , statement_query, expected_result)
-
+   
     """
     def test_4_y_n_question(self):
         print "\n*************  test_4_y_n_question action verb******************"
@@ -794,108 +836,11 @@ class TestQuestionHandler(unittest.TestCase):
         self.qhandler.clear_statements()
         self.assertEqual(res, expected_result)
 
-def dump_resolved(sentence, current_speaker, current_recipient = None):
-    def resolve_ng(ngs, builder):        
-        for ng in ngs:
-            #Statement for resolution
-            logging.info("********************************************************")
-            logging.info("* Sentence: Nominal group Towards StatementBuilder ... *")
-            logging.info("********************************************************")
-            logging.info(str(ng))
-            logging.info("*******************************************************")
-            logging.info("* SatementBuilder: Statements towards Resolution .... *")
-            logging.info("*******************************************************")
-            builder.process_nominal_group(ng, '?concept')
-            stmts = builder.get_statements()
-            builder.clear_statements()
-            for s in stmts:
-                logging.info("\t>>" + s)
-                
-            logging.info("--------------<<\n")
-            
-            #Dump resolution for StatementBuilder test ONLY
-            logging.info("**************************************************")
-            logging.info("* QuestionHandler: Dump resolution....           *")
-            logging.info("**************************************************")
-            
-            resolved = True
-                            
-            if ng._resolved:
-                pass
-            #personal pronoun
-            elif ng.noun in [['me'], ['Me'],['I']]:
-                ng.id = current_speaker
-            elif ng.noun in [['you'], ['You']]:
-                ng.id = current_recipient                       
-            
-            #Existing ID from the onotlogy
-            elif ng.noun:                
-                onto = ''
-                try:
-                    onto =  ResourcePool().ontology_server.lookup(ng.noun[0])
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
-                
-                    
-                if onto and [ng.noun[0], 'INSTANCE'] in onto:
-                    ng.id = ng.noun[0]
-                
-            #Find Existing ID from the onotlogy
-            if not ng.id and stmts:
-                onto = ''
-                try:
-                    onto =  ResourcePool().ontology_server.find('?concept', stmts)
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
-                
-                    
-                if onto:
-                    logging.info("\tFound in the Ontology " + str(onto) + " matching the statements send to resolution")
-                    ng.id = onto[0]
-    
-            #Nominal group resolved?
-            if ng.id:
-                logging.info("\tAssign to ng: " + colored_print(ng.id, 'white', 'blue'))
-                ng._resolved = True
-                
-            resolved = resolved and ng._resolved
-            
-        return [ngs, resolved]
-    
-    
-    builder = NominalGroupStatementBuilder(None, current_speaker)
-        
-    if sentence.sn:
-        res_sn = resolve_ng(sentence.sn, builder)
-        sentence.sn = res_sn[0]
-        
-    
-    if sentence.sv:
-        for sv in sentence.sv:
-            sv._resolved = True
-
-            if sv.d_obj:
-                res_d_obj = resolve_ng(sv.d_obj, builder)
-                sv.d_obj = res_d_obj[0]
-                sv._resolved = sv._resolved and res_d_obj[1]
-                
-            if sv.i_cmpl:
-                for i_cmpl in sv.i_cmpl:
-                    res_i_cmpl = resolve_ng(i_cmpl.nominal_group, builder)                    
-                    i_cmpl = res_i_cmpl[0]
-                    sv._resolved = sv._resolved and res_i_cmpl[1]
-    
-    logging.info(str(sentence))
-    logging.info("Sentence resolved? ... " + str(sentence.resolved()))
-    
-    return sentence
-
-
 
 
 def unit_tests():
     """This function tests the main features of the class QuestionHandler"""
-    logging.basicConfig(level=logging.DEBUG,format="%(message)s")
+    logging.basicConfig(level=logging.INFO,format="%(message)s")
     print("This is a test...")
     unittest.main()
     

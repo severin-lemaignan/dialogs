@@ -325,7 +325,7 @@ class ResourcePool:
             if k[1]=='1':
                 self.compelement_proposals=self.compelement_proposals+[k[0]]
         self.proposals=[k[0] for k in adverbials[1]]
-        self.preposition_rdf_object_property = dict([(k[0],k[2:]) for k in adverbials[1]])
+        self.preposition_rdf_object_property = dict([(k[0],k[3:]) for k in adverbials[1]])
         self.subsentences=[k[0] for k in adverbials[2]]
         self.prep_change_place=[k[0] for k in adverbials[3]]
         
