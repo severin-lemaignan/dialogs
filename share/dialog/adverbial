@@ -17,27 +17,30 @@ This list holds proposals
 We use 1 if the proposal is used by functions which transform adverbial into relative
 ##
 
-in 1 
+in 1
 on 1
 at 1
 from 1
-to 0
+to 0 receivedBy
 about 1
-for 1
-next 1
+for 1 isRelatedTo
+next 1 isNexto 
 last 1
 ago 1
 with 1
 by 1
-behind 1
-behind+to 1
-next+to 1
-in+front+of 1
-as 1
-into 1
-in+spite+of 1
-because+of 1
+behind 1 isLocated BACK
+behind+to 1 isLocated BACK
+next+to 1 isNexto 
+in+front+of 1 isLocated FRONT
+as 1 
+into 1 isIn
+in+spite+of 1 
+because+of 1 hasPurpose 
 despite 1
+above 1 isLocated UP
+underneath 1 isLocated DOWN
+below 1 isLocated DOWM
 
 
 

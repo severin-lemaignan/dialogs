@@ -214,6 +214,7 @@ class ResourcePool:
         self.demonstrative_det = []
         self.adverbs = []
         self.proposals = []
+        self.preposition_rdf_object_property = {}
         self.compelement_proposals = []
         self.capital_letters = []
         self.determinants = []
@@ -320,11 +321,11 @@ class ResourcePool:
         adverbials = self.split_list(adverbials)
         self.adverbs=[k[0] for k in adverbials[0]]
         self.time_adverbs=adverbials[0]
-        proposal=adverbials[1]
-        for k in proposal:
+        for k in adverbials[1]:
             if k[1]=='1':
                 self.compelement_proposals=self.compelement_proposals+[k[0]]
-            self.proposals=self.proposals+[k[0]]
+        self.proposals=[k[0] for k in adverbials[1]]
+        self.preposition_rdf_object_property = dict([(k[0],k[2:]) for k in adverbials[1]])
         self.subsentences=[k[0] for k in adverbials[2]]
         self.prep_change_place=[k[0] for k in adverbials[3]]
         

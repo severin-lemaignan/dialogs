@@ -602,7 +602,7 @@ class VerbalGroupStatementBuilder:
          
             #TODO: modal verbs e.g can+go
             
-            #Case 1:  the linking verb 'to be'/"""
+            #Case 1:  the state verb 'to be'/ to become"""
             #Case 2:  actions or stative verbs with a specified 'goal' or 'thematic' role:
             #                          see '../../share/dialog/thematic_roles'
             #Case 3:  other action or stative verbs
@@ -611,7 +611,7 @@ class VerbalGroupStatementBuilder:
             
             
             #Case 1:
-            if verb == "be":
+            if verb in ResourcePool().state:
                 sit_id = subject_id
                 
             else:
@@ -691,20 +691,11 @@ class VerbalGroupStatementBuilder:
         #Thematic roles
         d_obj_role = ResourcePool().thematic_roles.get_next_cmplt_role(verb, True)
         
-        """
-        #TODO FROM HERE with thematic Role
-        if verb.lower() in ['get','take','pick', 'put', 'give', 'see', 'show', 'bring', 'move', 'go', 'hide', 'place']:
-            d_obj_role = " actsOnObject "
-        else:
-            d_obj_role = " involves "
-            
-        #TODO UNTIL HERE
-        """
         #nominal groups
         for d_obj in d_objects:
             #Case 1: The direct object follows the verb 'to be'.
             #        We process the d_obj with the same id as the subject of the sentence
-            if verb == "be":
+            if verb in ResourcePool().state:
                 d_obj_id = id
                 d_obj_quantifier = quantifier
             
@@ -730,9 +721,6 @@ class VerbalGroupStatementBuilder:
         
             
     def process_indirect_complement(self, indirect_cmpls,verb, sit_id):
-        
-        #Thematic roles
-        thematic_roles = ResourcePool().thematic_roles
         
         for ic in indirect_cmpls:
            
@@ -764,31 +752,30 @@ class VerbalGroupStatementBuilder:
                 #Proposition role
                 icmpl_role = None
                 
+                # Specific location object. E.g: BACK, FRONT, LEFT, RIGHT
+                object_location = None
+                
                 # Case of no preposition
                 if not ic.prep:
                     icmpl_role = " receivedBy " 
                     
                 # Case of a preposition. Attempt to get from thematic roles
                 else:
-                    try:
-                        icmpl_role = thematic_roles.get_cmplt_role_for_preposition(verb, ic.prep[0], True)
-                    except:
-                        icmpl_role = None
+                    icmpl_role = ResourcePool().thematic_roles.get_cmplt_role_for_preposition(verb, ic.prep[0], True)
                     
-                    #TODO in ResourcePool()
+                    # Trying to get the matching property
+                    #  E.g: for the preposition 'next+to' we expect the property 'isNexto'
                     if not icmpl_role:
-                        if ic.prep[0].lower() == 'in+front+of':
-                            icmpl_role = " isLocated "
-                            ic_noun_id = "FRONT"
-                        
-                        elif ic.prep[0].lower() == 'next+to':
-                            icmpl_role = " isNexto "
-                        
-                        elif ic.prep[0].lower() == 'behind':
-                            icmpl_role = " isLocated "
-                            ic_noun_id = "BACK"
-                        elif ic.prep[0].lower() == 'for' :
-                            icmpl_role = " isRelatedTo "
+                        try:
+                            icmpl_role = " " + ResourcePool().preposition_rdf_object_property[ic.prep[0]][0] + " "
+                        except IndexError:
+                            pass
+                            
+                        #  E.g: for the preposition 'behind' we expect the property 'isLocated' and the object_location 'BACK'
+                        try:
+                            object_location = ResourcePool().preposition_rdf_object_property[ic.prep[0]][1]
+                        except IndexError:
+                            pass
                     
                 # Case of prepostion but thematic roles not found
                 if not icmpl_role and ic.prep:
@@ -799,12 +786,23 @@ class VerbalGroupStatementBuilder:
                 # Case of negation
                 if self._process_on_negative:
                     negative_ic_noun_id = generate_id(with_question_mark = False)
-                    self._statements.append(sit_id + icmpl_role + negative_ic_noun_id)
+                    if object_location:
+                        self._statements.append(sit_id + icmpl_role + object_location)
+                        self._statements.append(sit_id + " isNexto " + negative_ic_noun_id)
+                    
+                    else:
+                        self._statements.append(sit_id + icmpl_role + negative_ic_noun_id)
+                        
                     self._statements.append(negative_ic_noun_id + ' owl:differentFrom ' + ic_noun_id)
                     
                 # Case of affirmation
                 else:
-                    self._statements.append(sit_id + icmpl_role + ic_noun_id)
+                    if object_location: #BACK, LEFT, RIGHT, FRONT, UP
+                        self._statements.append(sit_id + icmpl_role + object_location)
+                        self._statements.append(sit_id + " isNexto " + ic_noun_id)
+                    
+                    else:    
+                        self._statements.append(sit_id + icmpl_role + ic_noun_id)
                 
                 
                 i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id, None, False)
@@ -868,11 +866,11 @@ class VerbalGroupStatementBuilder:
         tense = '' #Nothing to do if the verb tense involves the present
         
         #PAST
-        if vrb_tense in ['past simple', 'present perfect']:
+        if 'past' in vrb_tense:
             tense = 'PAST'
         
         #FUTUR
-        if vrb_tense in ['future simple', 'future progressive']:
+        if 'futur' in vrb_tense:
             tense = 'FUTUR'
         
         if verb != 'be' and tense:
@@ -1153,7 +1151,7 @@ class TestStatementBuilder(unittest.TestCase):
                              [Verbal_Group(['drive'],
                                            [],
                                            'present simple',
-                                           [Nominal_Group(['the'],['car'],['blue'],[],[])],
+                                           [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])],
                                            [],
                                            [],
                                            [],
@@ -1166,67 +1164,59 @@ class TestStatementBuilder(unittest.TestCase):
         
         self.process(sentence, expected_result, display_statement_result = True)
         
-        print "\n**** Test 1 Thematic roles direct object*** "
+        print "\n**** Test 1 Thematic roles on direct object *** "
         self.stmt.clear_statements()
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
-        print "Danny doesn't drive the blue car"
+        print "Danny gets the blue car"
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
                                             [],
                                             [])],                                         
-                             [Verbal_Group(['drive'],
+                             [Verbal_Group(['get'],
                                            [],
                                            'present simple',
-                                           [Nominal_Group(['the'],
-                                                          ['car'],
-                                                          ['blue'],
-                                                          [],
-                                                          [])],
+                                           [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])],
                                            [],
                                            [],
                                            [],
                                            'affirmative',
                                            [])])
-        expected_result = [ '* rdf:type Drive',
+        expected_result = [ '* rdf:type Get',
                             '* performedBy id_danny',
-                            '* involves volvo']   
+                            '* actsOnObject volvo']   
         self.process(sentence, expected_result, display_statement_result = True)
         
-        
-        print "\n**** Test 1 Thematic roles indirect object*** "
+        print "\n**** Test 1 Thematic roles on indirect complements *** "
         self.stmt.clear_statements()
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
-        print "Danny doesn't drive the blue car"
+        print "Danny put the blue cube next to the blue car"
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
                                             [],
                                             [])],                                         
-                             [Verbal_Group(['drive'],
+                             [Verbal_Group(['put'],
                                            [],
                                            'present simple',
-                                           [Nominal_Group(['the'],
-                                                          ['car'],
-                                                          ['blue'],
-                                                          [],
-                                                          [])],
-                                           [],
+                                           [Nominal_Group(['the'],['cube'],[['blue',[]]],[],[])],
+                                           [Indirect_Complement(['next+to'],
+                                                                [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])])],
                                            [],
                                            [],
                                            'affirmative',
                                            [])])
-        expected_result = [ '* rdf:type Drive', 
+        expected_result = [ '* rdf:type Put',
                             '* performedBy id_danny',
-                            '* involves volvo']   
+                            '* actsOnObject blue_cube',
+                            '* isNexto volvo']   
         self.process(sentence, expected_result, display_statement_result = True)
-        
-    
-    """
+       
+
     def test_1_goal_verb(self):
         print "\n**** Test 1  *** "
         print "Danny wants the blue car"  
@@ -1424,7 +1414,6 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_resut, display_statement_result = True)
             
     
-    
     def test_6(self):
         
         print "\n**** Test 6  *** "
@@ -1470,7 +1459,6 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_resut, display_statement_result = True)
     
         
-    
     def test_7(self):
         
         print "\n**** Test 7  *** "
@@ -2264,7 +2252,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    """
+
     
     """
     def test_26_subsentences(self):
@@ -2380,7 +2368,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         #StatementBuilder
         res = self.stmt.process_sentence(sentence)
-        
+        print(res)
         #Statement Safe Adder
         self.adder._unclarified_ids = self.stmt._unclarified_ids
         self.adder._statements = res
