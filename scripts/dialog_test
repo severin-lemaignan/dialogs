@@ -1060,9 +1060,11 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")
     
-    # all tests
-    #unittest.main()
-    
+    opts = sys.argv[1:]
+    if len(opts) == 0:
+        usage()
+        sys.exit(0)
+        
     # executing only some tests
     
     suiteSimpleSentences = unittest.TestSuite()
@@ -1115,9 +1117,23 @@ if __name__ == '__main__':
     suiteISU = unittest.TestSuite()
     suiteISU.addTest(TestISUDialog('test_ISU1'))
     
-    unittest.TextTestRunner(verbosity=2).run(suiteSimpleSentences)
-    #unittest.TextTestRunner(verbosity=2).run(suiteVerbalization)
-    #unittest.TextTestRunner(verbosity=2).run(suiteDiscriminate)
-    #unittest.TextTestRunner(verbosity=2).run(suiteQuestionHandler)
-    #unittest.TextTestRunner(verbosity=2).run(suiteISU)
+    testSuites = []
+    
+    if opts[0] in ['-h', '--help', 'help']:
+        usage()
+        sys.exit(0)
+    if opts[0] in ['parser']:
+        #TODO: Parser.unit_test should export a testsuite!!
+        parser.unit_tests()
+        sys.exit(0)
+    if opts[0] in ['verbalization', 'all']:
+        testSuites.append(suiteVerbalization)
+    if opts[0] in ['statements', 'discrimination', 'all']:
+        testSuites.append(suiteSimpleSentences)
+    if opts[0] in ['discrimination', 'all']:
+        testSuites.append(suiteDiscriminate)
+    if opts[0] in ['questions', 'all']:
+        testSuites.append(suiteQuestionHandler)
 
+    for suite in testSuites:
+        unittest.TextTestRunner(verbosity=2).run(suite)
