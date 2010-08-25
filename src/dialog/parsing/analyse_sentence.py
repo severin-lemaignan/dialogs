@@ -10,7 +10,8 @@
     recover_aux_list : to recover the auxiliary list  
     dispatching : to distribute the sentence           
     exclama_sentence : to process exclamatively sentence                     
-    w_quest_where : to process many different type of where question                
+    w_quest_where : to process many different type of where question      
+    w_quest_class : to process what question about classification   
     w_quest_what  : to process many different type of what question                 
     w_quest_quant : to process many different type of how question
     w_quest_how : to process many different type of how question                    
@@ -83,7 +84,7 @@ def dispatching(sentence):
                         #Here we have to use a specific processing for 'type' and 'kind'
                         if sentence[1]=='type' or sentence[1]=='kind':
                             #We start by processing the end of the sentence like a y_n_question
-                            return [y_n_ques('w_question', 'classification'+'+'+sentence[4],sentence[5:])]
+                            return [w_quest_class(sentence)]
 
                         #For other type of 'what' question
                         else:
@@ -204,6 +205,23 @@ def w_quest_where(type, request, stc):
         return y_n_ques(type, request, stc[1:])
 
 
+
+def w_quest_class(sentence):
+    """
+    This function process what question about classification                       
+    Input=sentence                                       Output=class Sentence   
+    """
+    
+    analysis=y_n_ques('w_question', 'classification'+'+'+sentence[4],sentence[5:])
+    if analysis.sn!=[]:
+        #The direct object must be empty
+        if analysis.sv[0].d_obj!=[]:
+            analysis.sv[0].i_cmpl=analysis.sv[0].i_cmpl+[Indirect_Complement([],analysis.sv[0].d_obj)]
+            analysis.sv[0].d_obj=[]
+    return analysis
+
+
+    
 def w_quest_what(type, sentence):
     """
     This function process many different type of what question                        
@@ -483,7 +501,7 @@ def other_sentence(type, request, sentence):
     Input=type and requesting of sentence and the sentence                               
     Output=class Sentence                                                            
     """
-
+    
     #init
     vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])
     analysis=Sentence(type, request, [], [])

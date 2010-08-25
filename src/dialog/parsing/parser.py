@@ -776,12 +776,12 @@ class TestParsing(unittest.TestCase):
                 [Nominal_Group([],['he'],[],[],[])], 
                 [Verbal_Group(['must+listen+to'], [],'present simple', 
                     [], 
-                    [],
-                    [], ['everyday'] ,'affirmative',[])])]
+                    [Indirect_Complement([],[Nominal_Group([],['everyday'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
     
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-
+    
     def test_22(self):
         print ''
         print ('######################## test 3.2 ##############################')
@@ -2363,11 +2363,11 @@ class TestParsing(unittest.TestCase):
                                                    Nominal_Group(['a'],['piano'],[],[],[]),
                                                    Nominal_Group(['a'],['violon'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['play'], [],'future simple', 
-                    [], 
-                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[])])],
+            Sentence('imperative', '', 
+                [], 
+                [Verbal_Group(['give'], [],'present simple', 
+                    [Nominal_Group([],['everything'],[],[],[])], 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
                     [], [] ,'affirmative',[])])]
         
         rslt[0].sv[0].d_obj[0]._quantifier="SOME"
@@ -2379,7 +2379,7 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-
+    
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,

@@ -466,7 +466,7 @@ def possesion_form(sentence):
 
             #We have to find the first nominal group
             nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
-            
+    
             #In the case of a propre name
             while nom_gr!=[] and begin_pos!=0 and other_functions.find_cap_lettre(nom_gr[0])==1:
                 begin_pos=begin_pos-1
@@ -802,6 +802,7 @@ def processing(sentence):
     sentence = prep_concat(sentence)
     sentence = upper_to_lower(sentence)
     sentence = delete_empty(sentence)
+    
     sentence = concat_number(sentence)
     sentence = conjunction_processing(sentence,'or')
     sentence = conjunction_processing(sentence,':but')

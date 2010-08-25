@@ -242,6 +242,7 @@ class ResourcePool:
         self.days_list = []
         self.months_list = [] 
         self.time_adverbs = []
+        self.unusable_words = []
 
 
 
@@ -310,6 +311,7 @@ class ResourcePool:
         self.noun_not_composed=[k[0] for k in nouns[8]]
         self.days_list=nouns[9]
         self.months_list=nouns[10]
+        self.unusable_words=[k[0] for k in nouns[11]]
         
         
         adverbials = [list(line.split()) 

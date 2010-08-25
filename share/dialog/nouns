@@ -27,6 +27,7 @@ vacancy
 
 
 
+
 ## 
 This list holds all pronouns
 ##
@@ -47,8 +48,8 @@ her 1
 them 1
 ours 0
 theirs 0
-his 0
 hers 0
+
 
 
 
@@ -133,6 +134,7 @@ This list holds composed noun (the start or end of noun)
 
 some
 any
+every
 no
 
 
@@ -188,3 +190,14 @@ September 30 8
 October 31 9
 November 30 10
 December 31 11
+
+
+
+
+## 
+This list holds unusable words
+##
+
+since
+only
+just

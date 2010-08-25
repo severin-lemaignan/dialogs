@@ -19,6 +19,7 @@
     process_subsentence : to process the subsentence
     correct_i_compl : to transform indirect complement to relative
     DOC_to_IOC : to put the direct complement in the indirect
+    create_nom_gr_and : to add determinant after 'and' if there is
     create_nom_gr : to add it or a determinant if it is necessary
     refine_indirect_complement : to put indirect complements with same proposal together
     refine_subsentence : to transform some subsentence to relative
@@ -521,11 +522,10 @@ def DOC_to_IOC(vg):
 
 
 
-
 def create_nom_gr_and(sentence):
     """ 
-    This function creates a nominal group before and after the 'or'                  
-    Input=sentence and the conjunction                     Output=sentence                      
+    This function add determinant after 'and' if there is                 
+    Input=sentence                                  Output=sentence                      
     """ 
     #init
     i=0
