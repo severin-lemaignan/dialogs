@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
 import logging
 import unittest
 
@@ -8,53 +9,31 @@ from dialog.dialog_core import Dialog
 
 from dialog.resources_manager import ResourcePool
 
-# raquel
 from dialog.sentence import *
+import dialog.parsing.parser as parser
 from dialog.parsing.parser import Parser
 
-#sentence="take the blue cube."
-#sentence="give me the small orange bottle."
-#sentence="help me with this blueish thing."
-
-#sentence="The bottle that is blue, is on the table"
-
-#sentence="Could you take the blue cube?"
-#sentence="Can you take my cube?"
-#sentence="I want you to show me the black tape."
-#sentence="Please take the blue cube."
-#sentence="Please take the blue cube."
-#sentence="put the grey tape next to the blue cube."
-#sentence="put the tape on the table, next to the blue cube."
-#sentence="put my tape in the trashbin."
-#sentence="Where is the blue cube?"
-#sentence="Where are the cubes?"
-#sentence="What do you see?"
-#sentence="Jido, I need the grey tape!"
-
-#sentence="I want you to help the man that wants to bring me the blue car."
-
+def check_results(self, res, expected):
+    def check_triplets(tr , te):
+        tr_split = tr.split()
+        te_split = te.split()
+        
+        return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
+                (tr_split[1] == te_split[1]) and\
+                (tr_split[2] == te_split[2] or te_split[2] == '*')       
+    while res:
+        r = res.pop()
+        for e in expected:
+            if check_triplets(r, e):
+                expected.remove(e)
+    return expected == res
+    
 class TestBaseSentenceDialog(unittest.TestCase):
     """Tests the processing of simple sentence by the Dialog module.
     These sentences don't require discrimination.
     This must be tested with oro-server using the testsuite.oro.owl ontology.
     """
 
-    def check_results(self, res, expected):
-        def check_triplets(tr , te):
-            tr_split = tr.split()
-            te_split = te.split()
-            
-            return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
-                    (tr_split[1] == te_split[1]) and\
-                    (tr_split[2] == te_split[2] or te_split[2] == '*')       
-        while res:
-            r = res.pop()
-            for e in expected:
-                if check_triplets(r, e):
-                    expected.remove(e)
-        return expected == res
-    
-    
     def setUp(self):
         self.dialog = Dialog()
         self.dialog.start()
@@ -99,7 +78,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* receivedBy shelf1']
         ###
         res = self.dialog.test('myself', stmt)
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
 
     def test_sentence2(self):
@@ -116,7 +95,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* receivedBy myself']
         ###
         res = self.dialog.test('myself', stmt)
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
 
     def test_sentence3(self):
@@ -133,7 +112,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ###Check ontology consistency
         self.assertFalse(self.oro.safeAdd(res))
         ### Check result
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
         
         ####
@@ -142,7 +121,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         ###
         expected_result = ['green_banana hasFeature good']
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
     def test_sentence4(self):
         
@@ -153,7 +132,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         ###
         expected_result = ['Banana rdfs:subClassOf Fruit']
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
         
         ####
@@ -162,7 +141,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         ###
         expected_result = ['Banana rdfs:subClassOf Fruit']
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
         
         
@@ -175,7 +154,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         ###
         expected_result = ['y_banana belongsTo myself']
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
         stmt = "This is a green banana" ## ERROR -> y_banana can not be green
         ####
@@ -188,8 +167,10 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         ###
         expected_result = ['y_banana rdf:type Fruit']
-        self.assertTrue(self.check_results(res, expected_result))
-        
+
+        self.assertTrue(check_results(res, expected_result))
+        """
+
     def test_sentence6(self):
         
         print("\n##################### test_sentence6 - it ########################\n")
@@ -214,7 +195,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* performedBy myself',
                             '* actsOnObject green_banana']
                             
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
     
     def test_sentence7(self):
@@ -237,7 +218,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* performedBy myself',
                             '* actsOnObject red_apple']
                             
-        self.assertTrue(self.check_results(res, expected_result))
+
+        self.assertTrue(check_results(res, expected_result))
     
     
     def test_sentence8(self):
@@ -262,7 +244,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         self.oro.add(['myself focusesOn y_banana'])
         
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
         
     def test_sentence8_bis(self):
@@ -286,7 +268,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* actsOnObject red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
     def test_sentence8_ter(self):
         
@@ -308,7 +290,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* actsOnObject red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
         
     def test_sentence9(self):
@@ -325,7 +307,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         
         expected_result = ['y_banana isOn shelf1']
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
     def test_sentence9_bis(self):
         
@@ -343,7 +325,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt, answer)
         
         expected_result = ['y_banana isOn shelf1']
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
     def test_sentence9_ter(self):
         
@@ -365,7 +347,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         expected_result = ['y_banana isOn shelf1']
         
         self.oro.add(['myself focusesOn y_banana'])
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
     def test_sentence9_quater(self):
         
@@ -385,7 +367,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         expected_result = ['y_banana isOn shelf1']
         
         self.oro.add(['myself focusesOn y_banana'])
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
     
     def test_sentence10(self):
@@ -413,7 +395,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* actsOnObject green_banana']
         
         
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
     def test_sentence10_bis(self):
         
@@ -439,7 +421,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                             '* actsOnObject red_apple']
         
         
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
     
     def test_sentence11(self):
@@ -454,7 +436,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                            '* rdf:type Get',
                            '* actsOnObject green_banana']
                            
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
   
     def tearDown(self):
@@ -594,22 +576,6 @@ class TestDiscriminateDialog(unittest.TestCase):
     """Tests the differents features of the Dialog module.
     This must be tested with oro-server using the testsuite.oro.owl ontology.
     """
-
-    def check_results(self, res, expected):
-        def check_triplets(tr , te):
-            tr_split = tr.split()
-            te_split = te.split()
-            
-            return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
-                    (tr_split[1] == te_split[1]) and\
-                    (tr_split[2] == te_split[2] or te_split[2] == '*')       
-        while res:
-            r = res.pop()
-            for e in expected:
-                if check_triplets(r, e):
-                    expected.remove(e)
-        return expected == res
-    
     
     def setUp(self):
         self.dialog = Dialog()
@@ -646,7 +612,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt, answer)
         print(res)
         expected_result = ['green_banana hasFeature good']
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
 
         """ Color discriminant should be found"""
@@ -659,7 +625,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt, answer)
         print(res)
         expected_result = ['y_banana hasFeature good']
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
     def test_discriminate3(self):
         """ Color discriminant should be found"""
@@ -677,7 +643,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt, answer)
         print res
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
         
     def test_discriminate4(self):
@@ -695,7 +661,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         print res
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
     def test_discriminate5(self):
         """ Size discriminant should be found """
@@ -712,7 +678,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt, answer)
         print res
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
 
     def test_discriminate6(self):
         """No complete discriminant found. More info required"""
@@ -729,7 +695,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt, answer)
         print res
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
 
 
     def test_discriminate7(self):
@@ -747,7 +713,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt, answer)
         print res
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
     def test_discriminate8(self):
         """ Location wrt robot discriminant should be found """
@@ -764,7 +730,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt, answer)
         print res
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
 
     def test_discriminate9(self):
         print("\n##################### Class grounding ########################\n")
@@ -776,7 +742,7 @@ class TestDiscriminateDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt, answer)
         print(res)
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
 
     def tearDown(self):
         self.dialog.stop()
@@ -945,22 +911,6 @@ class TestISUDialog(unittest.TestCase):
     """Tests the differents features of the Dialog module.
     This must be tested with oro-server using the testsuite.oro.owl ontology.
     """
-
-    def check_results(self, res, expected):
-        def check_triplets(tr , te):
-            tr_split = tr.split()
-            te_split = te.split()
-            
-            return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
-                    (tr_split[1] == te_split[1]) and\
-                    (tr_split[2] == te_split[2] or te_split[2] == '*')       
-        while res:
-            r = res.pop()
-            for e in expected:
-                if check_triplets(r, e):
-                    expected.remove(e)
-        return expected == res
-    
     
     def setUp(self):
         self.dialog = Dialog()
@@ -1001,7 +951,7 @@ class TestISUDialog(unittest.TestCase):
                             '* actsOnObject BLACK_TAPE'
                             '* receivedBy ACHILE_HUMAN1']
 
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
     
 
     def tearDown(self):
