@@ -7,6 +7,7 @@ import getopt
 import logging
 
 from dialog.dialog_core import Dialog, DIALOG_VERSION
+from dialog.resources_manager import ResourcePool
 
 def usage():
     print """The LAAS-CNRS 'Dialog' module (v.""" + DIALOG_VERSION + """).
@@ -18,6 +19,8 @@ dialog [OPTIONS]
   -t, --test			Runs unit-tests
   -d, --debug			Sets verbosity to debug
   -s, --silent			The module won't output anything
+  --orohost				Host of ORO ontology server
+  --oroport				Port of ORO ontology server
 
 This module reads on stdin user input in natural language, parse it, call 
 resolution routines when ambiguous concepts are used, and finally generate RDF 
@@ -36,12 +39,19 @@ def unit_tests():
 
 def main():
 
+    #hack that tries to find out the current prefix and then the data directory
+    DATA_DIR = os.path.dirname(__file__).split('lib')[0].split('src')[0] + '/share/dialog/'
+    
+    #default for ORO_SERVER
+    ORO_HOST = 'localhost'
+    ORO_PORT = 6969
+
     logger = logging.getLogger("dialog")
     
     debug_level = logging.INFO
     
     try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version'])
+        optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version', 'orohost=', 'oroport='])
     except getopt.GetoptError, err:
         # print help information and exit:
         print str(err) # will print something like "option -a not recognized"
@@ -62,6 +72,10 @@ def main():
             debug_level = logging.DEBUG
         elif o in ("-s", "--silent"):
             debug_level = logging.CRITICAL
+        elif o in ("orohost"):
+            ORO_HOST = a
+        elif o in ("oroport"):
+            ORO_PORT = int(a)
         else:
             print "Unhandled option " + o
             usage()
@@ -79,7 +93,10 @@ def main():
 
     logger.info("**** DIALOG module ****")
     logger.info("v." + DIALOG_VERSION + "\n")
-
+    
+    logger.info("Initializing the resource pool (ORO + some lists of words)...")
+    ResourcePool() #Initializes the ResourcePool singleton
+    
     dialog = Dialog()
 
     dialog.start()
