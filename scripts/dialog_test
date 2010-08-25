@@ -959,6 +959,30 @@ class TestISUDialog(unittest.TestCase):
         self.dialog.join()
 
         
+def usage():
+    print """Unit-testing for the LAAS-CNRS 'Dialog' module.
+
+All these tests require the ontology server (ORO) running on localhost:6969 and
+loaded with testsuite.oro.owl
+
+Usage:
+dialog_test OPTION
+  help              Displays this message and exits
+  
+  --- Base testing ---
+  parser            Tests the parser
+  verbalization     Tests the verbalization module
+  statements        First round of simple tests that produces statements
+  discrimination    Tests the discrimination code 
+                    (while run 'statements' tests as well)
+  questions         Tests the question handler
+  all               Runs all base test suites
+  
+  --- Complete scenario testing ---
+  These scripts test complete interactions, from past HRI scenarii
+  
+  sc_moving         Scenario "Achille is moving to London"
+"""
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")
