@@ -9,6 +9,7 @@ import unittest
 
 import dialog.verbalization.verbalization_test as verbalization
 import dialog.parsing.parser_test as parser
+import dialog.parsing.remerge_test as merge
 import dialog.interpretation.discrimination_test as discrimination
 import dialog.interpretation.statements_builder_test as statements_builder
 import dialog.interpretation.questions_handler_test as questions_handler
@@ -536,6 +537,7 @@ dialog_test OPTION
   
   --- Base testing ---
   parser            Tests the parser
+  merge             Tests the sentence merging function
   verbalization     Tests the verbalization module
   statements        First round of simple tests that produces statements
   discrimination    Tests the discrimination code 
@@ -562,6 +564,8 @@ if __name__ == '__main__':
         sys.exit(0)
     if opts[0] in ['parser', 'parsing', 'all']:
         suite.addTests(parser.test_suite()._tests)
+    if opts[0] in ['merge', 'parser', 'parsing', 'all']:
+        suite.addTests(merge.test_suite()._tests)
     if opts[0] in ['verbalization', 'all']:
         suite.addTests(verbalization.test_suite()._tests)
     if opts[0] in ['statements', 'all']:
