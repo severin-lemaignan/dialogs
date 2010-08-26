@@ -4,24 +4,28 @@
 import inspect
 import unittest
 from dialog.resources_manager import ResourcePool
+
 import logging
 logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 from dialog.dialog_core import Dialog
+from dialog.interpretation.statements_builder import *
+from dialog.interpretation.statements_safe_adder import StatementSafeAdder
+from dialog.sentence import Sentence
 
 class TestStatementBuilder(unittest.TestCase):
 
     def setUp(self):
         
         try:
-            ResourcePool().ontology_server.add(['SPEAKER rdf:type Human',
+            ResourcePool().ontology_server.safeAdd(['SPEAKER rdf:type Human',
                                                 'SPEAKER rdfs:label "Patrick"'])
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
         
         try:
             
-            ResourcePool().ontology_server.addForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
+            ResourcePool().ontology_server.safeAddForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
                           'id_danny rdf:type Human',
                           
                           'volvo hasColor blue', 
@@ -100,7 +104,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_result)
         
         #in order to print the statements resulted from the test, uncomment the line below:
-        #return self.process(sentence, expected_result, display_statement_result = True)
+        #self.process(sentence, expected_result, display_statement_result = True)
         #
         #otherwise, use the following if you want to hide the statements 
         #return self.process(sentence, expected_result)
@@ -199,7 +203,7 @@ class TestStatementBuilder(unittest.TestCase):
                              [Verbal_Group(['would+like'],
                                            [],
                                            'present simple',
-                                           [Nominal_Group(['the'],['car'],['blue'],[],[])],
+                                           [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])],
                                            [],
                                            [],
                                            [],
@@ -226,7 +230,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [Verbal_Group(['drive'],
                                                                    [],
                                                                    'present simple',
-                                                                   [Nominal_Group(['the'],['car'],['blue'],[],[])],
+                                                                   [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])],
                                                                    [],
                                                                    [],
                                                                    [],
@@ -261,7 +265,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group([],
                                                           [],
-                                                          ['blue'],
+                                                          [['blue',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -270,7 +274,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'affirmative',
                                            [])])
         expected_result = ['volvo hasColor blue']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
         
     
     def test_3_quantifier_one_some(self):
@@ -295,7 +299,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence.sv[0].d_obj[0]._quantifier = 'SOME' # robot
         
         expected_result = ['id_jido rdf:type Robot']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
         
     
     def test_4(self):
@@ -329,7 +333,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [Nominal_Group(
                                                           ['a'],
                                                           ['car'],
-                                                          ['small'],
+                                                          [['small',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -369,7 +373,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [Nominal_Group(
                                                           ['a'],
                                                           ['car'],
-                                                          ['small'],
+                                                          [['small',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -462,9 +466,9 @@ class TestStatementBuilder(unittest.TestCase):
                              [Verbal_Group(['put'],
                                            [],
                                            'present simple',
-                                           [Nominal_Group(['the'],['bottle'],['green'],[],[])],
+                                           [Nominal_Group(['the'],['bottle'],[['green',[]]],[],[])],
                                            [Indirect_Complement(['in'],
-                                                                [Nominal_Group(['the'],['car'],['blue'],[],[])]) ],
+                                                                [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])]) ],
                                            [],
                                            [],
                                            'affirmative',
@@ -534,7 +538,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group(['a'],
                                                           ['cube'],
-                                                          ['blue'],
+                                                          [['blue',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -677,7 +681,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group([],
                                             [],
-                                            ['blue'],
+                                            [['blue',[]]],
                                             [],
                                             [])],
                                            [],
@@ -799,7 +803,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group(['the'],
                                                           ['car'],
-                                                          ['blue'],
+                                                          [['blue',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -811,7 +815,7 @@ class TestStatementBuilder(unittest.TestCase):
                             '* performedBy id_danny',
                             '* involves volvo',
                             '* actionSupervisionMode QUICK']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     #Verb tense approach
@@ -829,7 +833,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'future simple',
                                            [Nominal_Group(['the'],
                                                           ['car'],
-                                                          ['blue'],
+                                                          [['blue',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -841,7 +845,7 @@ class TestStatementBuilder(unittest.TestCase):
                             '* performedBy id_danny',
                             '* involves volvo',
                             '* eventOccurs FUTUR']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     #Negative approach
@@ -859,7 +863,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group(['the'],
                                                           ['car'],
-                                                          ['blue'],
+                                                          [['blue',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -889,7 +893,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group(['the'],
                                                           ['car'],
-                                                          ['blue'],
+                                                          [['blue',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -939,7 +943,7 @@ class TestStatementBuilder(unittest.TestCase):
                             [Verbal_Group(['be'],
                                           [],
                                           'past_simple',
-                                          [Nominal_Group([],[],['blue'],[],[])],
+                                          [Nominal_Group([],[],[['blue',[]]],[],[])],
                                           [],
                                           [],
                                           [],
@@ -969,7 +973,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ '* rdf:type Drive', 
                             '* performedBy id_danny',
                             '* involves fiat']
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_19_negative(self):
@@ -999,7 +1003,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence.sv[0].d_obj[0]._quantifier = 'SOME' # Human
        
         expected_result = [ 'id_jido rdf:type ComplementOfHuman']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_20_negative(self):
@@ -1016,7 +1020,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group([],
                                                           [],
-                                                          ['green'],
+                                                          [['green',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -1025,7 +1029,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'negative',
                                            [])])
         expected_result = [ 'shelf1 hasColor *']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_20_negative_inconsistent(self):
@@ -1042,7 +1046,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group([],
                                                           [],
-                                                          ['green'],
+                                                          [['green',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -1102,7 +1106,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [])])
         
         expected_result = ['another_cube owl:differentFrom shelf1']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_22_negative(self):
@@ -1134,7 +1138,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence.sv[0].d_obj[0]._quantifier = 'ALL' # Humans
         
         expected_result = [ 'Fruit rdfs:subClassOf ComplementOfHuman']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_23_negative(self):
@@ -1161,7 +1165,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [])])
         
         expected_result = [ 'myself owl:differentFrom SPEAKER']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_24_negative(self):
@@ -1170,7 +1174,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
                                             ['car'],
-                                            ['blue'],
+                                            [['blue',[]]],
                                             [],
                                             [])],                                         
                              [Verbal_Group(['be'],
@@ -1188,7 +1192,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [])])
         
         expected_result = [ 'volvo owl:differentFrom volvo']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_25_negative(self):
@@ -1220,7 +1224,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])])
                                             
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
 
     
@@ -1257,7 +1261,7 @@ class TestStatementBuilder(unittest.TestCase):
                             '* rdf:type Get',
                             '* performedBy myself',
                             '* actsOnObject twingo_key']   
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
 
     def test_27_subsentences(self):
@@ -1287,7 +1291,7 @@ class TestStatementBuilder(unittest.TestCase):
                             '* performedBy myself',
                             'SPEAKER desires *',
                             'Apple rdfs:subClassOf Fruit']
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_28_subsentences(self):
@@ -1297,7 +1301,7 @@ class TestStatementBuilder(unittest.TestCase):
         subsentence = Sentence('subsentence', 'when', 
                                 [Nominal_Group([],['you'],[],[],[])], 
                                 [Verbal_Group(['get'], [],'present simple', 
-                                    [Nominal_Group(['the'],['car'],['small'],[],[])], 
+                                    [Nominal_Group(['the'],['car'],[['small',[]]],[],[])], 
                                     [],
                                     [], 
                                     [] ,
@@ -1328,17 +1332,17 @@ class TestStatementBuilder(unittest.TestCase):
                             '* performedBy myself',
                             '* actsOnObject twingo']   
                             
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     """
     
     def process(self, sentence, expected_result, display_statement_result = False):
         #Dump resolution
-        sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')#TODO: dumped_resolved is only for the test of statement builder. Need to be replaced as commented above
+        sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')
         
         #StatementBuilder
         res = self.stmt.process_sentence(sentence)
-        print(res)
+        
         #Statement Safe Adder
         self.adder._unclarified_ids = self.stmt._unclarified_ids
         self.adder._statements = res
@@ -1346,33 +1350,9 @@ class TestStatementBuilder(unittest.TestCase):
         res = self.adder.process()
         
         #Assert result
-        self.assertTrue(self.check_results(res, expected_result))
+        self.assertTrue(check_results(res, expected_result))
         
-        
-
-    def check_results(self, res, expected):
-        def check_triplets(tr , te):
-            tr_split = tr.split()
-            te_split = te.split()
-            
-            return  (not '?' in tr_split[0]) and \
-                    (not '?' in tr_split[2]) and \
-                    (tr_split[0] == te_split[0] or te_split[0] == '*') and\
-                    (tr_split[1] == te_split[1]) and\
-                    (tr_split[2] == te_split[2] or te_split[2] == '*') 
-           
-        while res:
-            r = res.pop()
-            for e in expected:
-                if check_triplets(r, e):
-                    expected.remove(e)
-        if expected:
-            print "\t**** /Missing statements in result:   "
-            print "\t", expected, "\n"
-               
-        return expected == res
-        
-        
+                
 class TestBaseSentenceDialog(unittest.TestCase):
     """Tests the processing of simple sentence by the Dialog module.
     These sentences don't require discrimination.
@@ -1787,8 +1767,176 @@ class TestBaseSentenceDialog(unittest.TestCase):
         self.dialog.stop()
         self.dialog.join()
  
- 
- 
+
+
+"""
+    The following functions are implemented for test purpose only
+"""
+
+def check_results(res, expected):
+    def check_triplets(tr , te):
+        tr_split = tr.split()
+        te_split = te.split()
+        
+        return  (not '?' in tr_split[0]) and \
+                (not '?' in tr_split[2]) and \
+                (tr_split[0] == te_split[0] or te_split[0] == '*') and\
+                (tr_split[1] == te_split[1]) and\
+                (tr_split[2] == te_split[2] or te_split[2] == '*') 
+       
+    while res:
+        r = res.pop()
+        for e in expected:
+            if check_triplets(r, e):
+                expected.remove(e)
+    if expected:
+        print "\t**** /Missing statements in result:   "
+        print "\t", expected, "\n"
+           
+    return expected == res
+
+
+
+def dump_resolved(sentence, current_speaker, current_listener):
+    def resolve_ng(ngs, builder):        
+        for ng in ngs:
+            if ng._quantifier != 'ONE':
+                logging.info("\t...No Statements sended to Resolution for discrmination for this nominal group...")
+                
+            else:
+                #Statement for resolution
+                logging.info("Statements sended to Resolution for discrmination for this nominal group...")
+                builder.process_nominal_group(ng, '?concept', None, False)
+                stmts = builder.get_statements()
+                
+                if builder.process_on_demonstrative_det:# More complicated processing of "this" in Resolution module
+                    stmts.append(current_speaker + " focusesOn ?concept")
+                
+                builder.clear_statements()
+                
+                for s in stmts:
+                    logging.info("\t>>" + s)
+                    
+                logging.info("--------------<<\n")
+                
+            #Dump resolution for StatementBuilder test ONLY
+            logging.info("Dump resolution for statement builder test ONLY ...")
+            
+            resolved = True
+                    
+            if ng._resolved:
+                pass
+                
+            elif ng.adjectives_only():
+                ng.id = '*'
+            
+            #personal pronoun
+            elif ng.noun in [['me'], ['Me'],['I']]:
+                ng.id = current_speaker
+            elif ng.noun in [['you'], ['You']]:
+                ng.id = current_listener       
+            
+            elif ng.noun:
+                
+                onto_class = ''
+                try:
+                    onto_class =  ResourcePool().ontology_server.lookupForAgent(current_speaker, ng.noun[0])
+                except AttributeError: #the ontology server is not started of doesn't know the method
+                    pass
+                
+                if ng._quantifier != 'ONE':
+                    logging.debug("... Found nominal group with quantifier " + ng._quantifier)
+                    ng.id = get_class_name(ng.noun[0], onto_class)
+                
+                elif [ng.noun[0], 'INSTANCE'] in onto_class:    
+                    ng.id = ng.noun[0]
+                
+                else:
+                    onto = ''
+                    try:
+                        onto =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',stmts)
+                    except AttributeError: #the ontology server is not started of doesn't know the method
+                        pass
+                            
+                    
+                    if onto:    
+                        ng.id = onto[0]
+                        
+            else:
+                onto = ''
+                try:
+                    onto =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',stmts)
+                except AttributeError: #the ontology server is not started of doesn't know the method
+                    pass
+                        
+                
+                if onto:    
+                    ng.id = onto[0]
+                        
+            
+            #Other Nominal group attibutes
+            if ng.noun_cmpl and not ng._resolved:
+                res_noun_cmpl = resolve_ng(ng.noun_cmpl, builder)
+                ng.noun_cmpl =res_noun_cmpl[0]
+                
+            if ng.relative and not ng._resolved:
+                for rel in ng.relative:
+                    rel = dump_resolved(rel, current_speaker, current_listener)
+            
+            #Nominal group resolved?
+            if ng.id:
+                logging.info("\tAssign to ng: " + colored_print(ng.id, 'white', 'blue'))
+                ng._resolved = True
+                
+            resolved = resolved and ng._resolved
+            
+        return [ngs, resolved]
+    
+    
+    def resolve_sv(vgs):
+        for sv in vgs:
+            sv._resolved = True
+            
+            if sv.d_obj:
+                res_d_obj = resolve_ng(sv.d_obj, builder)
+                sv.d_obj = res_d_obj[0]
+                sv._resolved = sv._resolved and res_d_obj[1]
+                
+            if sv.i_cmpl:
+                for i_cmpl in sv.i_cmpl:
+                    res_i_cmpl = resolve_ng(i_cmpl.nominal_group, builder)                    
+                    i_cmpl = res_i_cmpl[0]
+                    sv._resolved = sv._resolved and res_i_cmpl[1]
+            
+            if sv.vrb_sub_sentence:
+                for sub in sv.vrb_sub_sentence:
+                    sub = dump_resolved(sub, current_speaker, current_listener)
+                    
+                    
+            if sv.sv_sec:
+                sv.sv_sec = resolve_sv(sv.sv_sec)
+                
+        return vgs
+    
+    
+
+    builder = NominalGroupStatementBuilder(None, current_speaker)
+        
+    if sentence.sn:
+        res_sn = resolve_ng(sentence.sn, builder)
+        sentence.sn = res_sn[0]
+        
+    
+    if sentence.sv:
+        sentence.sv = resolve_sv(sentence.sv)
+            
+    
+    print(sentence)
+    print "Sentence resolved ... " , sentence.resolved()
+    
+    return sentence
+
+
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestStatementBuilder)
     suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestBaseSentenceDialog))
