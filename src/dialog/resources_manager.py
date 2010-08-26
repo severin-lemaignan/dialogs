@@ -129,11 +129,12 @@ class ThematicRolesDict:
         return (" " + res + " ") if with_spaces else res
         
     def get_next_cmplt_role(self, verb, with_spaces = False):
+        res = "involves" #for now, return by default a generic "involve" predicate when no specific thematic role is defined.
         try:
             res = self.verbs[verb.lower()].next_role().id
         except KeyError:
             #raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
-            res = "involves" #for now, return by default a generic "involve" predicate when no specific thematic role is defined.
+            pass 
         except AttributeError:
             #TODO: case "get me the bottle" -> "get" expects only one cmplt -> warn the user that the grammatical structure is wrong
             pass
