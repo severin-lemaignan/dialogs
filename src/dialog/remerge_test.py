@@ -12,11 +12,11 @@ logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 import unittest
 
 from dialog.sentence import *
-import preprocessing
-import analyse_sentence
-import parser
+from parsing import preprocessing
+from parsing import analyse_sentence
+from parsing import parser
 
-from parser_test import compare_nom_gr
+from parsing.parser_test import compare_nom_gr
 
 
 class TestRemerge(unittest.TestCase):
