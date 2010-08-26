@@ -8,13 +8,13 @@ logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 import unittest
 
 import dialog.verbalization.verbalization_test as verbalization
+import dialog.parsing.parser_test as parser
 
 from dialog.dialog_core import Dialog
 
 from dialog.resources_manager import ResourcePool
 
 from dialog.sentence import *
-import dialog.parsing.parser as parser
 from dialog.parsing.parser import Parser
 
 def check_results(res, expected):
@@ -988,17 +988,16 @@ if __name__ == '__main__':
     if opts[0] in ['-h', '--help', 'help']:
         usage()
         sys.exit(0)
-    if opts[0] in ['parser']:
-        #TODO: Parser.unit_test should export a testsuite!!
-        parser.unit_tests()
-        sys.exit(0)
+    if opts[0] in ['parser', 'parsing', 'all']:
+        suite.addTests(parser.test_suite()._tests)
     if opts[0] in ['verbalization', 'all']:
         suite.addTests(verbalization.test_suite()._tests)
+    """
     if opts[0] in ['statements', 'discrimination', 'all']:
         testSuites.append(suiteSimpleSentences)
     if opts[0] in ['discrimination', 'all']:
         testSuites.append(suiteDiscriminate)
     if opts[0] in ['questions', 'all']:
         testSuites.append(suiteQuestionHandler)
-
+    """
     unittest.TextTestRunner(verbosity=2).run(suite)
