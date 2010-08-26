@@ -667,7 +667,7 @@ class VerbalGroupStatementBuilder:
             
             #verb tense
             if verbal_group.vrb_tense:
-                self.process_verb_tense(verbal_group.vrb_tense, verb, sit_id)
+                self.process_verb_tense(verbal_group, verb, sit_id)
             
             
     def process_vrb_sec(self, verbal_group, subject_id, subject_quantifier, sit_id):
@@ -835,7 +835,7 @@ class VerbalGroupStatementBuilder:
                 self._statements.append(id + " actionSupervisionMode "+ adv[:len(adv) - 2].upper())
             
             
-    def process_verb_tense(self, vrb_tense, verb, id):
+    def process_verb_tense(self, verbal_group, verb, id):
         """This provides a solution to process verb tense for action verbs ONLY.
         we create the object property 'eventOccurs' and bind it with the flag PAST or FUTUR
         
@@ -855,21 +855,22 @@ class VerbalGroupStatementBuilder:
             
             It would not work for object type or class, as it does not make sense to say "Fruits were Plants".
         """
-        
-        #Assiging the variable 'tense' with either PAST or FUTUR
-        tense = '' #Nothing to do if the verb tense involves the present
-        
-        #PAST
-        if 'past' in vrb_tense:
-            tense = 'PAST'
-        
-        #FUTUR
-        if 'futur' in vrb_tense:
-            tense = 'FUTUR'
-        
-        if verb != 'be' and tense:
-            self._statements.append(id + ' eventOccurs ' + tense)
+        if verbal_group._resolved:
             
+            #Assiging the variable 'tense' with either PAST or FUTUR
+            tense = '' #Nothing to do if the verb tense involves the present
+            
+            #PAST
+            if 'past' in verbal_group.vrb_tense:
+                tense = 'PAST'
+            
+            #FUTUR
+            if 'futur' in verbal_group.vrb_tense:
+                tense = 'FUTUR'
+            
+            if verb != 'be' and tense:
+                self._statements.append(id + ' eventOccurs ' + tense)
+                
             
     def process_vrb_subsentence(self, verbal_group):
         pass

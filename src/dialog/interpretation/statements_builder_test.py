@@ -12,11 +12,12 @@ from dialog.dialog_core import Dialog
 from dialog.interpretation.statements_builder import *
 from dialog.interpretation.statements_safe_adder import StatementSafeAdder
 from dialog.sentence import Sentence
+from dialog.interpretation.resolution import Resolver
 
 class TestStatementBuilder(unittest.TestCase):
 
     def setUp(self):
-        
+        #ResourcePool().ontology_server.reload()
         try:
             ResourcePool().ontology_server.safeAdd(['SPEAKER rdf:type Human',
                                                 'SPEAKER rdfs:label "Patrick"'])
@@ -72,6 +73,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         self.stmt = StatementBuilder("SPEAKER")
         self.adder = StatementSafeAdder()
+        self.resolver = Resolver()
         
     """
         Please write your test below using the following template
@@ -190,7 +192,7 @@ class TestStatementBuilder(unittest.TestCase):
                             '* isNexto volvo']   
         self.process(sentence, expected_result, display_statement_result = True)
        
-
+    
     def test_1_goal_verb(self):
         print "\n**** Test 1  *** "
         print "Danny wants the blue car"  
@@ -452,7 +454,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['* rdf:type Go',
+        expected_resut = ['* rdf:type Move',
                           '* performedBy SPEAKER',
                           '* hasGoal id_toulouse',
                           '* eventOccurs PAST']
@@ -631,10 +633,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['* rdf:type Go',
+        expected_resut = ['* rdf:type Move',
                           '* performedBy another_cube',
                           '* hasGoal shelf1']
-        another_expected_resut = ['SPEAKER focusesOn something']#with [* rdf:type Go, * performedBy something, * hasGoal shelf1] in the ontology
+        another_expected_resut = ['SPEAKER focusesOn something']#with [* rdf:type Move, * performedBy something, * hasGoal shelf1] in the ontology
         return self.process(sentence, expected_resut, display_statement_result = True)
     
     
@@ -658,7 +660,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['* rdf:type Go',
+        expected_resut = ['* rdf:type Move',
                           '* performedBy another_cube',
                           '* hasGoal shelf1']
         
@@ -755,7 +757,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         return self.process(sentence, expected_resut, display_statement_result = True)
     
-    
+    """
     def test_15_quantifier_action_verb(self):        
         print "\n**** test_15_quantifier_action_verb  *** "
         print "an apple grows on a tree"
@@ -783,11 +785,11 @@ class TestStatementBuilder(unittest.TestCase):
         #quantifier
         sentence.sn[0]._quantifier = 'SOME' # an apple
         sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier = 'SOME' # a tree
-        expected_resut = ['? ? ?']
+        expected_resut = ['? ? ?'] # TODO
         
         return self.process(sentence, expected_resut, display_statement_result = True)
     
-    
+    """
     #Action adverbs
     def test_16_adverb(self):
         print "\n**** test_16_adverb *** "
@@ -1070,7 +1072,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            'present simple',
                                            [Nominal_Group([],
                                                           [],
-                                                          ['red'],
+                                                          [['red',[]]],
                                                           [],
                                                           [])],
                                            [],
@@ -1226,8 +1228,6 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
         self.process(sentence, expected_result, display_statement_result = True)
     
-
-    
     """
     def test_26_subsentences(self):
         print "\n**** test_26_subsentences *** "
@@ -1325,7 +1325,7 @@ class TestStatementBuilder(unittest.TestCase):
                                     'affirmative',
                                     [subsentence])])
                                             
-        expected_result = ['* rdf:type Go',
+        expected_result = ['* rdf:type Move',
                             '* performedBy SPEAKER', 
                             '* hasGoal id_toulouse',
                             '* rdf:type Get',
@@ -1338,7 +1338,7 @@ class TestStatementBuilder(unittest.TestCase):
     
     def process(self, sentence, expected_result, display_statement_result = False):
         #Dump resolution
-        sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself')
+        sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself', self.resolver)
         
         #StatementBuilder
         res = self.stmt.process_sentence(sentence)
@@ -1797,143 +1797,13 @@ def check_results(res, expected):
 
 
 
-def dump_resolved(sentence, current_speaker, current_listener):
-    def resolve_ng(ngs, builder):        
-        for ng in ngs:
-            if ng._quantifier != 'ONE':
-                logging.info("\t...No Statements sended to Resolution for discrmination for this nominal group...")
-                
-            else:
-                #Statement for resolution
-                logging.info("Statements sended to Resolution for discrmination for this nominal group...")
-                builder.process_nominal_group(ng, '?concept', None, False)
-                stmts = builder.get_statements()
-                
-                if builder.process_on_demonstrative_det:# More complicated processing of "this" in Resolution module
-                    stmts.append(current_speaker + " focusesOn ?concept")
-                
-                builder.clear_statements()
-                
-                for s in stmts:
-                    logging.info("\t>>" + s)
-                    
-                logging.info("--------------<<\n")
-                
-            #Dump resolution for StatementBuilder test ONLY
-            logging.info("Dump resolution for statement builder test ONLY ...")
+def dump_resolved(sentence, current_speaker, current_listener, resolver):
+    sentence = resolver.references_resolution(sentence,
+                                                    current_speaker, None, None, None)
+    sentence = resolver.noun_phrases_resolution(sentence,
+                                                      current_speaker, None, None)    
+    sentence = resolver.verbal_phrases_resolution(sentence)
             
-            resolved = True
-                    
-            if ng._resolved:
-                pass
-                
-            elif ng.adjectives_only():
-                ng.id = '*'
-            
-            #personal pronoun
-            elif ng.noun in [['me'], ['Me'],['I']]:
-                ng.id = current_speaker
-            elif ng.noun in [['you'], ['You']]:
-                ng.id = current_listener       
-            
-            elif ng.noun:
-                
-                onto_class = ''
-                try:
-                    onto_class =  ResourcePool().ontology_server.lookupForAgent(current_speaker, ng.noun[0])
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
-                
-                if ng._quantifier != 'ONE':
-                    logging.debug("... Found nominal group with quantifier " + ng._quantifier)
-                    ng.id = get_class_name(ng.noun[0], onto_class)
-                
-                elif [ng.noun[0], 'INSTANCE'] in onto_class:    
-                    ng.id = ng.noun[0]
-                
-                else:
-                    onto = ''
-                    try:
-                        onto =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',stmts)
-                    except AttributeError: #the ontology server is not started of doesn't know the method
-                        pass
-                            
-                    
-                    if onto:    
-                        ng.id = onto[0]
-                        
-            else:
-                onto = ''
-                try:
-                    onto =  ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',stmts)
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
-                        
-                
-                if onto:    
-                    ng.id = onto[0]
-                        
-            
-            #Other Nominal group attibutes
-            if ng.noun_cmpl and not ng._resolved:
-                res_noun_cmpl = resolve_ng(ng.noun_cmpl, builder)
-                ng.noun_cmpl =res_noun_cmpl[0]
-                
-            if ng.relative and not ng._resolved:
-                for rel in ng.relative:
-                    rel = dump_resolved(rel, current_speaker, current_listener)
-            
-            #Nominal group resolved?
-            if ng.id:
-                logging.info("\tAssign to ng: " + colored_print(ng.id, 'white', 'blue'))
-                ng._resolved = True
-                
-            resolved = resolved and ng._resolved
-            
-        return [ngs, resolved]
-    
-    
-    def resolve_sv(vgs):
-        for sv in vgs:
-            sv._resolved = True
-            
-            if sv.d_obj:
-                res_d_obj = resolve_ng(sv.d_obj, builder)
-                sv.d_obj = res_d_obj[0]
-                sv._resolved = sv._resolved and res_d_obj[1]
-                
-            if sv.i_cmpl:
-                for i_cmpl in sv.i_cmpl:
-                    res_i_cmpl = resolve_ng(i_cmpl.nominal_group, builder)                    
-                    i_cmpl = res_i_cmpl[0]
-                    sv._resolved = sv._resolved and res_i_cmpl[1]
-            
-            if sv.vrb_sub_sentence:
-                for sub in sv.vrb_sub_sentence:
-                    sub = dump_resolved(sub, current_speaker, current_listener)
-                    
-                    
-            if sv.sv_sec:
-                sv.sv_sec = resolve_sv(sv.sv_sec)
-                
-        return vgs
-    
-    
-
-    builder = NominalGroupStatementBuilder(None, current_speaker)
-        
-    if sentence.sn:
-        res_sn = resolve_ng(sentence.sn, builder)
-        sentence.sn = res_sn[0]
-        
-    
-    if sentence.sv:
-        sentence.sv = resolve_sv(sentence.sv)
-            
-    
-    print(sentence)
-    print "Sentence resolved ... " , sentence.resolved()
-    
     return sentence
 
 

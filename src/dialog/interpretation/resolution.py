@@ -29,6 +29,10 @@ class Resolver:
         self._current_object = None
         self.sentences_store = sentences_store
         
+    ##########################################
+    #   References and anaphoric resolutions
+    ##########################################
+    
     def references_resolution(self, sentence, current_speaker, uae_object, uae_object_with_more_info, uae_object_list):
         
         # Current object replacement with uae object
@@ -50,85 +54,10 @@ class Resolver:
         if sentence.sn:
             sentence.sn = self._resolve_groups_references(sentence.sn, matcher, current_speaker, self._current_object)
         
-        
-        #sentence sv nominal groups reference resolution
-        for sv in sentence.sv:
-            if sv.d_obj:
-                sv.d_obj = self._resolve_groups_references(sv.d_obj,
-                                                            matcher,
-                                                            current_speaker, 
-                                                            self._current_object)
-            if sv.i_cmpl:
-                resolved_i_cmpl = []
-                for i_cmpl in sv.i_cmpl:
-                    i_cmpl.nominal_group = self._resolve_groups_references(i_cmpl.nominal_group, 
-                                                                                matcher,
-                                                                                current_speaker,
-                                                                                self._current_object)
-                    resolved_i_cmpl.append(i_cmpl)
-                
-                sv.i_cmpl = resolved_i_cmpl
-        
-        
-        return sentence
-        
-        
-    def noun_phrases_resolution(self, sentence, current_speaker, uie_object, uie_object_with_more_info):
-        logging.info(colored_print("-> Resolving noun phrases", 'green'))
-        
-        #Nominal group replacement possibly after uie_object and uie_object_with_more_info are sent from Dialog to resolve missing content
-        if uie_object and uie_object_with_more_info:
-            sentence = self._noun_phrases_replace_with_ui_exception(sentence, uie_object, uie_object_with_more_info)
-            
-            #No uie_objects needed after replacement
-            uie_object = None
-            uie_object_with_more_info = None
-        
-        #Record of current sentence
-        self._current_sentence = sentence
-        
-        #NominalGroupStatementBuilder
-        builder = NominalGroupStatementBuilder(None,current_speaker)
-        
-        #Discrimination
-        discriminator = Discrimination()
-        
-        #sentence.sn nominal groups nouns phrase resolution
-        if sentence.sn:
-            sentence.sn = self._resolve_groups_nouns(sentence.sn, 
-                                                    current_speaker,
-                                                    discriminator,
-                                                    builder)
-        #sentence.sv nominal groups nouns phrase resolution
-        for sv in sentence.sv:
-            if sv.d_obj:
-                sv.d_obj = self._resolve_groups_nouns(sv.d_obj, 
-                                                     current_speaker,
-                                                     discriminator,
-                                                     builder)  
-            if sv.i_cmpl:
-                resolved_i_cmpl = []
-                for i_cmpl in sv.i_cmpl:
-                    i_cmpl.nominal_group = self._resolve_groups_nouns(i_cmpl.nominal_group, 
-                                                       current_speaker,
-                                                       discriminator,
-                                                       builder)
-                    resolved_i_cmpl.append(i_cmpl)
-                sv.i_cmpl = resolved_i_cmpl
-                        
-        return sentence
-        
-        
-    
-        
-    def verbal_phrases_resolution(self, sentence):
-        logging.info(colored_print("-> Resolving verbal groups", 'green'))
-        for sv in sentence.sv:
-            sv = self._resolve_verbs(sv)
-                    
-        return sentence
-    
-    
+        if sentence.sv:
+            sentence.sv = self.verbal_phrases_reference_resolution(sentence.sv, matcher,current_speaker, self._current_object)
+       
+        return sentence    
     
     def _references_resolution_replace_current_object_with_ua_exception(self, sentence, uae_object, uae_object_with_more_info, uae_object_list):
         """This attempts to replace a nominal group that has failled from identifying the anaphoric word with one that holds more information.
@@ -237,7 +166,7 @@ class Resolver:
             onto = None
             if sn.noun:
                 try:
-                    onto = ResourcePool().ontology_server.lookup(sn.noun[0])
+                    onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, sn.noun[0])
                 except AttributeError: #the ontology server is not started or doesn't know the method
                     pass
             
@@ -282,8 +211,41 @@ class Resolver:
                                             
         return nominal_group
         
+    ################################################
+    #   Nouns phrases resolution and discrimination
+    ################################################
+    def noun_phrases_resolution(self, sentence, current_speaker, uie_object, uie_object_with_more_info):
+        logging.info(colored_print("-> Resolving noun phrases", 'green'))
         
-    
+        #Nominal group replacement possibly after uie_object and uie_object_with_more_info are sent from Dialog to resolve missing content
+        if uie_object and uie_object_with_more_info:
+            sentence = self._noun_phrases_replace_with_ui_exception(sentence, uie_object, uie_object_with_more_info)
+            
+            #No uie_objects needed after replacement
+            uie_object = None
+            uie_object_with_more_info = None
+        
+        #Record of current sentence
+        self._current_sentence = sentence
+        
+        #NominalGroupStatementBuilder
+        builder = NominalGroupStatementBuilder(None,current_speaker)
+        
+        #Discrimination
+        discriminator = Discrimination()
+        
+        #sentence.sn nominal groups nouns phrase resolution
+        if sentence.sn:
+            sentence.sn = self._resolve_groups_nouns(sentence.sn, 
+                                                    current_speaker,
+                                                    discriminator,
+                                                    builder)
+        #sentence.sv nominal groups nouns phrase resolution
+        if sentence.sv:
+            sentence.sv = self.verbal_phrases_noun_resolution(sentence.sv, current_speaker, discriminator, builder)
+        
+                        
+        return sentence
     def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
         """This attempts to resolve a single nominal by the use of discrimiation routines.
             The output is the ID off the nominal group
@@ -400,6 +362,16 @@ class Resolver:
         return nominal_group, current_stmts
         
     
+        
+    ##########################
+    # Verbal group resolutions
+    ############################
+    def verbal_phrases_resolution(self, sentence):
+        logging.info(colored_print("-> Resolving verbal groups", 'green'))
+        for sv in sentence.sv:
+            sv = self._resolve_verbs(sv)
+                    
+        return sentence
     
     def _resolve_verbs(self, verbal_group):        
         if verbal_group.resolved(): #already resolved: possible after asking human for more details.
@@ -410,14 +382,19 @@ class Resolver:
         
         for verb in verbal_group.vrb_main:
             logging.debug("* \"" + verb + "\"")
+            
             # Case of modal verbs. E.g: can, must
             if '+' in verb:
                 [modal, verb] = verb.split('+')
             
             # Case of to be
-            if verb == "be":
+            if verb in  ResourcePool().state:
                 resolved_verb = "be"
-                
+            
+            #Goal verbs
+            elif verb in ResourcePool().goal_verbs:
+                resolved_verb = verb
+            
             # Trying to resolve verb from thematic roles
             else:
                 try:
@@ -447,9 +424,56 @@ class Resolver:
         verbal_group._resolved = True
             
         return verbal_group
-
-
-
+     
+     
+    def verbal_phrases_reference_resolution(self, verbal_groups, matcher,current_speaker, current_object):
+        #sentence sv nominal groups reference resolution
+        for sv in verbal_groups:
+            if sv.d_obj:
+                sv.d_obj = self._resolve_groups_references(sv.d_obj,
+                                                            matcher,
+                                                            current_speaker, 
+                                                            self._current_object)
+            if sv.i_cmpl:
+                resolved_i_cmpl = []
+                for i_cmpl in sv.i_cmpl:
+                    i_cmpl.nominal_group = self._resolve_groups_references(i_cmpl.nominal_group, 
+                                                                                matcher,
+                                                                                current_speaker,
+                                                                                self._current_object)
+                    resolved_i_cmpl.append(i_cmpl)
+                
+                sv.i_cmpl = resolved_i_cmpl
+                
+            if sv.sv_sec:
+                sv.sv_sec = self.verbal_phrases_reference_resolution(sv.sv_sec, matcher,current_speaker, current_object)
+        
+        return verbal_groups
+        
+        
+    def verbal_phrases_noun_resolution(self, verbal_groups, current_speaker, discriminator, builder):
+        for sv in verbal_groups:
+            if sv.d_obj:
+                sv.d_obj = self._resolve_groups_nouns(sv.d_obj, 
+                                                     current_speaker,
+                                                     discriminator,
+                                                     builder)  
+            if sv.i_cmpl:
+                resolved_i_cmpl = []
+                for i_cmpl in sv.i_cmpl:
+                    i_cmpl.nominal_group = self._resolve_groups_nouns(i_cmpl.nominal_group, 
+                                                       current_speaker,
+                                                       discriminator,
+                                                       builder)
+                    resolved_i_cmpl.append(i_cmpl)
+                sv.i_cmpl = resolved_i_cmpl
+            
+            if sv.sv_sec:
+                sv.sv_sec = self.verbal_phrases_noun_resolution(sv.sv_sec, current_speaker, discriminator, builder)
+        
+        return verbal_groups
+       
+     
 def get_last(list, nb):
     """This returns the last 'Nb' elements of the list 'list' in the reverse order"""
     #Empty list
