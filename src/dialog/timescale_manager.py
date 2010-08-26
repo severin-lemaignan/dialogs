@@ -10,8 +10,11 @@
     negative_day : to correct value of day if it is negative                                                                       
     refine_clock : to refine time if it is not correct
     day_period : to divide the day into several time
-    timescale_i_cmpl : to perform interpretation of an indirect complement
+    timescale_adverb : to perform interpretation of an adverb
     adverbs_interpretation : to perform interpretation of all adverb list
+    timescale_i_cmpl : to perform interpretation of an indirect complement
+    indirect_cmpl_interpretation : to perform interpretation of all indirect complements list
+    timescale_sentence : to  perform interpretation of time of sentence
 """
 from dialog.resources_manager import ResourcePool
 
@@ -22,6 +25,7 @@ Statement of lists
 day_list = ResourcePool().days_list
 month_list = ResourcePool().months_list
 adverb = ResourcePool().time_adverbs
+prep = ResourcePool().time_proposals
 
 
 def refine_val(x,y,time,value):
@@ -217,48 +221,60 @@ def timescale_i_cmpl(indirect_cmpl, action_time):
     Input=indirect complement and action time       Output=the action time   
     """
     
-    #We know that all prepositions are for future 
-    for j in indirect_cmpl:
-        #If we have number for determinant
-        if j._quantifier=='DIGIT':
-            if j.noun==['year'] or j.noun==['month'] or j.noun==['day'] or j.noun==['hour'] or j.noun==['minute'] or j.noun==['second']:
-                if action_time['effective_time']==None:
-                    action_time['effective_time']=str(int(action_time['action_period']['time_begin'][j.noun[0]])+int(j.det[0]))
-                else:
-                    action_time['effective_time']=str(int(action_time['effective_time'][j.noun[0]])+int(j.det[0]))
+    for i in prep:
+        if i[2]!=0 and i[0]==indirect_cmpl.prep[0] and i[0]!='from' and i[0]!='to':
+            
+            #We read all nominal groups in the indirect complement 
+            for j in indirect_cmpl.nominal_group:
                 
-            elif j.noun==["o'clock"]:
-                if action_time['effective_time']==None:
-                    action_time['effective_time']=str(int(action_time['action_period']['time_begin']['hour'])+int(j.det[0]))
-                else:
-                    action_time['effective_time']=str(int(action_time['effective_time']['hour'])+int(j.det[0]))
-                
-            elif j.noun==['morning']:
-                if action_time['effective_time']==None:
-                    action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                else:
-                        action_time['action_period']=day_period(action_time['effective_time'], 1)
-            elif j.noun==['afternoon']:
-                if action_time['effective_time']==None:
-                    action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                else:
-                    action_time['action_period']=day_period(action_time['effective_time'], 2)
-            elif j.noun==['evening']:
-                if action_time['effective_time']==None:
-                    action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                else:
-                    action_time['action_period']=day_period(action_time['effective_time'], 3)      
+                #If we have number for determinant
+                if j._quantifier=='DIGIT':
                     
+                    #Here we have an explicit noun
+                    if j.noun==['year'] or j.noun==['month'] or j.noun==['day'] or j.noun==['hour'] or j.noun==['minute'] or j.noun==['second']:
+                        if action_time['effective_time']==None:
+                            action_time['effective_time']=str(int(action_time['action_period']['time_begin'][j.noun[0]])+int(j.det[0])*int(i[2]))
+                        else:
+                            action_time['effective_time']=str(int(action_time['effective_time'][j.noun[0]])+int(j.det[0])*int(i[2]))
+                    
+                    #We have an accurate time
+                    elif j.noun==["o'clock"] or j.noun==['pm'] or j.noun==['am']:
+                        #We will change pm on something like am
+                        if j.noun==['pm']:
+                            j.det=str(int(j.det)+12)
+                        if action_time['effective_time']==None:
+                            action_time['effective_time']=action_time['action_period']['time_begin']
+                        action_time['effective_time']['hour']=str(int(j.det[0]))
+                    
+                    #Here We have the 3 periods of the day    
+                    elif j.noun==['morning']:
+                        if action_time['effective_time']==None:
+                            action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
+                        else:
+                            action_time['action_period']=day_period(action_time['effective_time'], 1)
+                    elif j.noun==['afternoon']:
+                        if action_time['effective_time']==None:
+                            action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
+                        else:
+                            action_time['action_period']=day_period(action_time['effective_time'], 2)
+                    elif j.noun==['evening']:
+                        if action_time['effective_time']==None:
+                            action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
+                        else:
+                            action_time['action_period']=day_period(action_time['effective_time'], 3)      
+    
+    #We return the action time       
     return action_time
 
 
 
-
-def indirect_cmpl_interpretation(action_time):
+def indirect_cmpl_interpretation(action_time, i_cmpl_list):
     """
-    This function perform interpretation of an indirect complement
-    Input=indirect complement and action time       Output=the action time   
+    This function perform interpretation of all indirect complements list
+    Input=time and the adverb list         Output=the action period   
     """
+    for i in i_cmpl_list:
+        action_time=timescale_i_cmpl(i,action_time)
     
     return action_time
 
@@ -266,7 +282,7 @@ def indirect_cmpl_interpretation(action_time):
 
 def timescale_sentence(indirect_cmpl,adv_list,time):
     """
-    This function perform interpretation of an indirect complement
+    This function perform interpretation of time of sentence
     Input=indirect complement and action time       Output=the action time   
     """
     
@@ -280,35 +296,3 @@ def timescale_sentence(indirect_cmpl,adv_list,time):
     return action_time
 
 
-
-"""
-###############   Tests   ###################
-"""
-def print_time(time):
-    print 'year: ', time['year']
-    print 'month: ', time['month']
-    print 'day: ', time['day']
-    print 'hour: ', time['hour']
-    print 'minute: ', time['minute']
-    print 'second: ', time['second']
-
-
-time1={'year':'2011','month':'December','day':'1','hour':'22','minute':'0','second':'3622'}
-time2={'year':'2011','month':'December','day':'1','hour':'22','minute':'0','second':'3622'}
-time3={'year':'2010','month':'December','day':'91','hour':'22','minute':'63','second':'3610'}
-time4={'year':'0','month':'January','day':'1','hour':'15','minute':'0','second':'0'}
-"""
-action_time2=timescale_adverb(time2, 'yesterday')
-action_time3=timescale_adverb(time3, 'tomorrow')
-"""
-
-#action_time=adverbs_interpretation(time1, ['here', 'now'])
-#action_time=adverbs_interpretation(time1, ['here', 'tomorrow'])
-action_time=adverbs_interpretation(time4, ['here', 'yesterday'])
-#action_time=adverbs_interpretation(time1, ['yesterday', 'tomorrow'])
-#action_time=adverbs_interpretation(time1, ['here','yesterday','tonight'])
-print_time(action_time['time_begin'])
-print_time(action_time['time_end'])
-print compare(time1, time2)
-
-    
