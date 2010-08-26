@@ -3,7 +3,11 @@
 
 import sys
 import logging
+logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+
 import unittest
+
+import dialog.verbalization.verbalization_test as verbalization
 
 from dialog.dialog_core import Dialog
 
@@ -928,8 +932,6 @@ dialog_test OPTION
   sc_moving         Scenario "Achille is moving to London"
 """
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG,
-                    format="%(message)s")
     
     opts = sys.argv[1:]
     if len(opts) == 0:
@@ -938,31 +940,7 @@ if __name__ == '__main__':
         
     # executing only some tests
     
-    suiteSimpleSentences = unittest.TestSuite()
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence1'))    
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence2'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence3'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence4'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence5'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence6'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence7'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence8'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence8_bis'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence8_ter'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9_bis'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9_ter'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence9_quater'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence10'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence10_bis'))
-    suiteSimpleSentences.addTest(TestBaseSentenceDialog('test_sentence11'))
-    
-    suiteVerbalization = unittest.TestSuite()
-    suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize1'))
-    suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize2'))
-    suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize3'))
-    suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize4'))
-    suiteVerbalization.addTest(TestVerbalizeDialog('test_verbalize5'))
+    suiteSimpleSentences = unittest.TestLoader().loadTestsFromTestCase(TestBaseSentenceDialog)
     
     suiteDiscriminate = unittest.TestSuite()
     suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate1'))
@@ -988,7 +966,7 @@ if __name__ == '__main__':
     suiteISU = unittest.TestSuite()
     suiteISU.addTest(TestISUDialog('test_ISU1'))
     
-    testSuites = []
+    suite = unittest.TestSuite()
     
     if opts[0] in ['-h', '--help', 'help']:
         usage()
@@ -998,7 +976,7 @@ if __name__ == '__main__':
         parser.unit_tests()
         sys.exit(0)
     if opts[0] in ['verbalization', 'all']:
-        testSuites.append(suiteVerbalization)
+        suite.addTests(verbalization.test_suite()._tests)
     if opts[0] in ['statements', 'discrimination', 'all']:
         testSuites.append(suiteSimpleSentences)
     if opts[0] in ['discrimination', 'all']:
@@ -1006,5 +984,4 @@ if __name__ == '__main__':
     if opts[0] in ['questions', 'all']:
         testSuites.append(suiteQuestionHandler)
 
-    for suite in testSuites:
-        unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.TextTestRunner(verbosity=2).run(suite)
