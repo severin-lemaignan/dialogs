@@ -179,7 +179,7 @@ def is_an_adj(word):
     
     #It is a noun so we have to return 1
     for j in noun_list:
-        if word==j[0]:
+        if word==j:
             return 0
     
     #For the regular adjectives

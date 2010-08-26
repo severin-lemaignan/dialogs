@@ -549,11 +549,13 @@ def move_prep(sentence):
             if sentence[i]==p:
                 position=i
                 
-                #We have to find the nominal group just before
-                while analyse_nominal_group.find_sn_pos(sentence, position)==[]:
-                    position=position-1
-                    
-                sentence=sentence[:position]+[p]+sentence[position:i]+sentence[i+1:]
+                #If after preposition we have nominal group, it is for this nominal group 
+                if analyse_nominal_group.find_sn_pos(sentence, i+1)==[]:        
+                    #We have to find the nominal group just before
+                    while analyse_nominal_group.find_sn_pos(sentence, position)==[]:
+                        position=position-1
+                        
+                    sentence=sentence[:position]+[p]+sentence[position:i]+sentence[i+1:]
         i=i+1
         
     return sentence 
@@ -802,7 +804,6 @@ def processing(sentence):
     sentence = prep_concat(sentence)
     sentence = upper_to_lower(sentence)
     sentence = delete_empty(sentence)
-    
     sentence = concat_number(sentence)
     sentence = conjunction_processing(sentence,'or')
     sentence = conjunction_processing(sentence,':but')

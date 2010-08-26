@@ -17,30 +17,35 @@ This list holds proposals
 We use 1 if the proposal is used by functions which transform adverbial into relative
 ##
 
-in 1 1
-on 1 1
-at 1 1
-from 1 1
-to 0 1 receivedBy
 about 1 1
-for 1 1 isRelatedTo
-next 1 1 isNexto 
-last 1 1
-ago 1 1
-with 1 1
+above 1 0 isLocated UP
+after 1 1
+ago 1 -1
+as 1 0
+at 1 1
+because+of 1 0 hasPurpose 
+before 1 -1
+behind 1 0 isLocated BACK
+behind+to 0 1 isLocated BACK
+below 1 0 isLocated DOWM
 by 1 1
-behind 1 1 isLocated BACK
-behind+to 1 1 isLocated BACK
-next+to 1 1 isNexto 
-in+front+of 1 1 isLocated FRONT
-as 1 1 
-into 1 1 isIn
-in+spite+of 1 1 
-because+of 1 1 hasPurpose 
-despite 1 1
-above 1 1 isLocated UP
-underneath 1 1 isLocated DOWN
-below 1 1 isLocated DOWM
+despite 1 0
+for 1 1 isRelatedTo
+from 1 1
+in 1 1
+in+about 1 1
+in+by 1 1
+in+front+of 1 0 isLocated FRONT
+in+spite+of 1 0
+into 1 0 isIn
+last 1 -1
+later 1 1
+next 1 1 isNexto
+next+to 1 0 isNexto 
+on 1 1
+to 0 1 receivedBy
+underneath 1 0 isLocated DOWN
+with 1 1
 
 
 
@@ -66,4 +71,8 @@ because
 This list holds preposition that need change of place
 ##
 
+after
 ago
+before
+later
+next
