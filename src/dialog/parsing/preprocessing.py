@@ -16,7 +16,7 @@
     case_apostrophe_s_to_is : to know if there is this kind of "'s"               
     expand_contractions : to perform expand contraction using concatenate_pos     
     determination_nom_gr : to return the nominal group with his complement
-    and_nom_group : to process the case when there is a comma between nominal groups                                               
+    and_nom_group_comma : to process the case when there is a comma between nominal groups                                               
     find_nom_gr_list : take off noun chain linked by 'of'                         
     create_possession_claus : to transform a noun chain to string's list with 'of'
     possesion_form : to exchange the "'s" to 'of' by using 2 latest functions    
@@ -320,7 +320,7 @@ def determination_nom_gr(sentence, position,prop):
         
         
 
-def and_nom_group(sentence):
+def and_nom_group_comma(sentence):
     """
     This function process the case when there is a comma between nominal groups                             
     Input=sentence                                     Output=sentence               
@@ -354,7 +354,7 @@ def and_nom_group(sentence):
                 #Flag will be 1 because this stage is compulsory
                 flag=flag-1
             
-            #If flag=1 => we can have the and_nom_group case
+            #If flag=1 => we can have the and_nom_group_comma case
             if flag==1:
                 #We have to find the first nominal group
                 begin_pos=i-1
@@ -367,7 +367,7 @@ def and_nom_group(sentence):
                     flag=flag-1
                     list_nom_gr=nom_gr+list_nom_gr
                    
-            #We have an and_nom_group case 
+            #We have an and_nom_group_comma case 
             if flag==0:
                 sentence=sentence[:begin_pos]+list_nom_gr+sentence[end_pos:]
                 i=end_pos
@@ -376,7 +376,41 @@ def and_nom_group(sentence):
     
     return sentence
 
-       
+
+
+def and_nom_group(sentence):
+    
+    i=0
+    list_nom_gr=our_list=[]
+    
+    while i < len(sentence):
+        nom_gr=determination_nom_gr(sentence, i, 'of')
+        position=i
+        while nom_gr!=[]:
+            list_nom_gr=list_nom_gr+[nom_gr]
+            i=i+len(nom_gr)
+            nom_gr=determination_nom_gr(sentence, i, 'of')
+    
+        if i<len(sentence) and sentence[i]=='and' and list_nom_gr!=[]:
+            i=i+1
+            nom_gr=determination_nom_gr(sentence, i, 'of')
+            
+            if other_functions.there_is_pronoun(list_nom_gr, nom_gr)==0:
+                for j in list_nom_gr:
+                    our_list=our_list+j+['and']
+                sentence=sentence[:position]+our_list+sentence[i:]
+                i=i+len(nom_gr)+len(list_nom_gr)
+                list_nom_gr=our_list=[]
+                
+            else:
+                i=position+len(list_nom_gr[0])
+        else:
+            i=i+1
+            list_nom_gr=[]
+   
+    return sentence
+
+
 
 def find_nom_gr_list(phrase):
     """
@@ -813,6 +847,7 @@ def processing(sentence):
     sentence = possesion_form(sentence)
     sentence = refine_possesion_form(sentence)
     sentence = and_nom_group(sentence)
+    sentence = and_nom_group_comma(sentence)
     sentence = move_prep(sentence)
     sentence = but(sentence)
     sentence = subsentence_comma(sentence)

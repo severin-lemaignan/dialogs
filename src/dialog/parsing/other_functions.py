@@ -100,6 +100,8 @@ def number(word):
     """
     
     for n in number_list:
+        if word.startswith(n[1]):
+            return 1
         if word.startswith(n[0]): 
             if word.endswith('th'):
                 return 2
@@ -152,6 +154,10 @@ def convert_to_digit(det):
     
     #init
     num=k=0
+    
+    for n in number_list:
+        if det.startswith(n[1]):
+            return det
         
     while k < len(det):
         if det[k]!='+':
@@ -231,3 +237,19 @@ def recover_scd_verb_sub(sentence):
         i=i+1
         
     return sentence
+
+
+
+def there_is_pronoun(list_nom_gr, nom_gr):
+    flag=0
+    for i in list_nom_gr:
+        if flag==1 and (len(i)!=1 or find_cap_lettre(i[0])==1):
+            return 1
+        if len(i)==1 and find_cap_lettre(i[0])==0:
+            flag=1
+   
+    if flag==1 and (len(i)!=1 or find_cap_lettre(nom_gr)==1):
+        
+        return 1
+    
+    return 0

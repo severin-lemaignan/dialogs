@@ -84,11 +84,11 @@ def adjective_pos(phrase, word_pos):
     Input=the sentence (list of strings) and the position of the first adjective    
     Output=the position of the last word of the nominal group                       
     """
-
+    
     #If it is the end of the phrase
-    if len(phrase)-1==word_pos:
+    if len(phrase)-1<=word_pos:
         return 1
-
+    
     #It is a noun so we have to return 1
     for j in noun_list:
         if phrase[word_pos]==j:
