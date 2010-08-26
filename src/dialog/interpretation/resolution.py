@@ -42,7 +42,7 @@ class Resolver:
                                                                                                 uae_object_with_more_info,
                                                                                                 uae_object_list)
                                                                                         
-        logging.info(colored_print("-> Resolving references and anaphors...", 'green'))
+        logger.info(colored_print("-> Resolving references and anaphors...", 'green'))
         #Record of current sentence
         self._current_sentence = sentence
         
@@ -143,12 +143,12 @@ class Resolver:
         
         # Case of personal prounouns
         if current_speaker and nominal_group.noun[0].lower() in ['me','i']:
-            logging.debug("Replaced \"me\" or \"I\" by \"" + current_speaker + "\"")
+            logger.debug("Replaced \"me\" or \"I\" by \"" + current_speaker + "\"")
             nominal_group.id = current_speaker
             nominal_group._resolved = True
         
         if nominal_group.noun[0].lower() in ['you']:
-            logging.debug("Replaced \"you\" by \"myself\"")
+            logger.debug("Replaced \"you\" by \"myself\"")
             nominal_group.id = 'myself'
             nominal_group._resolved = True
         
@@ -255,11 +255,11 @@ class Resolver:
             return nominal_group
         
         
-        logging.debug(str(nominal_group))
+        logger.debug(str(nominal_group))
         builder.process_nominal_group(nominal_group, '?concept', None, False)
         stmts = builder.get_statements()
         builder.clear_statements()
-        logging.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
+        logger.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
         
         # Special case of "other" occuring in the nominal group
         if builder.process_on_other:
@@ -367,7 +367,7 @@ class Resolver:
     # Verbal group resolutions
     ############################
     def verbal_phrases_resolution(self, sentence):
-        logging.info(colored_print("-> Resolving verbal groups", 'green'))
+        logger.info(colored_print("-> Resolving verbal groups", 'green'))
         for sv in sentence.sv:
             sv = self._resolve_verbs(sv)
                     
@@ -381,8 +381,7 @@ class Resolver:
         modal =''
         
         for verb in verbal_group.vrb_main:
-            logging.debug("* \"" + verb + "\"")
-            
+            logger.debug("* \"" + verb + "\"")
             # Case of modal verbs. E.g: can, must
             if '+' in verb:
                 [modal, verb] = verb.split('+')
@@ -399,14 +398,14 @@ class Resolver:
             else:
                 try:
                     resolved_verb = ResourcePool().thematic_roles.get_ref(verb)
-                    logging.debug("Keeping \"" + verb + "\"" ) \
+                    logger.debug("Keeping \"" + verb + "\"" ) \
                                     if verb == resolved_verb else \
                                     ("Replacing \"" + verb + "\" by synonym \"" + resolved_verb + "\"")
                     
                     verb = resolved_verb
                     
                 except UnknownVerb:
-                    logging.debug("Unknown verb \"" + verb + "\": keeping it like that, but I won't do much with it.")
+                    logger.debug("Unknown verb \"" + verb + "\": keeping it like that, but I won't do much with it.")
                     resolved_verb = verb
                 
             if modal:

@@ -17,7 +17,6 @@
 """
 from dialog.resources_manager import ResourcePool
 
-
 """
 Statement of lists
 """
@@ -27,8 +26,6 @@ cap_let_list = ResourcePool().capital_letters
 superlative_number = ResourcePool().adjective_numbers_digit
 sub_list = ResourcePool().subsentences
 rel_list = ResourcePool().relatives
-
-
 
 def find_cap_lettre(word):
     """

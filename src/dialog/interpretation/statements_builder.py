@@ -1,5 +1,5 @@
 import logging
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+logger = logging.getLogger("dialog")
 
 import random
 from dialog.resources_manager import ResourcePool
@@ -247,7 +247,7 @@ class NominalGroupStatementBuilder:
 
     def process_determiners(self, nominal_group, ng_id, negative_object):
         for det in nominal_group.det:
-            #logging.debug("Found determiner:\"" + det + "\"")
+            #logger.debug("Found determiner:\"" + det + "\"")
             # Case 1: definite article : the"""
             # Case 2: demonstratives : this, that, these, those"""
             if det in ResourcePool().demonstrative_det: #['this', 'that', 'these', 'those']:
@@ -306,7 +306,7 @@ class NominalGroupStatementBuilder:
                 pass
             
             if onto_id and [noun,"INSTANCE"] in onto_id:
-                logging.info("... \t" + noun + " is an existing ID in " + self._current_speaker + "'s model.")            
+                logger.info("... \t" + noun + " is an existing ID in " + self._current_speaker + "'s model.")            
                 #Case of Negation
                 if negative_object:
                     self._statements.append(ng_id + " owl:differentFrom " + noun)
@@ -330,7 +330,7 @@ class NominalGroupStatementBuilder:
                     if noun_id:
                         self._statements.append(ng_id + " owl:differentFrom " + noun_id)
                     else:
-                        logging.debug("Aie Aie!! Personal pronoun " + noun + " Not implemented yet!")
+                        logger.debug("Aie Aie!! Personal pronoun " + noun + " Not implemented yet!")
                 
                 # Case of affirmative form
                 else:
@@ -338,12 +338,12 @@ class NominalGroupStatementBuilder:
             
             #Case : proper noun (Always Capitalized in sentence, and never follows a determiner) 
             elif not nominal_group.det and noun.istitle():
-                logging.info("... \t" + noun + " is being processed as a proper noun in  " + self._current_speaker + "'s model.")            
+                logger.info("... \t" + noun + " is being processed as a proper noun in  " + self._current_speaker + "'s model.")            
                 self._statements.append(ng_id + " rdfs:label \"" + noun + "\"")
             
             # Case : common noun    
             else:
-                logging.info("... \t" + noun + " is being processed as a common noun in " + self._current_speaker + "'s model.")            
+                logger.info("... \t" + noun + " is being processed as a common noun in " + self._current_speaker + "'s model.")            
                 # get the exact class name (capitalized letters where needed)
                 class_name = get_class_name(noun, onto_id)
                 
@@ -473,7 +473,7 @@ class NominalGroupStatementBuilder:
                             i_cmpl_ng.id = parent_ng_id
 
         for rel in nominal_group.relative:
-            #logging.debug("processing relative:")
+            #logger.debug("processing relative:")
             if rel.sv:
                 rel_vg_stmt_builder = VerbalGroupStatementBuilder(rel.sv, self._current_speaker)
             #case 1   
@@ -679,7 +679,7 @@ class VerbalGroupStatementBuilder:
             
     def process_direct_object(self, d_objects, verb, id, quantifier):
         """This processes the attribute d_obj of a sentence verbal groups."""
-        #logging.debug("Processing direct object d_obj:")
+        #logger.debug("Processing direct object d_obj:")
         d_obj_stmt_builder = NominalGroupStatementBuilder(d_objects, self._current_speaker)
         
         #Thematic roles
@@ -809,7 +809,8 @@ class VerbalGroupStatementBuilder:
     #TODO:      
     def process_sentence_adverb(self, advrb, verb, id):
         for adv in advrb:
-            logging.debug("Found adverbial phrase:\"" + adv + "\"")
+            logger.debug("Found adverbial phrase:\"" + adv + "\"")
+            logger.debug("Found adverbial phrase:\"" + adv + "\"")
             
     
     def process_action_verb_adverb(self, advrb ,verb, id):

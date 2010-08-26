@@ -1,4 +1,6 @@
 import logging
+logger = logging.getLogger("dialog")
+
 from dialog.interpretation.resolution import Resolver
 from dialog.interpretation.statements_builder import *
 from dialog.sentence import *
@@ -37,14 +39,14 @@ class QuestionHandler:
         #StatementBuilder
         builder = StatementBuilder(self._current_speaker)
         self._statements = builder.process_sentence(self._sentence)
-        logging.info("statement from Statement Builder: " + str(self._statements))
+        logger.info("statement from Statement Builder: " + str(self._statements))
         
         #Case the question is a y_n_question : check the fact in the ontology
         if sentence.data_type == 'yes_no_question':
             self._statements = self._set_situation_id(self._statements)
             
             try:
-                logging.debug("Checking on the ontology: check(" + str(self._statements) + ")")
+                logger.debug("Checking on the ontology: check(" + str(self._statements) + ")")
                 self._answer = ResourcePool().ontology_server.check(self._statements)
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
@@ -60,7 +62,7 @@ class QuestionHandler:
             if self._statements:
                 print(self._statements)
                 try:
-                    logging.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
+                    logger.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
                     self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
                 except AttributeError: #the ontology server is not started of doesn't know the method
                     pass
@@ -82,7 +84,7 @@ class QuestionHandler:
                 pass
                 
             if sit_id:
-                logging.debug("\t/Found a staticSituation matching the yes_no_question query to be checked: "+ str(sit_id))
+                logger.debug("\t/Found a staticSituation matching the yes_no_question query to be checked: "+ str(sit_id))
                 for s in statements:
                     #TODO:the ontology might find severals sit ID matching the query. Should we take this consideration?
                     #The longer the query, the better the result of sit_id

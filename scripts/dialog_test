@@ -3,13 +3,13 @@
 
 import sys
 import logging
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 import unittest
+import getopt
 
 import dialog.verbalization.verbalization_test as verbalization
 import dialog.parsing.parser_test as parser
-import dialog.remerge_test as merge
+import dialog.sentence_test as sentence
 import dialog.interpretation.discrimination_test as discrimination
 import dialog.interpretation.statements_builder_test as statements_builder
 import dialog.interpretation.questions_handler_test as questions_handler
@@ -20,6 +20,8 @@ from dialog.resources_manager import ResourcePool
 
 from dialog.sentence import *
 from dialog.parsing.parser import Parser
+
+LOG_FILENAME = "dialog_test.log"
 
 def check_results(res, expected):
     def check_triplets(tr , te):
@@ -529,50 +531,86 @@ def usage():
     print """Unit-testing for the LAAS-CNRS 'Dialog' module.
 
 All these tests require the ontology server (ORO) running on localhost:6969 and
-loaded with testsuite.oro.owl
+loaded with commonsense.oro.owl and robot.oro.owl
 
 Usage:
-dialog_test OPTION
-  help              Displays this message and exits
+dialog_test [OPTIONS] TEST_SUITE
+  -h, --help               Displays this message and exits
+  -l, --log=[file|stdout]  Where to log: file (in """ + LOG_FILENAME + """) 
+                           or stdout (default).
   
-  --- Base testing ---
+  Available test suites (you call several of them):
+  
+   * Base testing:
+   
+  sentence          Tests the sentence creation and merging functions
   parser            Tests the parser
-  merge             Tests the sentence merging function
   verbalization     Tests the verbalization module
   statements        First round of simple tests that produces statements
   discrimination    Tests the discrimination code 
   questions         Tests the question handler
+  
   all               Runs all base test suites
   
-  --- Complete scenario testing ---
+   * Complete scenario testing:
   These scripts test complete interactions, from past HRI scenarii
   
   sc_moving         Scenario "Achille is moving to London"
 """
 if __name__ == '__main__':
     
-    opts = sys.argv[1:]
-    if len(opts) == 0:
+    logger = logging.getLogger('dialog')
+    logger.setLevel(logging.DEBUG)
+
+    if len(sys.argv[1:]) == 0:
         usage()
         sys.exit(0)
-        
     
+    log_handler = logging.StreamHandler()
+    formatter = logging.Formatter("%(message)s")
+    
+    try:
+        optlist, args = getopt.getopt(sys.argv[1:], 'hl:', ['help', 'log='])
+    except getopt.GetoptError, err:
+        # print help information and exit:
+        print str(err) # will print something like "option -a not recognized"
+        usage()
+        sys.exit(2)
+
+    for o, a in optlist:
+        if o in ("-h", "--help"):
+            usage()
+            sys.exit(0)
+        elif o in ("-l", "--log"):
+            if a == "file":
+                print("The output of the unit-tests will be saved in " + LOG_FILENAME)
+                log_handler = logging.FileHandler(LOG_FILENAME)
+                formatter = logging.Formatter("%(message)s")
+        else:
+            print "Unhandled option " + o
+            usage()
+            sys.exit(2)
+
+    log_handler.setLevel(logging.DEBUG)
+    
+    # add formatter to log_handler
+    log_handler.setFormatter(formatter)
+    # add log_handler to logger
+    logger.addHandler(log_handler)
+
     suite = unittest.TestSuite()
     
-    if opts[0] in ['-h', '--help', 'help']:
-        usage()
-        sys.exit(0)
-    if opts[0] in ['parser', 'parsing', 'all']:
+    if 'parser' in args or 'all' in args:
         suite.addTests(parser.test_suite()._tests)
-    if opts[0] in ['merge', 'parser', 'parsing', 'all']:
-        suite.addTests(merge.test_suite()._tests)
-    if opts[0] in ['verbalization', 'all']:
+    if 'sentence' in args or 'all' in args:
+        suite.addTests(sentence.test_suite()._tests)
+    if 'verbalization' in args or 'all' in args:
         suite.addTests(verbalization.test_suite()._tests)
-    if opts[0] in ['statements', 'all']:
+    if 'statements' in args or 'all' in args:
         suite.addTests(statements_builder.test_suite()._tests)
-    if opts[0] in ['discrimination', 'all']:
+    if 'discrimination' in args or 'all' in args:
         suite.addTests(discrimination.test_suite()._tests)
-    if opts[0] in ['questions', 'all']:
+    if 'questions' in args or 'all' in args:
         suite.addTests(questions_handler.test_suite()._tests)
 
     unittest.TextTestRunner(verbosity=2).run(suite)

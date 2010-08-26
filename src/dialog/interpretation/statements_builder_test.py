@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import logging
+logger = logging.getLogger("dialog")
+
 import inspect
 import unittest
 from dialog.resources_manager import ResourcePool
 
-import logging
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+from dialog.helpers import get_console_handler
+
 
 from dialog.dialog_core import Dialog
 from dialog.interpretation.statements_builder import *
@@ -17,7 +20,7 @@ from dialog.interpretation.resolution import Resolver
 class TestStatementBuilder(unittest.TestCase):
 
     def setUp(self):
-        #ResourcePool().ontology_server.reload()
+        
         try:
             ResourcePool().ontology_server.safeAdd(['SPEAKER rdf:type Human',
                                                 'SPEAKER rdfs:label "Patrick"'])
@@ -757,7 +760,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         return self.process(sentence, expected_resut, display_statement_result = True)
     
-    """
+    
     def test_15_quantifier_action_verb(self):        
         print "\n**** test_15_quantifier_action_verb  *** "
         print "an apple grows on a tree"
@@ -789,7 +792,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         return self.process(sentence, expected_resut, display_statement_result = True)
     
-    """
+    
     #Action adverbs
     def test_16_adverb(self):
         print "\n**** test_16_adverb *** "
@@ -1228,7 +1231,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
         self.process(sentence, expected_result, display_statement_result = True)
     
-    """
+    
     def test_26_subsentences(self):
         print "\n**** test_26_subsentences *** "
         print "you will drive the car if you get the keys'."
@@ -1334,7 +1337,7 @@ class TestStatementBuilder(unittest.TestCase):
                             
         self.process(sentence, expected_result, display_statement_result = True)
     
-    """
+    
     
     def process(self, sentence, expected_result, display_statement_result = False):
         #Dump resolution
@@ -1803,7 +1806,7 @@ def dump_resolved(sentence, current_speaker, current_listener, resolver):
     sentence = resolver.noun_phrases_resolution(sentence,
                                                       current_speaker, None, None)    
     sentence = resolver.verbal_phrases_resolution(sentence)
-            
+
     return sentence
 
 
@@ -1814,6 +1817,8 @@ def test_suite():
     return suite
     
 if __name__ == '__main__':
-       
+    
+    logger.addHandler(get_console_handler())
+    
     # executing verbalization tests
     unittest.TextTestRunner(verbosity=2).run(test_suite())

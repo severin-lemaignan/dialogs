@@ -7,6 +7,7 @@ information.
 """
 
 import logging
+logger = logging.getLogger("dialog")
 
 from dialog.resources_manager import ResourcePool
 from dialog.dialog_exceptions import UnsufficientInputError
@@ -69,7 +70,7 @@ class Discrimination():
         else:
             discriminants = self.oro.discriminateForAgent(agent, objL)
         
-        logging.debug(  '> Possible discriminants: ' +  \
+        logger.debug(  '> Possible discriminants: ' +  \
                         str(colored_print(discriminants[1], 'magenta')) + \
                         " (complete discriminants: " + \
                         str(colored_print(discriminants[0], 'magenta')) + ")")
@@ -201,9 +202,9 @@ class Discrimination():
     # -----------------------------------------------------------------------------#
     def clarify(self, description, ignoreFeatureL = None):
         
-        logging.debug("> Looking in " + description[0][0] + "'s model for concepts matching " +  str(description[0][2]))
+        logger.debug("> Looking in " + description[0][0] + "'s model for concepts matching " +  str(description[0][2]))
         objL = self.get_all_objects_with_desc(description)        
-        logging.debug('> Got this list of concepts: ' +  str(colored_print(objL, 'blue')))
+        logger.debug('> Got this list of concepts: ' +  str(colored_print(objL, 'blue')))
 
         if not self.oro: #No ontology server
             return 'UNKNOWN_CONCEPT'
@@ -318,8 +319,8 @@ class Discrimination():
         objL = self.get_all_objects_with_desc(description)
          
         while len(objL) > 1:
-            logging.debug('Description ' + objectID +': ' + str(description))
-            logging.debug('ObjL: ' + str(objL))
+            logger.debug('Description ' + objectID +': ' + str(description))
+            logger.debug('ObjL: ' + str(objL))
 
             agent, descriptor = self.get_descriptor(description,1)
             val = self.oro.findForAgent(agent, '?val','[' + objectID + ' ' + descriptor + ' ?val]')            

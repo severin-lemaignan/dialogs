@@ -30,7 +30,6 @@ import analyse_verb
 import analyse_verbal_structure
 import other_functions
 
-
 """
 Statement of lists
 """

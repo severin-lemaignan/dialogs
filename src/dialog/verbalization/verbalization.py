@@ -1,4 +1,6 @@
 import logging
+logger = logging.getLogger("dialog")
+
 import utterance_rebuilding
 
 class Verbalizer:
@@ -6,7 +8,7 @@ class Verbalizer:
     input a Sentence object and build from it a sentence in natural language.
     """
     def verbalize(self, sentence):
-        logging.debug("Verbalizing now...")
+        logger.debug("Verbalizing now...")
         nl_sentence = utterance_rebuilding.verbalising(sentence)
-        logging.debug("Rebuild sentence to: \"" + nl_sentence + "\"")
+        logger.debug("Rebuild sentence to: \"" + nl_sentence + "\"")
         return nl_sentence

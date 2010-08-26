@@ -11,13 +11,12 @@
 
 import unittest
 import logging
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 from dialog.dialog_core import Dialog
+
 from dialog.parsing.parser import Parser
 from dialog.sentence import *
 import utterance_rebuilding
-
 
 
 class TestVerbalization(unittest.TestCase):
@@ -2389,6 +2388,8 @@ def test_suite():
     return suite
     
 if __name__ == '__main__':
-       
+    
+    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+    
     # executing verbalization tests
     unittest.TextTestRunner(verbosity=2).run(test_suite())

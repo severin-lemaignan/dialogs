@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os.path
-
 import logging
+logger = logging.getLogger("dialog")
+
+import os.path
 
 from pyoro import Oro, OroServerError
 
@@ -197,11 +198,10 @@ class ResourcePool:
             if oro_host:
                 self.ontology_server = Oro(oro_host, oro_port)
             else:
-                logging.info("Starting without ontology server. Resolution won't work")
+                logger.warning("Starting without ontology server. Resolution won't work")
         except OroServerError:
-            logging.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
+            logger.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
             ". Continuing without the ontology server. Amongst others, resolution won't work.")
-    
         
         self.adjectives = {}
         self.irregular_verbs_past = []

@@ -94,9 +94,6 @@ def main():
     logger.info("**** DIALOG module ****")
     logger.info("v." + DIALOG_VERSION + "\n")
     
-    logger.info("Initializing the resource pool (ORO + some lists of words)...")
-    ResourcePool() #Initializes the ResourcePool singleton
-    
     dialog = Dialog()
 
     dialog.start()

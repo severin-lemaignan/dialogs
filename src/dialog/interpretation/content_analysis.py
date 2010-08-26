@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
+logger = logging.getLogger("dialog")
+
 from dialog.helpers import colored_print
 
 from dialog.interpretation.statements_builder import StatementBuilder
@@ -25,11 +27,11 @@ class ContentAnalyser:
     def analyse(self, sentence, current_speaker):
         """analyse an imperative or statement data_type sentence"""
         if sentence.data_type in ['imperative', 'statement']:
-            logging.debug("Processing the content of " +  ("an imperative " if sentence.data_type == 'imperative' else "a statement ") + "data_type sentence")
+            logger.debug("Processing the content of " +  ("an imperative " if sentence.data_type == 'imperative' else "a statement ") + "data_type sentence")
             return self.process_sentence(sentence, current_speaker)
         
         if sentence.data_type in ['w_question', 'yes_no_question']:
-            logging.debug("Processing the content of " +  ("a w_question " if sentence.data_type == 'w_question' else "a yes_no_question ") + "data_type sentence")
+            logger.debug("Processing the content of " +  ("a w_question " if sentence.data_type == 'w_question' else "a yes_no_question ") + "data_type sentence")
             return self.process_question(sentence, current_speaker)
         
 
@@ -38,11 +40,11 @@ class ContentAnalyser:
         self.builder.set_current_speaker(current_speaker)
         stmts = self.builder.process_sentence(sentence)
         
-        logging.info("Generated statements: ")
+        logger.info("Generated statements: ")
         for s in stmts:
-            logging.info(">> " + colored_print(s, None, 'magenta'))
+            logger.info(">> " + colored_print(s, None, 'magenta'))
         
-        logging.info("Adding New statements in Ontology")
+        logger.info("Adding New statements in Ontology")
         
         self.adder._unclarified_ids = self.builder._unclarified_ids
         self.adder._statements = stmts
@@ -59,7 +61,7 @@ class ContentAnalyser:
         self.question_handler.set_current_speaker(current_speaker)
         answer = self.question_handler.process_sentence(sentence)
         
-        logging.info("Found: \n \t>>" + str(answer))
+        logger.info("Found: \n \t>>" + str(answer))
         if sentence.data_type == 'w_question':
              self.output_sentence.extend(self.sfactory.create_w_question_answer(sentence, 
                                                                                     answer, 

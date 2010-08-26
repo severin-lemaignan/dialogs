@@ -2,9 +2,10 @@
 
 #SVN:rev202 + PythonTidy + rewrite 'toString' methods using Python __str__ + test cases
 
+import logging
+
 from helpers import colored_print #to colorize the sentence output
 from resources_manager import ResourcePool
-
 
 """
 Statement of lists

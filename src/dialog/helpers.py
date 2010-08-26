@@ -62,6 +62,14 @@ def format_colour(message, use_color = True):
                          .replace("$BG" + k,  COLOR_SEQ % (v+40) if use_color else "")\
                          .replace("$BG-" + k, COLOR_SEQ % (v+40) if use_color else "")
     return message + RESET_SEQ
+
+def get_console_handler():
+    log_handler = logging.FileHandler("toto.log")
+    formatter = logging.Formatter("%(message)s")
+    log_handler.setLevel(logging.DEBUG)
+    log_handler.setFormatter(formatter)
+    
+    return log_handler
     
 if __name__ == '__main__':
 

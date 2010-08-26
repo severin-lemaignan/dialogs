@@ -1,19 +1,6 @@
-"""
- Created by Chouayakh Mahdi                                                       
- 06/07/2010                                                                       
- The package contains functions to perform test                                   
- It is more used for the subject                                                  
- Functions:                                                                       
-    compare_nom_gr : to compare 2 nominal groups                                  
-    compare_icompl : to compare 2 indirect complements                            
-    compare_vs : to compare 2 verbal structures                                   
-    compare_sentence : to compare 2 sentences                                     
-    compare_utterance : to compare 2 replies                                          
-    display_ng : to display nominal group                                         
-    display : to display class Sentence                                           
-    unit_tests : to perform unit tests                                           
-"""
+
 import logging
+logger = logging.getLogger("dialog")
 
 import preprocessing
 import analyse_sentence
@@ -38,7 +25,7 @@ class Parser:
         self._class_list = analyse_sentence.sentences_analyzer(self._sentence_list)
         
         for s in self._class_list:
-            logging.debug(str(s))
+            logger.debug(str(s))
         
         return self._class_list
  

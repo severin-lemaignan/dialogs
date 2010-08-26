@@ -1,9 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""
+ Created by Chouayakh Mahdi 
+ 06/07/2010  
+ The package contains the parser unit tests + functions to perform test
+ It is more used for the subject 
+ Functions:
+    compare_nom_gr : to compare 2 nominal groups
+    compare_icompl : to compare 2 indirect complements
+    compare_vs : to compare 2 verbal structures
+    compare_sentence : to compare 2 sentences
+    compare_utterance : to compare 2 replies
+    display_ng : to display nominal group
+    display : to display class Sentence
+"""
+
 import unittest
 import logging
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 from dialog.sentence import *
 import preprocessing
@@ -2418,5 +2432,7 @@ def test_suite():
     
     return suite
 if __name__ == '__main__':
-          
+    
+    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+    
     unittest.TextTestRunner(verbosity=2).run(test_suite())

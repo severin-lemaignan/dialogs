@@ -8,6 +8,7 @@ from threading import Thread
 from Queue import Queue, Empty
 from collections import deque
 
+
 from helpers import colored_print
 
 from dialog_exceptions import UnsufficientInputError, UnidentifiedAnaphoraError
@@ -16,11 +17,11 @@ from dialog.sentence import *
 
 from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser
+
 from interpretation.resolution import Resolver
 from interpretation.content_analysis import ContentAnalyser
 from interpretation.anaphora_matching import replacement
 from verbalization.verbalization import Verbalizer
-
 
 DIALOG_VERSION = "0.2"
 
@@ -191,8 +192,8 @@ class Dialog(Thread):
         self.input(input, speaker)
         while(self.in_interaction):
             if answer and self.waiting_for_more_info:
-                logging.debug(colored_print("> Automatically answering: ", 'bold'))
-                logging.debug(colored_print(answer, 'red'))
+                self._logger.debug(colored_print("> Automatically answering: ", 'bold'))
+                self._logger(colored_print(answer, 'red'))
                 self.input(answer, speaker)
                 
                 answer = None

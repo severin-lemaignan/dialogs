@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import logging
-import unittest
+logger = logging.getLogger("dialog")
 
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+import unittest
 
 from dialog.resources_manager import ResourcePool
 from dialog.dialog_core import Dialog
@@ -15,25 +15,6 @@ from dialog.interpretation.statements_builder_test import dump_resolved
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):
     
-        """ We want to process the following questions:
-        #sentence="Where is the blue cube?"
-        #sentence="Where are the cubes?"
-        #sentence="What do you see?"
-        #sentence="Could you take the blue cube?"
-        #sentence="Can you take my cube?"
-        #sentence="What is this?
-        #sentence="what object do you see?"
-        #sentence="what do I see?
-        #sentence="what is blue?"
-        #sentence="what is reachable?"
-        """
-        """Further test
-        #what did I give you?
-        #who has a small car?
-        #how is my bottle?
-        #what does Danny drive?
-        """
-        
         try:
             ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
                      'blue_cube rdf:type Cube',
@@ -525,19 +506,19 @@ class TestQuestionHandler(unittest.TestCase):
         res = self.qhandler.process_sentence(sentence)
         
         #Statements Built for querying Ontology
-        logging.info("Query Statement ...")
+        logger.info("Query Statement ...")
         for s in self.qhandler._statements:
-            logging.info("\t>>" + s)
-        logging.info("--------------- >>\n")
+            logger.info("\t>>" + s)
+        logger.info("--------------- >>\n")
         
         #Result from the ontology
-        logging.info("Expected Result:" + str(expected_result))
-        logging.debug("Result Found in the Ontology: " + str(self.qhandler._answer))
+        logger.info("Expected Result:" + str(expected_result))
+        logger.debug("Result Found in the Ontology: " + str(self.qhandler._answer))
         
         #Response in sentence
-        logging.info("************************************************")
-        logging.info("* Factory: Sentence towards Verbalization .... *")
-        logging.info("************************************************")
+        logger.info("************************************************")
+        logger.info("* Factory: Sentence towards Verbalization .... *")
+        logger.info("************************************************")
         
         res_factory = []
         if sentence.data_type == 'w_question':
@@ -549,8 +530,8 @@ class TestQuestionHandler(unittest.TestCase):
             pass
         
         for rep in res_factory:
-            logging.debug(str(rep))
-            #logging.debug(str(rep.flatten()))
+            logger.debug(str(rep))
+            #logger.debug(str(rep.flatten()))
         
         self.qhandler.clear_statements()
         self.assertEqual(res, expected_result)
@@ -593,7 +574,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
 
     def test_question1_where(self):
 
-        print("\n##################### test_question1_where ########################\n")
+        logger.info("\n##################### test_question1_where ########################\n")
         
         ####
         stmt = "Where is the green banana?"
@@ -601,15 +582,15 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         self.assertTrue(res)
     
         
     
     def test_question2_what(self):
 
-        print("\n##################### test_question2_what ########################\n")
+        logger.info("\n##################### test_question2_what ########################\n")
         
         ####
         stmt = "What is yellow?"
@@ -617,51 +598,51 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         self.assertTrue(res)
         
     
     def test_question3_what(self):
-        print("\n##################### test_question3_what ########################\n")
+        logger.info("\n##################### test_question3_what ########################\n")
         
         stmt = "What object is yellow?"
         ####
         
         ###
         res = self.dialog.test('myself', stmt)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         self.assertTrue(res)
         
     def test_question4_what(self):    
-        print("\n##################### test_question4_what ########################\n")
+        logger.info("\n##################### test_question4_what ########################\n")
         
         stmt = "What color is the banana that is on the table?"
         ####
         
         ###
         res = self.dialog.test('myself', stmt)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         self.assertTrue(res)
     
     def test_question5_what(self):    
-        print("\n##################### test_question5_what ########################\n")
+        logger.info("\n##################### test_question5_what ########################\n")
         
         stmt = "What is this?"
         ####
         
         ###
         res = self.dialog.test('myself', stmt)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         self.assertTrue(res)
 
     
     def test_question6_who(self):
 
-        print("\n##################### test_question6_who ########################\n")
+        logger.info("\n##################### test_question6_who ########################\n")
         
         ####
         stmt = "Who are you?"
@@ -669,30 +650,30 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         self.assertTrue(res)
     
     def test_question7_who(self):
-        print("\n##################### test_question7_who ########################\n")
+        logger.info("\n##################### test_question7_who ########################\n")
         
         stmt = "Who is the myself?"
         ####
         
         ###
         res = self.dialog.test('myself', stmt)
-        print ">> input:" , stmt
-        print "<< output statements: ", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         self.assertTrue(res)
         
     def test_question8_who(self):
-        print("\n##################### test_question8_who ########################\n")
+        logger.info("\n##################### test_question8_who ########################\n")
         
         question = "Who do you see?"
 
         res = self.dialog.test('myself', question)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         
         expected_query = [ 'myself sees ?*']
         
@@ -701,34 +682,34 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         self.assertEquals(res[1][1], "I see Tom and the yellow banana that is on the self")
         
     def test_question9_who(self):
-        print("\n##################### test_question9_who ########################\n")
+        logger.info("\n##################### test_question9_who ########################\n")
         
         stmt = "Who is Tom?"
         ####
         
         ###
         res = self.dialog.test('myself', stmt)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         self.assertEquals(res[1][1], "Tom is Tom")
-    """
+
     def test_question10(self):
-        print("\n##################### Check we resolve correctly the labels ########################\n")
+        logger.info("\n##################### Check we resolve correctly the labels ########################\n")
         
         question = "What humans do you know?"
         ####
         
         ###
         res = self.dialog.test('ACHILLE', question)
-        print ">> input:" , stmt
-        print "<< output statements:", res
+        logger.info( ">> input: " + stmt)
+        logger.info( "<< output statements: " + res)
         
         expected_query = [ 'myself knows ?*']
         
         self.assertTrue(check_results(res[0], expected_query))
         
         self.assertEquals(res[1][1], "I know Tom")
-    """
+
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestQuestionHandler)
     suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestQuestionHandlerDialog))
@@ -736,7 +717,9 @@ def test_suite():
     return suite
     
 if __name__ == '__main__':
-       
+
+    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+    
     # executing verbalization tests
     unittest.TextTestRunner(verbosity=2).run(test_suite())
 

@@ -29,7 +29,6 @@
 from dialog.resources_manager import ResourcePool
 import other_functions
 
-
 """
 Statement of lists
 """

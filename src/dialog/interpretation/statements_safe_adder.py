@@ -1,4 +1,6 @@
 import logging
+logger = logging.getLogger("dialog")
+
 import random
 
 from dialog.resources_manager import ResourcePool
@@ -53,7 +55,7 @@ class StatementSafeAdder():
             
             #Replace Matching IDs
             if onto :
-                logging.info(" \t... Found ID " + onto[0] + " matching description given statements.")
+                logger.info(" \t... Found ID " + onto[0] + " matching description given statements.")
                 for s in current_s:
                     stmts.append(s.replace(id, onto[0]))
                                         
@@ -66,28 +68,28 @@ class StatementSafeAdder():
     def safe_add(self, statements):
         for s in statements:
             onto = True
-            logging.info("\t ADDED... >> " + s)
+            logger.info("\t ADDED... >> " + s)
             try:
                 onto = ResourcePool().ontology_server.safeAdd([s])
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
                 
             if not onto:
-                logging.debug("\t*********************************************")
-                logging.debug("\t* Ooopps!! INCONSISTENT STATEMENT    ***")
-                logging.debug("\t*********************************************")
-                logging.debug("\t.... >> "  + s)
+                logger.debug("\t*********************************************")
+                logger.debug("\t* Ooopps!! INCONSISTENT STATEMENT    ***")
+                logger.debug("\t*********************************************")
+                logger.debug("\t.... >> "  + s)
                 
 
 
     def remove(self, statements):
         for s in statements:            
-            logging.info("\t REMOVED... << " + s)
+            logger.info("\t REMOVED... << " + s)
             try:
                 ResourcePool().ontology_server.remove([s])
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
-        logging.info("\t....................... <<<<")
+        logger.info("\t....................... <<<<")
         
         
         
