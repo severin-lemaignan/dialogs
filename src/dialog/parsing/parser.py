@@ -2458,7 +2458,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
                     format="%(message)s")
        
-    # executing verbalization tests
+    # executing Parsing tests
     suiteParsing = unittest.TestLoader().loadTestsFromTestCase(TestParsing)
 
     

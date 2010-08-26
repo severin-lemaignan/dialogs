@@ -10,10 +10,9 @@ from resources_manager import ResourcePool
 """
 Statement of lists
 """
-adverbial_list=['in', 'on', 'at', 'from', 'for', 'next', 'last', 'behind','behind+to',
-                'next+to','in+front+of', 'into','in+spite+of','because+of','despite']
-pronoun_list = ResourcePool().pronouns
 
+pronoun_list = ResourcePool().pronouns
+adverbial_list = ResourcePool().compelement_proposals
 
 class SentenceFactory:
     
@@ -746,11 +745,12 @@ def process_vg_part(vg,nom_gr_struc, flag):
     for object in vg.d_obj:
         concat_gn(nom_gr_struc, object, flag)
     
+    ind_cmpl=i_cmpl(vg.i_cmpl)
     #For indirect complement
-    for i in vg.i_cmpl:
+    for i in ind_cmpl:
         #If it is an adverbial related to the noun, we have to add it like a relative
         for j in adverbial_list:
-            if j==i.prep[0]:
+            if j==i.prep[0] and vg.vrb_main[0]!='talk':
                 rltv=Sentence('relative', 'which',[],[vg])
                 nom_gr_struc.relative=nom_gr_struc.relative+[rltv]
                 flg=1
@@ -787,11 +787,12 @@ def process_vg_nega_part(vg,nom_gr_struc, flag):
         if object._conjunction=='BUT':
             concat_gn(nom_gr_struc, object, flag)
     
+    ind_cmpl=i_cmpl(vg.i_cmpl)
     #For indirect complement
-    for i in vg.i_cmpl:
+    for i in ind_cmpl:
         #If it is an adverbial related to the noun, we have to add it like a relative
         for j in adverbial_list:
-            if j==i.prep[0] and i.nominal_group[0]._conjunction=='BUT':
+            if j==i.prep[0] and i.nominal_group[0]._conjunction=='BUT' and vg.vrb_main[0]!='talk':
                 i.nominal_group[0]._conjunction='AND'
                 vg.i_cmpl=vg.i_cmpl[vg.i_cmpl.index(i):]
                 vg.state='affirmative'
@@ -855,7 +856,19 @@ def refine_nom_group_relative(nom_gr):
             refine_nom_group_relative_sv(vs,nom_gr)
             
             
-    
+def i_cmpl(i_cmpl):
+    i=0
+    while i<len(i_cmpl):
+        if len(i_cmpl[i].nominal_group)>1:
+            list_nominal_group=i_cmpl[i].nominal_group[1:]
+            i_cmpl[i].nominal_group=[i_cmpl[i].nominal_group[1]]
+            for k in list_nominal_group:
+                i_cmpl=i_cmpl+[Indirect_Complement(i_cmpl[i].prep,[k])]
+        i=i+1  
+    return i_cmpl
+        
+        
+        
 def nom_gr_remerge(utterance, flag , nom_gr_struc):
     """
     This function process merge                                      
