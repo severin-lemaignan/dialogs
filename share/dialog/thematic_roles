@@ -23,7 +23,7 @@ performedBy Agent
 actsOnObject Artifact
 }
 
-place (put) {
+put (place) {
 performedBy Agent
 actsOnObject Artifact
 receivedBy [on] Physical_Support

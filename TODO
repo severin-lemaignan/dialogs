@@ -1,6 +1,6 @@
 ================================================================================
 
-Dialog TODO list for release 0.5
+Dialog TODO list for release 0.3
 ================================
 
 ====
@@ -20,6 +20,11 @@ Bugs
 Features
 ========
 
+[TODO] Special case for "knows", "sees", "hears" in statement builder -> ~passive actions
+
+[TODO] uses discrimination.find_unambiguous_desc(self, objectID) to build 
+unambiguous descriptions of concepts when answering questions.
+
 [TODO:3] Class grounding case of adjectives
     -> Apples are yellow fruits
     -> [Apple rdfs:subClassOf Yellow_Fruit, 
@@ -31,7 +36,7 @@ Features
 [TODO:3] processing the pronouns 'its'
 -> "the bottle is in its box"
 
-[DONE v0.5] processing "other"
+[DONE v0.3] processing "other"
 -> "the other one..."
 
 [TODO:3] Create an appropriate object property to the preposition 'for'
@@ -46,13 +51,13 @@ Features
 
 [TODO:3-4] There is
 
-[DONE v0.5] Modal verbs
+[DONE v0.3] Modal verbs
 -> can, must, might, should
     for action verbs.
     create object property modal+Performs 
     E.g: canPerforms, (Although, mustPerforms, shouldPerforms are not relation in the ontology, they are created anyway).
     
-[DONE v0.5] complete resources pool
+[DONE v0.3] complete resources pool
 -> merge in resourcepool word lists that are currently spread out
 
 [TODO:2] Quantifier
@@ -75,7 +80,7 @@ Features
                                 + id_apple rdf:type Apple]
                                 
 
-[DONE v0.5] Managing unknown concepts: "Jido is a schtroumph" -> what is a schtroumph ?
+[DONE v0.3] Managing unknown concepts: "Jido is a schtroumph" -> what is a schtroumph ?
 -> looping on unknown concepts
     output toward human but no looping yet
 
@@ -91,13 +96,12 @@ Features
     
     
     
+[PARTIALLY DONE] Numerals (parsing ok)
 
-[DONE v0.5] Negation
+[DONE v0.3] Negation
     differentOf
     complementOf
     ->cf discussion report of 12/08/10
-
-[PARTIALLY DONE] Numerals (parsing ok)
    
 [DONE v0.2] sentence pre-processing (punctuation, term expansion, capital letters...)
 [DONE v0.2] Turn everything to English
@@ -247,7 +251,7 @@ DOCUMENTATION
     -> For agents :  belongsTo  " The car of Mahdi"
     -> For non-Agents : isRelatedTo  " The bottle of wine"
 [PARTIALLY DONE](On Parser OK) specify the process of 'or' as a limit of the input of Dialog module
-[DONE v0.5] Negation cases
+[DONE v0.3] Negation cases
 
 
 ====================================================================================================

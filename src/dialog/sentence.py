@@ -147,7 +147,7 @@ class SentenceFactory:
         
         
         if w_question.aim in ['color', 'size']: #TODO in ResourcePool, list of adjective with given class in the ontology
-            nominal_groupL = [Nominal_Group([], [], w_answer, [], [])]
+            nominal_groupL = [Nominal_Group([], [], [[w_answer[0], []]], [], [])]
         
         else:
             for response in w_answer:

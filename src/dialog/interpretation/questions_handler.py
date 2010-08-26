@@ -840,7 +840,7 @@ class TestQuestionHandler(unittest.TestCase):
 
 def unit_tests():
     """This function tests the main features of the class QuestionHandler"""
-    logging.basicConfig(level=logging.INFO,format="%(message)s")
+    logging.basicConfig(level=logging.DEBUG,format="%(message)s")
     print("This is a test...")
     unittest.main()
     

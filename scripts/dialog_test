@@ -650,9 +650,8 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                         'green_banana isOn table2',
                         'myself focusesOn y_banana',
                         'myself rdfs:label "Jido"',
-                        'see_tom performedBy myself',
-                        'see_tom rdf:type See',
-                        'see_tom involves id_tom',
+                        'myself sees id_tom',
+                        'myself sees y_banana',
                         'id_tom rdf:type Human',
                         'id_tom rdfs:label "Tom"',
                         'id_tom isNexto myself',                        
@@ -758,14 +757,17 @@ class TestQuestionHandlerDialog(unittest.TestCase):
     def test_question8_who(self):
         print("\n##################### test_question8_who ########################\n")
         
-        stmt = "Who do you see?"
-        ####
-        
-        ###
-        res = self.dialog.test('myself', stmt)
+        question = "Who do you see?"
+
+        res = self.dialog.test('myself', question)
         print ">> input:" , stmt
         print "<< output statements:", res
-        self.assertTrue(res)
+        
+        expected_query = [ 'myself sees ?*']
+        
+        self.assertTrue(check_results(res[0], expected_result))
+        
+        self.assertEquals(res[1][1], "I see Tom and the yellow banana that is on the self")
         
     def test_question9_who(self):
         print("\n##################### test_question9_who ########################\n")
@@ -777,9 +779,24 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         print ">> input:" , stmt
         print "<< output statements:", res
-        self.assertTrue(res)
+        self.assertEquals(res[1][1], "Tom is Tom")
+
+def test_question10(self):
+        print("\n##################### Check we resolve correctly the labels ########################\n")
         
+        question = "What humans do you know?"
+        ####
         
+        ###
+        res = self.dialog.test('ACHILLE', question)
+        print ">> input:" , stmt
+        print "<< output statements:", res
+        
+        expected_query = [ 'myself knows ?*']
+        
+        self.assertTrue(check_results(res[0], expected_query))
+        
+        self.assertEquals(res[1][1], "I know Tom")
 
 
 class TestISUDialog(unittest.TestCase):
