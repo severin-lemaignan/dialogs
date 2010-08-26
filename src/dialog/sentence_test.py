@@ -1,14 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-"""
- Created by Chouayakh Mahdi                                                       
- 23/07/2010                                                                       
- The package contains the unit test of remerge function                                       
-    unit_tests : to perform unit tests                                           
-"""
 import logging
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 import unittest
 
 from dialog.sentence import *
@@ -18,6 +11,104 @@ from parsing import parser
 
 from parsing.parser_test import compare_nom_gr
 
+class TestSentence(unittest.TestCase):
+    def test_sentence(self):
+        """Tests the creation of several type of Sentence objects.
+        """
+
+        sentence1 = Sentence('w_question',
+                            'location',
+                            [Nominal_Group(['the'],  ['mother'],[],[], [])],
+                            [Verbal_Group(['be'], [],'present simple',[], [],['today'], [], [], [])])
+        
+        print("*********************************")
+        print(sentence1)
+        
+        sentence2 = Sentence('statement', 
+                            '', 
+                            [Nominal_Group([],["Jido"],[],[],[]), Nominal_Group([],["Danny"],[],[],[])], 
+                            [Verbal_Group(["want"],[], 'infinitive',[],[],[],[],'affirmative', [])])
+        
+        print("*********************************")
+        print(sentence2)
+        
+        sentence3 = Sentence('statement', 
+                            '', 
+                            [Nominal_Group([],["Holmes"],[],[],[]), Nominal_Group([],["Sherlock"],[],[],[])], 
+                            [Verbal_Group(["want"],
+                                        [Verbal_Group(["eat"],[], 'infinitive',[],[],[],[],'affirmative', [])], 
+                                        'past simple',
+                                        [],
+                                        [],
+                                        [],
+                                        [],
+                                        'negative', 
+                                        [])])
+        
+        print("*********************************")
+        print(sentence3)
+        
+        sentence4 = Sentence('statement',
+                            '',
+                            [Nominal_Group( ['the'],  
+                                            ['bottle'],
+                                            ['blue', 'gray'],
+                                            [Nominal_Group(['my'],  ['mother'],[],[], [sentence2]), Nominal_Group(['my'],  ['father'],[],[], [])], 
+                                            [])], 
+                            [Verbal_Group(['know'], 
+                                        [],
+                                        'present simple',
+                                        [Nominal_Group(['the'],  ["land"],['old'],[], []), Nominal_Group(['the'],  ["brand"],['lazy'],[], [])],
+                                        [
+                                            Indirect_Complement(['in'], 
+                                                                [Nominal_Group(['the'],  ['garden'],['green'],[], [])]), 
+                                            Indirect_Complement(['to'], 
+                                                                [Nominal_Group(['the'],  ['car'],['red'],[], [])])
+                                        ],
+                                        ["slowly"], 
+                                        ["now"], 
+                                        "affirmative", 
+                                        [sentence3])])
+        print("*********************************")
+        print(sentence4)
+        
+        
+        
+        sentence4bis = Sentence('statement',
+                            '',
+                            [Nominal_Group( ['the'],  
+                                            ['bottle'],
+                                            ['blue', 'gray'],
+                                            [Nominal_Group(['my'],  ['mother'],[],[], [sentence2]), Nominal_Group(['my'],  ['father'],[],[], [])], 
+                                            [])], 
+                            [Verbal_Group(['know'], 
+                                        [],
+                                        'present simple',
+                                        [Nominal_Group(['the'],  ["land"],['old'],[], []), Nominal_Group(['the'],  ["brand"],['lazy'],[], [])],
+                                        [
+                                            Indirect_Complement(['in'], 
+                                                                [Nominal_Group(['the'],  ['garden'],['green'],[], [])]), 
+                                            Indirect_Complement(['to'], 
+                                                                [Nominal_Group(['the'],  ['car'],['red'],[], [])])
+                                        ],
+                                        ["slowly"], 
+                                        ["now"], 
+                                        "affirmative", 
+                                        [sentence3])])
+        print("*********************************")
+        print(sentence4bis)
+        
+        
+        print "*************  Sentence Comparison ****************"
+        
+        cmp = Comparator()    
+        print "sentence4 == sentence4bis: ", cmp.compare(sentence4, sentence4bis)    
+        print "sentence3 == sentence4: ", cmp.compare(sentence3, sentence4)
+        
+        print "*************  Nominal group adjective only ****************"
+        print "Nominal_Group(['the'],['man'],[],[],[]) is adjective only: ", Nominal_Group(['the'],['man'],[],[],[]).adjectives_only()
+        print "Nominal_Group([],[],['blue'],[],[]) is adjective only: ", Nominal_Group([],[],['blue'],[],[]).adjectives_only()
+        
 
 class TestRemerge(unittest.TestCase):
     """
@@ -741,8 +832,13 @@ class TestRemerge(unittest.TestCase):
         self.assertEquals(result_test, 0)
         
 def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestRemerge)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestSentence)
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestRemerge))
+    
+    return suite
     
 if __name__ == '__main__':
+    
+    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
     
     unittest.TextTestRunner(verbosity=2).run(test_suite())
