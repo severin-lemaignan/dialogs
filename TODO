@@ -13,9 +13,6 @@ Bugs
 [TODO:?] Non-deterministic solution in discrimation test of dialog_test.py
     test_discriminate_1, test_discriminate_8 FAILS in the first execution. OK in the execution
 
-[FIXED v0.2] "close the loop" -> parser should be able to complete a previously, partially resolved, sentence.
-    with method remerge in sentence.py
-
 ========
 Features
 ========
@@ -31,13 +28,8 @@ unambiguous descriptions of concepts when answering questions.
         {Yellow_Fruit rdfs:subClassOf Fruit}]
 
 
-
-
 [TODO:3] processing the pronouns 'its'
 -> "the bottle is in its box"
-
-[DONE v0.3] processing "other"
--> "the other one..."
 
 [TODO:3] Create an appropriate object property to the preposition 'for'
 -> " This box is for white wine" 
@@ -50,15 +42,6 @@ unambiguous descriptions of concepts when answering questions.
 -> "I want you to do something" (for goal verbs)
 
 [TODO:3-4] There is
-
-[DONE v0.3] Modal verbs
--> can, must, might, should
-    for action verbs.
-    create object property modal+Performs 
-    E.g: canPerforms, (Although, mustPerforms, shouldPerforms are not relation in the ontology, they are created anyway).
-    
-[DONE v0.3] complete resources pool
--> merge in resourcepool word lists that are currently spread out
 
 [TODO:2] Quantifier
     with action verbs ... E.g:
@@ -80,9 +63,7 @@ unambiguous descriptions of concepts when answering questions.
                                 + id_apple rdf:type Apple]
                                 
 
-[DONE v0.3] Managing unknown concepts: "Jido is a schtroumph" -> what is a schtroumph ?
--> looping on unknown concepts
-    output toward human but no looping yet
+
 
 [TODO] What do we do when a statement brings an inconsistency?
 
@@ -98,130 +79,6 @@ unambiguous descriptions of concepts when answering questions.
     
 [PARTIALLY DONE] Numerals (parsing ok)
 
-[DONE v0.3] Negation
-    differentOf
-    complementOf
-    ->cf discussion report of 12/08/10
-   
-[DONE v0.2] sentence pre-processing (punctuation, term expansion, capital letters...)
-[DONE v0.2] Turn everything to English
-[DONE v0.2] Clarify which members of sentence are list, which are single element. 
-    map: [A] means list of A
-	Sentence (data_type, aim, sn, sv):
-		data_type:	string	
-		aim:		string
-		sn: 		[Nominal_Group]
-		sv:	    	[Nominal_Group]
-	
-	Nominal_Group(det, noun, adj, noun_cmpl, relative):
-		det:		[string]
-		noun:		[string]
-		adj:		[string]
-		noun_cmpl:	[Nominal_Group]
-        relative:   [sentence]
-        
-    Verbal_Group(vrb_main, sv_sec, vrb_tense, d_obj, i_cmpl, advrb, vrb_adv, vrb_sub_sentence, state):
-        state:              string
-        vrb_tense:          string
-        vrb_main:           [string]
-        advrb:              [string]
-        vrb_adv:            [string]
-        d_obj:              [Nominal_Group]
-        i_cmpl:             [Indirect_Object([string], [Nominal_Group])]
-        sv_sec:             [Verbal_Group]
-        vrb_sub_sentence:   [sentence]
-        
-
-	
-	Also: If we have several nouns, e.g "toto" and "tata", we create a new nominal group, even though this results to several single-element lists.
-
-[DONE v0.2] Sort out the "flags": at least, convert it to a map, maybe, remove it.
-	Removed.
-        
-[DONE v0.2] "this bottle is blue" <- what to do with blue? 
-		The adjectives 'blue', is kept in the d_obj as a single element of the nominal group.
-        Method 'adjectives_only()' in sentence.py in class Nominal_Group' returns True in this case.
-
-[DONE v0.2] "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
-[DONE v0.2]{Complete By End July}: Running dialog even if ORO is off. Need an exception raised when a connection to ORO is required.
-
-[DONE v0.2] Resolving anaphora "it" "one"
-[DONE v0.2] Return a sentence towards verbalization
-    possibly create add features in sentenceFactory in sentence.py
-
-[DONE v0.2] subclassOf:
-    E.g: Apples are Fruits
-    E.g: an Apple is a fruit
-    
-
-[DONE v0.2] Verb Tense.
-    
-[DONE v0.2] Process adverbs
-[DONE v0.2] Goal verbs
-  
-[DONE v0.2] Quantifier
-    add quantifier
-	any - 
-	some - 
-	all - 
-	a digit - 
-	None E.g Negation on nominal group differents from sv.state
-    if determiner is 'a' do not resolve. E.g Jido is a robot => id_jido rdf:type Robot
-    "Take the bottle 'carefully'", what to do with 'carefully'
-
-[DONE v0.2] Processing the demonstrative 'this' 
-    'this is a blue table'
-    Use quantifier 'a' to complete statement
-
-[DONE v0.2] input/output module to chat with the robot
-[DONE v0.2] parsing module for English natural language (NL)
-[DONE v0.2] resolution of personal references + anaphors
-[DONE v0.2] resolution noun phrases (= identification of concepts)
-[DONE v0.2] resolution action verbs
-        based on thematic roles
-        
-[DONE v0.2] content analysis (is the sentence a question? a statement?...)
-        Done for imperative and statements.
-        On process for question
-[DONE v0.2] glue-ing parsing + resolution + analysis + handling
-[DONE v0.2] handling of "or" :)
-
-[DONE v0.2] pre content-analysis -> "what color is the tape?" -> don't use the color to discriminate
-        Actually done from Parser.
-        E.g: 'what color is the tape?' provides the following sentence with 'color' held in the field 'aim':
-            Sentence("w_question", "color", 
-                    [Nominal_Group(['the'],
-                                ['tape'],
-                                [],
-                                [],
-                                [])],                                         
-                    [Verbal_Group(['be'],
-                                [],
-                                'present simple',
-                                [],
-                                [],
-                                [],
-                                [],
-                                'affirmative',
-                                [])])
-                                
-            Statements provided for discrimation:
-                ?concept rdf:type Tape .
-   
-[DONE v0.2] Statement to represent disjunction 'or' and conjunction 'and'?
-    specify the process of 'or' as a limit of the input of Dialog module
-    
-[DONE v0.2] Add statement in the ontology: use 'safeAdd' method to avoid the inconsistency 
-    see 'http://homepages.laas.fr/slemaign/doc/oro-server/laas/openrobots/ontology/modules/base/BaseModule.html#safeAdd%28java.util.Set%29'
-    Create new Module 'Statement_Safe_adder' aiming to add statements in the ontology. 
-    It may possibly handle unresolved sentence, and force statement_builder to build additionnal information.
-    E.g: 'Jido is a robot'. Here, Jido might be discriminate, but not Robot.
-    Although statement_builder can easily provide [id_jido rdf:type Robot], this would not be done as the sentence in unresolved yet.
-    
-    - safeAddForAgent??
-	not on statementBuilder
-
-
 =========
 Interface
 =========
@@ -229,13 +86,6 @@ Interface
 [TODO:4] simple GUI
 [TODO:?] Add the possibility to pause the processing to explain step by step what happen
   see 
-  
-[DONE v0.2] Improve the output of the dialog module (including colors) to make clear what append (especially for demos):
-  * First parsing
-  * Resolution *relying on perspective taking* + symbolic knowledge
-  * Back interaction with the human
-  * Re-parsing
-  * Generation of final statements
 
 =============
 DOCUMENTATION
@@ -251,7 +101,7 @@ DOCUMENTATION
     -> For agents :  belongsTo  " The car of Mahdi"
     -> For non-Agents : isRelatedTo  " The bottle of wine"
 [PARTIALLY DONE](On Parser OK) specify the process of 'or' as a limit of the input of Dialog module
-[DONE v0.3] Negation cases
+
 
 
 ====================================================================================================
@@ -267,4 +117,4 @@ Release 1.0
 Release 18.0
 ============
 
-[TODO] Nice handling of timeline/history -> has to be done in oro-server?
+[STARTED] Nice handling of timeline/history -> has to be done in oro-server?
