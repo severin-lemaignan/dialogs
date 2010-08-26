@@ -9,6 +9,7 @@ import unittest
 
 import dialog.verbalization.verbalization_test as verbalization
 import dialog.parsing.parser_test as parser
+import dialog.interpretation.discrimination_test as discrimination
 
 from dialog.dialog_core import Dialog
 
@@ -445,184 +446,6 @@ class TestBaseSentenceDialog(unittest.TestCase):
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
-        
-        
-class TestDiscriminateDialog(unittest.TestCase):
-    """Tests the differents features of the Dialog module.
-    This must be tested with oro-server using the testsuite.oro.owl ontology.
-    """
-    
-    def setUp(self):
-        self.dialog = Dialog()
-        self.dialog.start()
-        
-        self.oro = ResourcePool().ontology_server
-        
-        try:
-            self.oro.add(['shelf1 rdf:type Shelf',
-                        'table1 rdf:type Table', 
-                        'table2 rdf:type Table', 'table2 hasColor blue', 
-                        'Banana rdfs:subClassOf Plant',
-                        'y_banana rdf:type Banana','y_banana hasColor yellow','y_banana isOn shelf1',
-                        'green_banana rdf:type Banana','green_banana hasColor green','green_banana isOn table2',
-                        'ACCESSKIT rdf:type Gamebox', 'ACCESSKIT hasColor white', 'ACCESSKIT hasSize big', 'ACCESSKIT isOn table1',
-                        'ORANGEBOX rdf:type Gamebox', 'ORANGEBOX hasColor orange', 'ORANGEBOX hasSize big', 'ORANGEBOX isOn ACCESSKIT',
-                        'MYBOX rdf:type Gamebox', 'MYBOX hasColor orange', 'MYBOX hasSize small', 'MYBOX isOn ACCESSKIT',
-                        'SPACENAVBOX rdf:type Gamebox', 'SPACENAVBOX hasColor white', 'SPACENAVBOX hasSize big', 'SPACENAVBOX isOn ACCESSKIT',
-                        'y_bottle rdf:type Bottle', 'y_bottle isLocated RIGHT',
-                        'r_bottle rdf:type Bottle', 'r_bottle isLocated FRONT',
-                        'b_bottle rdf:type Bottle', 'b_bottle isLocated BACK'
-                        ])
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            pass
-
-    def test_discriminate1(self):
-        """ Color discriminant should be found"""
-        
-        print("\n##################### test_discriminate1 ########################\n")
-        ####
-        stmt = "the banana is good"
-        answer = "the green one"
-        ####
-        res = self.dialog.test('myself', stmt, answer)
-        print(res)
-        expected_result = ['green_banana hasFeature good']
-        self.assertTrue(check_results(res[0], expected_result))
-    
-
-        """ Color discriminant should be found"""
-        
-        print("\n##################### test_discriminate2 ########################\n")
-        ####
-        stmt = "the banana is good"
-        answer = "the yellow one"
-        ####
-        res = self.dialog.test('myself', stmt, answer)
-        print(res)
-        expected_result = ['y_banana hasFeature good']
-        self.assertTrue(check_results(res[0], expected_result))
-        
-    def test_discriminate3(self):
-        """ Color discriminant should be found"""
-        
-        print("\n##################### test_discriminate3 ########################\n")
-        ####
-        stmt = "give me the banana"
-        answer = "the green one"
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Give',
-                            '* performedBy myself',
-                            '* actsOnObject green_banana',
-                            '* receivedBy myself']
-        ###
-        res = self.dialog.test('myself', stmt, answer)
-        print res
-        self.assertTrue(check_results(res[0], expected_result))
-        
-        
-    def test_discriminate4(self):
-        """No ambiguity."""
-        
-        print("\n##################### test_discriminate4 ########################\n")
-        ####
-        stmt = "get the gamebox which is on the table"
-        answer = None
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Get',
-                            '* performedBy myself',
-                            '* actsOnObject ACCESSKIT']
-        ###
-        res = self.dialog.test('myself', stmt)
-        print res
-        self.assertTrue(check_results(res[0], expected_result))
-        
-    def test_discriminate5(self):
-        """ Size discriminant should be found """
-
-        print("\n##################### test_discriminate5 ########################\n")
-        ####
-        stmt = "get the orange gamebox"
-        answer = "the big one"
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Get',
-                            '* performedBy myself',
-                            '* actsOnObject ORANGEBOX']
-        ###
-        res = self.dialog.test('myself', stmt, answer)
-        print res
-        self.assertTrue(check_results(res[0], expected_result))
-
-    def test_discriminate6(self):
-        """No complete discriminant found. More info required"""
-        
-        print("\n##################### test_discriminate6 ########################\n")
-        ####
-        stmt = "get the big gamebox"
-        answer = "the orange one"
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Get',
-                            '* performedBy myself',
-                            '* actsOnObject ORANGEBOX']
-        ###
-        res = self.dialog.test('myself', stmt, answer)
-        print res
-        self.assertTrue(check_results(res[0], expected_result))
-
-
-    def test_discriminate7(self):
-        """ Location discriminant should be found """
-        
-        print("\n##################### test_discriminate7 ########################\n")
-        ####
-        stmt = "get the white gamebox"
-        answer = "the one which is on the table1"
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Get',
-                            '* performedBy myself',
-                            '* actsOnObject ACCESSKIT']
-        ###
-        res = self.dialog.test('myself', stmt, answer)
-        print res
-        self.assertTrue(check_results(res[0], expected_result))
-    
-    def test_discriminate8(self):
-        """ Location wrt robot discriminant should be found """
-        
-        print("\n##################### test_discriminate8 ########################\n")
-        ####
-        stmt = "get the bottle"
-        answer = "the one which is in front of you"
-        ####
-        expected_result = [ 'myself desires *',
-                            '* rdf:type Get',
-                            '* performedBy myself',
-                            '* actsOnObject r_bottle']
-        ###
-        res = self.dialog.test('myself', stmt, answer)
-        print res
-        self.assertTrue(check_results(res[0], expected_result))
-
-    def test_discriminate9(self):
-        print("\n##################### Class grounding ########################\n")
-        ####
-        stmt = "a fruit is a plant"
-        answer = "a kind of thing"
-        ####
-        expected_result = [ 'Plant rdfs:subClassOf Thing', 'Fruit rdfs:subClassOf Plant' ]
-        ###
-        res = self.dialog.test('myself', stmt, answer)
-        print(res)
-        self.assertTrue(check_results(res[0], expected_result))
-
-    def tearDown(self):
-        self.dialog.stop()
-        self.dialog.join()
-
 
 
 class TestQuestionHandlerDialog(unittest.TestCase):
@@ -939,7 +762,6 @@ dialog_test OPTION
   verbalization     Tests the verbalization module
   statements        First round of simple tests that produces statements
   discrimination    Tests the discrimination code 
-                    (while run 'statements' tests as well)
   questions         Tests the question handler
   all               Runs all base test suites
   
@@ -956,19 +778,7 @@ if __name__ == '__main__':
         sys.exit(0)
         
     # executing only some tests
-    
-    suiteSimpleSentences = unittest.TestLoader().loadTestsFromTestCase(TestBaseSentenceDialog)
-    
-    suiteDiscriminate = unittest.TestSuite()
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate1'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate3'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate4'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate5'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate6'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate7'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate8'))
-    suiteDiscriminate.addTest(TestDiscriminateDialog('test_discriminate9'))
-    
+
     suiteQuestionHandler = unittest.TestSuite()
     suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question1_where'))
     suiteQuestionHandler.addTest(TestQuestionHandlerDialog('test_question2_what'))
@@ -992,12 +802,8 @@ if __name__ == '__main__':
         suite.addTests(parser.test_suite()._tests)
     if opts[0] in ['verbalization', 'all']:
         suite.addTests(verbalization.test_suite()._tests)
-    """
-    if opts[0] in ['statements', 'discrimination', 'all']:
-        testSuites.append(suiteSimpleSentences)
     if opts[0] in ['discrimination', 'all']:
-        testSuites.append(suiteDiscriminate)
-    if opts[0] in ['questions', 'all']:
-        testSuites.append(suiteQuestionHandler)
-    """
+        suite.addTests(discrimination.test_suite()._tests)
+
+
     unittest.TextTestRunner(verbosity=2).run(suite)

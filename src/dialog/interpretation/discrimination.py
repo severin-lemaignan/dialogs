@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """This module implements the clarification process for ambiguous descriptions. 
@@ -123,7 +122,7 @@ class Discrimination():
         agent = "myself"
         # list current descriptors to not to use them anymore
         currentDescriptors = map(lambda x: x.split()[1], description[0][2])
-        descriptor = self.get_discriminant(description[0][0], objL, currentDescriptors+ignoreFeatureL, partial_disc)
+        descriptor = self.get_discriminant(description[0][0], objL, currentDescriptors + ignoreFeatureL, partial_disc)
 
         return agent, descriptor
 
@@ -200,7 +199,7 @@ class Discrimination():
     #   - [SUCCESS, "Which value? ..."]: user should indicate value for descriptor (mantain previous description)
     #   - [SUCCESS, "additional info required"]: user should give additional info (mantain previous description)
     # -----------------------------------------------------------------------------#
-    def clarify(self, description, ignoreFeatureL):
+    def clarify(self, description, ignoreFeatureL = None):
         
         logging.debug("> Looking in " + description[0][0] + "'s model for concepts matching " +  str(description[0][2]))
         objL = self.get_all_objects_with_desc(description)        
@@ -333,77 +332,3 @@ class Discrimination():
             objL = self.get_all_objects_with_desc(description)
 
         return description
-    
-def unit_tests():
-    """This function tests the main features of the class Discrimination"""
-
-    disc = Discrimination()
-
-    #print "Test1: No ambiguity."
-    #description = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj hasColor blue']]]
-    #expected_result = "BLUE_BOTTLE"
-    #res = disc.clarify(description)
-    #print '\t expected res = ', expected_result
-    #print '\t obtained res = ', res
-    #print '\n*********************************'
-    
-    #print "\nTest2: Complete discriminant in robot model found."
-    #description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
-    #expected_result = "Which color is the object? blue or orange or yellow?"
-    #res = disc.clarify(description)
-    #print '\t expected res = ', expected_result
-    #print '\t obtained res = ', res
-    #print "\n*********************************"
-    
-    #print "\nTest3: No complete discriminant in robot model found."
-    #description = [['myself', '?obj', ['?obj rdf:type Box']]]
-    #expected_result = "Tell me more about the the object."
-    #res = disc.clarify(description)
-    #print '\t expected res = ', expected_result
-    #print '\t obtained res = ', res
-    #print "\n*********************************"
-    
-    #print "\nTest4: Including visibility constraints"
-    #description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
-    #description.append(['raquel', '?obj', ['?obj isVisible true']])
-    #expected_result = "Which color is the object? blue or orange?"
-    #res = disc.clarify(description)
-    #print '\t expected res = ', expected_result
-    #print '\t obtained res = ', res
-    #print "\n*********************************"
-    
-    #print "\nTest5: Testing location"
-    #description = [['myself', '?obj', ['?obj rdf:type Box', '?obj hasColor orange']]]
-    #expected_result = "Is the object on ACCESSKIT or HRP2TABLE?"
-    #res = disc.clarify(description)
-    #print '\t expected res = ', expected_result
-    #print '\t obtained res = ', res
-    #print "\n*********************************"
-    
-    #print "\nTest6: Generate unambiguous description"
-    #objectID = 'BLUE_BOTTLE'
-    #expected_result = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj mainColorOfObject blue']]]
-    #res = disc.find_unambiguous_desc(objectID)
-    #print '\t expected res = ', expected_result
-    #print '\t obtained res = ', res
-    #print "\n*********************************"
-
-    #print "\nTest7: Generate unambiguous description"
-    #objectID = 'ACCESSKIT'
-    #expected_result = [['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white', '?obj isUnder ORANGEBOX']]]
-    #res = disc.find_unambiguous_desc(objectID)
-    #print '\t expected res = ', expected_result
-    #print '\t obtained res = ', res
-    #print "\n*********************************"
-
-    #print "\nTest8: Generate unambiguous description"
-    #objectID = 'SPACENAVBOX'
-    #expected_result = ['SPACENAVBOX', ['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white']]]
-    #res = disc.find_unambiguous_desc(objectID)
-    #print '\t expected res = ', expected_result
-    #print '\t obtained res = ', res
-    #print "\n*********************************"
-
-
-if __name__ == '__main__':
-    unit_tests()
