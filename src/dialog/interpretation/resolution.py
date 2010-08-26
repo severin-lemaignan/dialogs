@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+logger = logging.getLogger("dialog")
 
 from dialog.helpers import colored_print
 
