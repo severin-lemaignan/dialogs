@@ -1,7 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 import logging
 import unittest
 
@@ -9,6 +7,10 @@ logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 from dialog.resources_manager import ResourcePool
 from dialog.dialog_core import Dialog
+from dialog.interpretation.questions_handler import QuestionHandler
+from dialog.sentence import SentenceFactory, Sentence
+from dialog.interpretation.statements_builder import *
+from dialog.interpretation.statements_builder_test import dump_resolved
 
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):
@@ -548,7 +550,7 @@ class TestQuestionHandler(unittest.TestCase):
         
         for rep in res_factory:
             logging.debug(str(rep))
-            logging.debug(str(rep.flatten()))
+            #logging.debug(str(rep.flatten()))
         
         self.qhandler.clear_statements()
         self.assertEqual(res, expected_result)

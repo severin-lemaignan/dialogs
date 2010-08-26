@@ -4,9 +4,9 @@
 import logging
 from dialog.helpers import colored_print
 
-from statements_builder import StatementBuilder
-from statements_builder import StatementSafeAdder
-from questions_handler import QuestionHandler
+from dialog.interpretation.statements_builder import StatementBuilder
+from dialog.interpretation.statements_safe_adder  import StatementSafeAdder
+from dialog.interpretation.questions_handler import QuestionHandler
 from dialog.sentence import SentenceFactory
 from dialog.resources_manager import ResourcePool
 """This module implements ...

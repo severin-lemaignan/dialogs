@@ -1,9 +1,6 @@
 import logging
-from resolution import Resolver
-from statements_builder import StatementBuilder
-from statements_builder import NominalGroupStatementBuilder
-from statements_builder import VerbalGroupStatementBuilder
-from statements_builder import dump_resolved
+from dialog.interpretation.resolution import Resolver
+from dialog.interpretation.statements_builder import *
 from dialog.sentence import *
 
 from pyoro import OroServerError
