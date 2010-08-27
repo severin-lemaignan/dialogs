@@ -10,7 +10,10 @@ logger = logging.getLogger('dialog')
 from dialog.resources_manager import ResourcePool
 from dialog.dialog_core import Dialog
 from discrimination import Discrimination
+from dialog.verbalization.verbalization import Verbalizer
+from dialog.dialog_exceptions import *
 
+from dialog.helpers import check_results, get_console_handler, get_file_handler
 
 def check_results(res, expected):
     def check_triplets(tr , te):
@@ -32,84 +35,141 @@ class TestDiscrimination(unittest.TestCase):
 
     def setUp(self):
         self.disc = Discrimination()
+        self.verbalizer = Verbalizer()
+        
+        try:
+            ResourcePool().ontology_server.reload()
+            
+            ResourcePool().ontology_server.add(["raquel rdf:type Human",
+                            "Gamebox rdfs:subClassOf Box",
+                            "Gamebox rdfs:label \"game box\"",
+                            "BLUE_BOTTLE rdf:type Bottle",
+                            "BLUE_BOTTLE hasColor blue",
+                            "ORANGE_BOTTLE rdf:type Bottle",
+                            "ORANGE_BOTTLE hasColor orange",
+                            "ORANGE_BOTTLE isOn ACCESSKIT",
+                            "YELLOW_BOTTLE rdf:type Bottle",
+                            "YELLOW_BOTTLE hasColor yellow",
+                            'ACCESSKIT rdf:type Gamebox', 
+                            'ACCESSKIT hasColor white', 
+                            'ACCESSKIT hasSize big', 
+                            'ACCESSKIT isOn table1',
+                            'ORANGEBOX rdf:type Gamebox', 
+                            'ORANGEBOX hasColor orange', 
+                            'ORANGEBOX hasSize big', 
+                            'ORANGEBOX isOn ACCESSKIT',
+                            'SPACENAVBOX rdf:type Gamebox', 
+                            'SPACENAVBOX hasColor white', 
+                            'SPACENAVBOX hasSize big', 
+                            'SPACENAVBOX isOn ACCESSKIT'
+                          ])
+                          
+            ResourcePool().ontology_server.addForAgent("raquel", 
+                [   "BLUE_BOTTLE isVisible true",
+                    "ORANGE_BOTTLE isVisible true"
+                ])
+            
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            raise("The ontology server is not started!")
 
     def test_01(self):
         logger.info( "Test1: No ambiguity.")
         description = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj hasColor blue']]]
         expected_result = "BLUE_BOTTLE"
-        res = self.disc.clarify(description)
-        logger.info( '\t expected res = ' + expected_result)
-        logger.info( '\t obtained res = ' + res)
-        logger.info( '\n*********************************')
+        
+        try:
+            res = self.disc.clarify(description)
+        except UnsufficientInputError:
+            self.fail("Should need any more info")
+        
+        self.assertEquals(expected_result, res)
         
     def test_02(self):
         logger.info( "\nTest2: Complete self.discriminant in robot model found.")
         description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
         expected_result = "Which color is the object? blue or orange or yellow?"
-        res = self.disc.clarify(description)
-        logger.info( '\t expected res = ' + expected_result)
-        logger.info( '\t obtained res = '+ res)
-        logger.info( "\n*********************************")
+        
+        try:
+            res = self.disc.clarify(description)
+        except UnsufficientInputError as use:
+            self.assertEquals(use.value['status'], 'SUCCESS')
+            self.assertEquals(self.verbalizer.verbalize(use.value['question']), expected_result)
+            return
+        
+        self.fail("Should trigger an unsufficient input exception!")
         
     def test_03(self):
         logger.info( "\nTest3: No complete self.discriminant in robot model found.")
         description = [['myself', '?obj', ['?obj rdf:type Box']]]
         expected_result = "Tell me more about the the object."
-        res = self.disc.clarify(description)
-        logger.info( '\t expected res = ' + expected_result)
-        logger.info( '\t obtained res = '+ res)
-        logger.info( "\n*********************************")
+        
+        try:
+            res = self.disc.clarify(description)
+        except UnsufficientInputError as use:
+            self.assertEquals(use.value['status'], 'SUCCESS')
+            self.assertEquals(self.verbalizer.verbalize(use.value['question']), expected_result)
+            return
+        
+        self.fail("Should trigger an unsufficient input exception!")
     
     def test_04(self):
         logger.info( "\nTest4: Including visibility constraints")
         description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
         description.append(['raquel', '?obj', ['?obj isVisible true']])
         expected_result = "Which color is the object? blue or orange?"
-        res = self.disc.clarify(description)
-        logger.info( '\t expected res = ' + expected_result)
-        logger.info( '\t obtained res = '+ res)
-        logger.info( "\n*********************************")
-
+        
+        try:
+            res = self.disc.clarify(description)
+        except UnsufficientInputError as use:
+            self.assertEquals(use.value['status'], 'SUCCESS')
+            self.assertEquals(self.verbalizer.verbalize(use.value['question']), expected_result)
+            return
+        
+        self.fail("Should trigger an unsufficient input exception!")
     
     def test_05(self):
         logger.info( "\nTest5: Testing location")
-        description = [['myself', '?obj', ['?obj rdf:type Box', '?obj hasColor orange']]]
+        description = [['myself', '?obj', ['?obj rdf:type Artifact', '?obj hasColor orange']]]
         expected_result = "Is the object on ACCESSKIT or HRP2TABLE?"
-        res = self.disc.clarify(description)
-        logger.info( '\t expected res = ' + expected_result)
-        logger.info( '\t obtained res = '+ res)
-        logger.info( "\n*********************************")
-
         
-    def test_06(self):
-        logger.info( "\nTest6: Generate unambiguous description")
+        try:
+            res = self.disc.clarify(description)
+        except UnsufficientInputError as use:
+            self.assertEquals(use.value['status'], 'SUCCESS')
+            self.assertEquals(self.verbalizer.verbalize(use.value['question']), expected_result)
+            return
+        
+        self.fail("Should trigger an unsufficient input exception!")
+
+class TestDescriptionGeneration(TestDiscrimination):
+    """This function tests the generation of unambiguous description of objects.
+    """
+    
+    def test_descr_generation_01(self):
+        logger.info( "\nDescription Generation - Test1: Generate unambiguous description")
         objectID = 'BLUE_BOTTLE'
         expected_result = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj mainColorOfObject blue']]]
         res = self.disc.find_unambiguous_desc(objectID)
-        logger.info( '\t expected res = ' + expected_result)
-        logger.info( '\t obtained res = '+ res)
-        logger.info( "\n*********************************")
+        
+        self.assertTrue(check_results(res[0][2], expected_result[0][2]))
 
 
-    def test_07(self):
-        logger.info( "\nTest7: Generate unambiguous description")
+    def test_descr_generation_02(self):
+        logger.info( "\nDescription Generation - Test2: Generate unambiguous description")
         objectID = 'ACCESSKIT'
         expected_result = [['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white', '?obj isUnder ORANGEBOX']]]
         res = self.disc.find_unambiguous_desc(objectID)
-        logger.info( '\t expected res = ' + expected_result)
-        logger.info( '\t obtained res = '+ res)
-        logger.info( "\n*********************************")
+        
+        self.assertTrue(check_results(res[0][2], expected_result[0][2]))
 
 
-    def test_08(self):
-        logger.info( "\nTest8: Generate unambiguous description")
+    def test_descr_generation_03(self):
+        logger.info( "\nDescription Generation - Test3: Generate unambiguous description")
         objectID = 'SPACENAVBOX'
         expected_result = ['SPACENAVBOX', ['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white']]]
         res = self.disc.find_unambiguous_desc(objectID)
-        logger.info( '\t expected res = ' + expected_result)
-        logger.info( '\t obtained res = '+ res)
-        logger.info( "\n*********************************")
-
+        
+        self.assertTrue(check_results(res[0][2], expected_result[0][2]))
 
 class TestDiscriminateCompleteDialog(unittest.TestCase):
     """Tests the differents features of the Dialog module.
@@ -123,7 +183,7 @@ class TestDiscriminateCompleteDialog(unittest.TestCase):
         self.oro = ResourcePool().ontology_server
 
         try:
-            self.oro.reset()
+            self.oro.reload()
             self.oro.add(['shelf1 rdf:type Shelf',
                         'table1 rdf:type Table', 
                         'table2 rdf:type Table', 'table2 hasColor blue', 
@@ -283,18 +343,25 @@ class TestDiscriminateCompleteDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt, answer)
         logger.info(res)
         self.assertTrue(check_results(res[0], expected_result))
-
+    
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
         
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestDiscrimination)
-    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestDiscriminateCompleteDialog))
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestDescriptionGeneration))
+    #suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestDiscriminateCompleteDialog))
     
     return suite
     
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+    
+    logger.setLevel(logging.DEBUG)
+
+    logger.addHandler(get_console_handler())
+    #logger.addHandler(get_file_handler("statements.log"))
+
+    # executing verbalization tests
     unittest.TextTestRunner(verbosity=2).run(test_suite())
