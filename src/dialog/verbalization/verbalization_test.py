@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
+ Created by Chouayakh Mahdi  
  08/07/2010                                                                       
  The package contains functions to perform test                                   
  It is more used for the subject                                                  

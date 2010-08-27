@@ -462,7 +462,7 @@ class Nominal_Group:
     Nominal group class declaration
     det : determinant
     noun: a simple noun
-    adj: a list of adjectives describing the noun
+    adj: a list of adjectives describing the noun, the form is ['adjective',['list', 'of', 'quantifiers']]
     noun_cmpl: a list of noun complements
     relative : is a relative sentence typed into Sentence
     """

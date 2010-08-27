@@ -213,7 +213,7 @@ class Discrimination():
             questions = [Sentence('imperative', '', 
                         [], 
                         [Verbal_Group(['give'], [],'present simple', 
-                        [Nominal_Group([],['information'],['new'],[],[])], 
+                        [Nominal_Group([],['information'],[['new',[]]],[],[])], 
                         [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                         Indirect_Complement(['about'],[Nominal_Group(['the'],['object'],[],[],[])])],
                         [], [] ,'affirmative',[])])]
@@ -267,7 +267,7 @@ class Discrimination():
             else:
                 questions = [Sentence('imperative', '', [], 
                             [Verbal_Group(['give'], [],'present simple', 
-                            [Nominal_Group([],['information'],['more'],[],[])], 
+                            [Nominal_Group([],['information'],[['more',[]]],[],[])], 
                             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                             Indirect_Complement(['about'],[Nominal_Group(['the'],[object],[],[],[])])],
                             [], [] ,'affirmative',[])])]

@@ -53,18 +53,18 @@ class TestSentence(unittest.TestCase):
                             '',
                             [Nominal_Group( ['the'],  
                                             ['bottle'],
-                                            ['blue', 'gray'],
+                                            [['blue',[]], ['gray',[]]],
                                             [Nominal_Group(['my'],  ['mother'],[],[], [sentence2]), Nominal_Group(['my'],  ['father'],[],[], [])], 
                                             [])], 
                             [Verbal_Group(['know'], 
                                         [],
                                         'present simple',
-                                        [Nominal_Group(['the'],  ["land"],['old'],[], []), Nominal_Group(['the'],  ["brand"],['lazy'],[], [])],
+                                        [Nominal_Group(['the'],  ["land"],['old'],[], []), Nominal_Group(['the'],  ["brand"],[['lazy',[]]],[], [])],
                                         [
                                             Indirect_Complement(['in'], 
-                                                                [Nominal_Group(['the'],  ['garden'],['green'],[], [])]), 
+                                                                [Nominal_Group(['the'],  ['garden'],[['green',[]]],[], [])]), 
                                             Indirect_Complement(['to'], 
-                                                                [Nominal_Group(['the'],  ['car'],['red'],[], [])])
+                                                                [Nominal_Group(['the'],  ['car'],[['red',[]]],[], [])])
                                         ],
                                         ["slowly"], 
                                         ["now"], 
@@ -79,18 +79,18 @@ class TestSentence(unittest.TestCase):
                             '',
                             [Nominal_Group( ['the'],  
                                             ['bottle'],
-                                            ['blue', 'gray'],
+                                            [['blue',[]], ['gray',[]]],
                                             [Nominal_Group(['my'],  ['mother'],[],[], [sentence2]), Nominal_Group(['my'],  ['father'],[],[], [])], 
                                             [])], 
                             [Verbal_Group(['know'], 
                                         [],
                                         'present simple',
-                                        [Nominal_Group(['the'],  ["land"],['old'],[], []), Nominal_Group(['the'],  ["brand"],['lazy'],[], [])],
+                                        [Nominal_Group(['the'],  ["land"],[['old',[]]],[], []), Nominal_Group(['the'],  ["brand"],[['lazy',[]]],[], [])],
                                         [
                                             Indirect_Complement(['in'], 
-                                                                [Nominal_Group(['the'],  ['garden'],['green'],[], [])]), 
+                                                                [Nominal_Group(['the'],  ['garden'],[['green',[]]],[], [])]), 
                                             Indirect_Complement(['to'], 
-                                                                [Nominal_Group(['the'],  ['car'],['red'],[], [])])
+                                                                [Nominal_Group(['the'],  ['car'],[['red',[]]],[], [])])
                                         ],
                                         ["slowly"], 
                                         ["now"], 
@@ -106,9 +106,15 @@ class TestSentence(unittest.TestCase):
         logger.info("sentence4 == sentence4bis: " + str(cmp.compare(sentence4, sentence4bis)))
         logger.info("sentence3 == sentence4: " + str(cmp.compare(sentence3, sentence4)))
         
+<<<<<<< HEAD
         logger.info("*************  Nominal group adjective only ****************")
         logger.info("Nominal_Group(['the'],['man'],[],[],[]) is adjective only: " + str(Nominal_Group(['the'],['man'],[],[],[]).adjectives_only()))
         logger.info("Nominal_Group([],[],['blue'],[],[]) is adjective only: " + str(Nominal_Group([],[],['blue'],[],[]).adjectives_only()))
+=======
+        print "*************  Nominal group adjective only ****************"
+        print "Nominal_Group(['the'],['man'],[],[],[]) is adjective only: ", Nominal_Group(['the'],['man'],[],[],[]).adjectives_only()
+        print "Nominal_Group([],[],['blue'],[],[]) is adjective only: ", Nominal_Group([],[],[['blue',[]]],[],[]).adjectives_only()
+>>>>>>> correct bug with sentence
         
 
 class TestRemerge(unittest.TestCase):
