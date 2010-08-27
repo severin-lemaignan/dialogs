@@ -8,7 +8,7 @@ import inspect
 import unittest
 from dialog.resources_manager import ResourcePool
 
-from dialog.helpers import get_console_handler
+from dialog.helpers import get_console_handler, get_file_handler
 
 
 from dialog.dialog_core import Dialog
@@ -83,8 +83,8 @@ class TestStatementBuilder(unittest.TestCase):
     """
     """
     def test_my_unittest():
-        print "**** Test My unit test  *** "
-        print "Danny drives a car"  
+        logger.info("**** Test My unit test  *** ")
+        logger.info("Danny drives a car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -119,8 +119,8 @@ class TestStatementBuilder(unittest.TestCase):
     """
     
     def test_1(self):
-        print "\n**** Test 1  *** "
-        print "Danny drives the blue car"  
+        logger.info("\n**** Test 1  *** ")
+        logger.info("Danny drives the blue car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -143,11 +143,11 @@ class TestStatementBuilder(unittest.TestCase):
         
         self.process(sentence, expected_result, display_statement_result = True)
         
-        print "\n**** Test 1 Thematic roles on direct object *** "
+        logger.info("\n**** Test 1 Thematic roles on direct object *** ")
         self.stmt.clear_statements()
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
-        print "Danny gets the blue car"
+        logger.info("Danny gets the blue car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -168,11 +168,11 @@ class TestStatementBuilder(unittest.TestCase):
                             '* actsOnObject volvo']   
         self.process(sentence, expected_result, display_statement_result = True)
         
-        print "\n**** Test 1 Thematic roles on indirect complements *** "
+        logger.info("\n**** Test 1 Thematic roles on indirect complements *** ")
         self.stmt.clear_statements()
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
-        print "Danny put the blue cube next to the blue car"
+        logger.info("Danny put the blue cube next to the blue car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -197,8 +197,8 @@ class TestStatementBuilder(unittest.TestCase):
        
     
     def test_1_goal_verb(self):
-        print "\n**** Test 1  *** "
-        print "Danny wants the blue car"  
+        logger.info("\n**** Test 1  *** ")
+        logger.info("Danny wants the blue car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -220,8 +220,8 @@ class TestStatementBuilder(unittest.TestCase):
         
         self.process(sentence, expected_result, display_statement_result = True)
     
-        print "\n**** Test 1  second verb*** "
-        print "Danny wants to drive the blue car"  
+        logger.info("\n**** Test 1  second verb*** ")
+        logger.info("Danny wants to drive the blue car")
         self.stmt.clear_statements()
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
@@ -257,8 +257,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_2(self):
-        print "\n**** Test 2  *** "
-        print "my car is blue"
+        logger.info("\n**** Test 2  *** ")
+        logger.info("my car is blue")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['my'],
                                             ['car'],
@@ -283,8 +283,8 @@ class TestStatementBuilder(unittest.TestCase):
         
     
     def test_3_quantifier_one_some(self):
-        print "\n**** test_3_quantifier_one_some *** "
-        print "Jido is a robot"
+        logger.info("\n**** test_3_quantifier_one_some *** ")
+        logger.info("Jido is a robot")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Jido'],
@@ -308,8 +308,8 @@ class TestStatementBuilder(unittest.TestCase):
         
     
     def test_4(self):
-        print "\n**** Test 4  *** "
-        print "the man that I saw , has a small car"
+        logger.info("\n**** Test 4  *** ")
+        logger.info("the man that I saw , has a small car")
         relative4 = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['I'],
@@ -353,8 +353,8 @@ class TestStatementBuilder(unittest.TestCase):
         
     
     def test_5(self):
-        print "\n**** Test 5  *** "
-        print "the man that talks , has a small car"
+        logger.info("\n**** Test 5  *** ")
+        logger.info("the man that talks , has a small car")
         relative5 = Sentence("statement", "", 
                             [], 
                             [Verbal_Group(['talk'],
@@ -395,8 +395,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     def test_6(self):
         
-        print "\n**** Test 6  *** "
-        print "I gave you the car of the brother of Danny"   
+        logger.info("\n**** Test 6  *** ")
+        logger.info("I gave you the car of the brother of Danny")   
         sentence = Sentence("statement", 
                              "",
                              [Nominal_Group([],
@@ -440,8 +440,8 @@ class TestStatementBuilder(unittest.TestCase):
         
     def test_7(self):
         
-        print "\n**** Test 7  *** "
-        print "I went to Toulouse"
+        logger.info("\n**** Test 7  *** ")
+        logger.info("I went to Toulouse")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['I'],
@@ -464,8 +464,8 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_resut, display_statement_result = True)
     
     def test_8(self):
-        print "\n**** Test 8  *** "
-        print "put the green bottle in the blue car"
+        logger.info("\n**** Test 8  *** ")
+        logger.info("put the green bottle in the blue car")
         sentence = Sentence("imperative", "", 
                              [],                                         
                              [Verbal_Group(['put'],
@@ -489,8 +489,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_8_relative(self):
-        print "\n**** Test 8 relative *** "
-        print "show me the bottle that is in the twingo"
+        logger.info("\n**** Test 8 relative *** ")
+        logger.info("show me the bottle that is in the twingo")
         relative8 = Sentence("statement", "", 
                             [], 
                             [Verbal_Group(['be'],
@@ -530,8 +530,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     def test_9_this(self):
         
-        print "\n**** test_9_this  *** "
-        print "this is a blue cube"
+        logger.info("\n**** test_9_this  *** ")
+        logger.info("this is a blue cube")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['this'],
                                             [],
@@ -563,8 +563,8 @@ class TestStatementBuilder(unittest.TestCase):
    
     def test_9_this_my(self):
         
-        print "\n**** test_9_this_my  *** "
-        print "this is my cube"
+        logger.info("\n**** test_9_this_my  *** ")
+        logger.info("this is my cube")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['this'],
                                             [],
@@ -592,8 +592,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     def test_10_this(self):
         
-        print "\n**** test_10_this  *** "
-        print "this is on the shelf1"
+        logger.info("\n**** test_10_this  *** ")
+        logger.info("this is on the shelf1")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['this'],
                                             [],
@@ -618,8 +618,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     def test_11_this(self):
         
-        print "\n**** test_11_this  *** "
-        print "this goes to the shelf1"
+        logger.info("\n**** test_11_this  *** ")
+        logger.info("this goes to the shelf1")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['this'],
                                             [],
@@ -645,8 +645,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     def test_12_this(self):
         
-        print "\n**** test_12_this  *** "
-        print "this cube goes to the shelf1"
+        logger.info("\n**** test_12_this  *** ")
+        logger.info("this cube goes to the shelf1")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['this'],
                                             ['cube'],
@@ -673,8 +673,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     def test_13_this(self):
         
-        print "\n**** test_13_this  *** "
-        print "this cube is blue "
+        logger.info("\n**** test_13_this  *** ")
+        logger.info("this cube is blue ")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['this'],
                                             ['cube'],
@@ -701,8 +701,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_14_quantifier_all_all(self):        
-        print "\n**** test_14_quantifier_all_all  *** "
-        print "Apples are fruits"
+        logger.info("\n**** test_14_quantifier_all_all  *** ")
+        logger.info("Apples are fruits")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['apple'],#apple is common noun. Therefore, do not capitalize.
@@ -731,8 +731,8 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_resut, display_statement_result = True)
     
     def test_15_quantifier_some_some(self):        
-        print "\n**** test_15_quantifier_some_some  *** "
-        print "an apple is a fruit"
+        logger.info("\n**** test_15_quantifier_some_some  *** ")
+        logger.info("an apple is a fruit")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['an'],
                                             ['apple'],#apple is common noun. Therefore, do not capitalize.
@@ -762,8 +762,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_15_quantifier_action_verb(self):        
-        print "\n**** test_15_quantifier_action_verb  *** "
-        print "an apple grows on a tree"
+        logger.info("\n**** test_15_quantifier_action_verb  *** ")
+        logger.info("an apple grows on a tree")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['an'],
                                             ['apple'],#apple is common noun. Therefore, do not capitalize.
@@ -795,8 +795,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     #Action adverbs
     def test_16_adverb(self):
-        print "\n**** test_16_adverb *** "
-        print "Danny slowly drives the blue car"
+        logger.info("\n**** test_16_adverb *** ")
+        logger.info("Danny slowly drives the blue car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -825,8 +825,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     #Verb tense approach
     def test_17_verb_tense(self):
-        print "\n**** test_17_verb_tense *** "
-        print "Danny will drive the blue car"
+        logger.info("\n**** test_17_verb_tense *** ")
+        logger.info("Danny will drive the blue car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -856,7 +856,7 @@ class TestStatementBuilder(unittest.TestCase):
     #Negative approach
     def test_18_negative(self):
         
-        print "Danny drives the blue car"
+        logger.info("Danny drives the blue car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -882,11 +882,11 @@ class TestStatementBuilder(unittest.TestCase):
         self.process(sentence, expected_result, display_statement_result = True)
         
         
-        print "\n**** test_18_negative *** "
+        logger.info("\n**** test_18_negative *** ")
         self.stmt.clear_statements()
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
-        print "Danny doesn't drive the blue car"
+        logger.info("Danny doesn't drive the blue car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Danny'],
@@ -912,8 +912,8 @@ class TestStatementBuilder(unittest.TestCase):
         self.process(sentence, expected_result, display_statement_result = True)
         
         
-        print "\n**** test_18_negative_bis *** "
-        print "Danny is not in Toulouse"
+        logger.info("\n**** test_18_negative_bis *** ")
+        logger.info("Danny is not in Toulouse")
         self.stmt.clear_statements()
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
@@ -940,8 +940,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_18_negative_relative(self):
-        print "\n**** test_18_negative_relative *** "
-        print "Danny drives the car that is not blue"
+        logger.info("\n**** test_18_negative_relative *** ")
+        logger.info("Danny drives the car that is not blue")
         
         relative18 = Sentence("relative", "", 
                             [], 
@@ -982,8 +982,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_19_negative(self):
-        print "\n**** test_19_negative *** "
-        print "Jido is not a human"
+        logger.info("\n**** test_19_negative *** ")
+        logger.info("Jido is not a human")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['Jido'],
@@ -1012,8 +1012,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_20_negative(self):
-        print "\n**** test_20_negative *** "
-        print "the shelf1 is not green"
+        logger.info("\n**** test_20_negative *** ")
+        logger.info("the shelf1 is not green")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
                                             ['shelf1'],
@@ -1038,8 +1038,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_20_negative_inconsistent(self):
-        print "\n**** test_20_negative *** "
-        print "the shelf1 is green"
+        logger.info("\n**** test_20_negative *** ")
+        logger.info("the shelf1 is green")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
                                             ['shelf1'],
@@ -1062,8 +1062,8 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = ['shelf1 hasColor green']   
         self.process(sentence, expected_result, display_statement_result = True)
         
-        print "\n**** test_20_negative_bis *** "
-        print "the shelf1 is red"
+        logger.info("\n**** test_20_negative_bis *** ")
+        logger.info("the shelf1 is red")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
                                             ['shelf1'],
@@ -1088,8 +1088,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_21_negative(self):
-        print "\n**** test_21_negative *** "
-        print "this is not the shelf1"
+        logger.info("\n**** test_21_negative *** ")
+        logger.info("this is not the shelf1")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['this'],
                                             [],
@@ -1115,8 +1115,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_22_negative(self):
-        print "\n**** test_22_negative *** "
-        print "Fruits are not humans"
+        logger.info("\n**** test_22_negative *** ")
+        logger.info("Fruits are not humans")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['fruit'],
@@ -1147,8 +1147,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_23_negative(self):
-        print "\n**** test_23_negative *** "
-        print "you are not me"
+        logger.info("\n**** test_23_negative *** ")
+        logger.info("you are not me")
         sentence = Sentence("statement", "", 
                              [Nominal_Group([],
                                             ['you'],
@@ -1174,8 +1174,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_24_negative(self):
-        print "\n**** test_24_negative *** "
-        print "the blue car is not my car"
+        logger.info("\n**** test_24_negative *** ")
+        logger.info("the blue car is not my car")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
                                             ['car'],
@@ -1201,8 +1201,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_25_negative(self):
-        print "\n**** test_25_negative *** "
-        print "I am not the brother of Danny"
+        logger.info("\n**** test_25_negative *** ")
+        logger.info("I am not the brother of Danny")
         sentence = sentence = Sentence("statement", 
                              "",
                              [Nominal_Group([],
@@ -1233,8 +1233,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_26_subsentences(self):
-        print "\n**** test_26_subsentences *** "
-        print "you will drive the car if you get the keys'."
+        logger.info("\n**** test_26_subsentences *** ")
+        logger.info("you will drive the car if you get the keys'.")
         
         subsentence = Sentence('subsentence', 'if', 
                                 [Nominal_Group([],['you'],[],[],[])], 
@@ -1268,8 +1268,8 @@ class TestStatementBuilder(unittest.TestCase):
     
 
     def test_27_subsentences(self):
-        print "\n**** test_27_subsentences *** "
-        print "learn that apple are fruits."
+        logger.info("\n**** test_27_subsentences *** ")
+        logger.info("learn that apple are fruits.")
         
         subsentence = Sentence('subsentence', 'that', 
                                 [Nominal_Group([],['apple'],[],[],[])], 
@@ -1298,8 +1298,8 @@ class TestStatementBuilder(unittest.TestCase):
     
     
     def test_28_subsentences(self):
-        print "\n**** test_28_subsentences *** "
-        print "I am going to toulouse when you get the small car."
+        logger.info("\n**** test_28_subsentences *** ")
+        logger.info("I am going to toulouse when you get the small car.")
         
         subsentence = Sentence('subsentence', 'when', 
                                 [Nominal_Group([],['you'],[],[],[])], 
@@ -1393,7 +1393,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
 
     def test_sentence1(self):
 
-        print("\n##################### test_sentence1 ########################\n")
+        logger.info("\n##################### test_sentence1 ########################\n")
         
         ####
         stmt = "put the yellow banana on the shelf"
@@ -1411,7 +1411,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
 
     def test_sentence2(self):
         
-        print("\n##################### test_sentence2 ########################\n")
+        logger.info("\n##################### test_sentence2 ########################\n")
 
         ####
         stmt = "give me the green banana"
@@ -1428,7 +1428,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
 
     def test_sentence3(self):
         
-        print("\n##################### Simple statements ########################\n")              
+        logger.info("\n##################### Simple statements ########################\n")              
                 
         ####
         stmt = "the yellow banana is green"
@@ -1453,7 +1453,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
     def test_sentence4(self):
         
-        print("\n##################### Subclasses ########################\n")
+        logger.info("\n##################### Subclasses ########################\n")
         ####
         stmt = "bananas are fruits"
         ####
@@ -1475,7 +1475,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
     def test_sentence5(self):
         
-        print("\n##################### test_sentence5 - THIS ########################\n")
+        logger.info("\n##################### test_sentence5 - THIS ########################\n")
         ####
         stmt = "This is my banana"
         ####
@@ -1500,7 +1500,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
 
     def test_sentence6(self):
         
-        print("\n##################### test_sentence6 - it ########################\n")
+        logger.info("\n##################### test_sentence6 - it ########################\n")
         #Fill up History
         
         ##sentence1
@@ -1527,7 +1527,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence7(self):
         
-        print("\n##################### test_sentence7 - it ########################\n")
+        logger.info("\n##################### test_sentence7 - it ########################\n")
         
         #Fill up History
         
@@ -1551,7 +1551,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence8(self):
         
-        print("\n##################### test_sentence8 - THIS NO FOCUS########################\n")
+        logger.info("\n##################### test_sentence8 - THIS NO FOCUS########################\n")
         #Fill up History
         ##sentence2
         stmt = "the green banana is next to the red apple"
@@ -1576,7 +1576,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
     def test_sentence8_bis(self):
         
-        print("\n##################### test_sentence8 bis - THIS NO FOCUS########################\n")
+        logger.info("\n##################### test_sentence8 bis - THIS NO FOCUS########################\n")
         #Fill up History
         ##sentence2
         stmt = "the green banana is next to the red apple"
@@ -1599,7 +1599,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence8_ter(self):
         
-        print("\n##################### test_sentence8 ter - THIS NO FOCUS########################\n")
+        logger.info("\n##################### test_sentence8 ter - THIS NO FOCUS########################\n")
         #Fill up History
         ##sentence2
         stmt = "the green banana is next to the red apple"
@@ -1622,7 +1622,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
     def test_sentence9(self):
         
-        print("\n##################### test_sentence9 - OTHER ########################\n")
+        logger.info("\n##################### test_sentence9 - OTHER ########################\n")
         #Fill up History
         ##sentence1
         stmt = "the green banana is next to the red apple"
@@ -1638,7 +1638,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence9_bis(self):
         
-        print("\n##################### test_sentence9_bis - OTHER ########################\n")
+        logger.info("\n##################### test_sentence9_bis - OTHER ########################\n")
         #Fill up History
         ##sentence1
         stmt = "the green banana is next to the red apple"
@@ -1656,7 +1656,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence9_ter(self):
         
-        print("\n##################### test_sentence9_ter - THIS OTHER ########################\n")
+        logger.info("\n##################### test_sentence9_ter - THIS OTHER ########################\n")
         #Fill up History
         ##sentence1
         stmt = "the green banana is next to the red apple"
@@ -1678,7 +1678,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence9_quater(self):
         
-        print("\n##################### test_sentence9_quater - THIS OTHER ########################\n")
+        logger.info("\n##################### test_sentence9_quater - THIS OTHER ########################\n")
         #Fill up History
         ##sentence1
         stmt = "the green banana is next to the red apple"
@@ -1699,7 +1699,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence10(self):
         
-        print("\n##################### test_sentence10 - SAME ########################\n")
+        logger.info("\n##################### test_sentence10 - SAME ########################\n")
         #Fill up History
         
         ##sentence1
@@ -1726,7 +1726,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence10_bis(self):
         
-        print("\n##################### test_sentence10_bis - SAME ########################\n")
+        logger.info("\n##################### test_sentence10_bis - SAME ########################\n")
         #Fill up History
         
         ##sentence1
@@ -1753,7 +1753,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
     
     def test_sentence11(self):
         
-        print("\n##################### test_sentence11 - MODALS ########################\n")
+        logger.info("\n##################### test_sentence11 - MODALS ########################\n")
         #Fill up History
         ##sentence1
         stmt = "I can take the green banana"
@@ -1793,8 +1793,8 @@ def check_results(res, expected):
             if check_triplets(r, e):
                 expected.remove(e)
     if expected:
-        print "\t**** /Missing statements in result:   "
-        print "\t", expected, "\n"
+        logger.info("\t**** /Missing statements in result:   ")
+        logger.info("\t" + expected + "\n")
            
     return expected == res
 
@@ -1818,7 +1818,10 @@ def test_suite():
     
 if __name__ == '__main__':
     
-    logger.addHandler(get_console_handler())
+    logger.setLevel(logging.DEBUG)
+
+    logger.addHandler(get_console_handler)
+    #logger.addHandler(get_file_handler("statements.log"))
     
     # executing verbalization tests
     unittest.TextTestRunner(verbosity=2).run(test_suite())

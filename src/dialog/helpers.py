@@ -64,9 +64,15 @@ def format_colour(message, use_color = True):
     return message + RESET_SEQ
 
 def get_console_handler():
-    log_handler = logging.FileHandler("toto.log")
+    log_handler = logging.StreamHandler()
     formatter = logging.Formatter("%(message)s")
-    log_handler.setLevel(logging.DEBUG)
+    log_handler.setFormatter(formatter)
+    
+    return log_handler
+    
+def get_file_handler(filename):
+    log_handler = logging.FileHandler(filename)
+    formatter = logging.Formatter("%(message)s")
     log_handler.setFormatter(formatter)
     
     return log_handler
