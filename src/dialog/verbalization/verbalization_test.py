@@ -11,6 +11,7 @@
 
 import unittest
 import logging
+logger = logging.getLogger("dialog")
 
 from dialog.dialog_core import Dialog
 
@@ -25,10 +26,8 @@ class TestVerbalization(unittest.TestCase):
     
     
     def test_01(self):
-        print ''
-        print '######################## test 1.1 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.1 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The bottle is on the table. The bottle is blue. The bottle is Blue."
         
@@ -53,17 +52,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_02(self):
         
-        print ''
-        print '######################## test 1.2 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.2 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
      
@@ -82,18 +79,16 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
         
     def test_03(self):
         
-        print ''
-        print '######################## test 1.3 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.3 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="It's on the table. I give it to you. Give me the bottle. I don't give the bottle to you."
         
@@ -124,17 +119,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_04(self):
         
-        print ''
-        print '######################## test 1.4 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.4 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="You aren't preparing the car and my father's moto at the same time. Is my brother's bottle in your right?"
         
@@ -153,17 +146,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_05(self):
     
-        print ''
-        print '######################## test 1.5 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.5 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? Shall I go?"
         
@@ -190,8 +181,8 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
@@ -199,10 +190,8 @@ class TestVerbalization(unittest.TestCase):
     
     def test_06(self):
     
-        print ''
-        print '######################## test 1.6 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.6 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Isn't he doing his homework and his game now? Can't he take this bottle? Hello."
         
@@ -222,17 +211,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_07(self):
         
-        print ''
-        print '######################## test 1.7 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.7 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Don't quickly give me the blue bottle. I want to play with my guitar. I'd like to go to the cinema."
         
@@ -267,17 +254,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_08(self):
         
-        print ''
-        print '######################## test 1.8 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.8 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The man who talks, has a new car. I play the guitar that I bought yesterday."
         
@@ -306,17 +291,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_09(self):
         
-        print ''
-        print '######################## test 1.9 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.9 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Don't quickly give me the bottle which is on the table, and the glass which I cleaned yesterday, at my left."
         
@@ -340,17 +323,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_10(self):
         
-        print ''
-        print '######################## test 1.10 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.10 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The bottle that I bought from the store which is in the shopping center, is yours."
         
@@ -373,17 +354,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_11(self):
         
-        print ''
-        print '######################## test 1.11 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.11 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="When won't the planning session take place? When must you take the bus?"
         
@@ -402,17 +381,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_12(self):
         
-        print ''
-        print '######################## test 1.12 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.12 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Where is Broyen? Where are you going? Where must Jido and you be from?"
         
@@ -437,17 +414,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_13(self):
         
-        print ''
-        print '######################## test 1.13 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.13 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What time is the news on TV? What size do you wear? The code is written by me. Is Mahdi going to the Laas?"
         
@@ -478,17 +453,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_14(self):
         
-        print ''
-        print '######################## test 1.14 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.14 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What's the weather like in the winter here? What were you doing? What isn't Jido going to do tomorrow?"
         
@@ -518,17 +491,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_15(self):
         
-        print ''
-        print '######################## test 1.15 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.15 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What's happening? What must happen in the company today? What didn't happen here? No, sorry."
         
@@ -554,17 +525,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_16(self):
         
-        print ''
-        print '######################## test 1.16 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.16 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What's the biggest bottle's color on your left? What does your brother do for a living?"
         
@@ -583,17 +552,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_17(self):
         
-        print ''
-        print '######################## test 1.17 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.17 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What kind of people don't read this magazine? What kind of music must he listen to everyday?"
         
@@ -612,17 +579,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_18(self):
         
-        print ''
-        print '######################## test 1.18 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.18 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What kind of sport is your favorite? What's the problem with him? What's the matter with this person?"
         
@@ -647,17 +612,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_19(self):
         
-        print ''
-        print '######################## test 1.19 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.19 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="How old are you? How long is your uncle's store opened tonight? How long is your uncle's store open tonight?"
         
@@ -682,17 +645,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_20(self):
         
-        print ''
-        print '######################## test 1.20 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.20 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="How far is it from the hotel to the restaurant? How soon can you be here? How often does Jido go skiing?"
         
@@ -718,17 +679,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_21(self):
         
-        print ''
-        print '######################## test 1.21 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.21 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="How much water should they transport? How much guests weren't at the party? How much does the motocycle cost?"
         
@@ -753,17 +712,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_22(self):
         
-        print ''
-        print '######################## test 1.22 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.22 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="How about going to the cinema? How haven't they gotten a loan for their business? OK."
         
@@ -783,17 +740,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_23(self):
         
-        print ''
-        print '######################## test 1.23 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.23 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What did you think of Steven Spilburg's new movie? How could I get to the restaurant from here?"
         
@@ -812,17 +767,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_24(self):
         
-        print ''
-        print '######################## test 1.24 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.24 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Why should she go to Toulouse? Who could you talk to on the phone? Whose blue bottle and red glass are these?"
         
@@ -847,17 +800,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
     
     def test_25(self):
        
-        print ''
-        print '######################## test 1.25 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.25 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What are you thinking about the idea that I present you? What color is the bottle which you bought?"
         
@@ -886,17 +837,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_26(self):
         
-        print ''
-        print '######################## test 1.26 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.26 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Which salesperson's competition won the award which we won in the last years?"
         
@@ -916,17 +865,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_27(self):
         
-        print ''
-        print '######################## test 1.27 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.27 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What will your house look like? What do you think of the latest novel which Jido wrote?"
         
@@ -950,17 +897,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_28(self):
         
-        print ''
-        print '######################## test 1.28 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.28 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Learn that I want you to give me the blue bottle. You'll be happy, if you do your job."
         
@@ -992,17 +937,15 @@ class TestVerbalization(unittest.TestCase):
 
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
        
    
     def test_29(self):
-        print ''
-        print '######################## test 1.29 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.29 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="You'll be happy, if you do your job. Do you want the blue or green bottle?"
         
@@ -1029,16 +972,14 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_30(self):
-        print ''
-        print '######################## test 1.30 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.30 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What's wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago."
         
@@ -1065,16 +1006,14 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
          
     def test_31(self):
-        print ''
-        print '######################## test 1.31 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.31 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Who are you talking to? You should have the bottle. Would you've played a guitar? You'd have played a guitar."
         
@@ -1105,16 +1044,14 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_32(self):
-        print ''
-        print '######################## test 1.32 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.32 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What do you do for a living in this building? What does your brother do for a living here?"
         
@@ -1134,16 +1071,14 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_33(self):
-        print ''
-        print '######################## test 1.33 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.33 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="This is a bottle. There is a bottle on the table."
         
@@ -1162,16 +1097,14 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_34(self):
-        print ''
-        print '######################## test 1.34 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.34 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Is it on the table or the shelf?"
         
@@ -1187,18 +1120,16 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
         
     def test_35(self):
         
-        print ''
-        print '######################## test 1.35 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.35 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Where is it? On the table or on the shelf?"
      
@@ -1220,17 +1151,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_36(self):
         
-        print ''
-        print '######################## test 1.36 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.36 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Is it on your left or in front of you?"
         
@@ -1246,17 +1175,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_37(self):
         
-        print ''
-        print '######################## test 1.37 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.37 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Where is it? On your left or in front of you?"
         
@@ -1278,18 +1205,16 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     
     def test_38(self):
         
-        print ''
-        print '######################## test 1.38 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.38 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The blue bottle? What do you mean?"
         
@@ -1302,17 +1227,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)    
    
     def test_39(self):
         
-        print ''
-        print '######################## test 1.39 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.39 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Would you like the blue bottle or the glass? The green or blue bottle is on the table. Is the green or blue glass mine?"
      
@@ -1341,17 +1264,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_40(self):
         
-        print ''
-        print '######################## test 1.40 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.40 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Learn that I want you to give me the blue bottle that's blue."
         
@@ -1377,17 +1298,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_41(self):
         
-        print ''
-        print '######################## test 1.41 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.41 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The bottle is behind to me. The bottle is next to the table in front of the kitchen."
         
@@ -1407,17 +1326,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_42(self):
         
-        print ''
-        print '######################## test 1.42 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.42 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Carefully take the bottle. I take that bottle that I drink in. I take 22 bottles."
         
@@ -1449,18 +1366,16 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)    
         
     
     def test_43(self):
         
-        print ''
-        print '######################## test 1.43 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.43 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="I'll play Jido's guitar, a saxophone, my oncle's wife's piano and Patrick's violon."
         
@@ -1476,17 +1391,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_44(self):
         
-        print ''
-        print '######################## test 1.44 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.44 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Give me 2 or 3 bottles. The bottle is blue big funny. Give me the bottle which is on the table."
         
@@ -1521,17 +1434,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_45(self):
         
-        print ''
-        print '######################## test 1.45 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.45 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The boys' ball is blue. He asks me to do something. Is any person courageous on the laboratory?"
         
@@ -1562,17 +1473,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)    
     
     def test_46(self):
         
-        print ''
-        print '######################## test 1.46 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.46 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What must be happened in the company today? The building shouldn't fastly be built. You can be here."
         
@@ -1597,17 +1506,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_47(self):
         
-        print ''
-        print '######################## test 1.47 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.47 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="What size is the best one? What object is blue? How good is this?"
         
@@ -1632,17 +1539,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
     
     def test_48(self):
         
-        print ''
-        print '######################## test 1.48 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.48 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Patrick, the bottle is on the table. Give it to me."
         
@@ -1664,17 +1569,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)  
     
     def test_49(self):
         
-        print ''
-        print '######################## test 1.49 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.49 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Jido, give me the bottle. Jido, Patrick and you will go to the cinema. Jido, Patrick and you, give me the bottle."
         
@@ -1705,17 +1608,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)  
     
     def test_50(self):
         
-        print ''
-        print '######################## test 1.50 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.50 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The bottle isn't blue but it's red. It isn't the glass but the bottle. It's blue or red."
         
@@ -1748,17 +1649,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
        
     def test_51(self):
         
-        print ''
-        print '######################## test 1.51 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.51 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="It isn't red but blue. This is my banana. Bananas are fruits."
         
@@ -1787,17 +1686,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)  
     
     def test_52(self):
         
-        print ''
-        print '######################## test 1.52 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.52 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="There are no bananas. All bananas are here. Give me more information which are about the bottle."
         
@@ -1832,17 +1729,15 @@ class TestVerbalization(unittest.TestCase):
     
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)  
     
     def test_53(self):
         
-        print ''
-        print '######################## test 1.53 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.53 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Jido, tell me where you go. Goodbye. There is nothing. It's another one."
         
@@ -1876,18 +1771,16 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
     
     
     def test_54(self):
         
-        print ''
-        print '######################## test 1.54 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.54 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The bottle becomes blue. 1 piece could become 2, if you smoldered it."
         
@@ -1911,17 +1804,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
          
     def test_55(self):
         
-        print ''
-        print '######################## test 1.55 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.55 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="This one isn't my uncle's bottle but it's my brother's bottle. It isn't on the table but on the shelf."
         
@@ -1947,17 +1838,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)        
         
     def test_56(self):
         
-        print ''
-        print '######################## test 1.56 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.56 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Give me the fourth and seventh bottle. Give me the one thousand ninth and the thirty thousand twenty eighth bottle."
         
@@ -1978,17 +1867,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)       
     
     def test_57(self):
         
-        print ''
-        print '######################## test 1.57 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.57 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The evil tyrant is in the laboratory. I don't know what you're talking about."
         
@@ -2012,18 +1899,16 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
     
     
     def test_58(self):
         
-        print ''
-        print '######################## test 1.58 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.58 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="I go to the place where I was born. I study where you studied. I study where you build your house where you put the bottle."
         
@@ -2068,17 +1953,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
        
     def test_59(self):
         
-        print ''
-        print '######################## test 1.59 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.59 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="Apples grow on trees and plants. Give me 3 apples."
         
@@ -2102,17 +1985,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)        
         
     def test_60(self):
         
-        print ''
-        print '######################## test 1.56 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.56 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="When your father came, we was preparing the dinner. While I phoned, he made a sandwich with bacons."
         
@@ -2146,17 +2027,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)             
      
     def test_61(self):
         
-        print ''
-        print '######################## test 1.54 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.54 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="The big very strong man is on the corner. The too big very strong man is on the corner."
         
@@ -2175,17 +2054,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
          
     def test_62(self):
         
-        print ''
-        print '######################## test 1.55 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.55 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="red apples grow on green trees and plants. a kind of thing. It can be played by twenty players."
         
@@ -2210,17 +2087,15 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)        
         
     def test_63(self):
         
-        print ''
-        print '######################## test 1.56 ##############################'
-        print '#################################################################'
-        print ''
+        logger.info('\n######################## test 1.56 ##############################')
+        logger.info('#################################################################\n')
         
         original_utterance="let the man go to the cinema. Is it the time to let you go."
         
@@ -2251,8 +2126,8 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        logger.info("The original utterance is : " + original_utterance)
+        logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
 
@@ -2268,117 +2143,117 @@ class TestVerbalizationCompleteLoop(unittest.TestCase):
         
     def test_verbalize1(self):
            
-        print("\n##################### test_verbalize1: simple statements ########################\n")
+        logger.info("\n##################### test_verbalize1: simple statements ########################\n")
         myP = Parser()                            
         stmt = "The cup is on the desk."
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
         
-        print "\n####\n"
+        logger.info("\n####\n")
         
         stmt = "The green bottle is next to Joe."
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
 
     def test_verbalize2(self):
         
-        print("\n##################### test_verbalize2: yes/no questions ########################\n")
+        logger.info("\n##################### test_verbalize2: yes/no questions ########################\n")
         myP = Parser()
 
         stmt = "Are you a robot?"
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
 
 
     def test_verbalize3(self):
         
-        print("\n##################### test_verbalize3: orders ########################\n")
+        logger.info("\n##################### test_verbalize3: orders ########################\n")
         myP = Parser()
 
         stmt = "Put the yellow banana on the shelf."
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
         
-        print "\n####\n"
+        logger.info("\n####\n")
         
         stmt = "Give me the green banana."
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
         
-        print "\n####\n"
+        logger.info("\n####\n")
         
         stmt = "Give the green banana to me."
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
 
-        print "\n####\n"
+        logger.info("\n####\n")
         
         stmt = "Get the box which is on the table."
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
         
-        print "\n####\n"
+        logger.info("\n####\n")
 
         stmt = "Get the box which is in the trashbin."
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
 
     def test_verbalize4(self):
         
-        print("\n##################### test_verbalize4: W questions ########################\n")
+        logger.info("\n##################### test_verbalize4: W questions ########################\n")
         myP = Parser()
         
         stmt = "Where is the box?"
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
         
-        print "\n####\n"
+        logger.info("\n####\n")
         
         stmt = "What are you doing now?"
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print 'input: ', stmt
-        print 'output:', res
+        logger.info('input: ' + stmt)
+        logger.info('output:' + res)
         self.assertEquals(stmt, res)
 
 
     def test_verbalize5(self):
         
-        print("\n##################### test_verbalize5 ########################\n")
+        logger.info("\n##################### test_verbalize5 ########################\n")
         myP = Parser()
         
         stmt = "Jido, tell me where you go."
         sentence = myP.parse(stmt)
         res = self.dialog._verbalizer.verbalize(sentence)
-        print '>> input: ', stmt
-        print '<< output:', res
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
         
 def test_suite():
