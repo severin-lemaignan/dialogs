@@ -560,6 +560,7 @@ dialog_test [OPTIONS] TEST_SUITE
 if __name__ == '__main__':
     
     logger = logging.getLogger('dialog')
+    
     logger.setLevel(logging.DEBUG)
 
     if len(sys.argv[1:]) == 0:
@@ -585,14 +586,11 @@ if __name__ == '__main__':
             if a == "file":
                 print("The output of the unit-tests will be saved in " + LOG_FILENAME)
                 log_handler = logging.FileHandler(LOG_FILENAME)
-                formatter = logging.Formatter("%(message)s")
         else:
             print "Unhandled option " + o
             usage()
             sys.exit(2)
 
-    log_handler.setLevel(logging.DEBUG)
-    
     # add formatter to log_handler
     log_handler.setFormatter(formatter)
     # add log_handler to logger

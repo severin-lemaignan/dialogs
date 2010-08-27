@@ -2429,10 +2429,7 @@ class TestParsing(unittest.TestCase):
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)
-    
     return suite
+
 if __name__ == '__main__':
-    
-    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
-    
     unittest.TextTestRunner(verbosity=2).run(test_suite())

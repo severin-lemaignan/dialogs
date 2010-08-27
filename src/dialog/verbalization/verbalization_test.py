@@ -2388,8 +2388,4 @@ def test_suite():
     return suite
     
 if __name__ == '__main__':
-    
-    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
-    
-    # executing verbalization tests
     unittest.TextTestRunner(verbosity=2).run(test_suite())
