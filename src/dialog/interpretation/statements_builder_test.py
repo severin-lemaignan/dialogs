@@ -8,7 +8,7 @@ import inspect
 import unittest
 from dialog.resources_manager import ResourcePool
 
-from dialog.helpers import get_console_handler, get_file_handler
+from dialog.helpers import check_results, get_console_handler, get_file_handler
 
 
 from dialog.dialog_core import Dialog
@@ -1776,29 +1776,6 @@ class TestBaseSentenceDialog(unittest.TestCase):
     The following functions are implemented for test purpose only
 """
 
-def check_results(res, expected):
-    def check_triplets(tr , te):
-        tr_split = tr.split()
-        te_split = te.split()
-        
-        return  (not '?' in tr_split[0]) and \
-                (not '?' in tr_split[2]) and \
-                (tr_split[0] == te_split[0] or te_split[0] == '*') and\
-                (tr_split[1] == te_split[1]) and\
-                (tr_split[2] == te_split[2] or te_split[2] == '*') 
-       
-    while res:
-        r = res.pop()
-        for e in expected:
-            if check_triplets(r, e):
-                expected.remove(e)
-    if expected:
-        logger.info("\t**** /Missing statements in result:   ")
-        logger.info("\t" + expected + "\n")
-           
-    return expected == res
-
-
 
 def dump_resolved(sentence, current_speaker, current_listener, resolver):
     sentence = resolver.references_resolution(sentence,
@@ -1820,8 +1797,8 @@ if __name__ == '__main__':
     
     logger.setLevel(logging.DEBUG)
 
-    logger.addHandler(get_console_handler)
+    logger.addHandler(get_console_handler())
     #logger.addHandler(get_file_handler("statements.log"))
-    
+
     # executing verbalization tests
     unittest.TextTestRunner(verbosity=2).run(test_suite())

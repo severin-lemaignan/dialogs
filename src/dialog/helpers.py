@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+logger = logging.getLogger('dialog')
 
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 
@@ -65,6 +66,7 @@ def format_colour(message, use_color = True):
 
 def get_console_handler():
     log_handler = logging.StreamHandler()
+    log_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(message)s")
     log_handler.setFormatter(formatter)
     
@@ -72,11 +74,34 @@ def get_console_handler():
     
 def get_file_handler(filename):
     log_handler = logging.FileHandler(filename)
+    log_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(message)s")
     log_handler.setFormatter(formatter)
     
     return log_handler
-    
+
+def check_results(res, expected):
+    def check_triplets(tr , te):
+        tr_split = tr.split()
+        te_split = te.split()
+        
+        return  (not '?' in tr_split[0]) and \
+                (not '?' in tr_split[2]) and \
+                (tr_split[0] == te_split[0] or te_split[0] == '*') and\
+                (tr_split[1] == te_split[1]) and\
+                (tr_split[2] == te_split[2] or te_split[2] == '*') 
+       
+    while res:
+        r = res.pop()
+        for e in expected:
+            if check_triplets(r, e):
+                expected.remove(e)
+    if expected:
+        logger.info("\t**** /Missing statements in result:   ")
+        logger.info("\t" + expected + "\n")
+           
+    return expected == res
+
 if __name__ == '__main__':
 
     #should print a blue 'Hello World'
