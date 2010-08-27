@@ -112,7 +112,8 @@ class Dialog(Thread):
                     self.waiting_for_more_info = True
                     
                     #Output towards human
-                    sys.stdout.write(colored_print( \
+                    sys.stdout.write(self._verbalizer.verbalize(uae.value['question']) + "\n")
+                    self._logger.info("OUTPUT TO HUMAN:" + colored_print( \
                             self._verbalizer.verbalize(uae.value['question']), \
                             'red') + "\n")
                             
@@ -193,7 +194,7 @@ class Dialog(Thread):
         while(self.in_interaction):
             if answer and self.waiting_for_more_info:
                 self._logger.debug(colored_print("> Automatically answering: ", 'bold'))
-                self._logger(colored_print(answer, 'red'))
+                self._logger.info(colored_print(answer, 'red'))
                 self.input(answer, speaker)
                 
                 answer = None

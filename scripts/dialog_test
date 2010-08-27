@@ -7,6 +7,8 @@ import logging
 import unittest
 import getopt
 
+import operator
+
 import dialog.verbalization.verbalization_test as verbalization
 import dialog.parsing.parser_test as parser
 import dialog.sentence_test as sentence
@@ -596,19 +598,47 @@ if __name__ == '__main__':
     # add log_handler to logger
     logger.addHandler(log_handler)
 
-    suite = unittest.TestSuite()
+    results = {}
     
     if 'parser' in args or 'all' in args:
-        suite.addTests(parser.test_suite()._tests)
-    if 'sentence' in args or 'all' in args:
-        suite.addTests(sentence.test_suite()._tests)
-    if 'verbalization' in args or 'all' in args:
-        suite.addTests(verbalization.test_suite()._tests)
-    if 'statements' in args or 'all' in args:
-        suite.addTests(statements_builder.test_suite()._tests)
-    if 'discrimination' in args or 'all' in args:
-        suite.addTests(discrimination.test_suite()._tests)
-    if 'questions' in args or 'all' in args:
-        suite.addTests(questions_handler.test_suite()._tests)
+        suite = parser.test_suite()
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        results['parser'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors))
 
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    if 'sentence' in args or 'all' in args:
+        suite = sentence.test_suite()
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        results['sentence'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors))
+    
+    if 'verbalization' in args or 'all' in args:
+        suite = verbalization.test_suite()
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        results['verbalization'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors))
+    
+    if 'statements' in args or 'all' in args:
+        suite = statements_builder.test_suite()
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        results['statements'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors))
+        
+    if 'discrimination' in args or 'all' in args:
+        suite = discrimination.test_suite()
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        results['discrimination'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors))
+        
+    if 'questions' in args or 'all' in args:
+        suite = questions_handler.test_suite()
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        results['questions'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors))
+    
+    total = (0,0,0,0)
+    print("\n\n===============================================================")
+    print("| suite            | nb tests | tests run | failures | errors |")
+    print("|-------------------------------------------------------------|")
+    for name in results:
+        total = map(operator.add, total, results[name])
+        print(  "| " + name + (" "* (17 - len(name))) + \
+                "|   % 3d    |    % 3d    |   % 3d    |  % 3d   |" % (results[name]))
+        print("|-------------------------------------------------------------|")
+        
+    print("| TOTAL            |   % 3d    |    % 3d    |   % 3d    |  % 3d   |" % (tuple(total)))
+    print("===============================================================")
