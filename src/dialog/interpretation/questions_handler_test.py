@@ -15,6 +15,8 @@ from dialog.interpretation.resolution import Resolver
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):
         try:
+            ResourcePool().ontology_server.reset()
+            
             ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
                      'blue_cube rdf:type Cube',
                      'blue_cube hasColor blue',

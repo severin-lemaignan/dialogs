@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import time
 logger = logging.getLogger("dialog")
 
 import inspect
@@ -22,14 +23,14 @@ class TestStatementBuilder(unittest.TestCase):
     def setUp(self):
         
         try:
-            ResourcePool().ontology_server.safeAdd(['SPEAKER rdf:type Human',
-                                                'SPEAKER rdfs:label "Patrick"'])
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            pass
-        
-        try:
+            ResourcePool().ontology_server.reset()
             
-            ResourcePool().ontology_server.safeAddForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
+            ResourcePool().ontology_server.add(['SPEAKER rdf:type Human',
+                                                'SPEAKER rdfs:label "Patrick"'])
+            
+            time.sleep(1)
+            
+            ResourcePool().ontology_server.addForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
                           'id_danny rdf:type Human',
                           
                           'volvo hasColor blue', 
@@ -1373,6 +1374,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
         self.oro = ResourcePool().ontology_server
         
         try:
+            self.oro.reset()
+            
             self.oro.add(['shelf1 rdf:type Shelf',
                         'table1 rdf:type Table', 
                         'table2 rdf:type Table', 
@@ -1872,7 +1875,7 @@ def dump_resolved(sentence, current_speaker, current_listener, resolver):
 
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestStatementBuilder)
-    suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestBaseSentenceDialog))
+    #suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestBaseSentenceDialog))
     
     
     return suite

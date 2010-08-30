@@ -38,7 +38,7 @@ class TestDiscrimination(unittest.TestCase):
         self.verbalizer = Verbalizer()
         
         try:
-            ResourcePool().ontology_server.reload()
+            ResourcePool().ontology_server.reset()
             
             ResourcePool().ontology_server.add(["raquel rdf:type Human",
                             "Gamebox rdfs:subClassOf Box",
