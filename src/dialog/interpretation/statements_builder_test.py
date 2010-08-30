@@ -8,7 +8,7 @@ import inspect
 import unittest
 from dialog.resources_manager import ResourcePool
 
-from dialog.helpers import get_console_handler, get_file_handler
+from dialog.helpers import check_results, get_console_handler, get_file_handler
 
 
 from dialog.dialog_core import Dialog
@@ -46,7 +46,7 @@ class TestStatementBuilder(unittest.TestCase):
                           
                           'a_man rdf:type Man',
                           
-                          'id_see rdf:type See', 'id_see actsOnObject a_man', 'id_see performedBy SPEAKER',
+                          'SPEAKER sees a_man',
                           'id_talk performedBy a_man', 'id_talk rdf:type Talk',
                           
                           'fiat belongsTo id_tom',
@@ -117,7 +117,6 @@ class TestStatementBuilder(unittest.TestCase):
         #return self.process(sentence, expected_result, display_statement_result = False)
         #
     """
-    
     def test_1(self):
         logger.info("\n**** Test 1  *** ")
         logger.info("Danny drives the blue car")
@@ -192,7 +191,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ '* rdf:type Put',
                             '* performedBy id_danny',
                             '* actsOnObject blue_cube',
-                            '* isNexto volvo']   
+                            '* isNextTo volvo']   
         self.process(sentence, expected_result, display_statement_result = True)
        
     
@@ -346,10 +345,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])]) 
-        expected_resut = ['* rdf:type Have',
+        expected_result = ['* rdf:type Have',
                           '* performedBy a_man',
                           '* involves twingo']
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
         
     
     def test_5(self):
@@ -387,10 +386,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            'affirmative',
                                            [])])    
         
-        expected_resut = ['* rdf:type Have',
+        expected_result = ['* rdf:type Have',
                           '* performedBy a_man',
                           '* involves twingo']
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
             
     
     def test_6(self):
@@ -430,14 +429,14 @@ class TestStatementBuilder(unittest.TestCase):
                                             [],
                                             'affirmative', 
                                             [])])
-        expected_resut = ['* rdf:type Give',
+        expected_result = ['* rdf:type Give',
                           '* performedBy SPEAKER',
                           '* actsOnObject fiat',
                           '* receivedBy myself']
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
-        
+    
     def test_7(self):
         
         logger.info("\n**** Test 7  *** ")
@@ -457,18 +456,18 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['* rdf:type Move',
+        expected_result = ['* rdf:type Move',
                           '* performedBy SPEAKER',
                           '* hasGoal id_toulouse',
                           '* eventOccurs PAST']
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     def test_8(self):
         logger.info("\n**** Test 8  *** ")
         logger.info("put the green bottle in the blue car")
         sentence = Sentence("imperative", "", 
                              [],                                         
-                             [Verbal_Group(['put'],
+                             [Verbal_Group(['place'],
                                            [],
                                            'present simple',
                                            [Nominal_Group(['the'],['bottle'],[['green',[]]],[],[])],
@@ -478,14 +477,14 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['SPEAKER desires *',
+        expected_result = ['SPEAKER desires *',
                           '* rdf:type Put',
                           '* performedBy myself',
                           '* actsOnObject green_bottle',
                           '* isIn volvo']  
         
 
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_8_relative(self):
@@ -519,15 +518,15 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['SPEAKER desires *',
+        expected_result = ['SPEAKER desires *',
                           '* rdf:type Show',
                           '* performedBy myself',
                           '* actsOnObject a_bottle',
                           '* receivedBy SPEAKER']  
         
 
-        return self.process(sentence, expected_resut, display_statement_result = True)
-    
+        return self.process(sentence, expected_result, display_statement_result = True)
+
     def test_9_this(self):
         
         logger.info("\n**** test_9_this  *** ")
@@ -553,12 +552,12 @@ class TestStatementBuilder(unittest.TestCase):
                                            [])])
         #Quantifier
         sentence.sv[0].d_obj[0]._quantifier = 'SOME' # a blue cube
-        expected_resut = ['another_cube rdf:type Cube',
+        expected_result = ['another_cube rdf:type Cube',
                             'another_cube hasColor blue']
                           
-        another_expected_resut = ['SPEAKER focusesOn blue_cube']
+        another_expected_result = ['SPEAKER focusesOn blue_cube']
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
    
     def test_9_this_my(self):
@@ -584,11 +583,11 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['another_cube belongsTo SPEAKER']
+        expected_result = ['another_cube belongsTo SPEAKER']
                           
-        another_expected_resut = ['SPEAKER focusesOn blue_cube']
+        another_expected_result = ['SPEAKER focusesOn blue_cube']
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     def test_10_this(self):
         
@@ -610,10 +609,10 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['another_cube isOn shelf1']
-        another_expected_resut = ['SPEAKER focusesOn blue_cube']
+        expected_result = ['another_cube isOn shelf1']
+        another_expected_result = ['SPEAKER focusesOn blue_cube']
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_11_this(self):
@@ -636,12 +635,11 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['* rdf:type Move',
+        expected_result = ['* rdf:type Move',
                           '* performedBy another_cube',
                           '* hasGoal shelf1']
-        another_expected_resut = ['SPEAKER focusesOn something']#with [* rdf:type Move, * performedBy something, * hasGoal shelf1] in the ontology
-        return self.process(sentence, expected_resut, display_statement_result = True)
-    
+        another_expected_result = ['SPEAKER focusesOn something']#with [* rdf:type Move, * performedBy something, * hasGoal shelf1] in the ontology
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     def test_12_this(self):
         
@@ -663,11 +661,11 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['* rdf:type Move',
+        expected_result = ['* rdf:type Move',
                           '* performedBy another_cube',
                           '* hasGoal shelf1']
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     
     
@@ -694,9 +692,9 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_resut = ['another_cube hasColor blue']
+        expected_result = ['another_cube hasColor blue']
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
 
     
     
@@ -726,9 +724,9 @@ class TestStatementBuilder(unittest.TestCase):
         #quantifier
         sentence.sn[0]._quantifier = 'ALL' # apples
         sentence.sv[0].d_obj[0]._quantifier = 'ALL' # fruits
-        expected_resut = ['Apple rdfs:subClassOf Fruit']
+        expected_result = ['Apple rdfs:subClassOf Fruit']
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     def test_15_quantifier_some_some(self):        
         logger.info("\n**** test_15_quantifier_some_some  *** ")
@@ -756,9 +754,9 @@ class TestStatementBuilder(unittest.TestCase):
         #quantifier
         sentence.sn[0]._quantifier = 'SOME' # apples
         sentence.sv[0].d_obj[0]._quantifier = 'SOME' # fruits
-        expected_resut = ['Apple rdfs:subClassOf Fruit']
+        expected_result = ['Apple rdfs:subClassOf Fruit']
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_15_quantifier_action_verb(self):        
@@ -788,9 +786,9 @@ class TestStatementBuilder(unittest.TestCase):
         #quantifier
         sentence.sn[0]._quantifier = 'SOME' # an apple
         sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier = 'SOME' # a tree
-        expected_resut = ['? ? ?'] # TODO
+        expected_result = ['? ? ?'] # TODO
         
-        return self.process(sentence, expected_resut, display_statement_result = True)
+        return self.process(sentence, expected_result, display_statement_result = True)
     
     
     #Action adverbs
@@ -1199,7 +1197,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'volvo owl:differentFrom volvo']   
         self.process(sentence, expected_result, display_statement_result = True)
     
-    
+
     def test_25_negative(self):
         logger.info("\n**** test_25_negative *** ")
         logger.info("I am not the brother of Danny")
@@ -1231,7 +1229,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
         self.process(sentence, expected_result, display_statement_result = True)
     
-    
+    """
     def test_26_subsentences(self):
         logger.info("\n**** test_26_subsentences *** ")
         logger.info("you will drive the car if you get the keys'.")
@@ -1338,7 +1336,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.process(sentence, expected_result, display_statement_result = True)
     
     
-    
+    """
     def process(self, sentence, expected_result, display_statement_result = False):
         #Dump resolution
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself', self.resolver)
@@ -1390,7 +1388,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
             
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
-    
+
     def test_sentence1(self):
 
         logger.info("\n##################### test_sentence1 ########################\n")
@@ -1425,7 +1423,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         self.assertTrue(check_results(res[0], expected_result))
         
-
+    
     def test_sentence3(self):
         
         logger.info("\n##################### Simple statements ########################\n")              
@@ -1502,6 +1500,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         logger.info("\n##################### test_sentence6 - it ########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
         
         ##sentence1
         stmt = "the red apple is on the big tree"
@@ -1518,17 +1517,16 @@ class TestBaseSentenceDialog(unittest.TestCase):
         answer = "yes. I meant the green one"
         res = self.dialog.test('myself', stmt, answer)
         
-        expected_result = ['* rdf:type See',
-                            '* performedBy myself',
-                            '* actsOnObject green_banana']
+        expected_result = ['myself sees green_banana']
                             
         self.assertTrue(check_results(res[0], expected_result))
-        
+    
     def test_sentence7(self):
         
         logger.info("\n##################### test_sentence7 - it ########################\n")
         
         #Fill up History
+        self.dialog.dialog_history = []
         
         ##sentence2
         stmt = "the green banana is next to the red apple"
@@ -1540,18 +1538,18 @@ class TestBaseSentenceDialog(unittest.TestCase):
         answer = "No. I mean the red apple"
         res = self.dialog.test('myself', stmt, answer)
         
-        expected_result = ['* rdf:type See',
-                            '* performedBy myself',
-                            '* actsOnObject red_apple']
+        expected_result = ['myself sees red_apple']
                             
 
         self.assertTrue(check_results(res[0], expected_result))
 
-
+    
     def test_sentence8(self):
         
         logger.info("\n##################### test_sentence8 - THIS NO FOCUS########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
+        
         ##sentence2
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
@@ -1564,20 +1562,19 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ### Expected Question: Do you mean the green banana?
         answer = "No. I mean the red apple"
         res = self.dialog.test('myself', stmt, answer)
-        expected_result = ['* rdf:type See',
-                            '* performedBy myself',
-                            '* actsOnObject red_apple']
+        expected_result = ['myself sees red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
         
         self.assertTrue(check_results(res[0], expected_result))
         
 
-
     def test_sentence8_bis(self):
         
         logger.info("\n##################### test_sentence8 bis - THIS NO FOCUS########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
+        
         ##sentence2
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
@@ -1590,9 +1587,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ### Expected Question: Do you mean the green banana?
         answer = "No. I mean the red apple"
         res = self.dialog.test('myself', stmt, answer)
-        expected_result = ['* rdf:type See',
-                            '* performedBy myself',
-                            '* actsOnObject red_apple']
+        expected_result = ['myself sees red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
         self.assertTrue(check_results(res[0], expected_result))
@@ -1601,6 +1596,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         logger.info("\n##################### test_sentence8 ter - THIS NO FOCUS########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
+        
         ##sentence2
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
@@ -1612,9 +1609,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['* rdf:type See',
-                            '* performedBy myself',
-                            '* actsOnObject red_apple']
+        expected_result = ['myself sees red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
         self.assertTrue(check_results(res[0], expected_result))
@@ -1624,6 +1619,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         logger.info("\n##################### test_sentence9 - OTHER ########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
+        
         ##sentence1
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
@@ -1640,6 +1637,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         logger.info("\n##################### test_sentence9_bis - OTHER ########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
+        
         ##sentence1
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
@@ -1658,6 +1657,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         logger.info("\n##################### test_sentence9_ter - THIS OTHER ########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
+        
         ##sentence1
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
@@ -1680,6 +1681,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         logger.info("\n##################### test_sentence9_quater - THIS OTHER ########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
+        
         ##sentence1
         stmt = "the green banana is next to the red apple"
         res = self.dialog.test('myself', stmt)
@@ -1700,6 +1703,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         logger.info("\n##################### test_sentence10 - SAME ########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
         
         ##sentence1
         stmt = "the red apple is on the big tree"
@@ -1716,9 +1720,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         answer = "yes. I meant the green one"
         res = self.dialog.test('myself', stmt, answer)
         
-        expected_result = ['* rdf:type See',
-                            '* performedBy myself',
-                            '* actsOnObject green_banana']
+        expected_result = ['myself sees green_banana']
         
         
         self.assertTrue(check_results(res[0], expected_result))
@@ -1742,9 +1744,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['* rdf:type See',
-                            '* performedBy myself',
-                            '* actsOnObject red_apple']
+        expected_result = ['myself sees red_apple']
         
         
         self.assertTrue(check_results(res[0], expected_result))
@@ -1754,6 +1754,8 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         logger.info("\n##################### test_sentence11 - MODALS ########################\n")
         #Fill up History
+        self.dialog.dialog_history = []
+        
         ##sentence1
         stmt = "I can take the green banana"
         res = self.dialog.test('myself', stmt)
@@ -1764,7 +1766,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                            
         self.assertTrue(check_results(res[0], expected_result))
     
-    
+
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
@@ -1797,15 +1799,13 @@ def check_results(res, expected):
            
     return expected == res
 
-
-
 def dump_resolved(sentence, current_speaker, current_listener, resolver):
     sentence = resolver.references_resolution(sentence,
                                                     current_speaker, None, None, None)
     sentence = resolver.noun_phrases_resolution(sentence,
                                                       current_speaker, None, None)    
     sentence = resolver.verbal_phrases_resolution(sentence)
-
+    
     return sentence
 
 
@@ -1813,14 +1813,15 @@ def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestStatementBuilder)
     suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestBaseSentenceDialog))
     
+    
     return suite
     
 if __name__ == '__main__':
     
     logger.setLevel(logging.DEBUG)
 
-    logger.addHandler(get_console_handler)
+    logger.addHandler(get_console_handler())
     #logger.addHandler(get_file_handler("statements.log"))
-    
+
     # executing verbalization tests
     unittest.TextTestRunner(verbosity=2).run(test_suite())

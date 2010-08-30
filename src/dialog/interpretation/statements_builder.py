@@ -422,7 +422,7 @@ class NominalGroupStatementBuilder:
             E.g: The car of Danny
             This example should provide the statements [danny_car rdf:type Car, 
                                                         danny_car belongsTo DANNY]
-            where 'danny_car' is the existing ID od the car of Danny in the ontology and
+            where 'danny_car' is the existing ID of the car of Danny in the ontology and
             'DANNY' is the ID of an existing agent named 'Danny'
         """
         
@@ -432,8 +432,8 @@ class NominalGroupStatementBuilder:
             else:
                 noun_cmpl_id = self.set_nominal_group_id(noun_cmpl)
             
-            self.process_nominal_group(noun_cmpl, noun_cmpl_id, None, False)
-            
+            if not nominal_group._resolved:
+                self.process_nominal_group(noun_cmpl, noun_cmpl_id, None, False)
             # Case of affirmation
             if not negative_object:
                 self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
@@ -632,7 +632,12 @@ class VerbalGroupStatementBuilder:
                     self._statements.append(subject_id + " desires " + sit_id)
                     
                     if verbal_group.sv_sec:
-                        self.process_vrb_sec(verbal_group, subject_id, subject_quantifier, sit_id)                      
+                        self.process_vrb_sec(verbal_group, subject_id, subject_quantifier, sit_id)
+                
+                #Case of action verbs wit passive behaviour
+                elif verb.lower() in ['see', 'hear', 'understand']:
+                    sit_id = subject_id
+                    
                 #Case 3:   
                 else:
                     # Modals verbs. E.g: can, must, ...
@@ -680,10 +685,17 @@ class VerbalGroupStatementBuilder:
     def process_direct_object(self, d_objects, verb, id, quantifier):
         """This processes the attribute d_obj of a sentence verbal groups."""
         #logger.debug("Processing direct object d_obj:")
+        
         d_obj_stmt_builder = NominalGroupStatementBuilder(d_objects, self._current_speaker)
         
         #Thematic roles
-        d_obj_role = ResourcePool().thematic_roles.get_next_cmplt_role(verb, True)
+        try:
+            d_obj_role = " " +  ResourcePool().thematic_roles.verbs[verb].roles[0].id + " "
+        except  KeyError:
+            d_obj_role = " involves "
+        
+        if verb.lower() in ['see', 'hear', 'understand']:
+            d_obj_role  = ' ' + verb.lower() +'s '
         
         #nominal groups
         for d_obj in d_objects:
@@ -692,7 +704,6 @@ class VerbalGroupStatementBuilder:
             if verb in ResourcePool().state:
                 d_obj_id = id
                 d_obj_quantifier = quantifier
-            
             
             #Case 2: The direct object follows another stative or action verb.
             #        we process the d_obj as involved by the situation
@@ -746,9 +757,6 @@ class VerbalGroupStatementBuilder:
                 #Proposition role
                 icmpl_role = None
                 
-                # Specific location object. E.g: BACK, FRONT, LEFT, RIGHT
-                object_location = None
-                
                 # Case of no preposition
                 if not ic.prep:
                     icmpl_role = " receivedBy " 
@@ -764,13 +772,7 @@ class VerbalGroupStatementBuilder:
                             icmpl_role = " " + ResourcePool().preposition_rdf_object_property[ic.prep[0]][0] + " "
                         except IndexError:
                             pass
-                            
-                        #  E.g: for the preposition 'behind' we expect the property 'isLocated' and the object_location 'BACK'
-                        try:
-                            object_location = ResourcePool().preposition_rdf_object_property[ic.prep[0]][1]
-                        except IndexError:
-                            pass
-                    
+                        
                 # Case of prepostion but thematic roles not found
                 if not icmpl_role and ic.prep:
                     icmpl_role = " is" + ic.prep[0].capitalize() + " "
@@ -780,23 +782,13 @@ class VerbalGroupStatementBuilder:
                 # Case of negation
                 if self._process_on_negative:
                     negative_ic_noun_id = generate_id(with_question_mark = False)
-                    if object_location:
-                        self._statements.append(sit_id + icmpl_role + object_location)
-                        self._statements.append(sit_id + " isNexto " + negative_ic_noun_id)
-                    
-                    else:
-                        self._statements.append(sit_id + icmpl_role + negative_ic_noun_id)
+                    self._statements.append(sit_id + icmpl_role + negative_ic_noun_id)
                         
                     self._statements.append(negative_ic_noun_id + ' owl:differentFrom ' + ic_noun_id)
                     
                 # Case of affirmation
                 else:
-                    if object_location: #BACK, LEFT, RIGHT, FRONT, UP
-                        self._statements.append(sit_id + icmpl_role + object_location)
-                        self._statements.append(sit_id + " isNexto " + ic_noun_id)
-                    
-                    else:    
-                        self._statements.append(sit_id + icmpl_role + ic_noun_id)
+                    self._statements.append(sit_id + icmpl_role + ic_noun_id)
                 
                 
                 i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id, None, False)
