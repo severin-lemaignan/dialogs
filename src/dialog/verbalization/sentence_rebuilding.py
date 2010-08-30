@@ -15,6 +15,7 @@
     possession_ques : to verbalise a question about possession                    
     sub_process : to verbalises a subsentence                                      
 """
+from dialog.resources_manager import ResourcePool
 import element_rebuilding
 import other_functions
 
@@ -22,7 +23,7 @@ import other_functions
 """
 Statement of lists
 """
-how_list=['often','soon']
+vrb_to = ResourcePool().verb_need_to
 
 
 
@@ -167,10 +168,6 @@ def w_question(analysis):
         aim_question=other_functions.list_rebuilding(analysis.aim)
         return ['what','kind','of']+aim_question[1:]+phrase
     
-    for i in how_list:
-        if i==analysis.aim:
-            return ['how']+[analysis.aim]+phrase
-    
     #It is an how question
     if other_functions.is_an_adj(analysis.aim)==1:
         return ['how']+[analysis.aim]+phrase
@@ -233,25 +230,14 @@ def quantity_ques(analysis):
                 phrase=phrase+element_rebuilding.indirect_compl_rebuilding(x)
             
             phrase=phrase+analysis.sv[0].advrb
+            
+            flag=0
+            for j in vrb_to:
+                if analysis.sv[0].vrb_main[0]==j:
+                    flag=1
+                
             for k in analysis.sv[0].sv_sec:
-                phrase=phrase+['to']+k.vrb_adv+other_functions.list_rebuilding(k.vrb_main[0])
-                
-                #We add the direct and indirect complement
-                if k.i_cmpl!=[] and k.i_cmpl[0].prep!=[]:
-                    phrase=phrase+element_rebuilding.nom_struc_rebuilding(k.d_obj)
-                    for x in k.i_cmpl:
-                        phrase=phrase+element_rebuilding.indirect_compl_rebuilding(x)
-                else:
-                    if k.i_cmpl!=[]:
-                        phrase=phrase+element_rebuilding.indirect_compl_rebuilding(k.i_cmpl[0])
-                    phrase=phrase+element_rebuilding.nom_struc_rebuilding(k.d_obj)
-                    #init
-                    x=1
-                    while x < len(k.i_cmpl):
-                        phrase=phrase+element_rebuilding.indirect_compl_rebuilding(k.i_cmpl[x])
-                        x=x+1
-                
-                phrase=phrase+k.advrb
+                phrase=element_rebuilding.scd_vrb_rebuilding(k, phrase, flag)
     
             for s in analysis.sv[0].vrb_sub_sentence:
                 phrase=phrase+sub_process(s)

@@ -23,20 +23,10 @@ import other_functions
 Statement of lists
 """
 modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
-pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-irreg_plur_noun=[('glasses','glass'),('busses','bus'), ('information','information')]
-
-
-
-"""
-We have to read all past irregular verb forms                                    
-"""
+pronoun_list = ResourcePool().pronouns
+irreg_plur_noun = ResourcePool().plural_nouns
+vrb_to = ResourcePool().verb_need_to
 past_irreg_vrb = ResourcePool().irregular_verbs_past
-
-
-"""
-We have to read all past irregular verb forms                                    
-"""
 present_irreg_vrb = ResourcePool().irregular_verbs_present
 
 
@@ -54,6 +44,9 @@ def nom_struc_rebuilding(nom_struc):
     
     while i < len(nom_struc):
         
+        if nom_struc[i]._quantifier=='SOME' and (nom_struc[i].det==['a'] or nom_struc[i].det==['an']):
+            nom_struc[i]._quantifier='ONE'
+            
         #The first nominal group not preceded but 'and' if there is
         if nom_struc[i]._conjunction=='AND' and i > 0:
             nominal_structure=nominal_structure+['and']
@@ -64,16 +57,23 @@ def nom_struc_rebuilding(nom_struc):
         
         #We recover the nominal group and his complement
         if nom_struc[i]._quantifier=='SOME' or nom_struc[i]._quantifier=='ALL' or nom_struc[i]._quantifier=='ANY' or (nom_struc[i]._quantifier=='DIGIT' and nom_struc[i].det!='one'):
+            
             for n in irreg_plur_noun:
                 if nom_struc[i].noun!=[] and n[1]==nom_struc[i].noun[0]:
                     nn=[n[0]]
+            
             if nom_struc[i].noun!=[] and nn==[]:
                 nn=[nom_struc[i].noun[0]+'s']
+               
             nominal_structure = nominal_structure + nom_struc[i].det
             for z in nom_struc[i].adj:
                 nominal_structure = nominal_structure+z[1]+[z[0]]
             nominal_structure = nominal_structure+nn
+            
+            #Re-init
+            nn=[]
         else:
+
             nominal_structure = nominal_structure + nom_struc[i].det
             for z in nom_struc[i].adj:
                 nominal_structure = nominal_structure+z[1]+[z[0]]
@@ -92,7 +92,7 @@ def nom_struc_rebuilding(nom_struc):
             ns=[]
 
         i=i+1
-
+    
     return nominal_structure
 
 
@@ -106,6 +106,7 @@ def indirect_compl_rebuilding(indirect_compl):
 
     #init
     ind_cmpl=[]
+    k=0
 
     #We have 2 cases : with preposal and without
     if indirect_compl.prep!=[]:
@@ -115,7 +116,12 @@ def indirect_compl_rebuilding(indirect_compl):
             nom_gr=[nom_gr[0]]+indirect_compl.prep+nom_gr[1:]
         else:
             nom_gr=indirect_compl.prep+nom_gr
-           
+        
+        while k < len(nom_gr):
+            if (nom_gr[k]=='or' or nom_gr[k]=='but') and nom_gr[k+1]!=indirect_compl.prep[0]:
+                nom_gr=nom_gr[:k+1]+indirect_compl.prep+nom_gr[k+1:]
+            k=k+1    
+        
     else:
         nom_gr= indirect_compl.prep + nom_struc_rebuilding(indirect_compl.nominal_group)
             
@@ -332,6 +338,44 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
             return [vrb_condjugated[0]]+['not']+adverb+vrb_condjugated[1:]
         return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
     
+    
+
+def scd_vrb_rebuilding(sec_vrb, phrase, flg):
+    
+    if flg==1:
+        phrase=phrase+sec_vrb.vrb_adv+other_functions.list_rebuilding(sec_vrb.vrb_main[0])
+    else:
+        #Add this verb with 'to'
+        phrase=phrase+['to']+sec_vrb.vrb_adv+other_functions.list_rebuilding(sec_vrb.vrb_main[0])
+
+    #We add the direct and indirect complement
+    if sec_vrb.i_cmpl!=[] and sec_vrb.i_cmpl[0].prep!=[]:
+        phrase=phrase+nom_struc_rebuilding(sec_vrb.d_obj)
+        for x in sec_vrb.i_cmpl:
+            phrase=phrase+indirect_compl_rebuilding(x)
+    else:
+        if sec_vrb.i_cmpl!=[]:
+            phrase=phrase+indirect_compl_rebuilding(sec_vrb.i_cmpl[0])
+        phrase=phrase+nom_struc_rebuilding(sec_vrb.d_obj)
+        #init
+        x=1
+        while x < len(sec_vrb.i_cmpl):
+            phrase=phrase+indirect_compl_rebuilding(sec_vrb.i_cmpl[x])
+            x=x+1
+    
+    flag=0
+    for j in vrb_to:
+        if sec_vrb.vrb_main[0]==j:
+            flag=1      
+    
+    for z in sec_vrb.sv_sec:       
+        phrase=scd_vrb_rebuilding(z, phrase,flag)
+        
+    #We add the adverb of the sentence
+    phrase=phrase+sec_vrb.advrb
+        
+    return phrase
+
 
 
 def end_statement_rebuilding(sentence, sv ,sn, type, aim):
@@ -361,29 +405,15 @@ def end_statement_rebuilding(sentence, sv ,sn, type, aim):
 
     #We add the adverb of the sentence
     phrase=phrase+sv[0].advrb
-
+    
+    flag=0
+    for j in vrb_to:
+        if sv[0].vrb_main[0]==j:
+            flag=1
+    
     #If there is a second verb
     for k in sv[0].sv_sec:
-        #Add this verb with 'to'
-        phrase=phrase+['to']+k.vrb_adv+other_functions.list_rebuilding(k.vrb_main[0])
-        
-        #We add the direct and indirect complement
-        if k.i_cmpl!=[] and k.i_cmpl[0].prep!=[]:
-            phrase=phrase+nom_struc_rebuilding(k.d_obj)
-            for x in k.i_cmpl:
-                phrase=phrase+indirect_compl_rebuilding(x)
-        else:
-            if k.i_cmpl!=[]:
-                phrase=phrase+indirect_compl_rebuilding(k.i_cmpl[0])
-            phrase=phrase+nom_struc_rebuilding(k.d_obj)
-            #init
-            x=1
-            while x < len(k.i_cmpl):
-                phrase=phrase+indirect_compl_rebuilding(k.i_cmpl[x])
-                x=x+1
-
-        #We add the adverb of the sentence
-        phrase=phrase+k.advrb
+        phrase= scd_vrb_rebuilding(k, phrase, flag)
 
     return sentence+phrase
 
@@ -414,32 +444,20 @@ def end_question_rebuilding(sentence, sv ,sn, aim):
         while x < x < len(sv[0].i_cmpl):
             phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[x])
             x=x+1
-            
-            
+        
+        flag=0
+        for j in vrb_to:
+            if sv[0].vrb_main[0]==j:
+                flag=1
+                
+        #If there is a second verb
+        for k in sv[0].sv_sec:
+            phrase= scd_vrb_rebuilding(k, phrase,flag)
+        
     #We add the adverb of the sentence
     phrase=phrase+sv[0].advrb
 
-    #If there is a second verb
-    for k in sv[0].sv_sec:
-        #Add this verb with 'to'
-        phrase=phrase+['to']+k.vrb_adv+other_functions.list_rebuilding(k.vrb_main[0])
+    
 
-        #We add the direct and indirect complement
-        if k.i_cmpl!=[] and k.i_cmpl[0].prep!=[]:
-            phrase=phrase+nom_struc_rebuilding(k.d_obj)
-            for x in k.i_cmpl:
-                phrase=phrase+indirect_compl_rebuilding(x)
-        else:
-            if k.i_cmpl!=[]:
-                phrase=phrase+indirect_compl_rebuilding(k.i_cmpl[0])
-            phrase=phrase+nom_struc_rebuilding(k.d_obj)
-            #init
-            x=1
-            while x < len(k.i_cmpl):
-                phrase=phrase+indirect_compl_rebuilding(k.i_cmpl[x])
-                x=x+1
-
-        #We add the adverb of the sentence
-        phrase=phrase+k.advrb
-
+        
     return sentence+phrase

@@ -23,7 +23,8 @@ import utterance_rebuilding
 
 class TestVerbalization(unittest.TestCase):
     """
-    Function to compare 2 nominal groups   """
+    Function to compare 2 nominal groups   
+    """
     
     
     def test_01(self):
@@ -1102,7 +1103,7 @@ class TestVerbalization(unittest.TestCase):
         logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
-    
+
     def test_34(self):
         logger.info('\n######################## test 1.34 ##############################')
         logger.info('#################################################################\n')
@@ -1125,8 +1126,7 @@ class TestVerbalization(unittest.TestCase):
         logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
-    
-        
+
     def test_35(self):
         
         logger.info('\n######################## test 1.35 ##############################')
@@ -1210,7 +1210,6 @@ class TestVerbalization(unittest.TestCase):
         logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)
-    
     
     def test_38(self):
         
@@ -1809,7 +1808,7 @@ class TestVerbalization(unittest.TestCase):
         logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
-         
+        
     def test_55(self):
         
         logger.info('\n######################## test 1.55 ##############################')
@@ -1958,7 +1957,7 @@ class TestVerbalization(unittest.TestCase):
         logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
-       
+    
     def test_59(self):
         
         logger.info('\n######################## test 1.59 ##############################')
@@ -1990,13 +1989,13 @@ class TestVerbalization(unittest.TestCase):
         logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance)        
-        
+    
     def test_60(self):
         
         logger.info('\n######################## test 1.56 ##############################')
         logger.info('#################################################################\n')
         
-        original_utterance="When your father came, we was preparing the dinner. While I phoned, he made a sandwich with bacons."
+        original_utterance="We were preparing the dinner when your father came. He made a sandwich which is with bacon, while I phoned."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['we'],[],[],[])], 
@@ -2059,13 +2058,13 @@ class TestVerbalization(unittest.TestCase):
         logger.info("The result obtained is :    " + utterance)
         
         self.assertEquals(original_utterance, utterance) 
-         
+    
     def test_62(self):
         
         logger.info('\n######################## test 1.55 ##############################')
         logger.info('#################################################################\n')
         
-        original_utterance="red apples grow on green trees and plants. a kind of thing. It can be played by twenty players."
+        original_utterance="Red apples grow on green trees and plants. A kind of thing. It can be played by 30028 players."
         
         sentences=[Sentence('statement', '', 
                 [Nominal_Group([],['apple'],[['red',[]]],[],[])], 
@@ -2075,16 +2074,20 @@ class TestVerbalization(unittest.TestCase):
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '', 
                     [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
-                    [Verbal_Group(['.'], [],'present simple', 
-                        [], 
-                        [],
-                        [], [] ,'affirmative',[])]),
+                    []),
             Sentence('statement', '', 
                         [Nominal_Group([],['it'],[],[],[])],  
                         [Verbal_Group(['can+play'],[],'present passive', 
                             [], 
-                            [Indirect_Complement(['by'],[Nominal_Group(['20'],['player'],[],[],[])])],
+                            [Indirect_Complement(['by'],[Nominal_Group(['30028'],['player'],[],[],[])])],
                             [], [] ,'affirmative',[])])]
+        
+        sentences[0].sn[0]._quantifier="ALL"
+        sentences[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
+        sentences[0].sv[0].i_cmpl[0].nominal_group[1]._quantifier="ALL"
+        sentences[1].sn[0]._quantifier="SOME"
+        sentences[1].sn[0].noun_cmpl[0]._quantifier="SOME"
+        sentences[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -2098,7 +2101,7 @@ class TestVerbalization(unittest.TestCase):
         logger.info('\n######################## test 1.56 ##############################')
         logger.info('#################################################################\n')
         
-        original_utterance="let the man go to the cinema. Is it the time to let you go."
+        original_utterance="Let the man go to the cinema. Is it the time to let you go? Where is the other tape?"
         
         sentences=[Sentence('imperative', '', 
                 [], 
@@ -2123,6 +2126,12 @@ class TestVerbalization(unittest.TestCase):
                         [], [] ,'affirmative',[])],'present simple', 
                     [Nominal_Group(['the'],['time'],[],[],[])], 
                     [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('w_question', 'place', 
+                [Nominal_Group(['the'],['tape'],[['other',[]]],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [], 
+                    [],
                     [], [] ,'affirmative',[])])]
         
         utterance=utterance_rebuilding.verbalising(sentences)
@@ -2132,6 +2141,283 @@ class TestVerbalization(unittest.TestCase):
         
         self.assertEquals(original_utterance, utterance)
 
+    def test_64(self):
+        
+        print ''
+        print '######################## test 1.57 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="And now, can you reach the tape. it could have been them. It is just me at the door. A strong clause can stand on its own."
+        
+        sentences=[Sentence('yes_no_question', '', 
+                [Nominal_Group([],['you'],[],[],[])], 
+                [Verbal_Group(['can+reach'], [],'present simple', 
+                    [Nominal_Group(['the'],['tape'],[],[],[])], 
+                    [],
+                    [], ['now'] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Verbal_Group(['could+be'], [],'passive conditional', 
+                    [Nominal_Group([],['them'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['it'],[],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [Nominal_Group([],['me'],[],[],[])], 
+                    [Indirect_Complement(['at'],[Nominal_Group(['the'],['door'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group(['a'],['clause'],[['strong',[]]],[],[])], 
+                [Verbal_Group(['can+stand'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['on'],[Nominal_Group(['its'],['own'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+
+    def test_65(self):
+        
+        print ''
+        print '######################## test 1.58 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="tell me what to do. No, I can not reach it."
+        
+        sentences=[Sentence('imperative', '', 
+                [], 
+                [Verbal_Group(['tell'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                     Indirect_Complement([],[Nominal_Group(['the'],['thing'],[],[],[Sentence('relative', 'that', 
+                        [], 
+                        [Verbal_Group(['be'], [Verbal_Group(['do'], [],'', 
+                                [], 
+                                [],
+                                [], [] ,'affirmative',[])],'present simple', 
+                            [], 
+                            [],
+                            [], [] ,'affirmative',[])])])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('disagree', '',[],[]), 
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['can+reach'], [],'present simple', 
+                    [Nominal_Group([],['it'],[],[],[])], 
+                    [],
+                    [], [] ,'negative',[])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+        
+    def test_66(self):
+        
+        print ''
+        print '######################## test 1.59 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="I'll come back on Monday. I'll play with guitar. I'll play football"
+        
+        sentences=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come+back'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['on'],[Nominal_Group([],['Monday'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [Nominal_Group(['a'],['football'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])])]
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+        
+    def test_67(self):
+        
+        print ''
+        print '######################## test 1.60 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="I'll play a guitar, a piano and a violon. I'll play with a guitar, a piano and a violon. Give me everything."
+        
+        sentences=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[]),
+                                                   Nominal_Group(['a'],['piano'],[],[],[]),
+                                                   Nominal_Group(['a'],['violon'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('imperative', '', 
+                [], 
+                [Verbal_Group(['give'], [],'present simple', 
+                    [Nominal_Group([],['everything'],[],[],[])], 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        sentences[0].sv[0].d_obj[0]._quantifier="SOME"
+        sentences[0].sv[0].d_obj[1]._quantifier="SOME"
+        sentences[0].sv[0].d_obj[2]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].nominal_group[1]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].nominal_group[2]._quantifier="SOME"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+          
+    def test_68(self):
+        
+        print ''
+        print '######################## test 1.61 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="I'll come back at 7 o'clock tomorrow. He finishes the project 10 minutes before."
+        
+        sentences=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come+back'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['at'],[Nominal_Group(['7'],["o'clock"],[],[],[])])],
+                    [], ['tomorrow'] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['he'],[],[],[])], 
+                [Verbal_Group(['finish'], [],'present simple', 
+                    [Nominal_Group(['the'],['project'],[],[],[])], 
+                    [Indirect_Complement(['before'],[Nominal_Group(['10'],['minute'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        sentences[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        sentences[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+
+    def test_69(self):
+        
+        print ''
+        print '######################## test 1.62 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="I'll play a guitar, a piano and a violon. I'll play with a guitar, a piano and a violon. The boss, you and me are here."
+        
+        sentences=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[]),
+                                                   Nominal_Group(['a'],['piano'],[],[],[]),
+                                                   Nominal_Group(['a'],['violon'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group(['the'],['boss'],[],[],[]),Nominal_Group([],['you'],[],[],[]),Nominal_Group([],['me'],[],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [], 
+                    [],
+                    [], ['here'] ,'affirmative',[])])]
+        
+        sentences[0].sv[0].d_obj[0]._quantifier="SOME"
+        sentences[0].sv[0].d_obj[1]._quantifier="SOME"
+        sentences[0].sv[0].d_obj[2]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].nominal_group[1]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].nominal_group[2]._quantifier="SOME"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+        
+    def test_70(self):
+        
+        print ''
+        print '######################## test 1.63 ##############################'
+        print '#################################################################'
+        print ''
+        
+        original_utterance="A speaking sentence's time is the best. I come at 10 pm. I'll come an evening tomorrow."
+        
+        sentences=[Sentence('statement', '', 
+                [Nominal_Group(['the'],['time'],[],[Nominal_Group(['a'],['sentence'],[['speaking',[]]],[],[])],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [Nominal_Group(['the'],[],[['best',[]]],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['at'],[Nominal_Group(['10'],['pm'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement([],[Nominal_Group(['an'],['evening'],[],[],[])])],
+                    [], ['tomorrow'] ,'affirmative',[])])]
+        
+        sentences[0].sn[0].noun_cmpl[0]._quantifier='SOME'
+        sentences[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        sentences[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        
+        utterance=utterance_rebuilding.verbalising(sentences)
+        
+        print "The original utterance is : ", original_utterance
+        print "The result obtained is :    ", utterance
+        
+        self.assertEquals(original_utterance, utterance)
+    
+
+
+        
 class TestVerbalizationCompleteLoop(unittest.TestCase):
         
     def setUp(self):

@@ -36,13 +36,13 @@ class TestTimescale(unittest.TestCase):
                     [], [] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I'll play a guitar, a piano and a violon."
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -74,13 +74,13 @@ class TestTimescale(unittest.TestCase):
                     [], [] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "The bottle is on the table."
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -112,13 +112,13 @@ class TestTimescale(unittest.TestCase):
                     [], [] ,'negative',[])])
         
         print 'The sentence that we will process is : '
-        print "You aren't preparing the car and my father's moto at the same time."
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -151,13 +151,13 @@ class TestTimescale(unittest.TestCase):
                     [], ['here'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "What is the weather like in the winter here?"
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -189,13 +189,13 @@ class TestTimescale(unittest.TestCase):
                     [], ['now'] ,'negative',[])])
         
         print 'The sentence that we will process is : '
-        print "Isn't he doing his homework and his game now?"
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : ' 
@@ -227,13 +227,13 @@ class TestTimescale(unittest.TestCase):
                     [], ['today'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "What must happen in the company today?"
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -270,13 +270,13 @@ class TestTimescale(unittest.TestCase):
                     [], [] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "The bottle is next to the table in front of the kitchen."
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -310,13 +310,13 @@ class TestTimescale(unittest.TestCase):
                     [], ['tomorrow'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "What did Jido do tomorrow."
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -353,12 +353,12 @@ class TestTimescale(unittest.TestCase):
         
         print 'The sentence that we will process is : '
         print "I bought the bottle yesterday."
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -382,7 +382,7 @@ class TestTimescale(unittest.TestCase):
     def test_10(self):
         print ''
         print ('######################## test 1.10 ##############################')
-        print "Object of this test : Yesterday"
+        print "Object of this test : Tonight"
         print ''
         
         d_time={'year':'2010','month':'August','day':'27','hour':'10','minute':'0','second':'0'}
@@ -394,13 +394,13 @@ class TestTimescale(unittest.TestCase):
                     [], ['tonight'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "How long is your uncle's store open tonight?"
-        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        print "I bought the bottle yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
         print_time(d_time)
         
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
         if time['action_period']!=None:
             print ''
             print 'The period of the action is : '
@@ -420,9 +420,81 @@ class TestTimescale(unittest.TestCase):
     
         self.assertEquals(time,rslt)
         print ''
+        
+    def test_11(self):
+        print ''
+        print ('######################## test 1.10 ##############################')
+        print "Object of this test : Yesterday"
+        print ''
+        
+        d_time={'year':'2010','month':'August','day':'30','hour':'10','minute':'0','second':'0'}
+        sentence=Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come+back'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['at'],[Nominal_Group(['7'],["o'clock"],[],[],[])])],
+                    [], ['tomorrow'] ,'affirmative',[])])
+        sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        
+        print 'The sentence that we will process is : '
+        print "I bought the bottle yesterday."
+        
+        print ''
+        print 'The time of speaking sentence is : '
+        print_time(d_time)
+        
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        if time['action_period']!=None:
+            print ''
+            print 'The period of the action is : '
+            print 'From : ' 
+            print_time(time['action_period']['time_begin'])
+            print 'To : '
+            print_time(time['action_period']['time_end'])
+        
+        if time['effective_time']!=None:
+            print ''
+            print 'The effective time of the action is : '
+            print_time(time['effective_time'])
+        
+        rslt={'action_period':None,'effective_time':None}
+        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'31','hour':'0','minute':'0','second':'0'},
+                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'31','hour':'23','minute':'59','second':'59'}}
+        rslt['effective_time']={'year':d_time['year'],'month':d_time['month'],'day':'31','hour':'7','minute':'0','second':'0'}
+        
+        self.assertEquals(time,rslt)
+        print ''
  
     
+    
+    
     """
+    def test_75(self):
+        print''
+        print ('######################## test 8.6 ##############################')
+        utterance=" He finish the project 10 minutes before."
+        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+        rslt=[,
+            Sentence('statement', '', 
+                [Nominal_Group([],['he'],[],[],[])], 
+                [Verbal_Group(['finish'], [],'present simple', 
+                    [Nominal_Group(['the'],['project'],[],[],[])], 
+                    [Indirect_Complement(['before'],[Nominal_Group(['10'],['minute'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        
+        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
+   
+    
     def test_32(self):
         print ''
         print ('######################## test 4.2 ##############################')
@@ -567,41 +639,13 @@ class TestTimescale(unittest.TestCase):
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)                   
     
-    def test_75(self):
-        print''
-        print ('######################## test 8.6 ##############################')
-        utterance="I will come back at seven o'clock tomorrow. He finish the project 10 minutes before."
-        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
-        print utterance
-        print '#################################################################'
-        print ''
-        sentence_list=preprocessing.process_sentence(utterance)
-        class_list= analyse_sentence.sentences_analyzer(sentence_list)
-        
-        rslt=[Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['come+back'], [],'future simple', 
-                    [], 
-                    [Indirect_Complement(['at'],[Nominal_Group(['7'],["o'clock"],[],[],[])])],
-                    [], ['tomorrow'] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['he'],[],[],[])], 
-                [Verbal_Group(['finish'], [],'present simple', 
-                    [Nominal_Group(['the'],['project'],[],[],[])], 
-                    [Indirect_Complement(['before'],[Nominal_Group(['10'],['minute'],[],[],[])])],
-                    [], [] ,'affirmative',[])])]
-        
-        rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
-        
-        result_test=compare_utterance(class_list,rslt,sentence_list)
-        self.assertEquals(result_test, 0)
     
-    def test_76(self):
+   
+   def test_77(self):
         print''
-        print ('######################## test 8.7 ##############################')
-        utterance="I'll play a guitar a piano and a violon. I'll play with a guitar a piano and a violon. the boss you and me are here"
-        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
+        print ('######################## test 8.8 ##############################')
+        utterance="The time of speaking sentence is the best. I come at 10pm. I will come tomorrow evening"
+        print "Object of this test : Add test to take off determinant and for timescale"
         print utterance
         print '#################################################################'
         print ''
@@ -609,38 +653,34 @@ class TestTimescale(unittest.TestCase):
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
         rslt=[Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['play'], [],'future simple', 
-                    [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['play'], [],'future simple', 
-                    [], 
-                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[]),
-                                                   Nominal_Group(['a'],['piano'],[],[],[]),
-                                                   Nominal_Group(['a'],['violon'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group(['the'],['boss'],[],[],[]),Nominal_Group([],['you'],[],[],[]),Nominal_Group([],['me'],[],[],[])], 
+                [Nominal_Group(['the'],['time'],[],[Nominal_Group(['a'],['sentence'],[['speaking',[]]],[],[])],[])], 
                 [Verbal_Group(['be'], [],'present simple', 
-                    [], 
+                    [Nominal_Group(['the'],[],[['best',[]]],[],[])], 
                     [],
-                    [], ['here'] ,'affirmative',[])])]
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['at'],[Nominal_Group(['10'],['pm'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement([],[Nominal_Group(['a'],['evening'],[],[],[])])],
+                    [], ['tomorrow'] ,'affirmative',[])])]
         
-        rslt[0].sv[0].d_obj[0]._quantifier="SOME"
-        rslt[0].sv[0].d_obj[1]._quantifier="SOME"
-        rslt[0].sv[0].d_obj[2]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[1]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[2]._quantifier="SOME"
+        rslt[0].sn[0].noun_cmpl[0]._quantifier='SOME'
+        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-        """
-        
-
+    """
+    
+    
+    
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestTimescale)
     

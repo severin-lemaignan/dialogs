@@ -11,7 +11,8 @@
     convert_string : to return concatenate token to have a string (sentence) 
     plural : to to return 1 if the word is a plural
     plural_noun : to return 1 if the nominal group is a plural      
-    is_an_adj : to know if a word is an adjective
+    number : return 1 if the word is a number and 2 if it is a adjective-number  
+    is_an_adj : to know if a word is an adjective 
 """
 from dialog.resources_manager import ResourcePool
 
@@ -19,22 +20,15 @@ from dialog.resources_manager import ResourcePool
 """
 Statement of lists
 """
-cap_let_list=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-noun_end_s_sing=['news','glass', 'bus','Laas','business']
-plural_name=['people', 'information']
-adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
-
-
-"""
-We have to read all irregular adjectives before the processing                    
-"""
+number_list = ResourcePool().numbers
+cap_let_list = ResourcePool().capital_letters
+noun_end_s_sing = ResourcePool().nouns_end_s
+plural_name = ResourcePool().plural_nouns
+adj_rules = ResourcePool().adjective_rules
 adjective_list = ResourcePool().adjectives.keys()
-
-
-"""
-We have to read all nouns which have a confusion with regular adjectives        
-"""
 noun_list = ResourcePool().special_nouns
+superlative_number = ResourcePool().adjective_numbers
+adj_quantifier = ResourcePool().adj_quantifiers
 
 
 
@@ -130,7 +124,7 @@ def plural(word,quantifier,determinant):
         return 1
         
     for k in plural_name:
-        if word==k:
+        if word==k[1]:
             return 1
         
     if quantifier=='SOME' or quantifier=='ALL' or quantifier=='ANY':
@@ -171,6 +165,24 @@ def plural_noun(sn):
 
 
 
+def number(word):
+    """
+    Function return 1 if the word is a number and 2 if it is a adjective-number                    
+    Input=word          Output=flag(0 if no number or 1 if number or 2 adjective-number)        
+    """
+    
+    for n in number_list:
+        if word.startswith(n[1]):
+            return 1
+        if word.startswith(n[0]): 
+            if word.endswith('th'):
+                return 2
+            else:
+                return 1
+    return 0
+
+
+
 def is_an_adj(word):
     """
     This function to know if a word is an adjective                                  
@@ -187,8 +199,12 @@ def is_an_adj(word):
         if word.endswith(k):
             return 1
     
+    #For adjectives created from numbers
+    if word.endswith('th') and number(word)==2:
+        return 1
+        
     #We use the irregular adjectives list to find it
-    for i in adjective_list:
+    for i in adjective_list+superlative_number+adj_quantifier:
         if word==i:
             return 1
     

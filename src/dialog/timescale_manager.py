@@ -208,7 +208,9 @@ def timescale_i_cmpl(indirect_cmpl, action_time):
     This function perform interpretation of an indirect complement
     Input=indirect complement and action time       Output=the action time   
     """
-    
+    if action_time['action_period']!=None:
+        aux=action_time['action_period']['time_begin']
+                
     for i in preposal:
         
         if i[2]!=0 and i[0]==indirect_cmpl.prep[0] and i[0]!='from' and i[0]!='to':
@@ -232,26 +234,27 @@ def timescale_i_cmpl(indirect_cmpl, action_time):
                         if j.noun==['pm']:
                             j.det=str(int(j.det)+12)
                         if action_time['effective_time']==None:
-                            action_time['effective_time']=action_time['action_period']['time_begin']
+                            action_time['effective_time']={'year':aux['year'],'month':aux['month'],'day':aux['day'],
+                                                           'hour':aux['hour'],'minute':aux['minute'],'second':aux['second']}
                         action_time['effective_time']['hour']=str(int(j.det[0]))
                     
-                    #Here We have the 3 periods of the day    
-                    elif j.noun==['morning']:
-                        if action_time['effective_time']==None:
-                            action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                        else:
-                            action_time['action_period']=day_period(action_time['effective_time'], 1)
-                    elif j.noun==['afternoon']:
-                        if action_time['effective_time']==None:
-                            action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                        else:
-                            action_time['action_period']=day_period(action_time['effective_time'], 2)
-                    elif j.noun==['evening']:
-                        if action_time['effective_time']==None:
-                            action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                        else:
-                            action_time['action_period']=day_period(action_time['effective_time'], 3)      
-    
+                #Here We have the 3 periods of the day    
+                elif j.noun==['morning']:
+                    if action_time['effective_time']==None:
+                        action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
+                    else:
+                        action_time['action_period']=day_period(action_time['effective_time'], 1)
+                elif j.noun==['afternoon']:
+                    if action_time['effective_time']==None:
+                        action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
+                    else:
+                        action_time['action_period']=day_period(action_time['effective_time'], 2)
+                elif j.noun==['evening']:
+                    if action_time['effective_time']==None:
+                        action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
+                    else:
+                        action_time['action_period']=day_period(action_time['effective_time'], 3)      
+
     #We return the action time       
     return action_time
 

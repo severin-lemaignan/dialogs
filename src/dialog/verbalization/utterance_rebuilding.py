@@ -5,7 +5,7 @@
  The package contains main functions of this module                               
  We return all elements of a nominal group                                        
  Functions:                                                                       
-    dispatching : to dispatche the main class in corresponding function              
+    dispatching : to dispatche the main class in corresponding function             
     adjective_pos : to return the position of the noun in the sentence             
     find_sn_pos : to return the nom_group in a given position with adjective_pos        
     find_nom_gr_list : to break phrase into nominal groups with 'of'
@@ -29,23 +29,17 @@ import sentence_rebuilding
 """
 Statement of lists
 """
-pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
-det_list=['the', 'a', 'an', 'your', 'his', 'my', 'this', 'her', 'their', 'these', 'that', 'every', 'there']
-adj_rules=['al','ous','est','ing','y','less','ble','ed','ful','ish','ive','ic']
+composed_noun = ResourcePool().composed_nouns
+word_list = ResourcePool().noun_not_composed
+det_list = ResourcePool().determinants
+pronoun_list = ResourcePool().pronouns
+adj_rules = ResourcePool().adjective_rules
+superlative_number = ResourcePool().adjective_numbers
+adj_quantifier = ResourcePool().adj_quantifiers
 wques_rules=[('date',['when']),('place',['where']),('origin',['where']), ('reason',['why']),('people',['who'])]
 insertion_tuples=[("'m", 'am'),("'ve", 'have'),("'re", 'are'),("'ll", 'will'),("'d", 'would'),("'s", 'is')]
-prep_list=['ago']
-
-
-"""
-We have to read all irregular adjectives before the processing                    
-"""
+prep_list = ResourcePool().prep_change_place
 adjective_list = ResourcePool().adjectives.keys()
-
-
-"""
-We have to read all nouns which have a confusion with regular adjectives        
-"""
 noun_list = ResourcePool().special_nouns
 
 
@@ -124,9 +118,9 @@ def adjective_pos(phrase, word_pos):
     """
 
     #If it is the end of the phrase
-    if len(phrase)-1==word_pos:
+    if len(phrase)-1<=word_pos:
         return 1
-
+    
     #It is a noun so we have to return 1
     for j in noun_list:
         if phrase[word_pos]==j:
@@ -136,11 +130,14 @@ def adjective_pos(phrase, word_pos):
     for k in adj_rules:
         if phrase[word_pos].endswith(k):
             return 1+adjective_pos(phrase, word_pos+1)
-
+    
+    #For adjectives created from numbers
+    if phrase[word_pos].endswith('th') and other_functions.number(phrase[word_pos])==2:
+        return 1+adjective_pos(phrase, word_pos+1)
+    
     #We use the irregular adjectives list to find it
-    for i in adjective_list:
+    for i in adjective_list+superlative_number+adj_quantifier:
         if phrase[word_pos]==i:
-            adjective_pos(phrase, word_pos+1)
             return 1+ adjective_pos(phrase, word_pos+1)
 
     #Default case
@@ -156,8 +153,11 @@ def find_sn_pos (phrase, begin_pos):
     Output=the nominal group                                                         
     """
 
+    if begin_pos>=len(phrase):
+        return []
+    
     end_pos = 1
-
+    
     #If it is a pronoun
     for i in pronoun_list:
         if phrase[begin_pos]==i:
@@ -168,6 +168,19 @@ def find_sn_pos (phrase, begin_pos):
         if phrase[begin_pos]==j:
             end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
             return phrase[begin_pos : end_pos+begin_pos]
+    
+    #If we have 'something'
+    for k in composed_noun:
+        if phrase[begin_pos].startswith(k):
+            for l in word_list:
+                if l==phrase[begin_pos]:
+                    return []
+            return [phrase[begin_pos]]    
+       
+    #If there is a number, it will be the same with determinant
+    if other_functions.number(phrase[begin_pos])==1:
+        end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
+        return phrase[begin_pos : end_pos+begin_pos]
 
     #If it is a proper name
     counter=begin_pos
@@ -266,6 +279,12 @@ def possesion_form(sentence):
     flag=0
     
     while begin_pos < len(sentence):
+        
+        if sentence[begin_pos] == 'of' and sentence[begin_pos-1]=='kind':
+            for z in det_list:
+                if z==sentence[begin_pos+1]:
+                    sentence=sentence[:begin_pos+1]+sentence[begin_pos+2:]
+                    begin_pos=begin_pos+1
         
         if sentence[begin_pos] == 'of' and sentence[begin_pos-1]!='think' and find_sn_pos(sentence, begin_pos+1)!=[] and sentence[begin_pos+1]!='thing':
             #We have to find the first nominal group
