@@ -2253,7 +2253,9 @@ class TestParsing(unittest.TestCase):
         rslt=[Sentence('imperative', '', 
                 [], 
                 [Verbal_Group(['tell'], [],'present simple', 
-                    [Nominal_Group(['the'],['thing'],[],[],[Sentence('relative', 'that', 
+                    [], 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
+                     Indirect_Complement([],[Nominal_Group(['the'],['thing'],[],[],[Sentence('relative', 'that', 
                         [], 
                         [Verbal_Group(['be'], [Verbal_Group(['do'], [],'', 
                                 [], 
@@ -2261,8 +2263,7 @@ class TestParsing(unittest.TestCase):
                                 [], [] ,'affirmative',[])],'present simple', 
                             [], 
                             [],
-                            [], [] ,'affirmative',[])])])], 
-                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                            [], [] ,'affirmative',[])])])])],
                     [], [] ,'affirmative',[])]),
             Sentence('disagree', '',[],[]), 
             Sentence('statement', '', 
@@ -2317,7 +2318,7 @@ class TestParsing(unittest.TestCase):
         print''
         print ('######################## test 8.5 ##############################')
         utterance="I'll play guitar, piano and violon. I'll play with guitar, piano and violon. give me everything"
-        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
+        print "Object of this test : To take off determinant"
         print utterance
         print '#################################################################'
         print ''
@@ -2359,7 +2360,7 @@ class TestParsing(unittest.TestCase):
         print''
         print ('######################## test 8.6 ##############################')
         utterance="I will come back at seven o'clock tomorrow. He finish the project 10 minutes before."
-        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
+        print "Object of this test : Process some time with digit"
         print utterance
         print '#################################################################'
         print ''
@@ -2389,7 +2390,7 @@ class TestParsing(unittest.TestCase):
         print''
         print ('######################## test 8.7 ##############################')
         utterance="I'll play a guitar a piano and a violon. I'll play with a guitar a piano and a violon. the boss you and me are here"
-        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
+        print "Object of this test : To take off comma between the nominal groups"
         print utterance
         print '#################################################################'
         print ''
@@ -2426,6 +2427,48 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
+        
+        
+        
+    def test_77(self):
+        print''
+        print ('######################## test 8.8 ##############################')
+        utterance="The time of speaking sentence is the best. I come at 10pm. I will come tomorrow evening"
+        print "Object of this test : Add test to take off determinant and for timescale"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group(['the'],['time'],[],[Nominal_Group(['a'],['sentence'],[['speaking',[]]],[],[])],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [Nominal_Group(['the'],[],[['best',[]]],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['at'],[Nominal_Group(['10'],['pm'],[],[],[])])],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement([],[Nominal_Group(['a'],['evening'],[],[],[])])],
+                    [], ['tomorrow'] ,'affirmative',[])])]
+        
+        rslt[0].sn[0].noun_cmpl[0]._quantifier='SOME'
+        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
+
+
+
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)

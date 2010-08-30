@@ -32,6 +32,7 @@
     interjection : to find and create interjections
     what_to_relative : to change what+to into relative form 
     day_month : to find day or month to put them with upper case  
+    am_pm : to separate 'am' or 'pm' to the digit
     processing : is used by process_sentence
     process_sentence : to split utterance into many sentences using all other functions 
 """
@@ -826,6 +827,24 @@ def day_month(sentence):
             if j[0].lower()==i:
                 sentence[sentence.index(i)]=i[0].upper()+i[1:]  
     return sentence
+   
+   
+        
+def am_pm(sentence):
+    """ 
+    This function separate 'am' or 'pm' to the digit                   
+    Input=sentence                            Output=sentence                      
+    """ 
+    
+    i=0
+    while i<len(sentence):
+        if sentence[i].endswith('am') or sentence[i].endswith('pm'):
+            if other_functions.number(sentence[i])==1:
+                sentence=sentence[:i]+[sentence[i][:len(sentence[i])-2]]+[sentence[i][len(sentence[i])-2:]]+sentence[i+1:]
+                i=i+1
+        i=i+1
+        
+    return sentence
         
         
     
@@ -856,6 +875,7 @@ def processing(sentence):
     sentence = what_to_relative(sentence)
     sentence = add_scd_vrb(sentence)
     sentence = day_month(sentence)
+    sentence = am_pm(sentence)
     sentence = interjection(sentence)
     return sentence
 

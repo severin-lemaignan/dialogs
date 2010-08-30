@@ -514,7 +514,7 @@ def DOC_to_IOC(vg):
         if vg.vrb_main!=[] and x==vg.vrb_main[0]:
             for j in complement_pronoun:
                 #In this case we have just one direct compelment
-                if vg.d_obj[0].noun[0]==j:
+                if vg.d_obj!=[]:
                     vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([],vg.d_obj)]
                     vg.d_obj=[]
                     return vg

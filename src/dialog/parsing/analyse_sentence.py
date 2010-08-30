@@ -488,6 +488,7 @@ def y_n_ques(type, request, sentence):
     
     vg=analyse_verbal_structure.refine_indirect_complement(vg)
     vg=analyse_verbal_structure.refine_subsentence(vg)
+    vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
     analysis.sv=[vg]
     return analysis
@@ -650,6 +651,7 @@ def other_sentence(type, request, sentence):
     
     vg=analyse_verbal_structure.refine_indirect_complement(vg)
     vg=analyse_verbal_structure.refine_subsentence(vg)
+    vg=analyse_verbal_structure.DOC_to_IOC(vg)
     
     analysis.sv=[vg]
     return analysis
