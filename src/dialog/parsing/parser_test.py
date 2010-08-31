@@ -181,7 +181,7 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
 class TestParsing(unittest.TestCase):
     """
     Function to perform unit tests                                                   
-    """ 
+    """
     
     def test_01(self):
         print''
@@ -1668,7 +1668,7 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['be'], [],'present simple', 
                     [Nominal_Group([],[],[['blue',[]]],[],[])], 
                     [],
-                    [], [] ,'negative',[Sentence('subsentence', 'but', 
+                    [], [] ,'negative',[Sentence('subsentence+statement', 'but', 
                         [Nominal_Group([],['it'],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
                             [Nominal_Group([],[],[['red',[]]],[],[])], 
@@ -1843,7 +1843,7 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['could+become'], [],'present conditional', 
                     [Nominal_Group(['2'],[],[],[],[])], 
                     [],
-                    [], [] ,'affirmative',[Sentence('subsentence', 'if', 
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'if', 
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['smolder'], [],'past simple', 
                             [Nominal_Group([],['it'],[],[],[])], 
@@ -1874,7 +1874,7 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['be'], [],'present simple', 
                     [Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['uncle'],[],[],[])],[])], 
                     [],
-                    [], [] ,'negative',[Sentence('subsentence', 'but', 
+                    [], [] ,'negative',[Sentence('subsentence+statement', 'but', 
                         [Nominal_Group([],['it'],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
                             [Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])], 
@@ -2469,11 +2469,13 @@ class TestParsing(unittest.TestCase):
     
 
     
-    """   
     
-    utterance="the black object"
+    """
+    
+    utterance="now, I will write a dialog in 5 minutes, so can you give me the pen"
       
     sentence_list=preprocessing.process_sentence(utterance)
+    print sentence_list
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     for i in class_list:
         print (str(i))

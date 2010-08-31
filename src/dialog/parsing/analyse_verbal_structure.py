@@ -405,9 +405,9 @@ def process_subsentence(phrase,vg):
                     
                     #We perform processing
                     vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
-                    vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence'
+                    vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
                     vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
-                     
+                    
                     if w=='but':
                         #If the main verb is not a verb but a part of verbal structure => we have nominal groups
                         for k in ['.','?','!','']+proposal_list:
@@ -417,11 +417,9 @@ def process_subsentence(phrase,vg):
                                 phrase[phrase.index(w)]=':but'
                                 vg.vrb_sub_sentence=vg.vrb_sub_sentence[:len(vg.vrb_sub_sentence)-1]
                                 return phrase
-                            
+                     
                     #We delete the subsentence
-                    phrase=phrase[:phrase.index(i)]
-                    phrase=phrase+phrase[end_pos:]+['.']
-                    
+                    phrase=phrase[:begin_pos]+phrase[begin_pos+end_pos:]+['.']
                     return phrase
 
     return phrase

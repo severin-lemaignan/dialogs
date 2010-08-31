@@ -63,20 +63,20 @@ month_list = ResourcePool().months_list
 
 
 def process_and_beginning_sentence(sentence):
-    if sentence[0]!=',' and (sentence[0]=='and' or sentence[0]=='And'):
+    if sentence[0]==',' or sentence[0]=='and' or sentence[0]=='And':
         sentence=sentence[1:]
-        for j in adv_list:
-            if sentence[0]==j:
-                if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
-                    sentence=sentence[1:len(sentence)-1]+[sentence[0]]+[sentence[len(sentence)-1]]
-                    sentence=process_and_beginning_sentence(sentence)
-                    break
-                else:   
-                    sentence=sentence[1:]+[sentence[0]]
-                    sentence=process_and_beginning_sentence(sentence)
-                    break
-    elif sentence[0]==',':
-        sentence=sentence[1:]
+    
+    for j in adv_list:
+        if sentence[0]==j:
+            if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
+                sentence=sentence[1:len(sentence)-1]+[sentence[0]]+[sentence[len(sentence)-1]]
+                sentence=process_and_beginning_sentence(sentence)
+                break
+            else:   
+                sentence=sentence[1:]+[',']+[sentence[0]]
+                sentence=process_and_beginning_sentence(sentence)
+                break
+   
     return sentence
 
 
