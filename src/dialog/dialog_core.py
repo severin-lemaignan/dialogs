@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-
 import logging
+
 from threading import Thread
 from Queue import Queue, Empty
 from collections import deque
@@ -125,13 +125,16 @@ class Dialog(Thread):
                 output = self._sentence_output_queue.get(block = False)
                 self._logger.debug(colored_print("> Got output to verbalize: ", 'bold'))
                 
-                self.last_sentence = (output, self._verbalizer.verbalize(output))
+                nl_output = self._verbalizer.verbalize(output)
+                
+                
                 sys.stdout.write(colored_print( \
-                            self.last_sentence[1] , \
+                            nl_output , \
                             'red') + "\n")
                             
                 # Store output 
                 Dialog.dialog_history.extend(output)
+                
                 
             except Empty:
                 pass
@@ -261,8 +264,9 @@ class Dialog(Thread):
             self._logger.info(colored_print("###################################", 'green'))
             self.last_stmts_set = self._content_analyser.analyse(self.active_sentence, 
                                                                     self.current_speaker)
-            self._sentence_output_queue.put(self._content_analyser.analyse_output())
-            
+            self.last_sentence = (self._content_analyser.analyse_output(), 
+                                    self._verbalizer.verbalize(self._content_analyser.analyse_output()))
+            self._sentence_output_queue.put(self.last_sentence[0])
             
             #Dialog History
             self._logger.debug(colored_print("\n### Sentence saved in history ###", 'green'))
