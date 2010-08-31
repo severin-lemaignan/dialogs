@@ -514,14 +514,18 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                         'myself rdfs:label "Jido"',
                         'myself sees id_tom',
                         'myself sees y_banana',
+                        'myself sees shelf1',
+                        'myself_name rdf:type Name',
+                        'myself_name belongsTo myself',
+                        'myself_name rdfs:label "Jido"',
                         'id_tom rdf:type Human',
                         'id_tom rdfs:label "Tom"',
-                        'id_tom isNexto myself',                        
+                        'id_tom isNextTo myself',                        
                         ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
-
+    
     def test_question1_where(self):
 
         logger.info("\n##################### test_question1_where ########################\n")
@@ -533,11 +537,10 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res[1])
-        self.assertEquals(res[1], "the green banana is on the blue table")
+        
+        self.assertEquals(res[1][1], "The green banana is at the blue table.")
     
         
-    
     def test_question2_what(self):
 
         logger.info("\n##################### test_question2_what ########################\n")
@@ -548,10 +551,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        self.assertTrue(res)
-        
+        self.assertEquals(res[1][1], "The yellow banana.")
     
     def test_question3_what(self):
         logger.info("\n##################### test_question3_what ########################\n")
@@ -561,10 +561,8 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        self.assertTrue(res)
-        
+        self.assertEquals(res[1][1], "The yellow banana.")
+    
     def test_question4_what(self):    
         logger.info("\n##################### test_question4_what ########################\n")
         
@@ -573,9 +571,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        self.assertTrue(res)
+        self.assertEquals(res[1][1], "The banana that's on the table, is green.")
     
     def test_question5_what(self):    
         logger.info("\n##################### test_question5_what ########################\n")
@@ -585,9 +581,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        self.assertTrue(res)
+        self.assertEquals(res[1][1], "This is the yellow banana.")
 
     
     def test_question6_who(self):
@@ -600,9 +594,20 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        self.assertTrue(res)
+        self.assertEquals(res[1][1], "I am Jido.")
+    
+    def test_question6_who(self):
+
+        logger.info("\n##################### test_question6_who_bis ########################\n")
+        
+        ####
+        stmt = "What is your name?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "My name is Jido.")
+        
     
     def test_question7_who(self):
         logger.info("\n##################### test_question7_who ########################\n")
@@ -612,9 +617,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        self.assertTrue(res)
+        self.assertEquals(res[1][1], "The myself is Jido.")
         
     def test_question8_who(self):
         logger.info("\n##################### test_question8_who ########################\n")
@@ -622,14 +625,12 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         question = "Who do you see?"
 
         res = self.dialog.test('myself', question)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        
-        expected_query = [ 'myself sees ?*']
-        
-        self.assertTrue(check_results(res[0], expected_result))
-        
-        self.assertEquals(res[1][1], "I see Tom and the yellow banana that is on the self")
+        self.assertTrue(res[1][1] in ["I see Tom, the yellow banana and the shelf.",
+                                        "I see Tom, the shelf and the yellow banana.",
+                                        "I see the shelf, Tom and the yellow banana.",
+                                        "I see the shelf, the yellow banana and Tom.",
+                                        "I see the yellow banana, Tom and the shelf.",
+                                        "I see the yellow banana, the shelf and Tom."])
         
     def test_question9_who(self):
         logger.info("\n##################### test_question9_who ########################\n")
@@ -639,10 +640,8 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        self.assertEquals(res[1][1], "Tom is Tom")
-
+        self.assertEquals(res[1][1], "Tom is Tom.")
+    
     """ Breaks severly the unittesting. Need to fix it at least to have a nicer failure
     def test_question10(self):
         logger.info("\n##################### Check we resolve correctly the labels ########################\n")
@@ -653,10 +652,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         ###
         res = self.dialog.test('SPEAKER', question)
         logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res)
-        
-        expected_query = [ 'myself knows ?*']
-        
+        logger.info( "<< output statements: " + res[1][1])
         self.assertTrue(check_results(res[0], expected_query))
         
         self.assertEquals(res[1][1], "I know Tom")
@@ -675,7 +671,7 @@ def dump_resolved(sentence, current_speaker, current_listener, resolver):
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestQuestionHandler)
     suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestQuestionHandlerDialog))
-
+    
     return suite
     
 if __name__ == '__main__':

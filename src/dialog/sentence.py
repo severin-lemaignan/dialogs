@@ -144,22 +144,28 @@ class SentenceFactory:
         nominal_groupL = []
         #Nominal group holding the answer
         
-        
-        if w_question.aim in ['color', 'size']: #TODO in ResourcePool, list of adjective with given class in the ontology
+        # Case of adjectives only
+        if w_question.aim in ResourcePool().adjectives_ontology_classes:
             nominal_groupL = [Nominal_Group([], [], [[w_answer[0], []]], [], [])]
-        
+            nominal_groupL[0]._resolved = True
         else:
             for response in w_answer:
-                ng = self.create_w_question_object(response)
+                ng = self.create_nominal_group_with_object(response)
+                ng.id = w_answer
+                ng._resolved = True
+                
                 nominal_groupL.append(ng)
+                
             
         #Sentence holding the answer
         
         sentence = self.reverse_personal_pronoun(w_question)
         sentence.data_type = "statement"
         
+        
         if not query_on_field:#Default case on sentence.sn
             sentence.sn = nominal_groupL
+            sentence.sv = []
             
         elif query_on_field == 'QUERY_ON_DIRECT_OBJ':
             sentence.sv[0].d_obj = nominal_groupL
@@ -174,7 +180,8 @@ class SentenceFactory:
                 prep = []
                 
             sentence.sv[0].i_cmpl = [Indirect_Complement(prep, nominal_groupL)]
-       
+        
+        sentence.aim = ""
         return [sentence]
     
     
@@ -221,7 +228,7 @@ class SentenceFactory:
         
         
         
-    def create_w_question_object(self, object):
+    def create_nominal_group_with_object(self, object):
         """Creating a nominal group by retrieving relevant information on 'object'."""
         
         
@@ -268,11 +275,11 @@ class SentenceFactory:
         # Class Type if Common noun or Id
         else:
             try:
-               onto = ResourcePool().ontology_server.find('?concept', [object + ' rdf:type ?concept'])
+               onto = ResourcePool().ontology_server.getDirectClassesOf(object)
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
             
-            object_noun = [_filter_ontology_inferred_class(onto)[0].lower()]
+            object_noun = [_filter_ontology_inferred_class(onto.keys())[0].lower()]
             
             if object_noun == ['owl:thing']:
                 object_noun = [object]
@@ -296,10 +303,10 @@ class SentenceFactory:
                 onto.append([])
                 object_features.append(onto)
                 
-        
+        """ Commented due to recursivity issues
         # Object Location
         object_location = []
-        description = [' isNexto ', ' isLocated ', ' isOn ', ' isIn ', ' hasGoal ', ' receivedBy ']
+        description = [' isNextTo ', ' isBehind ',' isInFrontOf ', ' isOn ', ' isIn ', ' hasGoal ', ' receivedBy ']
                         
         for desc in description:
             onto = []
@@ -310,19 +317,12 @@ class SentenceFactory:
             
             #Match preposition with description
             prep = ''
-            if desc == ' isNexto ':
+            if desc == ' isNexTto ':
                 prep = 'next+to'
-            elif desc == ' isLocated ':
-                if 'BACK' in onto:
-                    prep = 'behind'
-                elif 'FRONT' in onto:
-                    prep = 'in+front+of'
-                elif 'LEFT' in onto:
-                    prep = 'at+the+left+of'
-                elif 'RIGHT' in onto:
-                    prep = 'at+the+right+of'
-                else:
-                    pass
+            elif desc == ' isBehind ':
+                prep = 'behind'
+            elif desc == ' isInFrontOf ':
+                prep = 'in+front+of'
             elif desc == ' isIn ':
                 prep = 'in'
             elif desc in  [' hasGoal ', ' receivedBy ']:
@@ -333,7 +333,7 @@ class SentenceFactory:
                 prep = 'at'
             
             for i_c_object in onto:
-                #TODO: Reduce recursivity so that we don't have , the bottle thais on the table, that is in Toulouse, that is in France, that is ...
+                #TODO: Reduce recursivity so that we don't have , the bottle that is on the table, that is in Toulouse, that is in France, that is ...
                 object_location.append(Indirect_Complement([prep], [self.create_w_question_object(i_c_object)]))        
         
         #Keep Location in a relative description => relative
@@ -367,7 +367,8 @@ class SentenceFactory:
             #TODO: Reduce recursivity so that we don't have , the bottle of the table, of Toulouse, of France, of ...
             object_owner.append(self.create_w_question_object(n_cmpl_object))
         
-            
+        
+           
                 
         # Nominal Groupp to return
         return Nominal_Group(object_determiner, 
@@ -375,8 +376,13 @@ class SentenceFactory:
                             object_features, 
                             object_owner,
                             object_relative_description)
-        
-        
+        """
+        # Nominal Group to return
+        return Nominal_Group(object_determiner, 
+                            object_noun, 
+                            object_features, 
+                            [],
+                            [])
         
     def create_yes_no_answer(self, yes_no_question, answer):
         
