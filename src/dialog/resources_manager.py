@@ -247,7 +247,7 @@ class ResourcePool:
         self.unusable_words = []
         self.time_proposals = []
         self.action_verb_with_passive_behaviour = []
-
+        self.adjectives_ontology_classes = []
 
         """list of tokens that can start a sentence"""
         self.sentence_starts = []
@@ -367,7 +367,16 @@ class ResourcePool:
                 self.thematic_roles.add_verb(desc)
                 desc = ""
         
-        
+        """
+            List of onotlogy classes that are used in the adjectives list
+        """
+        self.adjectives_ontology_classes = [self.adjectives[adj].lower() for adj in self.adjectives]
+        adj_s = []
+        for k in self.adjectives_ontology_classes:
+            if not k in adj_s:
+                adj_s.append(k)
+        self.adjectives_ontology_classes = adj_s
+
 
 
 if __name__ == '__main__':

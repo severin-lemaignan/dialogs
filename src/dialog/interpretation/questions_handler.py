@@ -287,19 +287,9 @@ class QuestionAimDict:
         self.dic_people={'QUERY_ON_DIRECT_OBJ':self.dic_on_direct_obj.copy(),                                                                                              
                     'QUERY_ON_INDIRECT_OBJ':self.dic_on_indirect_obj.copy()}
         
-        #Dictionary for all question aims
-        #
-        adjectives_list = [ResourcePool().adjectives[adj] for adj in ResourcePool().adjectives]
-
-        adj_s = []
-        for adj in adjectives_list:
-            if not adj in adj_s:
-                adj_s.append(adj)
-
-        adjectives_list = adj_s
-        
+        #Dictionary for all question aims        
         #What-question in Features
-        self.dic_aim = dict([(feature.lower(), {None:{"be":"has"+feature.capitalize()}}) for feature in adjectives_list])
+        self.dic_aim = dict([(feature.lower(), {None:{"be":"has"+feature.capitalize()}}) for feature in ResourcePool().adjectives_ontology_classes])
         #What-question
         self.dic_aim['thing'] = self.dic_thing
         #Who-question
