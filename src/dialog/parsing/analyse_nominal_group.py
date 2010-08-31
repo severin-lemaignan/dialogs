@@ -153,12 +153,7 @@ def find_sn_pos (phrase, begin_pos):
     counter=begin_pos
     while (counter<len(phrase) and other_functions.find_cap_lettre(phrase[counter])==1):
         counter=counter+1
-
-    #Cases like 'next week'
-    if phrase[begin_pos]=='next' or phrase[begin_pos]=='last':
-        end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
-        return phrase[begin_pos-1 : end_pos+begin_pos]
-
+    
     #Default case return [] => ok if counter=begin_pos
     return phrase[begin_pos : counter]
 
@@ -209,16 +204,7 @@ def find_sn (phrase):
         #Not equal => there is a proper name
         if counter!=phrase.index(x):
             return phrase[phrase.index(x) : counter]
-
-        #Cases like 'next week'
-        if x=='last' or x=='next':
-            #We replace x by the to have nominal group
-            phrase[phrase.index(x)]='the'
-            ng= [x]+find_sn_pos(phrase, phrase.index('the'))[1:]
-            phrase[phrase.index('the')]=x
-            #We take off the proposal
-            return ng[1:]
-
+   
     #Default case
     return []
 

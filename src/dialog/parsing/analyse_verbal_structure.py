@@ -454,7 +454,7 @@ def process_conjunctive_sub(phrase,vg):
         
         #We perform processing
         vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', 'that' ,subsentence)]
-        
+        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type+'+statement'
         
         #We delete the subsentence
         phrase=phrase[:phrase.index('that')]

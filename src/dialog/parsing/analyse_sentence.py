@@ -29,6 +29,8 @@ import analyse_nominal_structure
 import analyse_verb
 import analyse_verbal_structure
 import other_functions
+import preprocessing
+
 
 """
 Statement of lists
@@ -36,6 +38,7 @@ Statement of lists
 frt_wd = ResourcePool().sentence_starts
 det_dem_list = ResourcePool().demonstrative_det
 modal_list = ResourcePool().modal
+proposal_list = ResourcePool().proposals
 
 
 
@@ -56,6 +59,7 @@ def dispatching(sentence):
         for x in frt_wd:
             #If we find a knowing case
             if sentence[0]==x[0]:
+                
 
                 #For
                 if x[1] == '1':
@@ -140,19 +144,16 @@ def dispatching(sentence):
                 elif x[1]=='6':
                     return separ_sentence(sentence, 'disagree')
 
-                #It's a y_n_question
+                #Gratulation
                 elif x[1]=='7':
                     return separ_sentence(sentence, 'gratulation')
                 
         #For exclamatively
         if sentence[len(sentence)-1]=='!':
             return [exclama_sentence(sentence)]
-        
+  
         #It's a statement or an imperative sentence
-        if sentence[len(sentence)-1]=='?':
-            return [other_sentence('yes_no_question', '', sentence)]
-        else:
-            return [other_sentence('', '', sentence)]
+        return [other_sentence('', '', sentence)]
 
     #Default case
     return []
@@ -163,7 +164,9 @@ def separ_sentence(sentence, data_type):
     sentences=[Sentence(data_type, '', [], [])]
     for i in sentence:
         if i==';':
-            sentences = sentences + dispatching(sentence[sentence.index(i)+1:])
+            sentence=sentence[sentence.index(i)+1:]
+            sentence = preprocessing.process_and_beginning_sentence(sentence)
+            sentences = sentences + dispatching(sentence)
     return sentences
 
 
@@ -317,8 +320,9 @@ def stc_start_subsentence(sentence):
 
     #We perform the 2 processing
     analysis=other_sentence('statement', '', sentence[sentence.index(';')+1:])
-    analysis.sv[0].vrb_sub_sentence=[other_sentence('subsentence', sentence[0], subsentence)]
-
+    analysis.sv[0].vrb_sub_sentence=analysis.sv[0].vrb_sub_sentence+dispatching(subsentence)
+    analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type='subsentence+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
+    analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0]
     return analysis
 
 
@@ -594,7 +598,11 @@ def other_sentence(type, request, sentence):
         #re-init
         analysis.data_type='imperative'
         vg.vrb_tense='present simple'
-
+        
+        for z in proposal_list:
+            if z==sentence[0]:
+                sentence=['.']+sentence
+                
         #Negative form
         if sentence[1]=='not':
             sentence=sentence[sentence.index('not')+1:]
@@ -610,6 +618,9 @@ def other_sentence(type, request, sentence):
         #We delete the verb
         sentence= sentence[sentence.index(verb[0])+len(verb):]
     
+    if sentence!=[] and sentence[len(sentence)-1]=='?':
+        analysis.data_type='yes_no_question'
+        
     #We recover the conjunctive subsentence
     sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
     
@@ -696,5 +707,7 @@ def sentences_analyzer(sentences):
             k.sv[0].d_obj=[]
         if k.sv!=[] and (k.sv[0].vrb_main==['.'] or k.sv[0].vrb_main==['?'] or k.sv[0].vrb_main==['!']):
             k.sv[0].vrb_main=[]
+            if k.data_type=='imperative':
+                k.data_type='statement'
         
     return class_sentence_list

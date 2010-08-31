@@ -177,6 +177,12 @@ def upper_to_lower(sentence):
     else:
         sentence=expand_contractions(sentence)
         sentence = process_and_beginning_sentence(sentence)
+        
+        #If we find the word in the Beginning_sentence list
+        for v in frt_wd:
+            if sentence[0]==v[0]:
+                return sentence
+            
         sentence=analyse_nominal_group.find_plural(sentence)
     
     return sentence

@@ -150,7 +150,7 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
     """
     Function to compare 2 replies                                                    
     """ 
-    
+
     #init
     i=0
 
@@ -966,9 +966,10 @@ class TestParsing(unittest.TestCase):
                     [], [] ,'affirmative',[])]),
             Sentence('w_question', 'people', 
                 [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['could+talk+to'], [],'present conditional', 
+                [Verbal_Group(['could+talk'], [],'present conditional', 
                     [], 
-                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['phone'],[],[],[])])],
+                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['phone'],[],[],[])]),
+                     Indirect_Complement(['to'],[Nominal_Group([],['it'],[],[],[])])],
                     [], [] ,'affirmative',[])]),
             Sentence('w_question', 'owner', 
                 [Nominal_Group(['that'],['bottle'],[['blue',[]]],[],[]), Nominal_Group(['that'],['glass'],[['red',[]]],[],[])], 
@@ -1095,7 +1096,7 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['learn'], [],'present simple', 
                     [], 
                     [],
-                    [], [] ,'affirmative',[Sentence('subsentence', 'that', 
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'that', 
                         [Nominal_Group([],['I'],[],[],[])], 
                         [Verbal_Group(['want'], [Verbal_Group(['give'], [],'', 
                                 [Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])], 
@@ -1109,7 +1110,7 @@ class TestParsing(unittest.TestCase):
                     [Verbal_Group(['be'], [],'future simple', 
                         [Nominal_Group([],[],[['happy',[]]],[],[])], 
                         [],
-                        [], [] ,'affirmative',[Sentence('subsentence', 'if', 
+                        [], [] ,'affirmative',[Sentence('subsentence+statement', 'if', 
                             [Nominal_Group([],['you'],[],[],[])], 
                             [Verbal_Group(['do'], [],'present simple', 
                                 [Nominal_Group(['your'],['job'],[],[],[])], 
@@ -1319,7 +1320,7 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['learn'], [],'present simple', 
                     [], 
                     [],
-                    [], [] ,'affirmative',[Sentence('subsentence', 'that', 
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'that', 
                         [Nominal_Group([],['I'],[],[],[])], 
                         [Verbal_Group(['want'], [Verbal_Group(['give'], [],'', 
                                 [Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[Sentence('relative', 'that', 
@@ -2055,7 +2056,7 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['prepare'], [],'past progressive', 
                     [Nominal_Group(['the'],['dinner'],[],[],[])], 
                     [],
-                    [], [] ,'affirmative',[Sentence('subsentence', 'when', 
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'when', 
                         [Nominal_Group(['your'],['father'],[],[],[])], 
                         [Verbal_Group(['come'], [],'past simple', 
                              [], 
@@ -2071,7 +2072,7 @@ class TestParsing(unittest.TestCase):
                             [Indirect_Complement(['with'],[Nominal_Group([],['bacon'],[],[],[])])],
                             [], [] ,'affirmative',[])])])], 
                     [],
-                    [], [] ,'affirmative',[Sentence('subsentence', 'while', 
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'while', 
                         [Nominal_Group([],['I'],[],[],[])], 
                         [Verbal_Group(['phone'], [],'past simple', 
                              [], 
@@ -2470,17 +2471,16 @@ class TestParsing(unittest.TestCase):
 
     
     
-    """
     
-    utterance="now, I will write a dialog in 5 minutes, so can you give me the pen"
-      
+    
+    """
+    utterance="thanks, goodbye"
     sentence_list=preprocessing.process_sentence(utterance)
-    print sentence_list
+  
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     for i in class_list:
         print (str(i))
     """
-
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)
