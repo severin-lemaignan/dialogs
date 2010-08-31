@@ -2130,7 +2130,7 @@ class TestParsing(unittest.TestCase):
                     [], [] ,'affirmative',[])]),
             Sentence('statement', '', 
                     [Nominal_Group(['a'],['kind'],[],[Nominal_Group(['a'],['thing'],[],[],[])],[])], 
-                    [Verbal_Group(['.'], [],'present simple', 
+                    [Verbal_Group([], [],'present simple', 
                         [], 
                         [],
                         [], [] ,'affirmative',[])]),
@@ -2466,8 +2466,18 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
+    
 
-
+    
+    """   
+    
+    utterance="the black object"
+      
+    sentence_list=preprocessing.process_sentence(utterance)
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    for i in class_list:
+        print (str(i))
+    """
 
 
 def test_suite():

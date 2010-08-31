@@ -694,5 +694,7 @@ def sentences_analyzer(sentences):
         if k.sn!=[] and k.sn[0].det==['there']:
             k.sn=k.sv[0].d_obj
             k.sv[0].d_obj=[]
+        if k.sv!=[] and (k.sv[0].vrb_main==['.'] or k.sv[0].vrb_main==['?'] or k.sv[0].vrb_main==['!']):
+            k.sv[0].vrb_main=[]
         
     return class_sentence_list
