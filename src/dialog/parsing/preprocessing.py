@@ -63,7 +63,7 @@ month_list = ResourcePool().months_list
 
 
 def process_and_beginning_sentence(sentence):
-    if sentence[0]==',' or sentence[0]=='and' or sentence[0]=='And':
+    if sentence[0]==',' or sentence[0]=='and' or sentence[0]=='And' or sentence[0]=='ah' or sentence[0]=='Ah':
         sentence=sentence[1:]
     
     for j in adv_list:

@@ -28,6 +28,7 @@ before 1 -1
 behind 1 0 isBehind
 behind+to 0 1 isBehind
 below 1 0
+between 1 1
 by 1 1
 despite 1 0
 for 1 1 isRelatedTo

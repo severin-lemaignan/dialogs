@@ -161,7 +161,11 @@ def dispatching(sentence):
 
 
 def separ_sentence(sentence, data_type):
-    sentences=[Sentence(data_type, '', [], [])]
+    
+    if data_type=='agree' and len(sentence)>1 and (sentence[1]=='morning' or sentence[1]=='evening' or sentence[1]=='afternoon'):
+        sentences=[Sentence('start', '', [], [])]
+    else:
+        sentences=[Sentence(data_type, '', [], [])]
     for i in sentence:
         if i==';':
             sentence=sentence[sentence.index(i)+1:]

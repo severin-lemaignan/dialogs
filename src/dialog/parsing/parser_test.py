@@ -2469,17 +2469,20 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
 
-    
-    
-    
-    
     """
-    utterance="thanks, goodbye"
+    utterance="so I want to go"
     sentence_list=preprocessing.process_sentence(utterance)
   
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     for i in class_list:
         print (str(i))
+    """
+    """
+    <mchouaya> I finish the dialog and I check many problems
+    <mchouaya> to have a dialog, we need more than 1 protagonist. and in a dialog, there is an interaction between them
+    <mchouaya> the interpretation is to find a defenition or a rule for something
+    <mchouaya> ok I think that I know who is he
+    <mchouaya> so I want to go
     """
 
 def test_suite():
