@@ -635,7 +635,7 @@ class VerbalGroupStatementBuilder:
                         self.process_vrb_sec(verbal_group, subject_id, subject_quantifier, sit_id)
                 
                 #Case of action verbs wit passive behaviour
-                elif verb.lower() in ['see', 'hear', 'understand']:
+                elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
                     sit_id = subject_id
                     
                 #Case 3:   
@@ -694,7 +694,7 @@ class VerbalGroupStatementBuilder:
         except  KeyError:
             d_obj_role = " involves "
         
-        if verb.lower() in ['see', 'hear', 'understand']:
+        if verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
             d_obj_role  = ' ' + verb.lower() +'s '
         
         #nominal groups
@@ -848,7 +848,7 @@ class VerbalGroupStatementBuilder:
             
             It would not work for object type or class, as it does not make sense to say "Fruits were Plants".
         """
-        if verbal_group._resolved:
+        if verbal_group._resolved and not self._process_on_question:
             
             #Assiging the variable 'tense' with either PAST or FUTUR
             tense = '' #Nothing to do if the verb tense involves the present

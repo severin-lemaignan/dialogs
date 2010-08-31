@@ -35,25 +35,25 @@ class QuestionHandler:
         return self._query_on_field
         
     def process_sentence(self, sentence):
+        """This processes a w_question or yes_no_question sentence"""
         self._sentence = sentence
         #StatementBuilder
         builder = StatementBuilder(self._current_speaker)
         self._statements = builder.process_sentence(self._sentence)
-        logger.info("statement from Statement Builder: " + str(self._statements))
+        logger.info("\tStatement from Statement Builder: " + str(self._statements))
         
         #Case the question is a y_n_question : check the fact in the ontology
         if sentence.data_type == 'yes_no_question':
             self._statements = self._set_situation_id(self._statements)
             
             try:
-                logger.debug("Checking on the ontology: check(" + str(self._statements) + ")")
+                logger.debug("\tChecking on the ontology: check(" + str(self._statements) + ")")
                 self._answer = ResourcePool().ontology_server.check(self._statements)
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
             
         #Case the question is a w_question : find the concept the concept that answers the question
         if sentence.data_type == 'w_question':
-            
             #
             self._query_on_field = self._set_query_on_field(sentence)
             self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
@@ -62,7 +62,7 @@ class QuestionHandler:
             if self._statements:
                 print(self._statements)
                 try:
-                    logger.debug("Searching the ontology: find(?concept, " + str(self._statements) + ")")
+                    logger.debug("\tSearching the ontology: find(?concept, " + str(self._statements) + ")")
                     self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
                 except AttributeError: #the ontology server is not started of doesn't know the method
                     pass
@@ -73,11 +73,16 @@ class QuestionHandler:
         return self._answer
         
     def _set_situation_id(self, statements):
+        """This attempts to clarify the ID of an action verbs"""
         stmts = []
-        try:
-
-            sit_id = []
-            
+        
+        find_id = False
+        for s in statements:
+            if '?' in s:
+                find_id = True
+                break
+        
+        if find_id:
             try:
                 sit_id = ResourcePool().ontology_server.find('?event', statements)
             except AttributeError: #the ontology server is not started of doesn't know the method
@@ -89,13 +94,14 @@ class QuestionHandler:
                     #TODO:the ontology might find severals sit ID matching the query. Should we take this consideration?
                     #The longer the query, the better the result of sit_id
                     stmts.append(s.replace('?event', sit_id[0]))
-        except OroServerError:
+        else:
             stmts = statements
             
         return stmts
     
     
     def _extend_statement_from_sentence_aim(self, current_statements):
+        """This extends the statements states so that the query answer matches the w_question aim"""
         #Case: the statement is complete from statement builder e.g: what is in the box? =>[?concept isIn ?id_box, ?id_box rdf:type Box]
         for s in current_statements:
             if '?concept' in s.split():
@@ -108,8 +114,14 @@ class QuestionHandler:
             for sv in self._sentence.sv:
                 for verb in sv.vrb_main:
                     role = self.get_role_from_sentence_aim(self._query_on_field, verb)
-                    if verb.lower() == 'be':
+                    # Case of state verbs
+                    if verb.lower() in ResourcePool().state:
                         stmts.append(sn.id + ' '+ role + ' ?concept')
+                    # Case of action verb with a passive behaviour
+                    elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
+                        stmts.append(sn.id + ' '+ verb.lower() + 's' + ' ?concept')
+                    
+                    # case of action verbs
                     else:
                         stmts.append('?event ' + role + ' ?concept')
         
@@ -119,7 +131,13 @@ class QuestionHandler:
     
     
     def _set_query_on_field(self, sentence):
-        
+        """ This defines which part of a sentence is supposed to be completed once the answer of a w_question has been retrieved
+            E:g - [W_question] : where is the cube
+                - Answer: table
+                - query_on_field = 'QUERY_ON_INDIRECT_OBJ'
+                - Sentence buitl from answer, query_on_field, and w_question:
+                    the cube is on the table
+        """
         if sentence.aim == 'place':
             return 'QUERY_ON_INDIRECT_OBJ'
         
@@ -138,6 +156,9 @@ class QuestionHandler:
             
     
     def get_role_from_sentence_aim(self, query_on_field, verb):
+        """ Given specific w_question aim and verb, this function attempts to define the matching object property to built
+            an RDF tuple <S P O>. Cf. QuestionAimDict() for more detail.
+        """
         dic_aim = QuestionAimDict().dic_aim
         try:
             if verb.lower() in dic_aim[self._sentence.aim][query_on_field]:
@@ -176,6 +197,7 @@ class QuestionHandler:
 
     
     def _remove_statements_with_no_unbound_tokens(self, statements):
+        """ This remove statement part with no unbound token, for querying the ontology."""
         stmts = []
         for s in statements:
             if '?' in s:
@@ -231,7 +253,11 @@ class QuestionAimDict:
             
             Case # query on an indirect object
                 e.g: who does the man give a cube
-                append in statement [* receivedBy ?concept]         
+                append in statement [* receivedBy ?concept]       
+        
+        'Thematic_roles verb'
+            Cf: /share/dialog/thematic_roles 
+                also src/dialog/resource_manager.py
         """
         
         self.dic_aim = {}
@@ -242,7 +268,7 @@ class QuestionAimDict:
         self.dic_on_direct_obj = dict([(verb , role.id) for verb in verbs_dic.keys() for role in verbs_dic[verb].roles[0:1]])
         self.dic_on_direct_obj[None] = 'involves'
         self.dic_on_direct_obj['be'] = 'owl:sameAs'
-
+        
         self.dic_on_indirect_obj = dict([(verb , role.id) for verb in verbs_dic.keys() for role in verbs_dic[verb].roles[1:2]])
         self.dic_on_indirect_obj['be'] = None
         self.dic_on_indirect_obj[None] = 'owl:sameAs'
