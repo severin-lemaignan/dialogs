@@ -126,8 +126,6 @@ class Dialog(Thread):
                 self._logger.debug(colored_print("> Got output to verbalize: ", 'bold'))
                 
                 nl_output = self._verbalizer.verbalize(output)
-                
-                
                 sys.stdout.write(colored_print( \
                             nl_output , \
                             'red') + "\n")

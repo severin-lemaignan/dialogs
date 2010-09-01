@@ -18,7 +18,7 @@
 from dialog.resources_manager import ResourcePool
 import element_rebuilding
 import other_functions
-
+from dialog.sentence import *
 
 """
 Statement of lists
@@ -102,6 +102,7 @@ def relative(relative, ns):
     else:
         relative.sn=ns
         phrase=imperative(relative)
+        relative.sn=[]
     return phrase
 
 
