@@ -1766,7 +1766,21 @@ class TestBaseSentenceDialog(unittest.TestCase):
                            
         self.assertTrue(check_results(res[0], expected_result))
     
-
+    def test_sentence12(self):
+        
+        logger.info("\n##################### Check question on learning initiative ########################\n")
+        #Ontolgy force missing concept
+        self.oro.remove(['Crow rdfs:subClassOf Bird'])
+        
+        ##sentence1
+        stmt = "A crow is a bird"
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['Crow rdfs:subClassOf Bird']
+                           
+        self.assertTrue(check_results(res[0], expected_result))
+        self.assertTrue(res[1][1], "A crow is a bird. What are a crow and a bird?")
+        
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
