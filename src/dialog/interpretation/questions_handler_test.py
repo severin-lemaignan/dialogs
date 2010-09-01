@@ -14,7 +14,6 @@ from dialog.interpretation.resolution import Resolver
 
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):
-    
         try:
             ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
                      'blue_cube rdf:type Cube',
@@ -461,8 +460,8 @@ class TestQuestionHandler(unittest.TestCase):
                                            'affirmative',
                                            [])])
         expected_result = [['blue',[]]]        
-        self.process(sentence ,expected_result) 
-    
+        self.process(sentence ,expected_result)
+        
     
     def process(self, sentence ,expected_result):
         sentence = dump_resolved(sentence, 'SPEAKER', 'myself', self.resolver)
@@ -520,7 +519,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                         'myself_name rdfs:label "Jido"',
                         'id_tom rdf:type Human',
                         'id_tom rdfs:label "Tom"',
-                        'id_tom isNextTo myself',                        
+                        'id_tom isNextTo myself',
                         ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
@@ -562,6 +561,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "The yellow banana.")
+        
     
     def test_question4_what(self):    
         logger.info("\n##################### test_question4_what ########################\n")
@@ -618,19 +618,26 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "The myself is Jido.")
-        
+    
     def test_question8_who(self):
         logger.info("\n##################### test_question8_who ########################\n")
         
-        question = "Who do you see?"
+        stmt = "Who do you see?"
 
-        res = self.dialog.test('myself', question)
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "I see Tom.")
+    
+    def test_question8_what(self):    
+        logger.info("\n##################### test_question8_what ########################\n")
+        stmt = "What do you see?"
+
+        res = self.dialog.test('myself', stmt)
         self.assertTrue(res[1][1] in ["I see Tom, the yellow banana and the shelf.",
-                                        "I see Tom, the shelf and the yellow banana.",
-                                        "I see the shelf, Tom and the yellow banana.",
-                                        "I see the shelf, the yellow banana and Tom.",
-                                        "I see the yellow banana, Tom and the shelf.",
-                                        "I see the yellow banana, the shelf and Tom."])
+                                         "I see Tom, the shelf and the yellow banana.",
+                                         "I see the shelf, Tom and the yellow banana.",
+                                         "I see the shelf, the yellow banana and Tom.",
+                                         "I see the yellow banana, Tom and the shelf.",
+                                         "I see the yellow banana, the shelf and Tom."])
        
     def test_question9_who(self):
         logger.info("\n##################### test_question9_who ########################\n")
@@ -662,23 +669,29 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "Yes. The yellow banana is on the shelf.")
-    """
-     Breaks severly the unittesting. Need to fix it at least to have a nicer failure
-    def test_question10(self):
-        logger.info("\n##################### Check we resolve correctly the labels ########################\n")
+    
+    def test_question12(self):
+        logger.info("\n##################### Check label ########################\n")
         
-        question = "What humans do you know?"
+        stmt = "What human do you see?"
         ####
         
         ###
-        res = self.dialog.test('SPEAKER', question)
-        logger.info( ">> input: " + stmt)
-        logger.info( "<< output statements: " + res[1][1])
-        self.assertTrue(check_results(res[0], expected_query))
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "I see Tom.")
+    
+    def test_question13(self):
+        logger.info("\n##################### Check label ########################\n")
         
-        self.assertEquals(res[1][1], "I know Tom")
-    """
-
+        stmt = "What human do you know?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "I know Tom.")
+        
+    
+    
 def dump_resolved(sentence, current_speaker, current_listener, resolver):
     sentence = resolver.references_resolution(sentence,
                                                     current_speaker, None, None, None)

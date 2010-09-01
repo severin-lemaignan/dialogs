@@ -113,7 +113,7 @@ class QuestionHandler:
         for sn in self._sentence.sn:
             for sv in self._sentence.sv:
                 for verb in sv.vrb_main:
-                    role = self.get_role_from_sentence_aim(self._query_on_field, verb)
+                    role, concept_descriptor = self.get_role_from_sentence_aim(self._query_on_field, verb)
                     # Case of state verbs
                     if verb.lower() in ResourcePool().state:
                         stmts.append(sn.id + ' '+ role + ' ?concept')
@@ -124,7 +124,8 @@ class QuestionHandler:
                     # case of action verbs
                     else:
                         stmts.append('?event ' + role + ' ?concept')
-        
+                    if concept_descriptor:
+                        stmts.append(concept_descriptor)
         
         return current_statements + stmts
     
@@ -159,7 +160,16 @@ class QuestionHandler:
         """ Given specific w_question aim and verb, this function attempts to define the matching object property to built
             an RDF tuple <S P O>. Cf. QuestionAimDict() for more detail.
         """
+        concept_descriptor = ''
+        
         dic_aim = QuestionAimDict().dic_aim
+        if self._sentence.aim and not self._sentence.aim in dic_aim.keys():
+            concept_descriptor = "?concept rdf:type " + self._sentence.aim.capitalize()
+            self._sentence.aim = "thing"
+            
+        elif self._sentence.aim == "people":
+            concept_descriptor = "?concept rdf:type Agent"
+            
         try:
             if verb.lower() in dic_aim[self._sentence.aim][query_on_field]:
                 role = dic_aim[self._sentence.aim][query_on_field][verb.lower()]
@@ -170,8 +180,8 @@ class QuestionHandler:
                 role = dic_aim[self._sentence.aim][None][verb.lower()]
             else:
                 role = dic_aim[self._sentence.aim][None][None]
-
-        return role
+    
+        return role, concept_descriptor
     
     
     """            
