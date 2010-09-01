@@ -631,7 +631,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                                         "I see the shelf, the yellow banana and Tom.",
                                         "I see the yellow banana, Tom and the shelf.",
                                         "I see the yellow banana, the shelf and Tom."])
-        
+       
     def test_question9_who(self):
         logger.info("\n##################### test_question9_who ########################\n")
         
@@ -641,8 +641,29 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "Tom is Tom.")
+        
     
-    """ Breaks severly the unittesting. Need to fix it at least to have a nicer failure
+    def test_question10(self):
+        logger.info("\n##################### test_question10 ########################\n")
+        
+        stmt = "Do you see the yellow banana?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "Yes. I see the yellow banana.")
+        
+    def test_question11(self):
+        logger.info("\n##################### test_question11 ########################\n")
+        
+        stmt = "is the yellow banana on the shelf?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "Yes. The yellow banana is on the shelf.")
+    """
+     Breaks severly the unittesting. Need to fix it at least to have a nicer failure
     def test_question10(self):
         logger.info("\n##################### Check we resolve correctly the labels ########################\n")
         

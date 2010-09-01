@@ -76,11 +76,11 @@ def dispatching(analysis):
 
     #For agree
     elif analysis.data_type=='agree':
-        return ['OK','.']
+        return ['OK','.'] if not analysis.aim else [analysis.aim, '.']
 
     #For disagree
     elif analysis.data_type=='disagree':
-        return ['No, sorry','.']
+        return ['No, sorry','.'] if not analysis.aim else [analysis.aim, '.']
 
     #For w_question
     elif analysis.data_type=='w_question':

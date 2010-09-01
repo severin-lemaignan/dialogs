@@ -206,10 +206,13 @@ class SentenceFactory:
                     ng.noun = ['I'] if subject else ['me'] 
                 elif ng.noun and ng.noun == ['I', 'me']:
                     ng.noun = ['you']
-                else:
-                    pass             
+                    
+                else: 
+                    pass
             return nominal_groupL
-            
+        
+        
+        print(sentence)
         #Subject sentence.sn
         if sentence.sn:
             sentence.sn = _reverse_noun_group_personal_pronoun(sentence.sn)
@@ -387,10 +390,11 @@ class SentenceFactory:
     def create_yes_no_answer(self, yes_no_question, answer):
         
         sentence = self.reverse_personal_pronoun(yes_no_question)
+        sentence.data_type = "statement"
         
         if answer:
             return [Sentence("agree",
-                                "", 
+                                "yes", 
                                 [],
                                 []),
                     sentence]
@@ -400,7 +404,7 @@ class SentenceFactory:
                 sv.state = "negative"
                 
             return [Sentence("disagree",
-                                "",
+                                "no",
                                 [],
                                 []),
                     sentence]
