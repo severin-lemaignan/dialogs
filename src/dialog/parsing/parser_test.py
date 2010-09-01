@@ -2468,21 +2468,121 @@ class TestParsing(unittest.TestCase):
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     
-
-    """
-    utterance="so I want to go"
-    sentence_list=preprocessing.process_sentence(utterance)
+        
+    
+    def test_81(self):
+        print''
+        print ('######################## test 9.1 ##############################')
+        utterance="I think that I know who is he. see you. So I want to go"
+        print "Object of this test : Process relative without object, so we duplicate the nominal group"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['think'], [],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'that', 
+                        [Nominal_Group([],['I'],[],[],[])], 
+                        [Verbal_Group(['know'], [],'present simple', 
+                            [Nominal_Group([],['he'],[],[],[Sentence('relative', 'who', 
+                                [], 
+                                [Verbal_Group(['be'], [],'present simple', 
+                                    [Nominal_Group([],['he'],[],[],[])], 
+                                    [],
+                                    [], [] ,'affirmative',[])])])], 
+                            [],
+                            [], [] ,'affirmative',[])])])]),
+            Sentence('end', '', [], []),
+            Sentence('', '', [], 
+                [Verbal_Group([], [],'', [], [],[], [] ,'affirmative',
+                    [Sentence('subsentence+statement', 'so', 
+                        [Nominal_Group([],['I'],[],[],[])], 
+                        [Verbal_Group(['want'], [Verbal_Group(['go'], [],'', 
+                                [], 
+                                [],
+                                [], [] ,'affirmative',[])],'present simple', 
+                            [], 
+                            [],
+                            [], [] ,'affirmative',[])])])])]
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
+    
+    def test_82(self):
+        print''
+        print ('######################## test 9.2 ##############################')
+        utterance="the interpretation is to find a defenition or a rule for something. and in a dialog, there is an interaction between them"
+        print "Object of this test : Put indirect complement or second verb before the sentence"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group(['the'],['interpretation'],[],[],[])], 
+                [Verbal_Group(['be'], [Verbal_Group(['find'], [],'', 
+                        [Nominal_Group(['a'],['defenition'],[],[],[]),
+                         Nominal_Group(['a'],['rule'],[],[],[])], 
+                        [Indirect_Complement(['for'],[Nominal_Group([],['something'],[],[],[])])],
+                        [], [] ,'affirmative',[])],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group(['an'],['interaction'],[],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['between'],[Nominal_Group([],['them'],[],[],[])]),
+                     Indirect_Complement(['in'],[Nominal_Group(['a'],['dialog'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        rslt[0].sv[0].sv_sec[0].d_obj[0]._quantifier="SOME"
+        rslt[0].sv[0].sv_sec[0].d_obj[1]._quantifier="SOME"
+        rslt[0].sv[0].sv_sec[0].d_obj[1]._conjunction="OR"
+        rslt[1].sn[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[1].nominal_group[0]._quantifier="SOME"
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
+    
+    def test_83(self):
+        print''
+        print ('######################## test 9.3 ##############################')
+        utterance="to have a dialog, we need more than 1 protagonist."
+        print "Object of this test : Add test to take off determinant and for timescale"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group(['the'],['interpretation'],[],[],[])], 
+                [Verbal_Group(['be'], [Verbal_Group(['find'], [],'', 
+                        [Nominal_Group(['a'],['defenition'],[],[],[]),
+                         Nominal_Group(['a'],['rule'],[],[],[])], 
+                        [Indirect_Complement(['for'],[Nominal_Group([],['something'],[],[],[])])],
+                        [], [] ,'affirmative',[])],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])])]
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
   
+    """
+    utterance="and in a dialog, there is an interaction between them"
+    sentence_list=preprocessing.process_sentence(utterance)
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     for i in class_list:
         print (str(i))
-    """
-    """
     <mchouaya> I finish the dialog and I check many problems
-    <mchouaya> to have a dialog, we need more than 1 protagonist. and in a dialog, there is an interaction between them
-    <mchouaya> the interpretation is to find a defenition or a rule for something
-    <mchouaya> ok I think that I know who is he
-    <mchouaya> so I want to go
     """
 
 def test_suite():

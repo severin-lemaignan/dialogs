@@ -632,6 +632,9 @@ class Verbal_Group:
         known by the robot."""
         self._resolved = False
         
+        self.comparator = [] #To process comparison like stronger than you
+        
+        
     def resolved(self):
         return  self._resolved \
                 and \

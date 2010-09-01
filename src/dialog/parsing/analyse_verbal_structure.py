@@ -171,8 +171,8 @@ def recover_obj_iobj(phrase, vg):
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object,pos_object)
                 #We will take off the proposal
-                
                 phrase=phrase[:phrase.index(proposal[0])]+phrase[phrase.index(proposal[0])+1:]
+                conjunction='AND'
                 
                 #If there is a relative
                 begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,rel_list)
@@ -224,6 +224,7 @@ def recover_obj_iobj(phrase, vg):
                 
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object, pos_object)
+                conjunction='AND'
                 
                 #If there is a relative
                 begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,rel_list)

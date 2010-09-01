@@ -318,15 +318,27 @@ def stc_start_subsentence(sentence):
     This function process the conditional sentence
     Input=sentence                                          Output=class Sentence    
     """
-
+    #We have to add punctuation if there is not
+    if sentence[len(sentence)-1]!='.' and sentence[len(sentence)-1]!='?' and sentence[len(sentence)-1]!='!':
+        sentence=sentence+['.']
+    
     #We recover the conditional sentence
-    subsentence=sentence[1:sentence.index(';')]
-
-    #We perform the 2 processing
-    analysis=other_sentence('statement', '', sentence[sentence.index(';')+1:])
+    for i in sentence:
+        if i==';' or i=='.':
+            subsentence=sentence[1:sentence.index(i)]
+            
+            #We perform the 2 processing
+            if sentence.index(i)!=len(sentence)-1:
+                analysis=other_sentence('statement', '', sentence[sentence.index(i)+1:])
+            else:
+                vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])
+                analysis=Sentence('', '', [], [vg])
+            break
+        
     analysis.sv[0].vrb_sub_sentence=analysis.sv[0].vrb_sub_sentence+dispatching(subsentence)
     analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type='subsentence+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
     analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0]
+    
     return analysis
 
 
@@ -706,12 +718,20 @@ def sentences_analyzer(sentences):
     
     #To simplify the interpretation, we have to perform some changes
     for k in class_sentence_list:
+        
         if k.sn!=[] and k.sn[0].det==['there']:
             k.sn=k.sv[0].d_obj
             k.sv[0].d_obj=[]
+        
         if k.sv!=[] and (k.sv[0].vrb_main==['.'] or k.sv[0].vrb_main==['?'] or k.sv[0].vrb_main==['!']):
             k.sv[0].vrb_main=[]
             if k.data_type=='imperative':
                 k.data_type='statement'
+        
+        if k.data_type=='imperative' and k.sv[0].vrb_main==['see'] and k.sv[0].d_obj[0].noun==['you']:
+            k.data_type='end'
+            k.aim=''
+            k.sv=[]
+            k.sn=[]
         
     return class_sentence_list

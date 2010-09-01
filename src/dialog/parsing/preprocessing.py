@@ -59,13 +59,33 @@ verb_preced_verb_list = ResourcePool().verb_need_to
 adv_list = ResourcePool().adverbs
 day_list = ResourcePool().days_list
 month_list = ResourcePool().months_list
+proposal_list = ResourcePool().proposals
 
 
 
 def process_and_beginning_sentence(sentence):
-    if sentence[0]==',' or sentence[0]=='and' or sentence[0]=='And' or sentence[0]=='ah' or sentence[0]=='Ah':
+    
+    if other_functions.find_cap_lettre(sentence[0])==1:
+        flg=1
+        sentence[0]=sentence[0][0].lower()+sentence[0][1:]
+    else:
+        flg=0
+        
+        
+    if sentence[0]==';' or sentence[0]=='and' or sentence[0]=='ah':
         sentence=sentence[1:]
     
+    for l in proposal_list:
+        if l==sentence[0]:
+            for z in sentence:
+                if z==';' or z=='.':
+                    phrase=sentence[:sentence.index(z)]
+                    if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
+                        sentence=sentence[sentence.index(z)+1:len(sentence)-1]+phrase+[sentence[len(sentence)-1]]
+                    else:
+                        sentence=sentence[sentence.index(z)+1:]+phrase
+    
+   
     for j in adv_list:
         if sentence[0]==j:
             if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
@@ -76,7 +96,10 @@ def process_and_beginning_sentence(sentence):
                 sentence=sentence[1:]+[',']+[sentence[0]]
                 sentence=process_and_beginning_sentence(sentence)
                 break
-   
+            
+    if flg==1:
+        sentence[0]=sentence[0][0].upper()+sentence[0][1:]
+    
     return sentence
 
 
@@ -169,7 +192,8 @@ def upper_to_lower(sentence):
         #If there is a nominal group
         if analyse_nominal_group.find_sn_pos (sentence,0)!=[]:
             return sentence
-            
+        
+        
         #It a propre name, we convert lowercase to uppercase
         sentence[0]=sentence[0][0].upper()+sentence[0][1:]
         
@@ -882,6 +906,7 @@ def processing(sentence):
     sentence = add_scd_vrb(sentence)
     sentence = day_month(sentence)
     sentence = am_pm(sentence)
+    sentence = process_and_beginning_sentence(sentence)
     sentence = interjection(sentence)
     return sentence
 
