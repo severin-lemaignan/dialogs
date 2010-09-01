@@ -409,9 +409,19 @@ class SentenceFactory:
                                 []),
                     sentence]
             
-            
-            
-               
+    
+    def create_gratulation_reply(self):
+        """ Create a reply to gratualtion
+            E.g: You are welcome.
+        """
+        return [Sentence("statement", "", 
+                        [Nominal_Group([],['you'],[], [],[])],
+                        [Verbal_Group(['be'], [], "present simple",
+                                    [Nominal_Group([],[],[['welcome',[]]], [],[])],[],[],[],"affirmative", [])])]
+    
+    def create_agree_reply(self):
+        return [Sentence("agree", "alright", [], [])]
+    
 class Sentence:
     """
     A sentence is formed from:

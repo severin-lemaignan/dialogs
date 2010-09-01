@@ -1779,7 +1779,36 @@ class TestBaseSentenceDialog(unittest.TestCase):
         expected_result = ['Crow rdfs:subClassOf Bird']
                            
         self.assertTrue(check_results(res[0], expected_result))
-        self.assertTrue(res[1][1], "A crow is a bird. What are a crow and a bird?")
+        self.assertEquals(res[1][1], "A crow is a bird. What are a crow and a bird?")
+    
+    def test_sentence13(self):
+        logger.info("\n##################### sentence that are neither statements, imperatives nor questions ########################\n")
+        
+        ##sentence
+        stmt = "Hello"
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "Hello.")
+    
+    def test_sentence13_bis(self):   
+        logger.info("\n##################### sentence that are neither statements, imperatives nor questions ########################\n")
+        ##sentence
+        stmt = "Goodbye"
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "Goodbye.")
+        
+    def test_sentence13_ter(self):   
+        logger.info("\n##################### sentence that are neither statements, imperatives nor questions ########################\n")
+        ##sentence
+        stmt = "thank you"
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "You're welcome.")
+    
+    def test_sentence13_quater(self):   
+        logger.info("\n##################### sentence that are neither statements, imperatives nor questions ########################\n")
+        ##sentence
+        stmt = "yes"
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "Alright.")
         
     def tearDown(self):
         self.dialog.stop()

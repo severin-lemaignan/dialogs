@@ -34,7 +34,18 @@ class ContentAnalyser:
             logger.debug("Processing the content of " +  ("a w_question " if sentence.data_type == 'w_question' else "a yes_no_question ") + "data_type sentence")
             return self.process_question(sentence, current_speaker)
         
-
+        if sentence.data_type in ["start", "end"]:
+            self.output_sentence.append(sentence)
+            return []
+            
+        if sentence.data_type == "gratulation":
+            self.output_sentence.extend(self.sfactory.create_gratulation_reply())
+            return []
+        
+        if sentence.data_type in ["agree", "disagree"]:
+            self.output_sentence.extend(self.sfactory.create_agree_reply())
+            return []
+        
             
     def process_sentence(self, sentence, current_speaker):
         self.builder.set_current_speaker(current_speaker)
