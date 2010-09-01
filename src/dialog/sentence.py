@@ -151,11 +151,11 @@ class SentenceFactory:
         else:
             for response in w_answer:
                 ng = self.create_nominal_group_with_object(response)
-                ng.id = w_answer
+                ng.id = response
                 ng._resolved = True
                 
                 nominal_groupL.append(ng)
-                
+            
             
         #Sentence holding the answer
         
@@ -212,7 +212,6 @@ class SentenceFactory:
             return nominal_groupL
         
         
-        print(sentence)
         #Subject sentence.sn
         if sentence.sn:
             sentence.sn = _reverse_noun_group_personal_pronoun(sentence.sn)

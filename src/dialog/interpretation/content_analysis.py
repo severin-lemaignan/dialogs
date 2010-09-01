@@ -45,7 +45,6 @@ class ContentAnalyser:
         if sentence.data_type in ["agree", "disagree"]:
             self.output_sentence.extend(self.sfactory.create_agree_reply())
             return []
-        
             
     def process_sentence(self, sentence, current_speaker):
         self.builder.set_current_speaker(current_speaker)
@@ -74,12 +73,12 @@ class ContentAnalyser:
         
         logger.info("Found: \n \t>>" + str(answer))
         if sentence.data_type == 'w_question':
-             self.output_sentence.extend(self.sfactory.create_w_question_answer(sentence, 
+            self.output_sentence.extend(self.sfactory.create_w_question_answer(sentence, 
                                                                                     answer, 
                                                                                     self.question_handler.get_query_on_field()))
         
         if sentence.data_type == 'yes_no_question':
-             self.output_sentence.extend(self.sfactory.create_yes_no_answer(sentence, answer))
+            self.output_sentence.extend(self.sfactory.create_yes_no_answer(sentence, answer))
         
         return self.question_handler._statements
 

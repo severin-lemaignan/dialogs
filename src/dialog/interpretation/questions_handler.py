@@ -60,7 +60,6 @@ class QuestionHandler:
             self._statements = self._extend_statement_from_sentence_aim(self._statements)
             
             if self._statements:
-                print(self._statements)
                 try:
                     logger.debug("\tSearching the ontology: find(?concept, " + str(self._statements) + ")")
                     self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
