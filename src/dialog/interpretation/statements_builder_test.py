@@ -69,6 +69,8 @@ class TestStatementBuilder(unittest.TestCase):
                           'green_bottle rdf:type Bottle',
                           'a_bottle rdf:type Bottle',
                           'a_bottle isIn twingo',
+                          
+                          'a_candy rdf:type Candy',
                           ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
@@ -1015,10 +1017,10 @@ class TestStatementBuilder(unittest.TestCase):
     
     def test_20_negative(self):
         logger.info("\n**** test_20_negative *** ")
-        logger.info("the shelf1 is not green")
+        logger.info("the candy is not green")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
-                                            ['shelf1'],
+                                            ['candy'],
                                             [],
                                             [],
                                             [])],                                         
@@ -1035,16 +1037,16 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'negative',
                                            [])])
-        expected_result = [ 'shelf1 hasColor *']   
+        expected_result = [ 'a_candy hasColor *']   
         self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_20_negative_inconsistent(self):
         logger.info("\n**** test_20_negative *** ")
-        logger.info("the shelf1 is green")
+        logger.info("the candy is green")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
-                                            ['shelf1'],
+                                            ['candy'],
                                             [],
                                             [],
                                             [])],                                         
@@ -1061,14 +1063,14 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_result = ['shelf1 hasColor green']   
+        expected_result = ['a_candy hasColor green']   
         self.process(sentence, expected_result, display_statement_result = True)
         
         logger.info("\n**** test_20_negative_bis *** ")
-        logger.info("the shelf1 is red")
+        logger.info("the candy is red")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
-                                            ['shelf1'],
+                                            ['candy'],
                                             [],
                                             [],
                                             [])],                                         
@@ -1085,7 +1087,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_result = ['shelf1 hasColor red']   
+        expected_result = ['a_candy hasColor red']   
         self.process(sentence, expected_result, display_statement_result = True)
     
     
@@ -1516,12 +1518,14 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         
         ##sentence3
-        stmt = "I see it"
+        stmt = "I eat it"
         ###
         answer = "yes. I meant the green one"
         res = self.dialog.test('myself', stmt, answer)
         
-        expected_result = ['myself sees green_banana']
+        expected_result = ['* rdf:type Eat',
+                           '* performedBy myself',
+                           '* involves green_banana']
                             
         self.assertTrue(check_results(res[0], expected_result))
     
@@ -1537,12 +1541,14 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         
         ##sentence3
-        stmt = "I see it"
+        stmt = "I eat it"
         ###
         answer = "No. I mean the red apple"
         res = self.dialog.test('myself', stmt, answer)
         
-        expected_result = ['myself sees red_apple']
+        expected_result = ['* rdf:type Eat',
+                           '* performedBy myself',
+                           '* involves red_apple']
                             
 
         self.assertTrue(check_results(res[0], expected_result))
@@ -1561,12 +1567,14 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ##sentence3
         self.oro.remove(['myself focusesOn y_banana'])
         
-        stmt = "I see this"
+        stmt = "I eat this"
         ###
         ### Expected Question: Do you mean the green banana?
         answer = "No. I mean the red apple"
         res = self.dialog.test('myself', stmt, answer)
-        expected_result = ['myself sees red_apple']
+        expected_result = ['* rdf:type Eat',
+                           '* performedBy myself',
+                           '* involves red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
         
@@ -1586,12 +1594,13 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ##sentence3
         self.oro.remove(['myself focusesOn y_banana'])
         
-        stmt = "I see this one"
+        stmt = "I want this one"
         ###
         ### Expected Question: Do you mean the green banana?
         answer = "No. I mean the red apple"
         res = self.dialog.test('myself', stmt, answer)
-        expected_result = ['myself sees red_apple']
+        expected_result = ['myself desires *',
+                           '* involves red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
         self.assertTrue(check_results(res[0], expected_result))
@@ -1609,11 +1618,12 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ##sentence3
         self.oro.remove(['myself focusesOn y_banana'])
         
-        stmt = "I see this apple"
+        stmt = "I want this apple"
         ###
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['myself sees red_apple']
+        expected_result = ['myself desires *',
+                           '* involves red_apple']
         
         self.oro.add(['myself focusesOn y_banana'])
         self.assertTrue(check_results(res[0], expected_result))
@@ -1719,12 +1729,14 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         
         ##sentence3
-        stmt = "I see the same one"
+        stmt = "I eat the same one"
         ###
         answer = "yes. I meant the green one"
         res = self.dialog.test('myself', stmt, answer)
         
-        expected_result = ['myself sees green_banana']
+        expected_result = ['* rdf:type Eat',
+                           '* performedBy myself',
+                           '* involves green_banana']
         
         
         self.assertTrue(check_results(res[0], expected_result))
@@ -1744,11 +1756,13 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         
         ##sentence3
-        stmt = "I see the same apple"
+        stmt = "I eat the same apple"
         ###
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['myself sees red_apple']
+        expected_result = ['* rdf:type Eat',
+                           '* performedBy myself',
+                           '* involves red_apple']
         
         
         self.assertTrue(check_results(res[0], expected_result))
