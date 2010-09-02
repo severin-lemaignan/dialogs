@@ -37,7 +37,7 @@ def find_tense_statement (phrase):
     """
     
     #processing for the simple past
-    if phrase[0].endswith('ed'):
+    if phrase[0].endswith('ed') and phrase[0]!='need':
         return 'past simple'
     
     #processing for the future simple

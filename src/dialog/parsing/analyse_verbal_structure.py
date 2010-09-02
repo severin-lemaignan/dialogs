@@ -647,3 +647,63 @@ def refine_subsentence(vg):
         
         i=i+1  
     return vg
+
+
+
+def process_compare(sentence,vg):
+    #init
+    i=0
+    conjunction='AND'
+    gr_nom_list=[]
+    
+    while i<len(sentence):
+        if sentence[i]=='than':
+            compare={'nom_gr':[],'object':''}
+            
+            object= analyse_nominal_group.find_sn_pos(sentence, i+1)
+            #It reproduces the same code as above
+            while object!=[]:
+                #We refine the nominal group if there is an error like ending with question mark
+                object=analyse_nominal_group.refine_nom_gr(object)
+                #Recovering nominal group
+                gr_nom_list=gr_nom_list+[analyse_nominal_structure.fill_nom_gr(sentence, object, i+1, conjunction)]
+                #We take off the nominal group
+                sentence=analyse_nominal_group.take_off_nom_gr(sentence, object, i+1)
+                conjunction='AND'
+                #If there is a relative
+                begin_pos_rel=analyse_nominal_group.find_relative(object, sentence, i+1,rel_list)
+                if begin_pos_rel!=-1:
+                    end_pos_rel=other_functions.recover_end_pos_sub(sentence, rel_list)
+                    #We remove the relative part of the sentence
+                    sentence=sentence[:begin_pos_rel]+sentence[end_pos_rel:]
+                if len(sentence)!=i+1 and (sentence[i+1]=='and' or sentence[i+1]=='or' or sentence[i+1]==':but'):
+                    sentence=[sentence[i+1]]+analyse_nominal_group.find_plural(sentence[1:])
+                    object=analyse_nominal_group.find_sn_pos(sentence[i+2:], i+1)
+                    #We process the 'or' like the 'and' and remove it
+                    if sentence[i+1]=='or':
+                        conjunction='OR'
+                    elif sentence[i+1]==':but':
+                        conjunction='BUT'
+                    else:
+                        conjunction='AND'
+                    sentence=sentence[i+1:]
+                    
+                else:
+                    object=[]
+            
+            compare['nom_gr']=gr_nom_list
+           
+            if sentence[i-1].endswith('er'):
+                compare['object']=sentence[i-1]
+                sentence=sentence[:i-1]+sentence[i+1:]
+            elif sentence[i-2]=='more' or sentence[i-2]=='less':
+                compare['object']=sentence[i-2]+'+'+sentence[i-1]
+                sentence=sentence[:i-1]+sentence[i+1:]
+            elif sentence[i-1]=='more' or sentence[i-1]=='less':
+                compare['object']=sentence[i-1]
+                sentence=sentence[:i-1]+sentence[i+1:]
+                
+            vg.comparator=vg.comparator+[compare]
+        
+        i=i+1
+    return sentence

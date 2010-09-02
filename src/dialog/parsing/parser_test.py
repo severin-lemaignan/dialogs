@@ -165,6 +165,12 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
             
             print (str(utterance[i]))
             
+            for a in utterance[i].sv:
+                for z in a.comparator:
+                    print "The comparison in the sentence is : "
+                    print z['object']
+                    print (str(z['nom_gr'][0]))
+            
             flag=compare_sentence(utterance[i], rslt_utterance[i])
             if flag==1:
                 print "There is a problem with parsing this sentence"
@@ -2563,28 +2569,25 @@ class TestParsing(unittest.TestCase):
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
         rslt=[Sentence('statement', '', 
-                [Nominal_Group(['the'],['interpretation'],[],[],[])], 
-                [Verbal_Group(['be'], [Verbal_Group(['find'], [],'', 
-                        [Nominal_Group(['a'],['defenition'],[],[],[]),
-                         Nominal_Group(['a'],['rule'],[],[],[])], 
-                        [Indirect_Complement(['for'],[Nominal_Group([],['something'],[],[],[])])],
+                [Nominal_Group([],['we'],[],[],[])], 
+                [Verbal_Group(['need'], [Verbal_Group(['have'], [],'', 
+                        [Nominal_Group(['a'],['dialog'],[],[],[])], 
+                        [],
                         [], [] ,'affirmative',[])],'present simple', 
                     [], 
                     [],
                     [], [] ,'affirmative',[])])]
         
+        rslt[0].sv[0].sv_sec[0].d_obj[0]._quantifier="SOME"
+        
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
+        
+    """
+    
+    I finish the dialog and I check many problems
+    """
   
-    """
-    utterance="and in a dialog, there is an interaction between them"
-    sentence_list=preprocessing.process_sentence(utterance)
-    class_list= analyse_sentence.sentences_analyzer(sentence_list)
-    for i in class_list:
-        print (str(i))
-    <mchouaya> I finish the dialog and I check many problems
-    """
-
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)
     return suite
