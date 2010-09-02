@@ -761,10 +761,10 @@ class TestStatementBuilder(unittest.TestCase):
     
     def test_15_quantifier_action_verb(self):        
         logger.info("\n**** test_15_quantifier_action_verb  *** ")
-        logger.info("an apple grows on a tree")
+        logger.info("a mango grows on a tree")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['an'],
-                                            ['apple'],#apple is common noun. Therefore, do not capitalize.
+                                            ['mango'],#apple is common noun. Therefore, do not capitalize.
                                             [],
                                             [],
                                             [])],                                         
@@ -786,7 +786,11 @@ class TestStatementBuilder(unittest.TestCase):
         #quantifier
         sentence.sn[0]._quantifier = 'SOME' # an apple
         sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier = 'SOME' # a tree
-        expected_result = ['? ? ?'] # TODO
+        expected_result = ['* rdf:type Mango',
+                            '* rdf:type Grow',
+                            '* performedBy *',
+                            '* involves *',
+                            '* rdf:type Tree']
         
         return self.process(sentence, expected_result, display_statement_result = True)
     
