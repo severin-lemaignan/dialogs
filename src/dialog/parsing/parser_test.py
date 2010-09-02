@@ -34,6 +34,7 @@ def compare_nom_gr(ng,rslt_ng):
     j=0
     
     if len(ng)!=len(rslt_ng):
+        print "aaz"
         return 1
     else:
         while i < len(rslt_ng):
@@ -2560,12 +2561,13 @@ class TestParsing(unittest.TestCase):
     def test_83(self):
         print''
         print ('######################## test 9.3 ##############################')
-        utterance="to have a dialog, we need more than 1 protagonist."
+        utterance="to have a dialog, we need more than 1 protagonist. I finish the dialog, and I check many problems"
         print "Object of this test : Add test to take off determinant and for timescale"
         print utterance
         print '#################################################################'
         print ''
         sentence_list=preprocessing.process_sentence(utterance)
+        print sentence_list
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
         rslt=[Sentence('statement', '', 
@@ -2576,18 +2578,28 @@ class TestParsing(unittest.TestCase):
                         [], [] ,'affirmative',[])],'present simple', 
                     [], 
                     [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['finish'], [],'present simple', 
+                    [Nominal_Group(['the'],['dialog'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['check'], [],'present simple', 
+                    [Nominal_Group([],['problem'],[['many',[]]],[],[])], 
+                    [],
                     [], [] ,'affirmative',[])])]
         
         rslt[0].sv[0].sv_sec[0].d_obj[0]._quantifier="SOME"
+        rslt[2].sv[0].d_obj[0]._quantifier="ALL"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-        
-    """
     
-    I finish the dialog and I check many problems
-    """
-  
+    
+    
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)
     return suite

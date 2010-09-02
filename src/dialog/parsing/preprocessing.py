@@ -876,8 +876,25 @@ def am_pm(sentence):
         
     return sentence
         
-        
+
+
+def and_between_sentence(sentence):
     
+    #init
+    i=j=0
+    
+    while i < len(sentence):
+        while j < len(sentence[i]):
+            if sentence[i][j]=='and' and sentence[i][j-1]==';':
+                stc=sentence[i][:j-1]
+                sentence[i]=sentence[i][j+1:]
+                sentence=sentence[:i]+[stc]+sentence[i:]
+            j=j+1
+        i=i+1
+    return sentence
+
+                
+                    
 def processing(sentence):
     """ 
     This function is used by process_sentence                  
@@ -908,6 +925,7 @@ def processing(sentence):
     sentence = am_pm(sentence)
     sentence = process_and_beginning_sentence(sentence)
     sentence = interjection(sentence)
+    sentence = and_between_sentence(sentence)
     return sentence
 
     

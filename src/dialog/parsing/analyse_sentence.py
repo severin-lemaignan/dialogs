@@ -478,6 +478,8 @@ def y_n_ques(type, request, sentence):
         #Process relative changes
         sentence=analyse_verbal_structure.correct_i_compl(sentence,vg.vrb_main[0])
         
+        sentence=analyse_verbal_structure.process_compare(sentence,vg)
+        
         sentence=analyse_nominal_group.find_plural(sentence)
         #We recover the direct, indirect complement and the adverbial
         sentence=analyse_verbal_structure.recover_obj_iobj(sentence, vg)

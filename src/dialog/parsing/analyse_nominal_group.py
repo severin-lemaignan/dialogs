@@ -354,18 +354,21 @@ def process_adj_quantifier(adj_list):
     
     #Now, we will put quantifier (if it exist) with the adjective
     z=len(adj_list)-1
-    while z >= 0:
-        for j in adj_quantifier:
-            if j==adj_list[z]:
-                #We can't have quantifier if there is no adjective
-                flg=1
-                adjective_list[0][1]=[adj_list[z]]+adjective_list[0][1]
-                break
-        if flg==0:
-            adjective_list=[[adj_list[z],[]]]+adjective_list
-        else:
-            flg=0
-        z=z-1
+    if z==0:
+        adjective_list=[[adj_list[z],[]]]+adjective_list
+    else:
+        while z >= 0:
+            for j in adj_quantifier:
+                if j==adj_list[z]:
+                    #We can't have quantifier if there is no adjective
+                    flg=1
+                    adjective_list[0][1]=[adj_list[z]]+adjective_list[0][1]
+                    break
+            if flg==0:
+                adjective_list=[[adj_list[z],[]]]+adjective_list
+            else:
+                flg=0
+            z=z-1
         
     return adjective_list
 
