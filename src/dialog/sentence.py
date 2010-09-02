@@ -300,10 +300,8 @@ class SentenceFactory:
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
                 
-            if onto:
-                #Adjectives quantifiers
-                onto.append([])
-                object_features.append(onto)
+            for obj in onto:
+                object_features.append([obj, []]) # Cf Adjectives format: list[main, list[quatifiers]]
                 
         """ Commented due to recursivity issues
         # Object Location
