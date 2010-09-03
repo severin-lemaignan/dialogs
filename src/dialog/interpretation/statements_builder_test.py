@@ -1392,12 +1392,16 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'big_tree rdf:type Tree',
                         'big_tree hasSize big',
                         'red_apple rdf:type Apple',
-                        'red_apple hasColor red'
+                        'red_apple hasColor red',
+                        'LEFT isLeftOf myself',
+                        'RIGHT isRightOf myself',
+                        'FRONT isFrontOf myself',
+                        'BACK isBackOf myself',
                         ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
-
+    """
     def test_sentence1(self):
 
         logger.info("\n##################### test_sentence1 ########################\n")
@@ -1830,7 +1834,47 @@ class TestBaseSentenceDialog(unittest.TestCase):
         stmt = "yes"
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "Alright.")
+    
+    """
+    def test_sentence14(self):   
+        logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
+        ##sentence
+        stmt = "the yellow banana is at my left"
+        res = self.dialog.test('myself', stmt)
         
+        expected_result = ['y_banana isAt *',
+                          '* isLeftOf myself']
+                          
+        self.assertTrue(check_results(res[0], expected_result))
+    """
+    def test_sentence15(self):   
+        logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
+        ##sentence
+        stmt = "the yellow banana is at the left"
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['y_banana isAt *',
+                          '* isLeftOf myself'] #Here left is related to the agent
+    
+    def test_sentence16(self):   
+        logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
+        ##sentence
+        stmt = "the yellow banana is in front of the shelf"
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['y_banana isAt *',
+                          '* isFrontOf shelf'] 
+    
+    def test_sentence17(self):   
+        logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
+        ##sentence
+        stmt = "the yellow banana is at the front"
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['y_banana isAt *',
+                          '* isFrontOf myself'] #Here front is related to the agent
+    
+    """
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()

@@ -239,6 +239,11 @@ class NominalGroupStatementBuilder:
                         ng._quantifier in ['SOME', 'ALL']:
                     self.process_noun_phrases(ng, ng_id, subject_quantifier, negative_object)
             
+            
+            #Case: of directions
+            elif (noun in ['left','right','front'] for noun in ng.noun):
+                process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier, negative_object)
+                
         #Case of a not resolved nominal group
         else:
             process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier, negative_object)
@@ -255,9 +260,19 @@ class NominalGroupStatementBuilder:
                 
             # Case 3: possessives : my, your, his, her, its, our, their """
             if det == "my" and not negative_object:
-                self._statements.append(ng_id + " belongsTo " + self._current_speaker)
+                #Case of Direction: The leftOf, the right of ...
+                if nominal_group.noun and (noun in ['left', 'right', 'back'] for noun in nominal_group.noun):
+                    self._statements.append(ng_id + " isLeftOf " + self._current_speaker)
+                else:
+                    self._statements.append(ng_id + " belongsTo " + self._current_speaker)
+                    
             elif det == "your" and not negative_object:
-                self._statements.append(ng_id + " belongsTo myself")
+                #Case of Direction: The leftOf, the right of ...
+                if nominal_group.noun and (noun in ['left', 'right', 'back'] for noun in nominal_group.noun):
+                    self._statements.append(ng_id + " isLeftOf myself")
+                else:
+                    self._statements.append(ng_id + " belongsTo myself")
+                    
             # Case 4: general determiners: See http://www.learnenglish.de/grammar/determinertext.htm"""
             
     
@@ -341,7 +356,11 @@ class NominalGroupStatementBuilder:
                 logger.info("... \t" + noun + " is being processed as a proper noun in  " + self._current_speaker + "'s model.")            
                 self._statements.append(ng_id + " rdfs:label \"" + noun + "\"")
             
+            
             # Case : common noun    
+                # Case of Directions
+            elif noun in ['left', 'right', 'back']:
+                pass
             else:
                 logger.info("... \t" + noun + " is being processed as a common noun in " + self._current_speaker + "'s model.")            
                 # get the exact class name (capitalized letters where needed)
@@ -436,7 +455,11 @@ class NominalGroupStatementBuilder:
                 self.process_nominal_group(noun_cmpl, noun_cmpl_id, None, False)
             # Case of affirmation
             if not negative_object:
-                self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
+                #Case of Direction: The leftOf, the right of ...
+                if nominal_group.noun and nominal_group.noun[0] in ['left', 'right', 'back']:
+                    self._statements.append(ng_id + " isLeftOf " + noun_cmpl_id)
+                else:
+                    self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
     
     def process_relative(self, nominal_group, ng_id):
         """ The following processes the relative clause of the subject of a sentence.           
