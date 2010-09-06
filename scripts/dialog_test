@@ -9,6 +9,8 @@ import getopt
 
 import operator
 
+from dialog.resources_manager import ResourcePool
+
 # Add the "examples" directory the the Python path.
 EXAMPLES_DIR = os.path.dirname(__file__).split('/bin')[0].split('/scripts')[0] + '/share/examples/dialog'
 sys.path.append(EXAMPLES_DIR)
@@ -80,8 +82,10 @@ dialog_test [OPTIONS] TEST_SUITE
 if __name__ == '__main__':
     
     logger = logging.getLogger('dialog')
-    
     logger.setLevel(logging.DEBUG)
+    
+    pyoro_logger = logging.getLogger('pyoro')
+    pyoro_logger.setLevel(4)
 
     if len(sys.argv[1:]) == 0:
         usage()
@@ -115,6 +119,8 @@ if __name__ == '__main__':
     log_handler.setFormatter(formatter)
     # add log_handler to logger
     logger.addHandler(log_handler)
+    
+    pyoro_logger.addHandler(log_handler)
 
     results = {}
     
@@ -152,7 +158,7 @@ if __name__ == '__main__':
         suite = scenario_moving.test_suite()
         result = unittest.TextTestRunner(verbosity=2).run(suite)
         results['scenario: moving'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
-    
+
     total = (0,0,0,0,0)
     total_ok = 0
     print("\n\n======================================================================")
@@ -166,3 +172,5 @@ if __name__ == '__main__':
         
     print("| TOTAL            |  % 4d    |   % 4d    |   % 3d    |  % 3d   || % 3d |" % (tuple(total)))
     print("======================================================================")
+
+    ResourcePool().close()

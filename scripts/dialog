@@ -46,9 +46,8 @@ def main():
     ORO_HOST = 'localhost'
     ORO_PORT = 6969
 
-    logger = logging.getLogger("dialog")
-    
-    debug_level = logging.INFO
+    logger = logging.getLogger('dialog')
+    logger.setLevel(logging.INFO)
     
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version', 'orohost=', 'oroport='])
@@ -81,16 +80,14 @@ def main():
             usage()
             sys.exit(2)
 
-    # define a Handler which writes INFO messages or higher to the sys.stderr
-    console = logging.StreamHandler()
-    console.setLevel(debug_level)
-    # set a format which is simpler for console use
-    formatter = logging.Formatter('%(message)s')
-    # tell the handler to use this format
-    console.setFormatter(formatter)
-    # add the handler to the root logger
-    logger.addHandler(console)
-
+    log_handler = logging.StreamHandler()
+    formatter = logging.Formatter("%(message)s")
+    
+    # add formatter to log_handler
+    log_handler.setFormatter(formatter)
+    # add log_handler to logger
+    logger.addHandler(log_handler)
+    
     logger.info("**** DIALOG module ****")
     logger.info("v." + DIALOG_VERSION + "\n")
     
@@ -110,6 +107,11 @@ def main():
             dialog.stop()
 
     dialog.join()
+    
+    #Closing the connection to ORO
+    ResourcePool().close()
+    
+    logger.info("Bye bye!")
     sys.exit()
 
 if __name__ == '__main__':

@@ -376,7 +376,11 @@ class ResourcePool:
             if not k in adj_s:
                 adj_s.append(k)
         self.adjectives_ontology_classes = adj_s
-
+    
+    def close(self):
+        if self.ontology_server:
+            self.ontology_server.close()
+            self.ontology_server = None
 
 
 if __name__ == '__main__':
