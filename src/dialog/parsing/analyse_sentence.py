@@ -333,7 +333,7 @@ def stc_start_subsentence(sentence):
     
     #We recover the conditional sentence
     for i in sentence:
-        if i==';' or i=='.':
+        if i==';' or i=='.' or i=='?' or i=='!':
             subsentence=sentence[1:sentence.index(i)]
             
             #We perform the 2 processing
@@ -343,10 +343,11 @@ def stc_start_subsentence(sentence):
                 vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])
                 analysis=Sentence('', '', [], [vg])
             break
-        
+    
     analysis.sv[0].vrb_sub_sentence=analysis.sv[0].vrb_sub_sentence+dispatching(subsentence)
-    analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type='subsentence+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
-    analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0]
+    if analysis.sv[0].vrb_sub_sentence!=[]:
+        analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type='subsentence+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
+        analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0]
     
     return analysis
 
@@ -406,10 +407,19 @@ def y_n_ques(type, request, sentence):
     vg=Verbal_Group([], [],'', [], [], [], [] ,'affirmative',[])
     analysis=Sentence(type, request, [], [])
     modal=[]
+    stc=sentence
     
     #We start with determination of probably second verb in subsentence
     sentence=other_functions.find_scd_verb_sub(sentence)
     
+    #We have to add punctuation if there is not
+    if sentence==[] or sentence[0]=='.' or sentence[0]=='?' or sentence[0]=='!':
+        #We have probably the aim as an adverb
+        analyse_verbal_structure.find_adv([request], vg)
+        analysis.aim='thing'
+        analysis.sv=[vg]
+        return analysis
+        
     #We recover the auxiliary 
     aux=sentence[0]
     
@@ -439,8 +449,21 @@ def y_n_ques(type, request, sentence):
     #We delete the auxiliary
     sentence=sentence[1:]
     
-    #We recover the subject
-    sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
+    #We have to separate the case using these, this or there
+    for p in det_dem_list:
+        if p==sentence[0] and analyse_verb.infinitive([aux], 'present simple')==['be']:
+            #We recover this information and remove it
+            analysis.sn=[Nominal_Group([p],[],[],[],[])]
+            if p=='there' and aux=='are':
+                analysis.sn[0]._quantifier='SOME'
+            sentence=sentence[1:]
+    
+    if analysis.sn==[]:
+        #We recover the subject
+        sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
+    
+    if aux=='do' and analyse_verbal_structure.imerative_stc(sentence)==1:
+        return other_sentence('', '', stc)
     
     #If there is one element => it is an auxiliary => verb 'be'
     if len(sentence)==0:
@@ -460,7 +483,7 @@ def y_n_ques(type, request, sentence):
             sentence= sentence[sentence.index(verb[0])+len(verb_main):]
         elif sentence[0]=='be':
             sentence=sentence[1:]
-        
+      
         #Here we have special processing for different cases
         if sentence!=[]:
             #For 'what' descrition case
@@ -469,7 +492,7 @@ def y_n_ques(type, request, sentence):
                 sentence=sentence[1:]
 
             #For 'how' questions with often
-            elif sentence[0].endswith('ing'):
+            elif sentence[0].endswith('ing') and not(sentence[0].endswith('thing')):
                 vg.vrb_main[0]=vg.vrb_main[0]+'+'+sentence[0]
                 sentence=sentence[1:]
         

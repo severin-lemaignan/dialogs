@@ -402,26 +402,27 @@ def process_subsentence(phrase,vg):
                 if w!='where' or (len(gr)+position!=phrase.index(w) or (len(gr)==1 and other_functions.find_cap_lettre(gr[0])==0)):
                     #We have to remove the proposal
                     subsentence= phrase[begin_pos+1:begin_pos+end_pos]
-                    subsentence=other_functions.recover_scd_verb_sub(subsentence)
-                    
-                    #We perform processing
-                    vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
-                    vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
-                    vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
-                    
-                    if w=='but':
-                        #If the main verb is not a verb but a part of verbal structure => we have nominal groups
-                        for k in ['.','?','!','']+proposal_list:
-                            if vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
-                                
-                                #We make changes and return the sentence with but of nominal groups
-                                phrase[phrase.index(w)]=':but'
-                                vg.vrb_sub_sentence=vg.vrb_sub_sentence[:len(vg.vrb_sub_sentence)-1]
-                                return phrase
-                     
-                    #We delete the subsentence
-                    phrase=phrase[:begin_pos]+phrase[begin_pos+end_pos:]+['.']
-                    return phrase
+                    if len(subsentence)>1:
+                        subsentence=other_functions.recover_scd_verb_sub(subsentence)
+                        
+                        #We perform processing
+                        vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
+                        
+                        if w=='but':
+                            #If the main verb is not a verb but a part of verbal structure => we have nominal groups
+                            for k in ['.','?','!','']+proposal_list:
+                                if vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
+                                    
+                                    #We make changes and return the sentence with but of nominal groups
+                                    phrase[phrase.index(w)]=':but'
+                                    vg.vrb_sub_sentence=vg.vrb_sub_sentence[:len(vg.vrb_sub_sentence)-1]
+                                    return phrase
+                         
+                        #We delete the subsentence
+                        phrase=phrase[:begin_pos]+phrase[begin_pos+end_pos:]+['.']
+                        return phrase
 
     return phrase
 
@@ -707,3 +708,15 @@ def process_compare(sentence,vg):
         
         i=i+1
     return sentence
+
+
+
+def imerative_stc(sentence):
+    if sentence==[]:
+        return 1
+    for i in adv_list+proposal_list:
+        if sentence[0]==i:
+            return 1
+    if sentence[0]=='.' or sentence[0]=='?' or sentence[0]=='!':
+        return 1
+    return 0

@@ -98,7 +98,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
 
     #init
     relative=[]
-   
+
     #We start by recovering all information we need
     nom_gr_compl=analyse_nominal_group.find_nom_gr_compl (nom_gr, phrase, pos_nom_gr)
     det=analyse_nominal_group.return_det(nom_gr)

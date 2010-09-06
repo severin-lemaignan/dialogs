@@ -80,7 +80,7 @@ def find_tense_statement (phrase):
     #processing for the progressive form and passive form (in past)
     if phrase[0]=='was' or phrase[0]=='were':
         #Progressive form in the past
-        if len(phrase)!=1 and phrase[1].endswith('ing'):
+        if len(phrase)!=1 and phrase[1].endswith('ing') and not(phrase[1].endswith('thing')):
             return 'past progressive'
         elif find_tense_statement(['have']+phrase[1:])=='present perfect':
             #If there is an adjective and not a verb
@@ -174,7 +174,7 @@ def find_tense_question (phrase, aux):
     #Duality between progressive, passive and present simple
     elif aux=='is' or aux=='are' or aux=='am':
   
-        if phrase[0].endswith('ing'):
+        if phrase[0].endswith('ing') and not(phrase[0].endswith('thing')):
             return 'present progressive'
         elif phrase[0].endswith('ed'):
             #If there is an adjective and not a verb
@@ -190,7 +190,7 @@ def find_tense_question (phrase, aux):
 
     #Duality between progressive, passive and past simple
     elif aux=='was' or aux=='were':
-        if phrase[0].endswith('ing'):
+        if phrase[0].endswith('ing') and not(phrase[0].endswith('thing')):
             return 'past progressive'
         elif phrase[0].endswith('ed'):
             #If there is an adjective and not a verb

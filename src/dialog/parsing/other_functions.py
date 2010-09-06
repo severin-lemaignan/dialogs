@@ -250,3 +250,12 @@ def there_is_pronoun(list_nom_gr, nom_gr):
         return 1
     
     return 0
+
+
+
+def get_off_point(word):
+    if word.endswith('.') or word.endswith('!') or word.endswith('?'):
+        point=word[len(word)-1]
+        while word.endswith(point):
+            word=word[:len(word)-1]
+    return word

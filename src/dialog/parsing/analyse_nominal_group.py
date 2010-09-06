@@ -84,6 +84,10 @@ def adjective_pos(phrase, word_pos):
     Output=the position of the last word of the nominal group                       
     """
     
+    #The case of '2 of them'
+    if phrase[word_pos]=='of':
+        return 0
+    
     #If it is the end of the phrase
     if len(phrase)-1<=word_pos:
         return 1

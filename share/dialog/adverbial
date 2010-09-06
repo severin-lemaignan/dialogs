@@ -12,6 +12,7 @@ tonight hour 4
 now hour 0
 perhaps
 maybe
+else
 
 
 
@@ -40,11 +41,12 @@ from 1 1
 in 1 1
 in+about 1 1
 in+by 1 1
-in+front+of 1 0 isInFrontOf
 in+spite+of 1 0
 into 1 0 isIn
 last 1 -1
 later 1 1
+near 1 1
+near+to 1 1
 next 1 1 isNextTo
 next+to 1 0 isNextTo 
 on 1 1
@@ -69,6 +71,7 @@ however
 although
 because
 so
+then
 
 
 

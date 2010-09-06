@@ -65,7 +65,7 @@ det_list = ResourcePool().determinants
 
 
 def process_and_beginning_sentence(sentence):
-    
+
     if sentence==[]:
         return []
     
@@ -76,13 +76,13 @@ def process_and_beginning_sentence(sentence):
         flg=0
         
         
-    if sentence[0]==';' or sentence[0]=='and' or sentence[0]=='ah':
+    if sentence[0]==';' or sentence[0]=='and' or sentence[0]=='ah' or sentence[0]==',':
         sentence=sentence[1:]
     
     for l in proposal_list:
         if l==sentence[0]:
             for z in sentence:
-                if z==';' or z=='.':
+                if z==';' or z=='.' or z==',':
                     phrase=sentence[:sentence.index(z)]
                     if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
                         sentence=sentence[sentence.index(z)+1:len(sentence)-1]+phrase+[sentence[len(sentence)-1]]
@@ -176,7 +176,9 @@ def upper_to_lower(sentence):
             sentence[0]=sentence[0][0].lower()+sentence[0][1:]
         
         sentence=expand_contractions(sentence)
-        sentence = process_and_beginning_sentence(sentence)
+        stc = process_and_beginning_sentence(sentence)
+        if stc!=sentence:
+            return stc
         
         #We find an action verb => it is an imperative sentence        
         for i in action_verb:
@@ -604,8 +606,10 @@ def other_processing(sentence):
     while i <len(sentence):
         if sentence[i]=='think' and sentence[i+1]!='that' and analyse_nominal_group.find_sn_pos(sentence, i+1)!=[]:
             sentence=sentence[:i+1]+['that']+sentence[i+1:]
+        if sentence[i]=='front' and sentence[i-1]=='in' and sentence[i+1]=='of':
+            sentence=sentence[:i]+['the']+sentence[i:]
         i=i+1
-        
+    
     return sentence
  
  
@@ -749,7 +753,7 @@ def delete_empty(sentence):
     i=0
     
     while i < len(sentence):
-        if sentence[i]=='' or sentence[i]=='please':
+        if sentence[i]=='' or sentence[i]=='please' or sentence[i]=='Please' or sentence[i]=='very' or sentence[i]=='Very':
             sentence=sentence[:i]+sentence[i+1:]
         i=i+1
         
@@ -849,7 +853,7 @@ def what_to_relative(sentence):
     #init
     i=0
     
-    while i<len(sentence):
+    while i<len(sentence)-1:
         if sentence[i]=='what' and sentence[i+1]=='to':
             sentence=sentence[:i]+['the','thing','that','is']+sentence[i+1:]
             
@@ -978,6 +982,7 @@ def process_sentence(utterance):
 
         elif j.endswith('.') or j.endswith('?') or j.endswith('!'):
             sentence = sentence+[j[:len(j)-1]] + [j[len(j)-1]]
+            sentence[len(sentence)-2]=other_functions.get_off_point(sentence[len(sentence)-2])
             sentence = processing(sentence)
             sentence_list=sentence_list+sentence
             sentence=[]
