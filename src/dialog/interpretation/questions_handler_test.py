@@ -539,9 +539,9 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         logger.info( ">> input: " + stmt)
         
-        self.assertEquals(res[1][1], "The green banana is at the blue table.")
+        self.assertEquals(res[1][1], "The green banana is on the blue table.")
     
-        
+    
     def test_question2_what(self):
 
         logger.info("\n##################### test_question2_what ########################\n")

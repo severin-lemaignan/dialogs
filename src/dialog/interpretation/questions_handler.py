@@ -24,6 +24,9 @@ class QuestionHandler:
         #It also holds the flags 'QUERY_ON_DIRECT_OBJ' and 'QUERY_ON_INDIRECT_OBJ'.
         self._query_on_field = None
         
+        self._process_on_location = False
+        
+        
     def clear_statements(self):
         self._statements = []
     
@@ -58,13 +61,44 @@ class QuestionHandler:
             self._query_on_field = self._set_query_on_field(sentence)
             self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
             self._statements = self._extend_statement_from_sentence_aim(self._statements)
-            
+            self._answer = []
             if self._statements:
-                try:
-                    logger.debug("\tSearching the ontology: find(?concept, " + str(self._statements) + ")")
-                    self._answer = ResourcePool().ontology_server.find('?concept', self._statements)
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
+                answers = []
+                if self._process_on_location:
+                    roles = ['in', 'on','next+to', 'behind']
+                    #onto = []
+                    stmts = []
+                    
+                    for role in roles:
+                        
+                        stmts = [s.replace('objectFoundInLocation', 'is' + role.capitalize()) for s in self._statements]
+                        try:
+                            answers = ResourcePool().ontology_server.find('?concept', stmts)
+                        except AttributeError: #the ontology server is not started of doesn't know the method
+                            pass
+                        
+                        if answers:
+                            self._answer.append([[role], answers])
+                    """
+                    roles = ['left', 'front', 'back']
+                    for role in roles:                        
+                        try:
+                            answers = ResourcePool().ontology_server.find('?location', stmts + ['?concept is'+ role.capitalize() +'Of ?location'])
+                        except AttributeError: #the ontology server is not started of doesn't know the method
+                            pass
+                        
+                        if answers:
+                            self._answer.append([[role], answers])
+                    """    
+                else:
+                    try:
+                        logger.debug("\tSearching the ontology: find(?concept, " + str(self._statements) + ")")
+                        answers = ResourcePool().ontology_server.find('?concept', self._statements)
+                    except AttributeError: #the ontology server is not started of doesn't know the method
+                        pass
+                    
+                    if answers:
+                        self._answer.append([[], answers])
             else:
                 pass
 
@@ -113,6 +147,11 @@ class QuestionHandler:
             for sv in self._sentence.sv:
                 for verb in sv.vrb_main:
                     role, concept_descriptor = self.get_role_from_sentence_aim(self._query_on_field, verb)
+                    
+                    #Case of looking for the object in a location
+                    if role == 'objectFoundInLocation':
+                        self._process_on_location = True
+                    
                     # Case of state verbs
                     if verb.lower() in ResourcePool().state:
                         stmts.append(sn.id + ' '+ role + ' ?concept')
@@ -159,6 +198,8 @@ class QuestionHandler:
         """ Given specific w_question aim and verb, this function attempts to define the matching object property to built
             an RDF tuple <S P O>. Cf. QuestionAimDict() for more detail.
         """
+        
+        # Specify wether the concept is an agent or not
         concept_descriptor = ''
         
         dic_aim = QuestionAimDict().dic_aim
@@ -284,7 +325,7 @@ class QuestionAimDict:
     
         #Dictionary for sentence.aim = 'place' 
         self.dic_place={None:self.dic_on_indirect_obj.copy()}
-        self.dic_place[None]['be'] = 'isAt'
+        self.dic_place[None]['be'] = 'objectFoundInLocation'
                         
         #Dictionary for sentence.aim = 'thing' 
         self.dic_thing={None:self.dic_on_direct_obj.copy()}

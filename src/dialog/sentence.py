@@ -141,47 +141,59 @@ class SentenceFactory:
                 - QUERY_ON_INDIRECT_OBJ
                 - QUERY_ON_DIRECT_OBJ
         """
-        nominal_groupL = []
         #Nominal group holding the answer
+        nominal_groupL = []
+        
         
         # Case of adjectives only
         if w_question.aim in ResourcePool().adjectives_ontology_classes:
-            nominal_groupL = [Nominal_Group([], [], [[w_answer[0], []]], [], [])]
-            nominal_groupL[0]._resolved = True
+            ng = Nominal_Group([], [], [[w_answer[0][1][0], []]], [], [])
+            preposition = w_answer[0][0]
+            ng._resolved = True
+            nominal_groupL = [[preposition, [ng]]]
+            
         else:
-            for response in w_answer:
-                ng = self.create_nominal_group_with_object(response)
-                ng.id = response
-                ng._resolved = True
+            for [preposition, response] in w_answer:
+                ngL = []
+                for resp in response:                        
+                    ng = self.create_nominal_group_with_object(resp)
+                    ng.id = response
+                    ng._resolved = True
+                        
+                    ngL.append(ng)
+                    
+                nominal_groupL.append([preposition, ngL])
                 
-                nominal_groupL.append(ng)
-            
-            
-        #Sentence holding the answer
+                
+                
         
+        #Sentence holding the answer
         sentence = self.reverse_personal_pronoun(w_question)
         sentence.data_type = "statement"
         
-        
         if not query_on_field:#Default case on sentence.sn
-            sentence.sn = nominal_groupL
+            sentence.sn = [ng for [prep, ngL] in nominal_groupL for ng in ngL]
             sentence.sv = []
             
         elif query_on_field == 'QUERY_ON_DIRECT_OBJ':
-            sentence.sv[0].d_obj = nominal_groupL
-        
+            sentence.sv[0].d_obj = [ng for [prep, ngL] in nominal_groupL for ng in ngL]
+            
+            
         elif query_on_field == 'QUERY_ON_INDIRECT_OBJ':
+            """
             #preposition
             if w_question.aim == 'place':
-                prep = ['at']
+                sentence.sv[0].i_cmpl = Indirect_ComplementL
+                
             elif w_question.aim == 'people':
                 prep = ['to']
             else:
                 prep = []
-                
-            sentence.sv[0].i_cmpl = [Indirect_Complement(prep, nominal_groupL)]
+            """    
+            sentence.sv[0].i_cmpl = [Indirect_Complement(ng[0], ng[1]) for ng in nominal_groupL]
         
         sentence.aim = ""
+        
         return [sentence]
     
     
