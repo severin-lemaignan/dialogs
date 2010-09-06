@@ -57,10 +57,10 @@ class Resolver:
         #sentence sn nominal groups reference resolution
         if sentence.sn:
             sentence.sn = self._resolve_groups_references(sentence.sn, matcher, current_speaker, self._current_object)
-        
+
         if sentence.sv:
             sentence.sv = self.verbal_phrases_reference_resolution(sentence.sv, matcher,current_speaker, self._current_object)
-       
+
         return sentence    
     
     def _references_resolution_replace_current_object_with_ua_exception(self, sentence, uae_object, uae_object_with_more_info, uae_object_list):
@@ -220,10 +220,11 @@ class Resolver:
     ################################################
     def noun_phrases_resolution(self, sentence, current_speaker, uie_object, uie_object_with_more_info):
         #Skipping processing of sentences that are neither questions nor statements
+
+        logger.info(colored_print("-> Resolving noun phrases", 'green'))
+        
         if not sentence.data_type in ['w_question', 'yes_no_question', 'statement', 'imperative']:
             return sentence
-        
-        logging.info(colored_print("-> Resolving noun phrases", 'green'))
         
         #Nominal group replacement possibly after uie_object and uie_object_with_more_info are sent from Dialog to resolve missing content
         if uie_object and uie_object_with_more_info:
@@ -293,7 +294,7 @@ class Resolver:
             uie.value['object_with_more_info'] = None
             raise uie
         
-        logging.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
+        logger.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
         
         nominal_group.id = id
         nominal_group._resolved = True
@@ -376,10 +377,12 @@ class Resolver:
     ############################
     def verbal_phrases_resolution(self, sentence):
         #Skipping processing of sentences that are neither questions nor statements
+        
+        logger.info(colored_print("-> Resolving verbal groups", 'green'))
+        
         if not sentence.data_type in ['w_question', 'yes_no_question', 'statement', 'imperative']:
             return sentence
         
-        logger.info(colored_print("-> Resolving verbal groups", 'green'))
         for sv in sentence.sv:
             sv = self._resolve_verbs(sv)
                     
