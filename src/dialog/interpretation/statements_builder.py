@@ -614,16 +614,11 @@ class VerbalGroupStatementBuilder:
          
         for verb in verbal_group.vrb_main:
          
-            #TODO: modal verbs e.g can+go
-            
             #Case 1:  the state verb 'to be'/ to become"""
             #Case 2:  actions or stative verbs with a specified 'goal' or 'thematic' role:
             #                          see '../../share/dialog/thematic_roles'
             #Case 3:  other action or stative verbs
-            
-            goal_verbs = ResourcePool().goal_verbs 
-            
-            
+                        
             #Case 1:
             if verb in ResourcePool().state:
                 sit_id = subject_id
@@ -648,7 +643,7 @@ class VerbalGroupStatementBuilder:
                     sit_id = generate_id(with_question_mark = not self._process_on_resolved_sentence)
                 
                 #Case 2:                
-                if verb in goal_verbs:
+                if verb in ResourcePool().goal_verbs:
                     self._statements.append(subject_id + " desires " + sit_id)
                     
                     if verbal_group.sv_sec:
@@ -660,13 +655,15 @@ class VerbalGroupStatementBuilder:
                     
                 #Case 3:   
                 else:
-                    # Modals verbs. E.g: can, must, ...
+                    # Modal verbs. E.g: can+do, look+for , ...
                     #                   verb = must+do 
                     if '+' in verb:
+                        # Case of Modals
                         [modal, verb] = verb.split('+')
-                        self._statements.append(sit_id + " rdf:type " + verb.capitalize())
-                        self._statements.append(subject_id+ " " + modal +"Performs " + sit_id)
-                    
+                        if modal in ResourcePool().modal:
+                            self._statements.append(sit_id + " rdf:type " + verb.capitalize())
+                            self._statements.append(subject_id+ " " + modal +"Performs " + sit_id)
+
                     else:
                         self._statements.append(sit_id + " rdf:type " + verb.capitalize())
                         self._statements.append(sit_id + " performedBy " + subject_id)

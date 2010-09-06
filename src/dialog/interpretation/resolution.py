@@ -398,8 +398,18 @@ class Resolver:
         for verb in verbal_group.vrb_main:
             logger.debug("* \"" + verb + "\"")
             # Case of modal verbs. E.g: can, must
+            #   or verbs wit prepositions
             if '+' in verb:
+                # E.g: can+do
                 [modal, verb] = verb.split('+')
+                if modal in ResourcePool().modal:
+                    pass
+                    
+                # Verb with preposition
+                # E.g: look+up => lookup
+                else:
+                    verb = modal+verb
+                    modal = ''
             
             # Case of to be
             if verb in  ResourcePool().state:

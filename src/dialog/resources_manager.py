@@ -295,7 +295,8 @@ class ResourcePool:
         self.state=[k[0] for k in verbs[8]]
         self.verb_need_to=[k[0] for k in verbs[9]]
         self.action_verb_with_passive_behaviour = [k[0] for k in verbs[10]]
-                                
+        self.goal_verbs = [k[0] for k in verbs[11]]
+        
         self.sentence_starts = [tuple(line.split()) 
                                 for line 
                                 in open (os.path.join(data_path, "sentence_starts"))]       
@@ -356,11 +357,6 @@ class ResourcePool:
         self.adj_quantifiers=[k[0] for k in grammatical_rules[8]]
         for k in grammatical_rules[9]:
             self.replace_tuples=self.replace_tuples+[[k[0],k[1:]]]
-        
-        
-        self.goal_verbs = [line.strip()
-                            for line 
-                            in open (os.path.join(data_path, "goal_verbs"))]
         
         
         desc = ""

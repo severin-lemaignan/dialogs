@@ -207,7 +207,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [],
                                             [],
                                             [])],                                         
-                             [Verbal_Group(['would+like'],
+                             [Verbal_Group(['want'],
                                            [],
                                            'present simple',
                                            [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])],
@@ -233,7 +233,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [],
                                             [],
                                             [])],                                         
-                             [Verbal_Group(['would+like'],
+                             [Verbal_Group(['want'],
                                            [Verbal_Group(['drive'],
                                                                    [],
                                                                    'present simple',
@@ -1341,11 +1341,11 @@ class TestStatementBuilder(unittest.TestCase):
                             '* actsOnObject twingo']   
                             
         self.process(sentence, expected_result, display_statement_result = True)
-    """
     
-    def test_29(self):
+    """
+    def test_29_directions(self):
         
-        logger.info("\n**** Test 7  *** ")
+        logger.info("\n**** Test 29 direction  *** ")
         logger.info("the twingo is at the left")
         sentence = Sentence("statement", "", 
                              [Nominal_Group(['the'],
@@ -1814,6 +1814,22 @@ class TestBaseSentenceDialog(unittest.TestCase):
         expected_result = ['myself canPerforms *',
                            '* rdf:type Get',
                            '* actsOnObject green_banana']
+                           
+        self.assertTrue(check_results(res[0], expected_result))
+    
+    def test_sentence11_bis(self):
+        
+        logger.info("\n##################### test_sentence11 - verbs with preposition ########################\n")
+        #Fill up History
+        self.dialog.dialog_history = []
+        
+        ##sentence1
+        stmt = "I am looking for the green banana"
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['* performedBy myself',
+                           '* rdf:type Lookfor',
+                           '* involves green_banana']
                            
         self.assertTrue(check_results(res[0], expected_result))
     
