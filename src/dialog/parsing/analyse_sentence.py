@@ -148,6 +148,10 @@ def dispatching(sentence):
                 elif x[1]=='7':
                     return separ_sentence(sentence, 'gratulation')
                 
+                #Interjunction
+                elif x[1]=='8':
+                    return [exclama_sentence(sentence)]
+                
         #For exclamatively
         if sentence[len(sentence)-1]=='!':
             return [exclama_sentence(sentence)]
@@ -168,9 +172,14 @@ def separ_sentence(sentence, data_type):
         sentences=[Sentence(data_type, '', [], [])]
     for i in sentence:
         if i==';':
+            sentences[0].aim=" ".join(sentence[:sentence.index(i)]).rstrip('; ')+'.'
             sentence=sentence[sentence.index(i)+1:]
             sentence = preprocessing.process_and_beginning_sentence(sentence)
             sentences = sentences + dispatching(sentence)
+            break
+        else:
+            sentences[0].aim=" ".join(sentence).rstrip('. ')+'.'
+           
     return sentences
 
 
@@ -549,7 +558,6 @@ def other_sentence(type, request, sentence):
         
         #We have to separate the case using these, this or there
         for p in det_dem_list:
-            
             if p==sentence[0] and analyse_verb.infinitive([sentence[1]], 'present simple')==['be']:
                 #We recover this information and remove it
                 analysis.sn=[Nominal_Group([p],[],[],[],[])]
@@ -631,10 +639,11 @@ def other_sentence(type, request, sentence):
 
         #We process the verb
         verb=[sentence[0]]
-        vg.vrb_main=[other_functions.convert_to_string(analyse_verb.return_verb(sentence, verb, vg.vrb_tense))]
+        verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
+        vg.vrb_main=[other_functions.convert_to_string(verb_main)]
         
         #We delete the verb
-        sentence= sentence[sentence.index(verb[0])+len(verb):]
+        sentence= sentence[sentence.index(verb[0])+len(verb_main):]
     
     if sentence!=[] and sentence[len(sentence)-1]=='?':
         analysis.data_type='yes_no_question'
@@ -703,12 +712,12 @@ def sentences_analyzer(sentences):
 
     #We process all sentences of the list
     for i in sentences:
-        
-        #We have to add punctuation if there is not
-        if i[len(i)-1]!='.' and i[len(i)-1]!='?' and i[len(i)-1]!='!':
-            i=i+['.']
-        
-        class_sentence_list=class_sentence_list+dispatching(i)
+        if i!=[]:
+            #We have to add punctuation if there is not
+            if i[len(i)-1]!='.' and i[len(i)-1]!='?' and i[len(i)-1]!='!':
+                i=i+['.']
+            
+            class_sentence_list=class_sentence_list+dispatching(i)
     
     #Add some information if there is an interjection
     while y < len(class_sentence_list):

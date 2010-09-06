@@ -380,7 +380,7 @@ class TestParsing(unittest.TestCase):
                     [Nominal_Group(['this'],['bottle'],[],[],[])], 
                     [],
                     [], [] ,'negative',[])]),
-            Sentence('start', '', [], [])]
+            Sentence('start', 'good afternoon.', [], [])]
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -700,12 +700,12 @@ class TestParsing(unittest.TestCase):
                     [], 
                     [],
                     [], ['here'] ,'negative',[])]),
-            Sentence('disagree', '', [], []),
-            Sentence('disagree', '', [], [])]
+            Sentence('disagree', 'no.', [], []),
+            Sentence('disagree', 'sorry.', [], [])]
     
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-    
+
     def test_18(self):
         print ''
         print ('######################## test 2.8 ##############################')
@@ -920,7 +920,7 @@ class TestParsing(unittest.TestCase):
                     [Nominal_Group(['a'],['loan'],[],[],[])], 
                     [Indirect_Complement(['for'],[Nominal_Group(['their'],['business'],[],[],[])])],
                     [], [] ,'negative',[])]),
-            Sentence('agree', '',[],[])]
+            Sentence('agree', 'OK.',[],[])]
         
         rslt[1].sv[0].d_obj[0]._quantifier="SOME"
         
@@ -2273,7 +2273,7 @@ class TestParsing(unittest.TestCase):
                             [],
                             [], [] ,'affirmative',[])])])])],
                     [], [] ,'affirmative',[])]),
-            Sentence('disagree', '',[],[]), 
+            Sentence('disagree', 'no.',[],[]), 
             Sentence('statement', '', 
                 [Nominal_Group([],['I'],[],[],[])], 
                 [Verbal_Group(['can+reach'], [],'present simple', 
@@ -2283,7 +2283,7 @@ class TestParsing(unittest.TestCase):
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-
+    
 
 
     def test_73(self):
@@ -2567,7 +2567,6 @@ class TestParsing(unittest.TestCase):
         print '#################################################################'
         print ''
         sentence_list=preprocessing.process_sentence(utterance)
-        print sentence_list
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
         rslt=[Sentence('statement', '', 
@@ -2599,6 +2598,14 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     
+    """
+    utterance="good boy"
+    sentence_list=preprocessing.process_sentence(utterance)
+
+    class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    for i in class_list:
+        print (str(i))
+    """
     
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)

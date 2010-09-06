@@ -60,10 +60,14 @@ adv_list = ResourcePool().adverbs
 day_list = ResourcePool().days_list
 month_list = ResourcePool().months_list
 proposal_list = ResourcePool().proposals
+det_list = ResourcePool().determinants
 
 
 
 def process_and_beginning_sentence(sentence):
+    
+    if sentence==[]:
+        return []
     
     if other_functions.find_cap_lettre(sentence[0])==1:
         flg=1
@@ -291,7 +295,7 @@ def expand_contractions(sentence):
             i=i+1
         
         for j in replacement_tuples:
-            if sentence[i].endswith(j[0]):
+            if sentence[i]==j[0]:
                 sentence = sentence[:i] + j[1] + sentence[i+1:]
                 i=i+1
                 break
@@ -590,10 +594,18 @@ def other_processing(sentence):
     Input=sentence                              Output=sentence                      
     """
     
+    #init
+    i=0
+    
     #Question with which starts with nominal group without determinant
-    if sentence[0]=='which':
+    if sentence!=[] and sentence[0]=='which':
         sentence=[sentence[0]]+['the']+sentence[1:]
-
+    
+    while i <len(sentence):
+        if sentence[i]=='think' and sentence[i+1]!='that' and analyse_nominal_group.find_sn_pos(sentence, i+1)!=[]:
+            sentence=sentence[:i+1]+['that']+sentence[i+1:]
+        i=i+1
+        
     return sentence
  
  
@@ -737,7 +749,7 @@ def delete_empty(sentence):
     i=0
     
     while i < len(sentence):
-        if sentence[i]=='':
+        if sentence[i]=='' or sentence[i]=='please':
             sentence=sentence[:i]+sentence[i+1:]
         i=i+1
         
@@ -893,7 +905,19 @@ def and_between_sentence(sentence):
         i=i+1
     return sentence
 
-                
+
+
+def double_det(sentence):
+    i=0
+    while i<len(sentence):
+        if sentence[i]=='all':
+            for k in det_list:
+                if k==sentence[i+1]:
+                    sentence=sentence[:i]+sentence[i+1:]
+        i=i+1
+    return sentence
+
+
                     
 def processing(sentence):
     """ 
@@ -923,6 +947,7 @@ def processing(sentence):
     sentence = add_scd_vrb(sentence)
     sentence = day_month(sentence)
     sentence = am_pm(sentence)
+    sentence = double_det(sentence)
     sentence = process_and_beginning_sentence(sentence)
     sentence = interjection(sentence)
     sentence = and_between_sentence(sentence)
