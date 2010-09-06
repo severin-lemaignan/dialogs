@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
+import sys, os
 import logging
 
 import unittest
@@ -9,6 +9,11 @@ import getopt
 
 import operator
 
+# Add the "examples" directory the the Python path.
+EXAMPLES_DIR = os.path.dirname(__file__).split('/bin')[0].split('/scripts')[0] + '/share/examples/dialog'
+sys.path.append(EXAMPLES_DIR)
+
+#Unit-tests
 import dialog.verbalization.verbalization_test as verbalization
 import dialog.parsing.parser_test as parser
 import dialog.sentence_test as sentence
@@ -16,12 +21,8 @@ import dialog.interpretation.discrimination_test as discrimination
 import dialog.interpretation.statements_builder_test as statements_builder
 import dialog.interpretation.questions_handler_test as questions_handler
 
-from dialog.dialog_core import Dialog
-
-from dialog.resources_manager import ResourcePool
-
-from dialog.sentence import *
-from dialog.parsing.parser import Parser
+#Complete scenarii
+import scenario_moving
 
 LOG_FILENAME = "dialog_test.log"
 
@@ -41,79 +42,7 @@ def check_results(res, expected):
     return expected == res
     
     
-class TestMovingToLondonScenario(unittest.TestCase):
-    """
-    Scenario
-    --------
-    ACHILLE and JULIE are moving from Toulouse to London, and they must
-    pack everything before leaving. ACHILLE is sorting its video tapes, and he 
-    throws away the oldest ones. Jido is watching him.
 
-    Setup:
-      One trashbin, one cardboard box, 2 tapes on the table [TAPE1 = Lord of 
-      the Rings (lotr) and TAPE2 = HotShots2 (hs2)].
-    """
-    
-    def setUp(self):
-        self.dialog = Dialog()
-        self.dialog.start()
-        
-        self.oro = ResourcePool().ontology_server
-        
-        try:
-            
-            self.oro.reset()
-            
-            self.oro.add([  'ACHILLE rdf:type Human',
-                            'ACHILLE rdfs:label Achille',
-                            'JULIE rdf:type Human', 
-                            'JULIE rdfs:label Julie',
-                            'TABLE rdf:type Table',
-                            'Trashbin rdfs:subClassOf Box',
-                            'CardBoardBox rdfs:subClassOf Box',
-                            'CardBoardBox rdfs:label "cardboard box"',
-                            'TRASHBIN rdf:type Trashbin',
-                            'CARDBOARD_BOX rdf:type CardBoardBox',
-                            'CARDBOARD_BOX isOn TABLE',
-                            'TAPE1 rdf:type VideoTape', 
-                            'TAPE1 rdfs:label "The Lords of the rings"', 
-                            'TAPE1 isOn TABLE',
-                            'TAPE2 rdf:type VideoTape', 
-                            'TAPE2 rdfs:label "Hot Shots 2"', 
-                            'TAPE2 isOn TABLE',])
-            """           
-            self.oro.addForAgent('ACHILLE',
-                        ['BLUE_TRASHBIN rdf:type Trashbin',
-                        'PINK_TRASHBIN rdf:type Trashbin',
-                        'BLACK_TAPE rdf:type VideoTape', 'BLACK_TAPE isIn PINK_TRASHBIN',
-                        'GREY_TAPE rdf:type VideoTape', 'GREY_TAPE isOn HRP2TABLE'])
-            """        
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            print("Couldn't connect to the ontology server. Aborting the test.")
-            sys.exit(0)
-
-    def test_step1(self):
-        """ACHILE puts TAPE1 in CARDBOARDBOX"""
-
-        self.oro.add(['TAPE1 isIn CARDBOARD_BOX'])
-                            
-        stmt = "Jido, what is in the box?"
-        answer = "This box"
-        ####
-        res = self.dialog.test('ACHILE', stmt, answer)
-         
-        expected_result = ['* rdf:type Give',
-                            '* performedBy myself',
-                            'ACHILE_HUMAN1 desires *',
-                            '* actsOnObject BLACK_TAPE'
-                            '* receivedBy ACHILE_HUMAN1']
-
-        self.assertTrue(check_results(res[0], expected_result))
-    
-
-    def tearDown(self):
-        self.dialog.stop()
-        self.dialog.join()
     
 def usage():
     print """Unit-testing for the LAAS-CNRS 'Dialog' module.
@@ -129,7 +58,7 @@ dialog_test [OPTIONS] TEST_SUITE
   
   Available test suites (you call several of them):
   
-   * Base testing:
+  === Base testing ===
    
   sentence          Tests the sentence creation and merging functions
   parser            Tests the parser
@@ -140,10 +69,13 @@ dialog_test [OPTIONS] TEST_SUITE
   
   all               Runs all base test suites
   
-   * Complete scenario testing:
+  
+  === Complete scenario testing ===
   These scripts test complete interactions, from past HRI scenarii
   
   sc_moving         Scenario "Achille is moving to London"
+  
+  all_scenarii      Runs all the scenarii
 """
 if __name__ == '__main__':
     
@@ -215,6 +147,11 @@ if __name__ == '__main__':
         suite = questions_handler.test_suite()
         result = unittest.TextTestRunner(verbosity=2).run(suite)
         results['questions'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors))
+    
+    if 'sc_moving' in args or 'all_scenarii' in args:
+        suite = scenario_moving.test_suite()
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        results['scenario: moving'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors))
     
     total = (0,0,0,0)
     print("\n\n===============================================================")

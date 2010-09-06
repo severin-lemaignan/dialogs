@@ -17,5 +17,6 @@ setup(name='Dialog',
       scripts=['scripts/dialog', 'scripts/dialog_test'],
       data_files=[('share/dialog', ['share/dialog/' + f for f in os.listdir('share/dialog')]),
                   ('share/doc/dialog', ['AUTHORS', 'LICENSE', 'TODO', 'README']),
-                  ('share/doc/dialog', ['doc/' + f for f in os.listdir('doc')])]
+                  ('share/doc/dialog', ['doc/' + f for f in os.listdir('doc')]),
+                  ('share/examples/dialog', ['share/examples/dialog/' + f for f in os.listdir('share/examples/dialog')])]
       )
