@@ -321,6 +321,8 @@ class ResourcePool:
         self.months_list=nouns[10]
         self.unusable_words=[k[0] for k in nouns[11]]
         
+        #List of diection words, E.g: LEFT, RIGHT, TOP, etc ...
+        self.direction_words = [k[0] for k in nouns[12]]
         
         adverbials = [list(line.split()) 
                     for line 

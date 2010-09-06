@@ -29,9 +29,6 @@ thing
 victory
 vacancy
 
-
-
-
 ## 
 This list holds all pronouns
 ##
@@ -54,8 +51,6 @@ ours 0
 theirs 0
 hers 0
 myself 0
-
-
 
 
 ## 
@@ -117,8 +112,6 @@ its
 boss
 
 
-
-
 ## 
 This list holds relative proposals
 ##
@@ -130,7 +123,6 @@ where
 to+whom
 whom
 in+which
-
 
 
 
@@ -161,14 +153,11 @@ o'clock o'clock
 
 
 
-
 ## 
 This list holds noun which can be composed noun (but it is false)
 ##
 
 now
-
-
 
 
 ## 
@@ -215,3 +204,16 @@ only
 just
 which
 also
+
+
+
+## 
+This list holds direction words that can be used as nouns
+##
+right
+left
+front
+back
+top
+bottom
+

@@ -238,11 +238,6 @@ class NominalGroupStatementBuilder:
                     subject_quantifier in ['SOME', 'ALL'] and \
                         ng._quantifier in ['SOME', 'ALL']:
                     self.process_noun_phrases(ng, ng_id, subject_quantifier, negative_object)
-            
-            
-            #Case: of directions
-            elif (noun in ['left','right','front'] for noun in ng.noun):
-                process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier, negative_object)
                 
         #Case of a not resolved nominal group
         else:
@@ -261,15 +256,15 @@ class NominalGroupStatementBuilder:
             # Case 3: possessives : my, your, his, her, its, our, their """
             if det == "my" and not negative_object:
                 #Case of Direction: The leftOf, the right of ...
-                if nominal_group.noun and (noun in ['left', 'right', 'back'] for noun in nominal_group.noun):
-                    self._statements.append(ng_id + " isLeftOf " + self._current_speaker)
+                if nominal_group.noun and nominal_group.noun[0] in ResourcePool().direction_words:
+                    self._statements.append(ng_id + " is"+nominal_group.noun[0].capitalize() + "Of " + self._current_speaker)
                 else:
                     self._statements.append(ng_id + " belongsTo " + self._current_speaker)
                     
             elif det == "your" and not negative_object:
                 #Case of Direction: The leftOf, the right of ...
-                if nominal_group.noun and (noun in ['left', 'right', 'back'] for noun in nominal_group.noun):
-                    self._statements.append(ng_id + " isLeftOf myself")
+                if nominal_group.noun and nominal_group.noun[0] in ResourcePool().direction_words:
+                    self._statements.append(ng_id + " is"+nominal_group.noun[0].capitalize()+"Of myself")
                 else:
                     self._statements.append(ng_id + " belongsTo myself")
                     
@@ -359,8 +354,10 @@ class NominalGroupStatementBuilder:
             
             # Case : common noun    
                 # Case of Directions
-            elif noun in ['left', 'right', 'back']:
-                pass
+            if noun in ResourcePool().direction_words:
+                if not nominal_group.noun_cmpl:
+                    self._statements.append(ng_id + " is" + noun.capitalize() + "Of " + self._current_speaker)
+                
             else:
                 logger.info("... \t" + noun + " is being processed as a common noun in " + self._current_speaker + "'s model.")            
                 # get the exact class name (capitalized letters where needed)
@@ -455,9 +452,9 @@ class NominalGroupStatementBuilder:
                 self.process_nominal_group(noun_cmpl, noun_cmpl_id, None, False)
             # Case of affirmation
             if not negative_object:
-                #Case of Direction: The leftOf, the right of ...
-                if nominal_group.noun and nominal_group.noun[0] in ['left', 'right', 'back']:
-                    self._statements.append(ng_id + " isLeftOf " + noun_cmpl_id)
+                #Case of Direction: The left of, the right of ...
+                if nominal_group.noun and nominal_group.noun[0] in ResourcePool().direction_words:
+                    self._statements.append(ng_id + " is" + nominal_group.noun[0].capitalize() + "Of " + noun_cmpl_id)
                 else:
                     self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
     
@@ -789,7 +786,7 @@ class VerbalGroupStatementBuilder:
                     icmpl_role = ResourcePool().thematic_roles.get_cmplt_role_for_preposition(verb, ic.prep[0], True)
                     
                     # Trying to get the matching property
-                    #  E.g: for the preposition 'next+to' we expect the property 'isNexto'
+                    #  E.g: for the preposition 'next+to' we expect the property 'isNextTo'
                     if not icmpl_role:
                         try:
                             icmpl_role = " " + ResourcePool().preposition_rdf_object_property[ic.prep[0]][0] + " "

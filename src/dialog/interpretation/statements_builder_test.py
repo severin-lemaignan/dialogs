@@ -766,8 +766,8 @@ class TestStatementBuilder(unittest.TestCase):
         logger.info("\n**** test_15_quantifier_action_verb  *** ")
         logger.info("a mango grows on a tree")
         sentence = Sentence("statement", "", 
-                             [Nominal_Group(['an'],
-                                            ['mango'],#apple is common noun. Therefore, do not capitalize.
+                             [Nominal_Group(['a'],
+                                            ['mango'],#mango is common noun. Therefore, do not capitalize.
                                             [],
                                             [],
                                             [])],                                         
@@ -787,7 +787,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])])
         
         #quantifier
-        sentence.sn[0]._quantifier = 'SOME' # an apple
+        sentence.sn[0]._quantifier = 'SOME' # a mango
         sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier = 'SOME' # a tree
         expected_result = ['* rdf:type Mango',
                             '* rdf:type Grow',
@@ -1341,9 +1341,31 @@ class TestStatementBuilder(unittest.TestCase):
                             '* actsOnObject twingo']   
                             
         self.process(sentence, expected_result, display_statement_result = True)
-    
-    
     """
+    
+    def test_29(self):
+        
+        logger.info("\n**** Test 7  *** ")
+        logger.info("the twingo is at the left")
+        sentence = Sentence("statement", "", 
+                             [Nominal_Group(['the'],
+                                            ['twingo'],
+                                            [],
+                                            [],
+                                            [])],                                         
+                             [Verbal_Group(['be'],
+                                           [],
+                                           'present simple',
+                                           [],
+                                           [Indirect_Complement(['at'], [Nominal_Group(['the'],['left'],[],[],[])])],
+                                           [],
+                                           [],
+                                           'affirmative',
+                                           [])])
+        expected_result = ['twingo isAt location_left']
+        return self.process(sentence, expected_result, display_statement_result = True)
+    
+    
     def process(self, sentence, expected_result, display_statement_result = False):
         #Dump resolution
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself', self.resolver)
@@ -1395,8 +1417,12 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'red_apple hasColor red',
                         'LEFT isLeftOf myself',
                         'RIGHT isRightOf myself',
-                        'FRONT isFrontOf myself',
+                        'FRONT isFrontOf myself', 
                         'BACK isBackOf myself',
+                        'TOP isTopOf myself',
+                        'BOTTOM isBottomOf myself',
+                        'shelf1_front isFrontOf shelf1',
+                        'green_banana_left isLeftOf green_banana',
                         ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
@@ -1842,39 +1868,39 @@ class TestBaseSentenceDialog(unittest.TestCase):
         stmt = "the yellow banana is at my left"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['y_banana isAt *',
-                          '* isLeftOf myself']
+        expected_result = ['y_banana isAt LEFT']
                           
         self.assertTrue(check_results(res[0], expected_result))
-    """
+    
     def test_sentence15(self):   
         logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
         ##sentence
         stmt = "the yellow banana is at the left"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['y_banana isAt *',
-                          '* isLeftOf myself'] #Here left is related to the agent
-    
+        expected_result = ['y_banana isAt LEFT'] #Here left is related to the agent
+        self.assertTrue(check_results(res[0], expected_result))
+        
     def test_sentence16(self):   
         logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
         ##sentence
-        stmt = "the yellow banana is in front of the shelf"
+        stmt = "the yellow banana is at the front of the shelf"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['y_banana isAt *',
-                          '* isFrontOf shelf'] 
-    
+        expected_result = ['y_banana isAt shelf1_front'] 
+                            
+        self.assertTrue(check_results(res[0], expected_result))
+       
     def test_sentence17(self):   
         logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
         ##sentence
         stmt = "the yellow banana is at the front"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['y_banana isAt *',
-                          '* isFrontOf myself'] #Here front is related to the agent
-    
-    """
+        expected_result = ['y_banana isAt FRONT'] #Here front is related to the agent
+        
+        self.assertTrue(check_results(res[0], expected_result))
+        
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()
