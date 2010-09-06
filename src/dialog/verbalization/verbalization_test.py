@@ -2543,6 +2543,18 @@ class TestVerbalizationCompleteLoop(unittest.TestCase):
         logger.info('<< output: ' + res)
         self.assertEquals(stmt, res)
         
+    def test_verbalize6(self):
+        
+        logger.info("\n##################### test_verbalize 6 ########################\n")
+        myP = Parser()
+        
+        stmt = "What blue object do you know?"
+        sentence = myP.parse(stmt)
+        res = self.dialog._verbalizer.verbalize(sentence)
+        logger.info('>> input: ' + stmt)
+        logger.info('<< output: ' + res)
+        self.assertEquals(stmt, res)
+        
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestVerbalization)
     suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestVerbalizationCompleteLoop))
