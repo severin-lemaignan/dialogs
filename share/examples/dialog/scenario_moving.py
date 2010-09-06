@@ -18,7 +18,10 @@ class TestMovingToLondonScenario(unittest.TestCase):
 
     Setup:
       One trashbin, one cardboard box, 2 tapes on the table [TAPE1 = Lord of 
-      the Rings (lotr) and TAPE2 = HotShots2 (hs2)].
+      the Robots (lotr) and TAPE2 = JIDO-E].
+    
+    Complete scenario here:
+    http://homepages.laas.fr/slemaign/wiki/doku.php?id=scenario_demo_roman
     """
     
     def setUp(self):
@@ -28,8 +31,6 @@ class TestMovingToLondonScenario(unittest.TestCase):
         self.oro = ResourcePool().ontology_server
         
         try:
-            
-            self.oro.reset()
             
             self.oro.add([  'ACHILLE rdf:type Human',
                             'ACHILLE rdfs:label Achille',
@@ -43,10 +44,10 @@ class TestMovingToLondonScenario(unittest.TestCase):
                             'CARDBOARD_BOX rdf:type CardBoardBox',
                             'CARDBOARD_BOX isOn TABLE',
                             'TAPE1 rdf:type VideoTape', 
-                            'TAPE1 rdfs:label "The Lords of the rings"', 
+                            'TAPE1 rdfs:label "The Lords of the robots"', 
                             'TAPE1 isOn TABLE',
                             'TAPE2 rdf:type VideoTape', 
-                            'TAPE2 rdfs:label "Hot Shots 2"', 
+                            'TAPE2 rdfs:label "Jido-E"', 
                             'TAPE2 isOn TABLE',])
             """           
             self.oro.addForAgent('ACHILLE',
@@ -59,24 +60,89 @@ class TestMovingToLondonScenario(unittest.TestCase):
             print("Couldn't connect to the ontology server. Aborting the test.")
             sys.exit(0)
 
-    def test_step1(self):
-        """ACHILE puts TAPE1 in CARDBOARDBOX"""
+    def runTest(self):
+        """ MOVING TO LONDON SCENARIO
+        
+        ACHILLE puts TAPE1 in CARDBOARDBOX"""
 
+        print()
         self.oro.add(['TAPE1 isIn CARDBOARD_BOX'])
                             
         stmt = "Jido, what is in the box?"
         answer = "This box"
         ####
-        res = self.dialog.test('ACHILE', stmt, answer)
+        self.assertEquals(self.dialog.test('ACHILLE', stmt, answer)[1],"The Lords of the robots")
          
-        expected_result = ['* rdf:type Give',
-                            '* performedBy myself',
-                            'ACHILE_HUMAN1 desires *',
-                            '* actsOnObject BLACK_TAPE'
-                            '* receivedBy ACHILE_HUMAN1']
-
-        self.assertTrue(check_results(res[0], expected_result))
+        stmt = "Ok. And where is the other tape?"
+        ####
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1],"On the table.")
+        
+        stmt = "Ok. Thanks."
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1],"")
     
+        """Julie arrives, and gives two big boxes to ACHILLE. He can not take anything!"""
+
+        print()
+        self.oro.update(['TAPE2 isReachable false'])
+                            
+        stmt = "Jido, can you take jido-e?"
+        ####
+        res = self.dialog.test('ACHILLE', stmt)
+        
+        expected_result = ['ACHILLE desires *',
+                  '* rdf:type Take',
+                  '* performedBy myself',
+                  '* actsOnObject TAPE2']
+        
+        self.assertTrue(check_results(res[0], expected_result))
+        
+        """Julie pushes a bit the TAPE2, which is now close enough, but still 
+        unreachable because of an obstacle.
+        """
+         
+        stmt = "And now, can you reach this tape?"
+        ####
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1],"No, I can not reach it.")
+        
+        """Julie pushes again the tape. It is now reachable.
+        """
+        self.oro.update(['TAPE2 isReachable true'])
+        
+        stmt = "Jido, can you take it?"
+        ####
+        res = self.dialog.test('JULIE', stmt)
+        
+        expected_result = ['JULIE desires *',
+                  '* rdf:type Take',
+                  '* performedBy myself',
+                  '* actsOnObject TAPE2']
+        
+        self.assertTrue(check_results(res[0], expected_result))
+
+        """Achille puts JIDO-E in the trashbin. Jido still observes. Achille 
+        leaves. Julie finds JIDO-E in the trashbin, and takes it away. ACHILLE 
+        comes back to the table.
+        """
+
+        print()
+        self.oro.remove(['TAPE2 isOn TABLE'])
+        self.oro.add(['TAPE2 isAt JULIE'])
+        self.oro.addForAgent('ACHILLE', ['TAPE2 isIn TRASHBIN'])
+                            
+        stmt = "Can you give me the tape in the trashbin?"
+        #Expected intermediate question: "You mean, the JIDO-E tape?"
+        #NOT FOR ROMAN demo!
+        #answer = "Yes"
+        ####
+        res = self.dialog.test('ACHILLE', stmt)
+        
+        expected_result = ['ACHILLE desires *',
+                  '* rdf:type Give',
+                  '* performedBy myself',
+                  '* actsOnObject TAPE2',
+                  '* receivedBy ACHILLE']
+        
+        self.assertTrue(check_results(res[0], expected_result))
 
     def tearDown(self):
         self.dialog.stop()
