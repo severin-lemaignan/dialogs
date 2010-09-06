@@ -32,7 +32,7 @@ because+of 1 0 hasPurpose
 before 1 -1
 behind 1 0 isBehind
 behind+to 0 1 isBehind
-below 1 0
+below 1 0 isUnder
 between 1 1
 by 1 1
 despite 1 0
@@ -51,7 +51,8 @@ next 1 1 isNextTo
 next+to 1 0 isNextTo 
 on 1 1
 to 0 1 receivedBy
-underneath 1 0 isBelow
+underneath 1 0 isUnder
+under 1 0
 with 1 1
 
 
