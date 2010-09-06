@@ -87,25 +87,27 @@ class Dialog(Thread):
                 self._logger.info(colored_print("###################################", 'green'))
                 self._logger.info(colored_print("#             NL INPUT            #", 'green'))
                 self._logger.info(colored_print("###################################\n", 'green'))
-                self._logger.info(colored_print(input + "\n", 'blue'))
+                self._logger.info(colored_print("- " + input + "\n", 'blue'))
                 self.in_interaction = True
                 self.waiting_for_more_info = False
                 
                 try:
                     self._process(input)
                 except UnsufficientInputError as uie:
-                    self._logger.info(colored_print("##########################################", 'green'))
-                    self._logger.info(colored_print("#  Missing content! Going back to human  #", 'green'))
-                    self._logger.info(colored_print("##########################################", 'green'))
+                    self._logger.info(colored_print("Not enough informations! Going back to human:", 'magenta'))
                     self._last_output = uie.value
                     
                     #Waiting for more info to solve content
                     self.waiting_for_more_info = True
+                    
+                    #Output towards human
+                    sys.stdout.write(self._verbalizer.verbalize(uie.value['question']) + "\n")
+                    self._logger.info(colored_print("- " +  \
+                            self._verbalizer.verbalize(uie.value['question']), \
+                            'blue') + "\n")
                 
                 except UnidentifiedAnaphoraError as uae:
-                    self._logger.info(colored_print("##########################################", 'green'))
-                    self._logger.info(colored_print("#  Asking for confirmation to human      #", 'green'))
-                    self._logger.info(colored_print("##########################################", 'green'))
+                    self._logger.info(colored_print("Not sure of the interpretation...  Asking for confirmation to human:", 'magenta'))
                     self._anaphora_input = uae.value
                     
                     #waiting for more info to solve anaphora
@@ -113,9 +115,9 @@ class Dialog(Thread):
                     
                     #Output towards human
                     sys.stdout.write(self._verbalizer.verbalize(uae.value['question']) + "\n")
-                    self._logger.info("OUTPUT TO HUMAN:" + colored_print( \
+                    self._logger.info("- " + colored_print( \
                             self._verbalizer.verbalize(uae.value['question']), \
-                            'red') + "\n")
+                            'blue') + "\n")
                             
                             
             except Empty:
@@ -151,10 +153,7 @@ class Dialog(Thread):
         
         #Input for Unsifficient input  Error 
         if self.waiting_for_more_info and self._last_output:
-            self._logger.info(colored_print("##########################################", 'green'))
-            self._logger.info(colored_print("#   New content provided by human!       #", 'green'))
-            self._logger.info(colored_print("##########################################", 'green'))            
-            self._logger.info(colored_print(input + "\n", 'blue'))
+            self._logger.info(colored_print("New content provided by human! merging it with the previous sentence.", 'magenta'))
             
             self._last_output['object_with_more_info'] = nom_gr_remerge(self._parser.parse(input, None),
                                                                 self._last_output['status'],
@@ -164,10 +163,7 @@ class Dialog(Thread):
         
         #Input for Unidentified Anaphora Error
         if self.waiting_for_more_info and self._anaphora_input:
-            self._logger.info(colored_print("##########################################", 'green'))
-            self._logger.info(colored_print("#   New content provided by human!       #", 'green'))
-            self._logger.info(colored_print("##########################################", 'green'))            
-            self._logger.info(colored_print(input + "\n", 'blue'))
+            self._logger.info(colored_print("Ok. Got a confirmation. Processing it.", 'magenta'))
             
             self._anaphora_input['object_with_more_info'] = replacement(self._parser.parse(input, None),
                                                                                    self._anaphora_input['object'] , 
