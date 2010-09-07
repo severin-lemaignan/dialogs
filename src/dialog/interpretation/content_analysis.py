@@ -25,7 +25,11 @@ class ContentAnalyser:
         self.output_sentence = []
         
     def analyse(self, sentence, current_speaker):
-        """analyse an imperative or statement data_type sentence"""
+        """analyse an imperative or statement data_type sentence
+        """
+        
+        self.builder.clear_statements()
+        
         if sentence.data_type in ['imperative', 'statement']:
             logger.debug("Processing the content of " +  ("an imperative " if sentence.data_type == 'imperative' else "a statement ") + "data_type sentence")
             return self.process_sentence(sentence, current_speaker)
@@ -48,6 +52,7 @@ class ContentAnalyser:
             
     def process_sentence(self, sentence, current_speaker):
         self.builder.set_current_speaker(current_speaker)
+
         stmts = self.builder.process_sentence(sentence)
         
         logger.info("Generated statements: ")
