@@ -122,7 +122,7 @@ def dispatching(sentence):
 
                     #For 'which'
                     elif x[2]=='8':
-                        return [other_sentence('w_question', 'choice', sentence[1:])]
+                        return [w_quest_which('w_question', 'choice', sentence[1:])]
                     
                     #For 'to whom'
                     elif x[2]=='9':
@@ -322,6 +322,27 @@ def w_quest_how(type, sentence):
 
 
 
+def w_quest_which(type, request, sentence):
+    
+    gr=preprocessing.determination_nom_gr(sentence, 0,'of')
+    if analyse_nominal_group.find_sn_pos(sentence, len(gr))==[]:
+        for i in frt_wd:
+            if sentence[len(gr)]==i[0] and i[1]=='3':
+                if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
+                    analysis=y_n_ques(type, request, sentence[len(gr):])
+                    nominal_gr=other_sentence(type, request, gr)
+                    analysis.sv[0].d_obj=nominal_gr.sn
+                    return analysis
+                           
+        return other_sentence(type, request, sentence)
+    else:
+        analysis=other_sentence(type, request, sentence[len(gr):])
+        nominal_gr=other_sentence(type, request, gr)
+        analysis.sv[0].d_obj=nominal_gr.sn
+        return analysis
+    
+    
+    
 def stc_start_subsentence(sentence):
     """
     This function process the conditional sentence
@@ -518,7 +539,7 @@ def y_n_ques(type, request, sentence):
         
         #We have to take off adverbs form the sentence
         sentence=analyse_verbal_structure.find_adv(sentence, vg)
-
+    
     #We perform the processing with the modal
     if modal!=[]:
         vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
@@ -529,6 +550,20 @@ def y_n_ques(type, request, sentence):
     #In case there is a state verb followed by an adjective
     sentence=analyse_verbal_structure.state_adjective(sentence, vg)
     
+    #We have to correct the mistake of the subject
+    for p in det_dem_list:
+        if analysis.sn!=[] and analysis.sn[0].det==[p] and analysis.sn[0].noun==[]:
+            if sentence!=[0] and sentence[0]=='.' and sentence[0]=='?' and sentence[0]=='!':
+                flg=0
+                for k in proposal_list:
+                    if k==sentence[0]:
+                        flg=1
+                        break
+                if flg!=1:
+                    analysis.sn[0].noun=[sentence[0]]
+                    sentence=sentence[1:]
+                    sentence=analyse_verbal_structure.state_adjective(sentence, vg)
+            
     vg=analyse_verbal_structure.DOC_to_IOC(vg)
 
     while len(sentence)>1:

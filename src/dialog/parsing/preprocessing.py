@@ -76,19 +76,23 @@ def process_and_beginning_sentence(sentence):
         flg=0
         
         
-    if sentence[0]==';' or sentence[0]=='and' or sentence[0]=='ah' or sentence[0]==',':
+    if sentence[0]==';' or sentence[0]=='and' or sentence[0]=='ah' or sentence[0]==',' or sentence[0]=='very':
         sentence=sentence[1:]
     
     for l in proposal_list:
         if l==sentence[0]:
-            for z in sentence:
-                if z==';' or z=='.' or z==',':
-                    phrase=sentence[:sentence.index(z)]
-                    if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
-                        sentence=sentence[sentence.index(z)+1:len(sentence)-1]+phrase+[sentence[len(sentence)-1]]
-                    else:
-                        sentence=sentence[sentence.index(z)+1:]+phrase
-    
+            gr=determination_nom_gr(sentence, 1,'of')
+            if gr!=[]:
+                sentence=sentence[len(gr)+1:]+[sentence[0]]+gr
+                sentence=process_and_beginning_sentence(sentence)
+            else:
+                for z in sentence:
+                    if z==';' or z=='.' or z==',':
+                        phrase=sentence[:sentence.index(z)]
+                        if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
+                            sentence=sentence[sentence.index(z)+1:len(sentence)-1]+phrase+[sentence[len(sentence)-1]]
+                        else:
+                            sentence=sentence[sentence.index(z)+1:]+phrase
    
     for j in adv_list:
         if sentence[0]==j:
@@ -731,19 +735,22 @@ def take_off_comma(sentence):
     """ 
     
     #init
-    i=0
-    while i < len(sentence):
-        if sentence[i]==';':
-            for j in rel_list+sub_list:
-                if  j==sentence[i+1]:
-                    sentence=sentence[:i]+sentence[i+1:]
-                    break
-        i=i+1
+    i=k=0
+    
+    while k < len(sentence):
+        while i < len(sentence[k]):
+            if sentence[k][i]==';':
+                for j in rel_list+sub_list:
+                    if  j==sentence[k][i+1]:
+                        sentence[k]=sentence[k][:i]+sentence[k][i+1:]
+                        break
+            i=i+1
+        k=k+1
     return sentence
           
     
                         
-def delete_empty(sentence):
+def delete_empty_word(sentence):
     """ 
     This function delete '' from sentence                  
     Input=sentence                              Output=sentence                      
@@ -751,9 +758,9 @@ def delete_empty(sentence):
     
     #init
     i=0
-    
+
     while i < len(sentence):
-        if sentence[i]=='' or sentence[i]=='please' or sentence[i]=='Please' or sentence[i]=='very' or sentence[i]=='Very':
+        if sentence[i]=='' or sentence[i]=='please' or sentence[i]=='Please':
             sentence=sentence[:i]+sentence[i+1:]
         i=i+1
         
@@ -818,7 +825,7 @@ def interjection(sentence):
         if sentence[i]==';':
             pos=i
         i=i+1
-    
+   
     if pos==0:
         return [sentence]
     else:
@@ -931,7 +938,7 @@ def processing(sentence):
     
     sentence = prep_concat(sentence)
     sentence = upper_to_lower(sentence)
-    sentence = delete_empty(sentence)
+    sentence = delete_empty_word(sentence)
     sentence = concat_number(sentence)
     sentence = conjunction_processing(sentence,'or')
     sentence = conjunction_processing(sentence,':but')
@@ -946,7 +953,6 @@ def processing(sentence):
     sentence = but(sentence)
     sentence = subsentence_comma(sentence)
     sentence = remerge_sentences(sentence)
-    sentence = take_off_comma(sentence)
     sentence = what_to_relative(sentence)
     sentence = add_scd_vrb(sentence)
     sentence = day_month(sentence)
@@ -955,6 +961,7 @@ def processing(sentence):
     sentence = process_and_beginning_sentence(sentence)
     sentence = interjection(sentence)
     sentence = and_between_sentence(sentence)
+    sentence = take_off_comma(sentence)
     return sentence
 
     
