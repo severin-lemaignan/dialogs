@@ -219,7 +219,7 @@ class Dialog(Thread):
         else:
             current_sentence = None
                
-        self.sentences.appendleft(self._parser.parse(nl_input, current_sentence)[0])
+        [self.sentences.append(stnts) for stnts in self._parser.parse(nl_input, current_sentence)]
         
         for s in range(len(self.sentences)): #sentences is a deque. Cannot do a simple [:] to iterate over a copy
             self.active_sentence = self.sentences.popleft()

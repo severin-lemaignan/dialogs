@@ -3,7 +3,6 @@
 """This test scenario can be invoked either as a standalone Python script or
 through the dialog_test executable.
 """
-
 import unittest
 from dialog.dialog_core import Dialog
 from dialog.resources_manager import ResourcePool
@@ -33,9 +32,9 @@ class TestMovingToLondonScenario(unittest.TestCase):
         try:
             
             self.oro.add([  'ACHILLE rdf:type Human',
-                            'ACHILLE rdfs:label Achille',
+                            'ACHILLE rdfs:label "Achille"',
                             'JULIE rdf:type Human', 
-                            'JULIE rdfs:label Julie',
+                            'JULIE rdfs:label "Julie"',
                             'TABLE rdf:type Table',
                             'Trashbin rdfs:subClassOf Box',
                             'CardBoardBox rdfs:subClassOf Box',
@@ -66,7 +65,7 @@ class TestMovingToLondonScenario(unittest.TestCase):
         try:
             self.oro.addForAgent('ACHILLE',[
                             'JULIE rdf:type Human', 
-                            'JULIE rdfs:label Julie',
+                            'JULIE rdfs:label "Julie"',
                             'TABLE rdf:type Table',
                             'Trashbin rdfs:subClassOf Box',
                             'CardBoardBox rdfs:subClassOf Box',
@@ -91,7 +90,7 @@ class TestMovingToLondonScenario(unittest.TestCase):
         try:
             self.oro.addForAgent('JULIE',[
                             'ACHILLE rdf:type Human',
-                            'ACHILLE rdfs:label Achille',
+                            'ACHILLE rdfs:label "Achille"',
                             'TABLE rdf:type Table',
                             'Trashbin rdfs:subClassOf Box',
                             'CardBoardBox rdfs:subClassOf Box',
@@ -127,7 +126,7 @@ class TestMovingToLondonScenario(unittest.TestCase):
         ####
         #raise RuntimeError("STOP")
         self.assertEquals(self.dialog.test('ACHILLE', stmt, answer)[1][1],"The Lords of the robots.")
-        
+        raise RuntimeError("STOP")
         self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
         
         

@@ -409,14 +409,12 @@ class SentenceFactory:
                     sentence]
         
         else:
-            for sv in sentence.sv:
-                sv.state = "negative"
-                
-            return [Sentence("disagree",
-                                "no",
-                                [],
-                                []),
-                    sentence]
+            sentence.data_type = "subsentence"
+            sentence.aim = "if"
+            return [Sentence("statement",
+                                "",
+                                [Nominal_Group([],['I'],[],[],[])],
+                                [Verbal_Group(['know'],[], "present simple", [],[],[],[], "negative", [sentence])])]
             
     
     def create_gratulation_reply(self):

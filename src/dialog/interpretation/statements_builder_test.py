@@ -72,6 +72,8 @@ class TestStatementBuilder(unittest.TestCase):
                           'a_bottle isIn twingo',
                           
                           'a_candy rdf:type Candy',
+                          'location_left isLeftOf SPEAKER',
+                          'location_left rdf:type Location',
                           ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
@@ -1415,19 +1417,19 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'big_tree hasSize big',
                         'red_apple rdf:type Apple',
                         'red_apple hasColor red',
-                        'LEFT isLeftOf myself',
-                        'RIGHT isRightOf myself',
-                        'FRONT isFrontOf myself', 
-                        'BACK isBackOf myself',
-                        'TOP isTopOf myself',
-                        'BOTTOM isBottomOf myself',
-                        'shelf1_front isFrontOf shelf1',
-                        'green_banana_left isLeftOf green_banana',
+                        'LEFT isLeftOf myself', 'LEFT rdf:type Location',
+                        'RIGHT isRightOf myself','RIGHT rdf:type Location',
+                        'FRONT isFrontOf myself', 'FRONT rdf:type Location',
+                        'BACK isBackOf myself', 'BACK rdf:type Location',
+                        'TOP isTopOf myself', 'TOP rdf:type Location',
+                        'BOTTOM isBottomOf myself', 'BOTTOM rdf:type Location',
+                        'shelf1_front isFrontOf shelf1', 'shelf1_front rdf:type Location',
+                        'green_banana_left isLeftOf green_banana', 'green_banana_left rdf:type Location',
                         ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
-    """
+    
     def test_sentence1(self):
 
         logger.info("\n##################### test_sentence1 ########################\n")
@@ -1910,13 +1912,13 @@ class TestBaseSentenceDialog(unittest.TestCase):
     def test_sentence17(self):   
         logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
         ##sentence
-        stmt = "the yellow banana is at the front"
+        stmt = "the green banana is at the front"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['y_banana isAt FRONT'] #Here front is related to the agent
+        expected_result = ['green_banana isAt FRONT'] #Here front is related to the agent
         
         self.assertTrue(check_results(res[0], expected_result))
-        
+    
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()

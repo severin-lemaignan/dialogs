@@ -251,7 +251,7 @@ class ResourcePool:
         self.time_adverbs = []
         self.unusable_words = []
         self.time_proposals = []
-        self.action_verb_with_passive_behaviour = []
+        self.action_verb_with_passive_behaviour = {}
         self.adjectives_ontology_classes = []
 
         """list of tokens that can start a sentence"""
@@ -294,7 +294,9 @@ class ResourcePool:
         self.indirect_transitive=[k[0] for k in verbs[7]]
         self.state=[k[0] for k in verbs[8]]
         self.verb_need_to=[k[0] for k in verbs[9]]
-        self.action_verb_with_passive_behaviour = [k[0] for k in verbs[10]]
+        
+        # Action verbs such as 'see', 'hear' with no active behaviour
+        self.action_verb_with_passive_behaviour = dict([(k[0],k[1]) for k in verbs[10]])
         self.goal_verbs = [k[0] for k in verbs[11]]
         
         self.sentence_starts = [tuple(line.split()) 

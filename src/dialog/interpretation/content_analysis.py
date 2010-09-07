@@ -25,11 +25,25 @@ class ContentAnalyser:
         self.output_sentence = []
         
     def analyse(self, sentence, current_speaker):
-        """analyse an imperative or statement data_type sentence
-        """
+        """analyse sentences"""
+
+	self.builder.clear_statements()
+
+        sentence = self.pre_analyse_content(sentence)
+        logger.debug("\Sentence after content pre analysis \n" + str(sentence))
         
-        self.builder.clear_statements()
+        if sentence.data_type == 'interjection':
+            pass
         
+        if sentence.data_type in ["start", "end"]:
+            self.output_sentence.append(sentence)
+            
+        if sentence.data_type == "gratulation":
+            self.output_sentence.extend(self.sfactory.create_gratulation_reply())
+        
+        if sentence.data_type in ["agree", "disagree"]:
+            self.output_sentence.extend(self.sfactory.create_agree_reply())
+            
         if sentence.data_type in ['imperative', 'statement']:
             logger.debug("Processing the content of " +  ("an imperative " if sentence.data_type == 'imperative' else "a statement ") + "data_type sentence")
             return self.process_sentence(sentence, current_speaker)
@@ -38,17 +52,7 @@ class ContentAnalyser:
             logger.debug("Processing the content of " +  ("a w_question " if sentence.data_type == 'w_question' else "a yes_no_question ") + "data_type sentence")
             return self.process_question(sentence, current_speaker)
         
-        if sentence.data_type in ["start", "end"]:
-            self.output_sentence.append(sentence)
-            return []
-            
-        if sentence.data_type == "gratulation":
-            self.output_sentence.extend(self.sfactory.create_gratulation_reply())
-            return []
         
-        if sentence.data_type in ["agree", "disagree"]:
-            self.output_sentence.extend(self.sfactory.create_agree_reply())
-            return []
             
     def process_sentence(self, sentence, current_speaker):
         self.builder.set_current_speaker(current_speaker)
@@ -90,6 +94,33 @@ class ContentAnalyser:
 
     def analyse_output(self):
         return self.output_sentence
+        
+    def pre_analyse_content(self, sentence):
+        """ this method analyse the content of a sentence ang give it another processing purpose.
+            E.g: Can you give me the bottle?
+            The sentence above is of 'yes_no_question' type but should actually be processed as an order in which the current speaker
+            desires 'the bottle'. 
+            Therefore, we turn it into 'give me the bottle'.
+        """
+        # Case of : 
+        #   -INPUT:  Yes_no_question + can + action verb
+        #   -OUTPUT: Imperative + action verb
+        #   
+        
+        if sentence.data_type == 'yes_no_question':
+            for sv in sentence.sv:
+                for verb in sv.vrb_main:
+                    if 'can+' in verb:
+                        vrb_main = verb.lstrip('can+')
+                        
+                        if not vrb_main in ResourcePool().state + ResourcePool().action_verb_with_passive_behaviour.keys() + ResourcePool().goal_verbs:
+                            sv.vrb_main[sv.vrb_main.index(verb)] = verb.lstrip('can+')
+                            sentence.data_type = 'imperative'
+                            return sentence
+                    
+            
+            
+        return sentence
 
 def unit_tests():
     """This function tests the main features of the class ContentAnalysis"""

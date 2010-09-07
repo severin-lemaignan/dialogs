@@ -11,6 +11,7 @@ from dialog.interpretation.questions_handler import QuestionHandler
 from dialog.sentence import SentenceFactory, Sentence
 from dialog.interpretation.statements_builder import *
 from dialog.interpretation.resolution import Resolver
+from dialog.interpretation.statements_builder_test import check_results
 
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):
@@ -508,9 +509,15 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                         'y_banana rdf:type Banana',
                         'y_banana hasColor yellow',
                         'y_banana isOn shelf1',
+                        'y_banana isAt LEFT',
+                        'y_banana isAt shelf1_front', 'shel1_front rdf:type Location',
+                        'LEFT isLeftOf myself', 'LEFT rdf:type Location',
+                        'shelf1_front isFrontOf shelf1',
                         'green_banana rdf:type Banana',
                         'green_banana hasColor green',
                         'green_banana isOn table2',
+                        'green_banana isAt FRONT', 'FRONT rdf:type Location',
+                        'FRONT isFrontOf myself', 
                         'myself focusesOn y_banana',
                         'myself rdfs:label "Jido"',
                         'myself sees id_tom',
@@ -687,6 +694,164 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "I know Tom.")
         
+
+class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
+    """Tests the processing of question by the Dialog module.
+    This must be tested with oro-server using the testsuite.oro.owl ontology.
+    """
+    def setUp(self):
+        self.dialog = Dialog()
+        self.dialog.start()
+        
+        self.oro = ResourcePool().ontology_server
+        
+        try:
+            
+            self.oro.add([  'ACHILLE rdf:type Human',
+                            'ACHILLE rdfs:label Achille',
+                            'JULIE rdf:type Human', 
+                            'JULIE rdfs:label Julie',
+                            'TABLE rdf:type Table',
+                            'Trashbin rdfs:subClassOf Box',
+                            'CardBoardBox rdfs:subClassOf Box',
+                            'CardBoardBox rdfs:label "cardboard box"',
+                            'TRASHBIN rdf:type Trashbin',
+                            'CARDBOARD_BOX rdf:type CardBoardBox',
+                            'CARDBOARD_BOX isOn TABLE',
+                            'TAPE1 rdf:type VideoTape', 
+                            'TAPE1 rdfs:label "The Lords of the robots"', 
+                            'TAPE1 isOn TABLE',
+                            'TAPE2 rdf:type VideoTape', 
+                            'TAPE2 rdfs:label "Jido-E"', 
+                            'TAPE2 isOn TABLE',
+                            
+                            'VideoTape owl:equivalentClass Tape',
+                            'TAPE1 owl:differentFrom TAPE2',
+                            ])
+        except AttributeError:
+            pass
+            
+        
+        try:
+            
+            self.oro.addForAgent('ACHILLE',
+                            ['ACHILLE rdf:type Human',
+                            'ACHILLE rdfs:label Achille',
+                            'JULIE rdf:type Human', 
+                            'JULIE rdfs:label Julie',
+                            'TABLE rdf:type Table',
+                            'Trashbin rdfs:subClassOf Box',
+                            'CardBoardBox rdfs:subClassOf Box',
+                            'CardBoardBox rdfs:label "cardboard box"',
+                            'TRASHBIN rdf:type Trashbin',
+                            'CARDBOARD_BOX rdf:type CardBoardBox',
+                            'CARDBOARD_BOX isOn TABLE',
+                            'TAPE1 rdf:type VideoTape', 
+                            'TAPE1 rdfs:label "The Lords of the robots"', 
+                            'TAPE1 isOn TABLE',
+                            'TAPE2 rdf:type VideoTape', 
+                            'TAPE2 rdfs:label "Jido-E"', 
+                            'TAPE2 isOn TABLE',
+                            
+                            'VideoTape owl:equivalentClass Tape',
+                            
+                            'TAPE1 owl:differentFrom TAPE2',
+                            ])
+        except AttributeError:
+            pass
+    
+    def test1(self):
+        
+        self.oro.add(['TAPE1 isIn CARDBOARD_BOX'])
+        self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn TAPE2'])
+        self.oro.addForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
+        
+        stmt = "Jido, what is in the box?"
+        answer = "This box"
+        ####
+        self.assertEquals(self.dialog.test('ACHILLE', stmt, answer)[1][1],"The Lords of the robots.")
+    
+    
+    def test2(self):
+        #Fill in the history
+        stmt = " the TAPE1 is in the CARDBOARD_BOX"
+        self.dialog.test('ACHILLE', stmt)
+        
+        stmt = "Ok. And where is the other tape?"
+        ####
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"Alright. The other tape is on the table.")
+    
+    def test3(self):
+        stmt = "Ok thank you."
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"Alright.")
+        
+    def test3_2(self):
+        stmt = "thank you."
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"You're welcome.")
+    
+    
+    def test4(self):
+        self.oro.update(['TAPE2 isReachable false'])
+                            
+        stmt = "can you take Jido-E?"
+        ####
+        res = self.dialog.test('ACHILLE', stmt)
+        
+        expected_result = ['ACHILLE desires *',
+                  '* rdf:type Get',
+                  '* performedBy myself',
+                  '* actsOnObject TAPE2']
+        
+        self.assertTrue(check_results(res[0], expected_result))
+        self.assertEquals(res[1][1], "")
+    
+    def test_5(self):
+        self.oro.update(['TAPE2 isReachable false'])
+                            
+        stmt = "can you take Jido-E?"
+        ####
+        res = self.dialog.test('ACHILLE', stmt)
+        
+        expected_result = ['ACHILLE desires *',
+                  '* rdf:type Get',
+                  '* performedBy myself',
+                  '* actsOnObject TAPE2']
+        
+        self.assertTrue(check_results(res[0], expected_result))
+        self.assertEquals(res[1][1], "")
+    
+    def test_6(self):
+        
+        ###
+        self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
+        self.oro.addForAgent('ACHILLE',['ACHILLE focusesOn TAPE2'])
+        stmt = "Jido, can you reach this tape?"
+        ####
+        ## expected to check['myself reaches TAPE2']
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"I don't know, if I can reach it.")
+        
+    
+    def test_7(self):
+        self.oro.update(['TAPE2 isReachable true'])
+        #Feel history
+        self.dialog.dialog_history = []
+        stmt = "can you reach Jido-E?"
+        res = self.dialog.test('ACHILLE', stmt)
+        ###
+        stmt = "can you take it?"
+        ####
+        answer = "yes"
+        ###
+        res = self.dialog.test('ACHILLE', stmt, answer)
+        
+        expected_result = ['ACHILLE desires *',
+                  '* rdf:type Get',
+                  '* performedBy myself',
+                  '* actsOnObject TAPE2']
+        
+        self.assertTrue(check_results(res[0], expected_result))
+
+        
     
 def dump_resolved(sentence, current_speaker, current_listener, resolver):
     sentence = resolver.references_resolution(sentence,
@@ -701,6 +866,10 @@ def dump_resolved(sentence, current_speaker, current_listener, resolver):
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestQuestionHandler)
     suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestQuestionHandlerDialog))
+    suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestQuestionHandlerScenarioMovingToLondon))
+    
+    #suite = unittest.TestLoader().loadTestsFromTestCase(TestQuestionHandlerScenarioMovingToLondon)
+    
     
     return suite
     

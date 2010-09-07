@@ -11,7 +11,7 @@ from dialog.resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name #for nominal group discrimination
 from discrimination import Discrimination
 from anaphora_matching import AnaphoraMatcher, recover_nom_gr_list, first_replacement
-from dialog.sentence import SentenceFactory, Comparator
+from dialog.sentence import SentenceFactory, Comparator, Nominal_Group
 
 class Resolver:
     """Implements the concept resolution mechanisms.
@@ -119,6 +119,7 @@ class Resolver:
                 pass
             
             if onto_focus:
+                nominal_group = Nominal_Group([],['it'],[],[],[])
                 nominal_group.id = onto_focus[0]
                 nominal_group._resolved = True
                 return nominal_group
@@ -272,6 +273,7 @@ class Resolver:
         
         # Special case of "other" occuring in the nominal group
         if builder.process_on_other:
+            logger.debug("\tFound 'Other'. Trying to identify concept in both Dialog history and "+ current_speaker + "'s model")
             nominal_group, stmts = self._resolve_nouns_with_dialog_history(nominal_group, current_speaker, stmts, builder)
             if nominal_group._resolved: return nominal_group
             
@@ -401,14 +403,15 @@ class Resolver:
             #   or verbs wit prepositions
             if '+' in verb:
                 # E.g: can+do
-                [modal, verb] = verb.split('+')
-                if modal in ResourcePool().modal:
-                    pass
-                    
+                [first, second] = verb.split('+')
+                if first in ResourcePool().modal:
+                    modal = first
+                    verb = second
+                
                 # Verb with preposition
                 # E.g: look+up => lookup
                 else:
-                    verb = modal+verb
+                    verb = first + second
                     modal = ''
             
             # Case of to be

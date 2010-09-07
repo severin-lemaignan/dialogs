@@ -353,15 +353,19 @@ class NominalGroupStatementBuilder:
             
             
             # Case : common noun    
-                # Case of Directions
-            if noun in ResourcePool().direction_words:
-                if not nominal_group.noun_cmpl:
-                    self._statements.append(ng_id + " is" + noun.capitalize() + "Of " + self._current_speaker)
-                
             else:
-                logger.info("... \t" + noun + " is being processed as a common noun in " + self._current_speaker + "'s model.")            
+                logger.info("... \t" + noun + " is being processed as a common noun in " + self._current_speaker + "'s model.")
+                
+                # Case of Directions
+                if noun in ResourcePool().direction_words:
+                    class_name = 'Location'
+                    if not nominal_group.noun_cmpl:
+                        self._statements.append(ng_id + " is" + noun.capitalize() + "Of " + self._current_speaker)
+                    
+                    
                 # get the exact class name (capitalized letters where needed)
-                class_name = get_class_name(noun, onto_id)
+                else:
+                    class_name = get_class_name(noun, onto_id)
                 
                 # get the exact object property (subClassOf or type)
                 object_property = get_object_property(ng_quantifier, nominal_group._quantifier)
@@ -618,7 +622,18 @@ class VerbalGroupStatementBuilder:
             #Case 2:  actions or stative verbs with a specified 'goal' or 'thematic' role:
             #                          see '../../share/dialog/thematic_roles'
             #Case 3:  other action or stative verbs
-                        
+            
+            # Modal or phrasal verbs. E.g: can+do, look+for , ...
+            #                   verb = must+do
+            modal = ''
+            if '+' in verb:
+                # Case of Modals
+                [modal, verb] = verb.split('+')
+                if modal in ResourcePool().modal:
+                    pass
+                    #self._statements.append(sit_id + " rdf:type " + verb.capitalize())
+                    #self._statements.append(subject_id+ " " + modal +"Performs " + sit_id)
+            
             #Case 1:
             if verb in ResourcePool().state:
                 sit_id = subject_id
@@ -650,23 +665,13 @@ class VerbalGroupStatementBuilder:
                         self.process_vrb_sec(verbal_group, subject_id, subject_quantifier, sit_id)
                 
                 #Case of action verbs wit passive behaviour
-                elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
+                elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour.keys():
                     sit_id = subject_id
                     
                 #Case 3:   
                 else:
-                    # Modal verbs. E.g: can+do, look+for , ...
-                    #                   verb = must+do 
-                    if '+' in verb:
-                        # Case of Modals
-                        [modal, verb] = verb.split('+')
-                        if modal in ResourcePool().modal:
-                            self._statements.append(sit_id + " rdf:type " + verb.capitalize())
-                            self._statements.append(subject_id+ " " + modal +"Performs " + sit_id)
-
-                    else:
-                        self._statements.append(sit_id + " rdf:type " + verb.capitalize())
-                        self._statements.append(sit_id + " performedBy " + subject_id)
+                    self._statements.append(sit_id + " rdf:type " + verb.capitalize())
+                    self._statements.append(sit_id + " performedBy " + subject_id)
             
             #Imperative specification, add the goal verb 'desire'
             if self._process_on_imperative:
@@ -711,8 +716,8 @@ class VerbalGroupStatementBuilder:
         except  KeyError:
             d_obj_role = " involves "
         
-        if verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
-            d_obj_role  = ' ' + verb.lower() +'s '
+        if verb.lower() in ResourcePool().action_verb_with_passive_behaviour.keys():
+            d_obj_role  = ' ' + ResourcePool().action_verb_with_passive_behaviour[verb.lower()] + ' '
         
         #nominal groups
         for d_obj in d_objects:
