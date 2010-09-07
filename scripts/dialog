@@ -97,7 +97,7 @@ def main():
     logger.info("v." + DIALOG_VERSION + "\n")
     
     if speaker and ResourcePool().ontology_server:
-        ResourcePool().ontology_server.add(speaker + " rdf:type Agent")
+        ResourcePool().ontology_server.add([speaker + " rdf:type Agent"])
         logger.info(speaker + " added to the ontology")
         
     dialog = Dialog(speaker)
