@@ -51,6 +51,26 @@ unusable_word = ResourcePool().unusable_words
 
 
 
+
+def is_cmpl_pr(word):
+    for i in complement_pronoun:
+        if word==i:
+            return 1
+    return 0
+
+
+
+def delete_unusable_word(phrase):
+    
+    for i in unusable_word:
+        if phrase[0]==i:
+            phrase=phrase[1:]
+            delete_unusable_word(phrase)
+    
+    return phrase
+    
+    
+    
 def find_vrb_adv(phrase, vg):
     """
     This function recovers the list of adverbs bound to verb                         
@@ -391,25 +411,32 @@ def process_subsentence(phrase,vg):
                 end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], sub_list+rel_list)
                 
                 #If it is 'where', it can be relative if before we have nominal group
-                if w=='where':
+                if w=='where' or w=='which':
                     position=phrase.index(w)-1
+                   
                     gr=analyse_nominal_group.find_sn_pos(phrase, position)
+                    
                     #We have to find the nominal group just before
                     while position>0 and gr==[]:
                         position=position-1
                         gr=analyse_nominal_group.find_sn_pos(phrase, position)
-                    
-                if w!='where' or (len(gr)+position!=phrase.index(w) or (len(gr)==1 and other_functions.find_cap_lettre(gr[0])==0)):
+               
+                if (w!='where' and w!='which') or (len(gr)+position!=phrase.index(w) or (len(gr)==1 and is_cmpl_pr(gr[0])==1)):
                     #We have to remove the proposal
                     subsentence= phrase[begin_pos+1:begin_pos+end_pos]
                     if len(subsentence)>1:
                         subsentence=other_functions.recover_scd_verb_sub(subsentence)
                         
-                        #We perform processing
-                        vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
-                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
-                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
-                        
+                        if w!='which':
+                            #We perform processing
+                            vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
+                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
+                        else:
+                            vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.w_quest_which('w_question', 'choice', ['the']+subsentence)]
+                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
+                            
                         if w=='but':
                             #If the main verb is not a verb but a part of verbal structure => we have nominal groups
                             for k in ['.','?','!','']+proposal_list:

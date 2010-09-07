@@ -279,8 +279,9 @@ def infinitive (verb, tense):
     #processing for the present simple
     elif tense=='present simple':
         for i in present_irreg_vrb:
-            if i[1] == verb[0]:
+            if i[1] == verb[0] or i[0] == verb[0]:
                 return [i[0]]
+            
         if verb[0].endswith('s'):
             return [verb[0][0:len(verb[0])-1]]
 

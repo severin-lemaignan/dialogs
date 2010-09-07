@@ -166,6 +166,9 @@ def dispatching(sentence):
 
 def separ_sentence(sentence, data_type):
     
+    if sentence[0]=='no' and len(sentence)>0 and sentence[1]!=';' and sentence[1]!='.'and sentence[1]!='?' and sentence[1]!='!':
+        return [other_sentence('', '', sentence)]
+    
     if data_type=='agree' and len(sentence)>1 and (sentence[1]=='morning' or sentence[1]=='evening' or sentence[1]=='afternoon'):
         sentences=[Sentence('start', '', [], [])]
     else:
@@ -491,6 +494,7 @@ def y_n_ques(type, request, sentence):
         vg.vrb_tense = analyse_verb.find_tense_statement(aux)
         vg.vrb_main=['be']
     else:
+        sentence=analyse_verbal_structure.delete_unusable_word(sentence)
         sentence=analyse_verbal_structure.find_vrb_adv (sentence, vg)
         vg.vrb_tense = analyse_verb.find_tense_question(sentence, aux)
 
@@ -643,17 +647,20 @@ def other_sentence(type, request, sentence):
                 if sentence[0]=='do' or sentence[0]=='does' or sentence[0]=='did' :
                     vg.vrb_tense = analyse_verb.find_tense_statement([sentence[0]])
                     sentence=sentence[2:]
+                    sentence=analyse_verbal_structure.delete_unusable_word(sentence)
                     sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
                 
                 #There is a modal
                 elif modal!=[]:
                     sentence=[sentence[0]]+sentence[2:]
+                    sentence=analyse_verbal_structure.delete_unusable_word(sentence)
                     sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
                     vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
     
                 else:
                     #We remove 'not' and find the tense
                     sentence=sentence[:1]+ sentence[2:]
+                    sentence=analyse_verbal_structure.delete_unusable_word(sentence)
                     sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
                     vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
                 
@@ -662,7 +669,8 @@ def other_sentence(type, request, sentence):
                 if sentence[0]=='not':
                     vg.state='negative'
                     sentence=sentence[1:]
-                    
+                
+                sentence=analyse_verbal_structure.delete_unusable_word(sentence)    
                 sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
                 vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
             
@@ -690,9 +698,11 @@ def other_sentence(type, request, sentence):
         #Negative form
         if sentence[1]=='not':
             sentence=sentence[sentence.index('not')+1:]
+            sentence=analyse_verbal_structure.delete_unusable_word(sentence)
             sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
             vg.state='negative'
         else:
+            sentence=analyse_verbal_structure.delete_unusable_word(sentence)
             sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
 
         #We process the verb

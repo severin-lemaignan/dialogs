@@ -904,16 +904,18 @@ def am_pm(sentence):
 def and_between_sentence(sentence):
     
     #init
-    i=j=0
+    i=0
     
     while i < len(sentence):
+        j=0
         while j < len(sentence[i]):
             if sentence[i][j]=='and' and sentence[i][j-1]==';':
                 stc=sentence[i][:j-1]
                 sentence[i]=sentence[i][j+1:]
-                sentence=sentence[:i]+[stc]+sentence[i:]
+                sentence=sentence[:i]+[stc]+sentence[i:]      
             j=j+1
         i=i+1
+        
     return sentence
 
 

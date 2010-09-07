@@ -705,7 +705,7 @@ class TestParsing(unittest.TestCase):
     
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-
+    
     def test_18(self):
         print ''
         print ('######################## test 2.8 ##############################')
@@ -1086,7 +1086,7 @@ class TestParsing(unittest.TestCase):
     
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-
+    
     def test_34(self):
         print ''
         print ('######################## test 4.4 ##############################')
@@ -2634,14 +2634,12 @@ class TestParsing(unittest.TestCase):
         rslt[0].sn[0].noun_cmpl[0]._quantifier="SOME"
         rslt[3].sv[0].d_obj[0]._quantifier="DIGIT"
         
-        
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     
     
     """
-    
-    utterance="hi"
+    utterance="you also forgot that you gave a black pen"
     sentence_list=preprocessing.process_sentence(utterance)
     print sentence_list
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
