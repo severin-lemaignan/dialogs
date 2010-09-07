@@ -8,11 +8,21 @@ Bugs
 ====
 
 
-[TODO:?] method 'check(Set)' on server always returns 'True'
+* method 'check(Set)' on server always returns 'True'
     Useful for questionHandler for processing Yes-No question
-[TODO:?] Non-deterministic solution in discrimation test of dialog_test.py
+* Non-deterministic solution in discrimation test of dialog_test.py
     test_discriminate_1, test_discriminate_8 FAILS in the first execution. OK in the execution
 
+* Issue with "location" added when verbalizing "where" questions:
+    - jido, where is the box?
+    - The location? What do you mean? Give me new information about the object. 
+-> "The location" should be "the box"
+
+* "I want you to go to Toto" works and generate the expected set of statements,
+but "Go to Toto" doesn't produce anything.
+
+* At the second time, inputting "I want you to go to Toto" would produce a list 
+of statements with statements from both the first and the second desire.
 ========
 Features
 ========
@@ -105,6 +115,18 @@ DOCUMENTATION
 
 
 ====================================================================================================
+
+Release 0.4
+===========
+
+* Creation of concepts: for instance "Toto is a human". 
+In 0.3, Dialog tries to resolve Toto. In cases where it doesn't find any 
+matching concepts, Dialog should offer to create a new concept, with "Toto" as
+label.
+
+* Add a special "Forget that" to leave the resolution loop where Dialog keeps on
+asking for more details.
+
 
 Release 1.0
 ===========
