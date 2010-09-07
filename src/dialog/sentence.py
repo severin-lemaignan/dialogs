@@ -908,7 +908,7 @@ def nom_gr_remerge(utterance, flag , nom_gr_struc):
     """
 
     for i in utterance: 
-        if i.data_type=='statement' or i.data_type.startswith('subsentence')) :
+        if i.data_type=='statement' or i.data_type.startswith('subsentence') :
 
             if i.sv[0].state=='affirmative':
             
