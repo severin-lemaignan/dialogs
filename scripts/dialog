@@ -13,7 +13,7 @@ def usage():
     print """The LAAS-CNRS 'Dialog' module (v.""" + DIALOG_VERSION + """).
 
 Usage:
-dialog [OPTIONS]
+dialog [OPTIONS] [speaker]
   -h, --help			Displays this message and exits
   -v, --version			Returns Dialog version
   -t, --test			Runs unit-tests
@@ -47,7 +47,7 @@ def main():
     ORO_PORT = 6969
 
     logger = logging.getLogger('dialog')
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.WARNING)
     
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version', 'orohost=', 'oroport='])
@@ -68,9 +68,9 @@ def main():
             unit_tests()
             sys.exit(0)
         elif o in ("-d", "--debug"):
-            debug_level = logging.DEBUG
+            logger.setLevel(logging.DEBUG)
         elif o in ("-s", "--silent"):
-            debug_level = logging.CRITICAL
+            logger.setLevel(logging.CRITICAL)
         elif o in ("orohost"):
             ORO_HOST = a
         elif o in ("oroport"):
@@ -79,6 +79,11 @@ def main():
             print "Unhandled option " + o
             usage()
             sys.exit(2)
+    
+    if args:
+        speaker = args[0]
+    else:
+        speaker = None
 
     log_handler = logging.StreamHandler()
     formatter = logging.Formatter("%(message)s")
@@ -91,7 +96,7 @@ def main():
     logger.info("**** DIALOG module ****")
     logger.info("v." + DIALOG_VERSION + "\n")
     
-    dialog = Dialog()
+    dialog = Dialog(speaker)
 
     dialog.start()
 

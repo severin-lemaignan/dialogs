@@ -26,17 +26,25 @@ from verbalization.verbalization import Verbalizer
 DIALOG_VERSION = "0.2"
 
 class Dialog(Thread):
+    """The main Dialog class.
     
+    The speaker ID can be specified at initializtion by passing it to the 
+    constructor.
+    """
     #This holds the history of conversation of all the instances of Dialog.
     dialog_history = []
     
-    def __init__(self):
+    def __init__(self, speaker = None):
         Thread.__init__(self)
         
         self.go_on = True
         self._logger = logging.getLogger('dialog')
         
-        self._speaker = SpeakerIdentifier()
+        if speaker:
+            self._speaker = speaker
+        else:
+            self._speaker = SpeakerIdentifier().get_current_speaker_id()
+            
         self._parser = Parser()
         self._resolver = Resolver()
         self._content_analyser = ContentAnalyser()
@@ -149,7 +157,7 @@ class Dialog(Thread):
         if speaker:
             self.current_speaker = speaker
         else:
-            self.current_speaker = self._speaker.get_current_speaker_id()
+            self.current_speaker = self._speaker
         
         #Input for Unsifficient input  Error 
         if self.waiting_for_more_info and self._last_output:
@@ -207,7 +215,7 @@ class Dialog(Thread):
         self._logger.info(colored_print("#             PARSING             #", 'green'))
         self._logger.info(colored_print("###################################", 'green'))
             
-            # Current sentence possibly created from a occured exception
+        # Current sentence possibly created from a occured exception
         if self._last_output:
             current_sentence = self._last_output['sentence']
         elif self._anaphora_input:
@@ -271,6 +279,7 @@ class Dialog(Thread):
         self.active_sentence = None
         self._logger.info(colored_print("NL sentence \"" + nl_input + "\" processed!", 'green'))
         self.in_interaction = False
+        
 
 
 def unit_tests():

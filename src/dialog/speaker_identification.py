@@ -5,7 +5,7 @@ class SpeakerIdentifier:
     """This class is responsible for determining the speaker of the last 
     utterance.
     
-    In the current version, it statically returns "ACHILE_HUMAN1".
+    In the current version, it statically returns "HUMAN".
     """
     def get_current_speaker_id(self):
-        return "ACHILE_HUMAN1"
+        return "HUMAN"
