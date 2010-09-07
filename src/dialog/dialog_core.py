@@ -92,9 +92,7 @@ class Dialog(Thread):
                   
             try:               
                 input = self._nl_input_queue.get(block = False).strip()
-                self._logger.info(colored_print("###################################", 'green'))
-                self._logger.info(colored_print("#             NL INPUT            #", 'green'))
-                self._logger.info(colored_print("###################################\n", 'green'))
+                self._logger.info(colored_print("\n-------[       NL INPUT      ]-------\n", 'green'))
                 self._logger.info(colored_print("- " + input + "\n", 'blue'))
                 self.in_interaction = True
                 self.waiting_for_more_info = False
@@ -133,7 +131,7 @@ class Dialog(Thread):
             
             try:
                 output = self._sentence_output_queue.get(block = False)
-                self._logger.debug(colored_print("> Got output to verbalize: ", 'bold'))
+                self._logger.info(colored_print("> Returning output: ", 'bold'))
                 
                 nl_output = self._verbalizer.verbalize(output)
                 sys.stdout.write(colored_print( \
@@ -211,9 +209,7 @@ class Dialog(Thread):
 
     def _process(self, nl_input):
         #Parsing
-        self._logger.info(colored_print("###################################", 'green'))
-        self._logger.info(colored_print("#             PARSING             #", 'green'))
-        self._logger.info(colored_print("###################################", 'green'))
+        self._logger.info(colored_print("\n-------[       PARSING       ]-------\n", 'green'))
             
         # Current sentence possibly created from a occured exception
         if self._last_output:
@@ -240,9 +236,7 @@ class Dialog(Thread):
             self._anaphora_input = None
             
             
-            self._logger.info(colored_print("###################################", 'green'))
-            self._logger.info(colored_print("#       RESOLVING SENTENCE        #", 'green'))
-            self._logger.info(colored_print("###################################", 'green'))
+            self._logger.info(colored_print("\n-------[ RESOLVING SENTENCE  ]-------\n", 'green'))
             
             self.active_sentence = self._resolver.references_resolution(self.active_sentence,
                                                                         self.current_speaker, 
@@ -257,27 +251,34 @@ class Dialog(Thread):
             
             self.active_sentence = self._resolver.verbal_phrases_resolution(self.active_sentence)
             
-            self._logger.debug(colored_print("###################################", 'green'))
-            self._logger.debug("Sentence after resolution:\n" + str(self.active_sentence))
+            self._logger.info(colored_print("\n[ Sentence after resolution ]", 'green'))
+            self._logger.info(str(self.active_sentence))
             
             #Content analysis
-            self._logger.info(colored_print("###################################", 'green'))
-            self._logger.info(colored_print("#        CONTENT ANALYSIS         #", 'green'))
-            self._logger.info(colored_print("###################################", 'green'))
+            self._logger.info(colored_print("\n-------[   CONTENT ANALYSIS   ]-------\n", 'green'))
+            
             self.last_stmts_set = self._content_analyser.analyse(self.active_sentence, 
                                                                     self.current_speaker)
-            self.last_sentence = (self._content_analyser.analyse_output(), 
-                                    self._verbalizer.verbalize(self._content_analyser.analyse_output()))
-            self._sentence_output_queue.put(self.last_sentence[0])
+            
+            #Verbalization
+            if self._content_analyser.analyse_output():
+                
+                self._logger.info(colored_print("\n-------[  VERBALIZATION   ]-------\n", 'green'))
+                self.last_sentence = (self._content_analyser.analyse_output(), 
+                                        self._verbalizer.verbalize(self._content_analyser.analyse_output()))
+                                        
+                self._sentence_output_queue.put(self.last_sentence[0])
+            else:
+                self._logger.info(colored_print("\nNothing to verbalize!", 'magenta'))
+                self.last_sentence = (None, "")
             
             #Dialog History
-            self._logger.debug(colored_print("\n### Sentence saved in history ###", 'green'))
+            self._logger.debug(colored_print("Sentence saved in history.", 'magenta'))
             Dialog.dialog_history.append(self.active_sentence)
             
         #Finalizing the processing
-        self._logger.info(colored_print("\n###################################\n", 'green'))
         self.active_sentence = None
-        self._logger.info(colored_print("NL sentence \"" + nl_input + "\" processed!", 'green'))
+        self._logger.info(colored_print("\n[ NL sentence \"" + nl_input + "\" processed! ]", 'green'))
         self.in_interaction = False
         
 
