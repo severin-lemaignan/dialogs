@@ -42,8 +42,7 @@ def check_results(res, expected):
             if check_triplets(r, e):
                 expected.remove(e)
     return expected == res
-    
-    
+
 
     
 def usage():

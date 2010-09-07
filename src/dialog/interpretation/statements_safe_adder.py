@@ -2,6 +2,7 @@ import logging
 logger = logging.getLogger("dialog")
 
 import random
+from dialog.helpers import colored_print
 
 from dialog.resources_manager import ResourcePool
 from dialog.dialog_exceptions import UnsufficientInputError
@@ -55,7 +56,7 @@ class StatementSafeAdder():
             
             #Replace Matching IDs
             if onto :
-                logger.info(" \t... Found ID " + onto[0] + " matching description given statements.")
+                logger.info(colored_print("... Found ID " + onto[0] + " matching description given statements.", "magenta"))
                 for s in current_s:
                     stmts.append(s.replace(id, onto[0]))
                                         
@@ -66,30 +67,20 @@ class StatementSafeAdder():
             
             
     def safe_add(self, statements):
-        for s in statements:
-            onto = True
-            logger.info("\t ADDED... >> " + s)
-            try:
-                onto = ResourcePool().ontology_server.safeAdd([s])
-            except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
+        try:
+            if not ResourcePool().ontology_server.safeAdd(statements):
+                logger.debug(colored_print("At least one statement hasn't been " + \
+                "pushed to the ontology server because it would lead to inconsistencies."))
                 
-            if not onto:
-                logger.debug("\t*********************************************")
-                logger.debug("\t* Ooopps!! INCONSISTENT STATEMENT    ***")
-                logger.debug("\t*********************************************")
-                logger.debug("\t.... >> "  + s)
-                
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
 
 
     def remove(self, statements):
-        for s in statements:            
-            logger.info("\t REMOVED... << " + s)
-            try:
-                ResourcePool().ontology_server.remove([s])
-            except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
-        logger.info("\t....................... <<<<")
+        try:
+            ResourcePool().ontology_server.remove(statements)
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            pass
         
         
         

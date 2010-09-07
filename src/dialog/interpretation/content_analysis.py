@@ -59,7 +59,7 @@ class ContentAnalyser:
         for s in stmts:
             logger.info(">> " + colored_print(s, None, 'magenta'))
         
-        logger.info("Adding New statements in Ontology")
+        logger.info("Adding statements to the ontology")
         
         self.adder._unclarified_ids = self.builder._unclarified_ids
         self.adder._statements = stmts
