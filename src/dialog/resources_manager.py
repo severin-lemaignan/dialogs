@@ -77,7 +77,10 @@ class VerbEntry:
             if role.preposition == prep:
                 return role
         return None
-            
+    
+    def is_synonym(self):
+        return not (self.name == self.ref)
+    
     def __str__(self):
         res = "verb \"" + self.name + "\""
         
@@ -114,7 +117,9 @@ class ThematicRolesDict:
         roles = [ThematicRole(desc) for desc in lines[1:-2]] #lines[0] is verb desc, line[n] is '}'
         
         verbs = [VerbEntry(verb_desc[0],verb_desc[0], roles)]
-        if verb_desc[1].startswith('('): #synonyms
+        
+        #synonyms?
+        if verb_desc[1].startswith('('):
             for syn in verb_desc[1][1:-1].split(','):
                 verbs.append(VerbEntry(syn,verb_desc[0], roles))
         
@@ -367,6 +372,12 @@ class ResourcePool:
                 self.thematic_roles.add_verb(desc)
                 desc = ""
         
+                
+        #Add action verbs to the ontology
+        if self.ontology_server:
+            stmts = [verb.capitalize() + " rdfs:subClassOf PurposefulAction" for verb in self.thematic_roles.verbs.keys() if not self.thematic_roles.verbs[verb].is_synonym()]
+            self.ontology_server.add(stmts)
+            
         """
             List of onotlogy classes that are used in the adjectives list
         """
