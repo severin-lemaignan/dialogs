@@ -48,7 +48,10 @@ class TestMovingToLondonScenario(unittest.TestCase):
                             'TAPE1 isOn TABLE',
                             'TAPE2 rdf:type VideoTape', 
                             'TAPE2 rdfs:label "Jido-E"', 
-                            'TAPE2 isOn TABLE',])
+                            'TAPE2 isOn TABLE',
+                            'VideoTape owl:equivalentClass Tape',
+                            'TAPE1 owl:differentFrom TAPE2',
+                            ])
             """           
             self.oro.addForAgent('ACHILLE',
                         ['BLUE_TRASHBIN rdf:type Trashbin',
@@ -59,7 +62,57 @@ class TestMovingToLondonScenario(unittest.TestCase):
         except AttributeError: #the ontology server is not started of doesn't know the method
             print("Couldn't connect to the ontology server. Aborting the test.")
             sys.exit(0)
-
+        
+        try:
+            self.oro.addForAgent('ACHILLE',[
+                            'JULIE rdf:type Human', 
+                            'JULIE rdfs:label Julie',
+                            'TABLE rdf:type Table',
+                            'Trashbin rdfs:subClassOf Box',
+                            'CardBoardBox rdfs:subClassOf Box',
+                            'CardBoardBox rdfs:label "cardboard box"',
+                            'TRASHBIN rdf:type Trashbin',
+                            'CARDBOARD_BOX rdf:type CardBoardBox',
+                            'CARDBOARD_BOX isOn TABLE',
+                            'TAPE1 rdf:type VideoTape', 
+                            'TAPE1 rdfs:label "The Lords of the robots"', 
+                            'TAPE1 isOn TABLE',
+                            'TAPE2 rdf:type VideoTape', 
+                            'TAPE2 rdfs:label "Jido-E"', 
+                            'TAPE2 isOn TABLE',
+                            'VideoTape owl:equivalentClass Tape',
+                            'TAPE1 owl:differentFrom TAPE2',
+                            ])
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            print("Couldn't connect to the ontology server. Aborting the test.")
+            sys.exit(0)
+        
+        
+        try:
+            self.oro.addForAgent('JULIE',[
+                            'ACHILLE rdf:type Human',
+                            'ACHILLE rdfs:label Achille',
+                            'TABLE rdf:type Table',
+                            'Trashbin rdfs:subClassOf Box',
+                            'CardBoardBox rdfs:subClassOf Box',
+                            'CardBoardBox rdfs:label "cardboard box"',
+                            'TRASHBIN rdf:type Trashbin',
+                            'CARDBOARD_BOX rdf:type CardBoardBox',
+                            'CARDBOARD_BOX isOn TABLE',
+                            'TAPE1 rdf:type VideoTape', 
+                            'TAPE1 rdfs:label "The Lords of the robots"', 
+                            'TAPE1 isOn TABLE',
+                            'TAPE2 rdf:type VideoTape', 
+                            'TAPE2 rdfs:label "Jido-E"', 
+                            'TAPE2 isOn TABLE',
+                            'VideoTape owl:equivalentClass Tape',
+                            'TAPE1 owl:differentFrom TAPE2',
+                            ])
+        except AttributeError: #the ontology server is not started of doesn't know the method
+            print("Couldn't connect to the ontology server. Aborting the test.")
+            sys.exit(0)    
+       
+            
     def runTest(self):
         """ MOVING TO LONDON SCENARIO
         
@@ -67,42 +120,50 @@ class TestMovingToLondonScenario(unittest.TestCase):
 
         print()
         self.oro.add(['TAPE1 isIn CARDBOARD_BOX'])
-                            
+        self.oro.addForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
+        
         stmt = "Jido, what is in the box?"
         answer = "This box"
         ####
-        self.assertEquals(self.dialog.test('ACHILLE', stmt, answer)[1],"The Lords of the robots")
-         
+        #raise RuntimeError("STOP")
+        self.assertEquals(self.dialog.test('ACHILLE', stmt, answer)[1][1],"The Lords of the robots.")
+        
+        self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
+        
+        
         stmt = "Ok. And where is the other tape?"
         ####
-        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1],"On the table.")
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"The other tape is on the table.")
         
         stmt = "Ok. Thanks."
-        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1],"")
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"You are welcome.")
     
         """Julie arrives, and gives two big boxes to ACHILLE. He can not take anything!"""
 
         print()
         self.oro.update(['TAPE2 isReachable false'])
                             
-        stmt = "Jido, can you take jido-e?"
+        stmt = "Jido, can you take Jido-E?"
         ####
         res = self.dialog.test('ACHILLE', stmt)
         
         expected_result = ['ACHILLE desires *',
-                  '* rdf:type Take',
+                  '* rdf:type Get',
                   '* performedBy myself',
                   '* actsOnObject TAPE2']
         
         self.assertTrue(check_results(res[0], expected_result))
+        self.assertEquals(res[1][1], "")
         
         """Julie pushes a bit the TAPE2, which is now close enough, but still 
         unreachable because of an obstacle.
         """
-         
+        self.oro.addForAgent('ACHILLE',['ACHILLE focusesOn TAPE2'])
         stmt = "And now, can you reach this tape?"
         ####
+        ### Check ['myself reaches TAPE2']
         self.assertEquals(self.dialog.test('ACHILLE', stmt)[1],"No, I can not reach it.")
+        self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn TAPE2'])
         
         """Julie pushes again the tape. It is now reachable.
         """
@@ -113,7 +174,7 @@ class TestMovingToLondonScenario(unittest.TestCase):
         res = self.dialog.test('JULIE', stmt)
         
         expected_result = ['JULIE desires *',
-                  '* rdf:type Take',
+                  '* rdf:type Get',
                   '* performedBy myself',
                   '* actsOnObject TAPE2']
         
