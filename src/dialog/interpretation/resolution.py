@@ -50,7 +50,6 @@ class Resolver:
         #Record of current sentence
         self._current_sentence = sentence
         
-        
         #Anaphoric resolution
         matcher = AnaphoraMatcher()
         
@@ -119,7 +118,6 @@ class Resolver:
                 pass
             
             if onto_focus:
-                nominal_group = Nominal_Group([],['it'],[],[],[])
                 nominal_group.id = onto_focus[0]
                 nominal_group._resolved = True
                 return nominal_group
@@ -508,12 +506,11 @@ def get_last(list, nb):
         return list
     
     #Not empty list but, NB > len(list).
-    last = len(list)
-    if nb > last:
+    if nb > len(list):
         stnts = list
-
     # last NB elements
     else:
+        last = len(list)
         stnts = list[(last - nb):last]
     
     #reverse    

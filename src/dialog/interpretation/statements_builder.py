@@ -821,11 +821,9 @@ class VerbalGroupStatementBuilder:
                 
                 
     #TODO:      
-    def process_sentence_adverb(self, advrb, verb, id):
-        for adv in advrb:
-            logger.debug("Found adverbial phrase:\"" + adv + "\"")
-            logger.debug("Found adverbial phrase:\"" + adv + "\"")
-            
+    def process_sentence_adverb(self, verbal_group):
+        verbal_group.advrb = []
+        
     
     def process_action_verb_adverb(self, advrb ,verb, id):
         """This provides a solution in order to process adverbs modifying the meaning of the action verbs.

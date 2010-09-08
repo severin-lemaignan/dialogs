@@ -32,9 +32,9 @@ class TestMovingToLondonScenario(unittest.TestCase):
         try:
             
             self.oro.add([  'ACHILLE rdf:type Human',
-                            'ACHILLE rdfs:label "Achille"',
+                            'ACHILLE rdfs:label Achille',
                             'JULIE rdf:type Human', 
-                            'JULIE rdfs:label "Julie"',
+                            'JULIE rdfs:label Julie',
                             'TABLE rdf:type Table',
                             'Trashbin rdfs:subClassOf Box',
                             'CardBoardBox rdfs:subClassOf Box',
@@ -64,8 +64,10 @@ class TestMovingToLondonScenario(unittest.TestCase):
         
         try:
             self.oro.addForAgent('ACHILLE',[
+                            'ACHILLE rdf:type Human',
+                            'ACHILLE rdfs:label Achille',
                             'JULIE rdf:type Human', 
-                            'JULIE rdfs:label "Julie"',
+                            'JULIE rdfs:label Julie',
                             'TABLE rdf:type Table',
                             'Trashbin rdfs:subClassOf Box',
                             'CardBoardBox rdfs:subClassOf Box',
@@ -79,7 +81,9 @@ class TestMovingToLondonScenario(unittest.TestCase):
                             'TAPE2 rdf:type VideoTape', 
                             'TAPE2 rdfs:label "Jido-E"', 
                             'TAPE2 isOn TABLE',
+                            
                             'VideoTape owl:equivalentClass Tape',
+                            
                             'TAPE1 owl:differentFrom TAPE2',
                             ])
         except AttributeError: #the ontology server is not started of doesn't know the method
@@ -90,7 +94,9 @@ class TestMovingToLondonScenario(unittest.TestCase):
         try:
             self.oro.addForAgent('JULIE',[
                             'ACHILLE rdf:type Human',
-                            'ACHILLE rdfs:label "Achille"',
+                            'ACHILLE rdfs:label Achille',
+                            'JULIE rdf:type Human', 
+                            'JULIE rdfs:label Julie',
                             'TABLE rdf:type Table',
                             'Trashbin rdfs:subClassOf Box',
                             'CardBoardBox rdfs:subClassOf Box',
@@ -104,7 +110,9 @@ class TestMovingToLondonScenario(unittest.TestCase):
                             'TAPE2 rdf:type VideoTape', 
                             'TAPE2 rdfs:label "Jido-E"', 
                             'TAPE2 isOn TABLE',
+                            
                             'VideoTape owl:equivalentClass Tape',
+                            
                             'TAPE1 owl:differentFrom TAPE2',
                             ])
         except AttributeError: #the ontology server is not started of doesn't know the method
@@ -124,21 +132,19 @@ class TestMovingToLondonScenario(unittest.TestCase):
         stmt = "Jido, what is in the box?"
         answer = "This box"
         ####
-        #raise RuntimeError("STOP")
         self.assertEquals(self.dialog.test('ACHILLE', stmt, answer)[1][1],"The Lords of the robots.")
-        raise RuntimeError("STOP")
-        self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
         
+        self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
         
         stmt = "Ok. And where is the other tape?"
         ####
         self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"The other tape is on the table.")
         
         stmt = "Ok. Thanks."
-        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"You are welcome.")
-    
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"You're welcome.")
+        
         """Julie arrives, and gives two big boxes to ACHILLE. He can not take anything!"""
-
+       
         print()
         self.oro.update(['TAPE2 isReachable false'])
                             
@@ -161,7 +167,7 @@ class TestMovingToLondonScenario(unittest.TestCase):
         stmt = "And now, can you reach this tape?"
         ####
         ### Check ['myself reaches TAPE2']
-        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1],"No, I can not reach it.")
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"I don't know, if I can reach this tape.")
         self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn TAPE2'])
         
         """Julie pushes again the tape. It is now reachable.
@@ -170,15 +176,17 @@ class TestMovingToLondonScenario(unittest.TestCase):
         
         stmt = "Jido, can you take it?"
         ####
-        res = self.dialog.test('JULIE', stmt)
-        
+        ### Do you mean Jido-E
+        answer = "I mean Jido-E"
+        ###
+        res = self.dialog.test('JULIE', stmt, answer)
         expected_result = ['JULIE desires *',
                   '* rdf:type Get',
                   '* performedBy myself',
                   '* actsOnObject TAPE2']
         
         self.assertTrue(check_results(res[0], expected_result))
-
+        
         """Achille puts JIDO-E in the trashbin. Jido still observes. Achille 
         leaves. Julie finds JIDO-E in the trashbin, and takes it away. ACHILLE 
         comes back to the table.
@@ -208,6 +216,29 @@ class TestMovingToLondonScenario(unittest.TestCase):
         self.dialog.stop()
         self.dialog.join()
 
+
+def check_results(res, expected):
+    def check_triplets(tr , te):
+        tr_split = tr.split()
+        te_split = te.split()
+        
+        return  (not '?' in tr_split[0]) and \
+                (not '?' in tr_split[2]) and \
+                (tr_split[0] == te_split[0] or te_split[0] == '*') and\
+                (tr_split[1] == te_split[1]) and\
+                (tr_split[2] == te_split[2] or te_split[2] == '*') 
+       
+    while res:
+        r = res.pop()
+        for e in expected:
+            if check_triplets(r, e):
+                expected.remove(e)
+    if expected:
+        logger.info("\t**** /Missing statements in result:   ")
+        logger.info("\t" + str(expected) + "\n")
+           
+    return expected == res
+    
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestMovingToLondonScenario)
     
