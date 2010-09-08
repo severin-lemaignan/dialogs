@@ -157,7 +157,7 @@ class SentenceFactory:
                 ngL = []
                 for resp in response:                        
                     ng = self.create_nominal_group_with_object(resp)
-                    ng.id = response
+                    ng.id = resp
                     ng._resolved = True
                         
                     ngL.append(ng)
@@ -168,8 +168,13 @@ class SentenceFactory:
                 
         
         #Sentence holding the answer
-        sentence = self.reverse_personal_pronoun(w_question)
-        sentence.data_type = "statement"
+        # work on a new sentence, so that changes made here do not affect the original w_question
+        sentence = Sentence("statement",
+                            w_question.aim,
+                            w_question.sn,
+                            w_question.sv)
+                            
+        sentence = self.reverse_personal_pronoun(sentence)
         
         if not query_on_field:#Default case on sentence.sn
             sentence.sn = [ng for [prep, ngL] in nominal_groupL for ng in ngL]
