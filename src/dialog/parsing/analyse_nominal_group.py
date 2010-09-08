@@ -54,7 +54,7 @@ def is_an_adj(word):
     """
     
     #It is a noun so we have to return 1
-    for j in noun_list:
+    for j in noun_list+verb_list:
         if word==j:
             return 0
     
