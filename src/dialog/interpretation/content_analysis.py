@@ -27,8 +27,9 @@ class ContentAnalyser:
     def analyse(self, sentence, current_speaker):
         """analyse sentences"""
 
-	self.builder.clear_statements()
-
+        self.builder.clear_statements()
+        self.output_sentence = []
+        
         sentence = self.pre_analyse_content(sentence)
         logger.debug("\Sentence after content pre analysis \n" + str(sentence))
         
