@@ -1879,7 +1879,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "Alright.")
     
-    """
+    
     def test_sentence14(self):   
         logger.info("\n##################### sentence with directions LEFT , RIGHT , FRONT, BACK ########################\n")
         ##sentence
