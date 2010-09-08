@@ -11,7 +11,11 @@
     recover_nom_gr_list : to return the list of the nominal groups used by anaphora processing 
     first_replacement : to perform the first replacement (before the loop)
 """
+import logging
+logger = logging.getLogger("dialog")
+
 from dialog.sentence import *
+from pyoro import OroServerError
 
 class AnaphoraMatcher:
     
@@ -80,9 +84,25 @@ def delete_unuse_nom_gr(nom_gr_list):
     i=0
     
     while i < len(nom_gr_list):
+        #if a nominal group is an agent's proper noun, we remove it 
+        onto_class = []
+        try:
+            onto_class = ResourcePool().ontology_server.getDirectClassesOf(nom_gr_list[i].id)
+        except AttributeError:
+            pass
+        except OroServerError:
+            logger.debug("Nominal group with no ID. pass")
+            pass
+        
+        if onto_class and "Agent" in onto_class.keys():
+            nom_gr_list=nom_gr_list[:i]+nom_gr_list[i+1:]
+            #When we delete => we increment i
+            i=i-1
+                
+        
         for j in pronoun_list:
             #If the nominal group is a pronoun
-            if ([j]==nom_gr_list[i].noun and nom_gr_list[i].det==[]) or find_cap_lettre(nom_gr_list[i].noun)==1:
+            if ([j]==nom_gr_list[i].noun and nom_gr_list[i].det==[]):# or find_cap_lettre(nom_gr_list[i].noun)==1:
                 nom_gr_list=nom_gr_list[:i]+nom_gr_list[i+1:]
                 #When we delete => we increment i
                 i=i-1
