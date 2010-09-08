@@ -790,7 +790,7 @@ def remerge_sentences(sentence):
         for i in adverbial_list:
             if i==sentence[len(gr)]:
                 if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
-                    sentence=gr+['that','is']+sentence[sentence.index(i):]
+                    sentence=gr+['which','is']+sentence[sentence.index(i):]
         
     return sentence    
    
@@ -949,7 +949,6 @@ def processing(sentence):
     
     sentence = prep_concat(sentence)
     sentence = upper_to_lower(sentence)
- 
     sentence = delete_empty_word(sentence)
     sentence = concat_number(sentence)
     sentence = conjunction_processing(sentence,'or')
@@ -959,22 +958,16 @@ def processing(sentence):
     sentence = other_processing(sentence)
     sentence = possesion_form(sentence)
     sentence = refine_possesion_form(sentence)
-
     sentence = and_nom_group(sentence)
     sentence = and_nom_group_comma(sentence)
-  
     sentence = move_prep(sentence)
     sentence = but(sentence)
     sentence = subsentence_comma(sentence)
-    print sentence
     sentence = remerge_sentences(sentence)
-    print sentence
     sentence = what_to_relative(sentence)
-    
     sentence = add_scd_vrb(sentence)
     sentence = day_month(sentence)
     sentence = am_pm(sentence)
-    
     sentence = double_det(sentence)
     sentence = process_and_beginning_sentence(sentence)
     sentence = interjection(sentence)

@@ -189,7 +189,7 @@ class TestParsing(unittest.TestCase):
     """
     Function to perform unit tests                                                   
     """
-    """
+    
     def test_01(self):
         print''
         print ('######################## test 1.1 ##############################')
@@ -1633,7 +1633,10 @@ class TestParsing(unittest.TestCase):
         
         rslt=[Sentence('interjection', '', 
                 [Nominal_Group([],['Jido'],[],[],[])],  
-                []),
+                [Verbal_Group([], [],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])]),
             Sentence('imperative', '', 
                 [Nominal_Group([],['Jido'],[],[],[])],  
                 [Verbal_Group(['give'], [],'present simple', 
@@ -1648,7 +1651,10 @@ class TestParsing(unittest.TestCase):
                     [], [] ,'affirmative',[])]),
             Sentence('interjection', '', 
                 [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['Patrick'],[],[],[]),Nominal_Group([],['you'],[],[],[])],  
-                []),
+                [Verbal_Group([], [],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])]),
             Sentence('imperative', '', 
                 [Nominal_Group([],['Jido'],[],[],[]),Nominal_Group([],['Patrick'],[],[],[]),Nominal_Group([],['you'],[],[],[])],  
                 [Verbal_Group(['give'], [],'present simple', 
@@ -1795,7 +1801,10 @@ class TestParsing(unittest.TestCase):
         
         rslt=[Sentence('interjection', '', 
                 [Nominal_Group([],['Jido'],[],[],[])],  
-                []),
+                [Verbal_Group([], [],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])]),
             Sentence('imperative', '', 
                 [Nominal_Group([],['Jido'],[],[],[])], 
                 [Verbal_Group(['tell'], [],'present simple', 
@@ -2616,7 +2625,10 @@ class TestParsing(unittest.TestCase):
                     [], [] ,'affirmative',[])]),
             Sentence('interjection', '', 
                 [Nominal_Group([],['Jido'],[],[],[])],  
-                []),
+                [Verbal_Group([], [],'present simple', 
+                    [], 
+                    [],
+                    [], [] ,'affirmative',[])]),
             Sentence('w_question', 'thing', 
                 [Nominal_Group([],['you'],[],[],[])], 
                 [Verbal_Group(['do'], [],'present simple', 
@@ -2637,10 +2649,10 @@ class TestParsing(unittest.TestCase):
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     
-    def test_84(self):
+    def test_85(self):
         print''
-        print ('######################## test 9.4 ##############################')
-        utterance="the bottle on the table, is blue? Jido, what do you do? throw one of them. Very good"
+        print ('######################## test 9.5 ##############################')
+        utterance="the bottle on the table, is blue."
         print "Object of this test : Add test to take off determinant and for timescale"
         print utterance
         print '#################################################################'
@@ -2649,33 +2661,21 @@ class TestParsing(unittest.TestCase):
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
         rslt=[Sentence('statement', '', 
-                [Nominal_Group(['the'],['left'],[],[Nominal_Group(['a'],['what'],[],[],[])],[])], 
-                [Verbal_Group([], [],'present simple', 
+                [Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
                     [], 
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [], 
+                        [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                        [], [] ,'affirmative',[])])])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [Nominal_Group([],[],[['blue',[]]],[],[])], 
                     [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('interjection', '', 
-                [Nominal_Group([],['Jido'],[],[],[])],  
-                []),
-            Sentence('w_question', 'thing', 
-                [Nominal_Group([],['you'],[],[],[])], 
-                [Verbal_Group(['do'], [],'present simple', 
-                    [], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('imperative', '', 
-                [Nominal_Group([],['Jido'],[],[],[])], 
-                [Verbal_Group(['throw'], [],'present simple', 
-                    [Nominal_Group(['1'],[],[],[Nominal_Group([],['them'],[],[],[])],[])], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('agree', 'good.', [], [])]
-        
-        rslt[0].sn[0].noun_cmpl[0]._quantifier="SOME"
-        rslt[3].sv[0].d_obj[0]._quantifier="DIGIT"
+                    [], [] ,'affirmative',[])])]
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
+    
+    
     
     """
     utterance="Jido, give the bottle!"
@@ -2684,7 +2684,7 @@ class TestParsing(unittest.TestCase):
     class_list= analyse_sentence.sentences_analyzer(sentence_list)
     for i in class_list:
         print (str(i))
-    
+    """
     
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)

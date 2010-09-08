@@ -420,7 +420,9 @@ def process_subsentence(phrase,vg):
                     while position>0 and gr==[]:
                         position=position-1
                         gr=analyse_nominal_group.find_sn_pos(phrase, position)
-               
+                    if gr[len(gr)-1]==w:
+                        gr=gr[:len(gr)-1]
+                
                 if (w!='where' and w!='which') or (len(gr)+position!=phrase.index(w) or (len(gr)==1 and is_cmpl_pr(gr[0])==1)):
                     #We have to remove the proposal
                     subsentence= phrase[begin_pos+1:begin_pos+end_pos]
