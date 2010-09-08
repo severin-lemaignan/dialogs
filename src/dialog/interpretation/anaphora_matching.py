@@ -24,7 +24,24 @@ class AnaphoraMatcher:
 """
 Statement of lists
 """
-pronoun_list=['you', 'I', 'we', 'he', 'she', 'me', 'it', 'he', 'they', 'yours', 'mine', 'him']
+cap_let_list = ResourcePool().capital_letters
+pronoun_list = ResourcePool().pronouns
+
+
+
+def find_cap_lettre(word):
+    """
+    Function return 1 if the word starts with upper case letter                       
+    Input=word               Output=flag(0 if no upper case or 1 if upper case)        
+    """
+    if word==[]:
+        return 0
+    
+    for i in cap_let_list:
+        if word[0][0]==i:
+            return 1
+    return 0
+
 
 
 def delete_redon_nom_group(nom_gr_list):
@@ -65,7 +82,7 @@ def delete_unuse_nom_gr(nom_gr_list):
     while i < len(nom_gr_list):
         for j in pronoun_list:
             #If the nominal group is a pronoun
-            if [j]==nom_gr_list[i].noun and nom_gr_list[i].det==[]:
+            if ([j]==nom_gr_list[i].noun and nom_gr_list[i].det==[]) or find_cap_lettre(nom_gr_list[i].noun)==1:
                 nom_gr_list=nom_gr_list[:i]+nom_gr_list[i+1:]
                 #When we delete => we increment i
                 i=i-1
@@ -101,6 +118,7 @@ def recover_nom_gr_list(sentences):
             for x in j.i_cmpl:
                 nom_gr_list=nom_gr_list+x.nominal_group
             nom_gr_list=nom_gr_list+recover_nom_gr_list(j.vrb_sub_sentence)
+    
     
     #We perform deletions
     nom_gr_list=delete_redon_nom_group(nom_gr_list)
