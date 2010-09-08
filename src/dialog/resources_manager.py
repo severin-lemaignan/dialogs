@@ -253,6 +253,7 @@ class ResourcePool:
         self.time_proposals = []
         self.action_verb_with_passive_behaviour = {}
         self.adjectives_ontology_classes = []
+        self.special_verbs = []
 
         """list of tokens that can start a sentence"""
         self.sentence_starts = []
@@ -294,6 +295,7 @@ class ResourcePool:
         self.indirect_transitive=[k[0] for k in verbs[7]]
         self.state=[k[0] for k in verbs[8]]
         self.verb_need_to=[k[0] for k in verbs[9]]
+        self.special_verbs=[k[0] for k in verbs[12]]
         
         # Action verbs such as 'see', 'hear' with no active behaviour
         self.action_verb_with_passive_behaviour = dict([(k[0],k[1]) for k in verbs[10]])
@@ -375,12 +377,12 @@ class ResourcePool:
                 self.thematic_roles.add_verb(desc)
                 desc = ""
         
-                
+        
         #Add action verbs to the ontology
         if self.ontology_server:
             stmts = [verb.capitalize() + " rdfs:subClassOf PurposefulAction" for verb in self.thematic_roles.verbs.keys() if not self.thematic_roles.verbs[verb].is_synonym()]
             self.ontology_server.add(stmts)
-            
+        
         """
             List of onotlogy classes that are used in the adjectives list
         """

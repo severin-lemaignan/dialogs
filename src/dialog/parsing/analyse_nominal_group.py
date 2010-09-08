@@ -38,6 +38,7 @@ end_s_list = ResourcePool().nouns_end_s
 adj_rules = ResourcePool().adjective_rules
 adjective_list = ResourcePool().adjectives.keys()
 noun_list = ResourcePool().special_nouns
+verb_list = ResourcePool().special_verbs
 pronoun_list = ResourcePool().pronouns
 adv_list = ResourcePool().adverbs
 proposal_list = ResourcePool().proposals

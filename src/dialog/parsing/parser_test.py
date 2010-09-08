@@ -2678,7 +2678,7 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     """
-    utterance="put the bottle!"
+    utterance="Jido, give the bottle!"
     sentence_list=preprocessing.process_sentence(utterance)
     print sentence_list
     class_list= analyse_sentence.sentences_analyzer(sentence_list)

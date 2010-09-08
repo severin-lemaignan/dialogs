@@ -192,19 +192,21 @@ def exclama_sentence(sentence):
     This function process exclamatively sentence                       
     Input=the sentence                                   Output=class Sentence   
     """
-    
-    #init
-    analysis=Sentence('interjection', '', [], [])
-    
+
     for i in frt_wd:
         if i[0]==sentence[0]:
-            #We recover the subject
-            sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 1)
-            return analysis
-        elif i[1]>0:
-            #We recover the subject
-            sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
-            return analysis
+            if i[1]=='0':
+                analysis=Sentence('interjection', '', [], [])
+                #We recover the subject
+                sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 1)
+                return analysis
+            elif i[1]=='2':
+                analysis=Sentence('exclamation', '', [], [])
+                #We recover the subject
+                sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
+                return analysis
+    
+    return other_sentence('interjection', '', sentence)
      
 
 
