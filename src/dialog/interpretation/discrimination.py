@@ -58,17 +58,14 @@ class Discrimination():
     # INPUT:
     # - agent
     # - object list
-    # - currentDesc: list of already used descriptors
+    # - ignoreDesc: list of descriptors not to be used
     # - zPartial: if 1, then partial discriminants are also returned
     # OUTPUT:
     # - discriminant: [C, discriminat] if complete, or [P, discriminant] if partial
     #   The new discriminant should be different from the ones already known or ignored
     # -----------------------------------------------------------------------------#
-    def get_discriminant(self, agent, objL, currentDesc, zPartial):
-        if agent == "myself":
-            discriminants = self.oro.discriminate(objL)
-        else:
-            discriminants = self.oro.discriminateForAgent(agent, objL)
+    def get_discriminant(self, agent, objL, ignoreDesc, zPartial):
+        discriminants = self.oro.discriminateForAgent(agent, objL)
         
         logger.debug(  '> Possible discriminants: ' +  \
                         str(colored_print(discriminants[1], 'magenta')) + \
@@ -79,9 +76,9 @@ class Discrimination():
         partial_disc = discriminants[1]
 
         if complete_disc:
-            res =  filter(lambda x: x not in currentDesc, complete_disc)
+            res =  filter(lambda x: x not in ignoreDesc, complete_disc)
         elif partial_disc and zPartial:
-            res = filter(lambda x: x not in currentDesc, partial_disc)
+            res = filter(lambda x: x not in ignoreDesc, partial_disc)
         else:
             res = None
             
@@ -113,8 +110,8 @@ class Discrimination():
         # we cannot search in all agents, but only in robot's model
 #        for agent_desc in description:
 #            # list current descriptors to not to use them anymore
-#            currentDescriptors = map(lambda x: x.split()[1], agent_desc[2])
-#            descriptor = self.get_discriminant(agent_desc[0], objL, currentDescriptors+ignoreFeatureL, partial_disc)
+#            #currentDescriptors = map(lambda x: x.split()[1], agent_desc[2])
+#            descriptor = self.get_discriminant(agent_desc[0], objL, ignoreFeatureL, partial_disc)
 #
 #            if descriptor:
 #                agent = agent_desc[0]
@@ -122,8 +119,8 @@ class Discrimination():
 
         agent = "myself"
         # list current descriptors to not to use them anymore
-        currentDescriptors = map(lambda x: x.split()[1], description[0][2])
-        descriptor = self.get_discriminant(description[0][0], objL, currentDescriptors + ignoreFeatureL, partial_disc)
+        #currentDescriptors = map(lambda x: x.split()[1], description[0][2])
+        descriptor = self.get_discriminant(agent, objL, ignoreFeatureL, partial_disc)
 
         return agent, descriptor
 
@@ -205,7 +202,7 @@ class Discrimination():
         logger.debug("> Looking in " + description[0][0] + "'s model for concepts matching " +  str(description[0][2]))
         objL = self.get_all_objects_with_desc(description)        
         logger.debug('> Got this list of concepts: ' +  str(colored_print(objL, 'blue')))
-
+        
         if not self.oro: #No ontology server
             return 'UNKNOWN_CONCEPT'
             
