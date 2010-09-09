@@ -132,9 +132,10 @@ class Dialog(Thread):
                 self._logger.info(colored_print("> Returning output: ", 'bold'))
                 
                 nl_output = self._verbalizer.verbalize(output)
-                sys.stdout.write(colored_print( \
-                            nl_output , \
-                            'red') + "\n")
+                sys.stdout.write(nl_output + "\n")
+                self._logger.info("- " + colored_print( \
+                            nl_output, \
+                            'blue') + "\n")
                             
                 # Store output 
                 Dialog.dialog_history.extend(output)
@@ -195,9 +196,11 @@ class Dialog(Thread):
                 if s.quit_loop(self._last_output or self._anaphora_input):
                     parsed_sentences.remove(s)
                     self._last_output = self._anaphora_input = None
-                    sys.stdout.write(colored_print( \
-                            "Alright. Forgotten!" , \
-                            'red') + "\n")
+                    sys.stdout.write("Alright. Forgotten!\n")
+                    self._logger.info("- " + colored_print( \
+                            "Alright. Forgotten!", \
+                            'blue') + "\n")
+                    
                     break
                     
             #Processing Unsifficient input  Error with sentences remerge
