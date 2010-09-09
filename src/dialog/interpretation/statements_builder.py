@@ -673,6 +673,10 @@ class VerbalGroupStatementBuilder:
                 #Case of action verbs wit passive behaviour
                 elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour.keys():
                     sit_id = subject_id
+                
+                # Case of know
+                elif verb.lower() == 'know':
+                    pass
                     
                 #Case 3:   
                 else:
@@ -724,6 +728,10 @@ class VerbalGroupStatementBuilder:
         
         if verb.lower() in ResourcePool().action_verb_with_passive_behaviour.keys():
             d_obj_role  = ' ' + ResourcePool().action_verb_with_passive_behaviour[verb.lower()] + ' '
+        
+        # Case of know
+        if verb.lower() == 'know':
+            d_obj_role  = ''
         
         #nominal groups
         for d_obj in d_objects:

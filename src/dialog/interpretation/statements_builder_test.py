@@ -1813,7 +1813,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         stmt = "I can take the green banana"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['myself canPerforms *',
+        expected_result = ['* performedBy myself',
                            '* rdf:type Get',
                            '* actsOnObject green_banana']
                            
@@ -1919,6 +1919,17 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         self.assertTrue(check_results(res[0], expected_result))
     
+    def test_sentence18(self):   
+        logger.info("\n##################### sentence with directions KNOW ########################\n")
+        ##sentence
+        stmt = "I know the yellow banana"
+        
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = []
+        self.assertTrue(res[0] == expected_result)
+        
+        
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()

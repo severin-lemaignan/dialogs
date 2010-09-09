@@ -693,7 +693,26 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "I know Tom.")
+    
+    def test_question14(self):
+        logger.info("\n##################### KNOW ########################\n")
         
+        stmt = "What object do you know?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        self.assertTrue(val in res[1][1] for val in ["I know", "Tom", "the yellow banana", "the green banana","the table", "and", "the shelf"])
+    
+    def test_question15(self):
+        logger.info("\n##################### KNOW ########################\n")
+        
+        stmt = "do you know the yellow banana?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "Yes. I know the yellow banana.")
 
 class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
     """Tests the processing of question by the Dialog module.

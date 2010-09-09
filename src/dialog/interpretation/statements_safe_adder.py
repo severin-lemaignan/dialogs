@@ -24,7 +24,6 @@ class StatementSafeAdder():
         
         
     def process(self):        
-        
         # Case of Statements that are to be removed
         #   Clarify then remove
         if self._statements_to_remove:
@@ -38,9 +37,14 @@ class StatementSafeAdder():
         
         
     def clarify(self, statements, ids):
-        """This attempts to identify the reference of the action described from the statements
+        """This attempts to identify a matching reference of the action described from the statements
             - statements: the field of statements used to query the ontology
             - ids: the field of references that are to be identified
+            
+            e.g: Danny doesn't drive the blue car.
+            statements = [?sit rdf:type Drive, ?sit performedBy DANNY, ?sit involves BLUE_CAR]
+            ids = [?sit]
+            Before removing the statements set from the ontology, we determine if there is a matching action to ?sit
         """
         current_s = statements
         
@@ -67,6 +71,9 @@ class StatementSafeAdder():
             
             
     def safe_add(self, statements):
+        """ This process the commitment of new statements in the ontology
+            and deals with adding inconsistency
+        """
         try:
             if not ResourcePool().ontology_server.safeAdd(statements):
                 logger.debug(colored_print("At least one statement hasn't been " + \

@@ -26,6 +26,10 @@ class QuestionHandler:
         
         self._process_on_location = False
         
+        #This field is set to True, when the verb 'to know' occurs in a sentence
+        self.process_on_knowing_concept = False
+        
+        self._default_agent = "myself"
         
     def clear_statements(self):
         self._statements = []
@@ -49,60 +53,100 @@ class QuestionHandler:
         if sentence.data_type == 'yes_no_question':
             self._statements = self._set_situation_id(self._statements)
             
-            try:
-                logger.debug("\tChecking on the ontology: check(" + str(self._statements) + ")")
-                self._answer = ResourcePool().ontology_server.check(self._statements)
-            except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
-            
+            #Processing :Do you know something?
+            if self.process_on_knowing_concept:
+                #self._statements = [agent knows object]
+                for s in self._statements:
+                    self._answer= True
+                    
+                    if "knows" in s:
+                        [agent, object] = s.split( " knows ")
+                    
+                        onto_lookup = []
+                        try:
+                            logger.debug("\tLooking up for " + object + " in " + agent +"'s model")
+                            onto_lookup = ResourcePool().ontology_server.lookupForAgent(agent, object)
+                        except AttributeError:
+                            pass
+                            
+                        self._answer = self._answer and (True if onto_lookup else False)
+                        
+                self.process_on_knowing_concept = False
+            else:
+                try:
+                    logger.debug("\tChecking on the ontology: check(" + str(self._statements) + ")")
+                    self._answer = ResourcePool().ontology_server.check(self._statements)
+                except AttributeError: #the ontology server is not started of doesn't know the method
+                    pass
+                
         #Case the question is a w_question : find the concept the concept that answers the question
         if sentence.data_type == 'w_question':
             #
             self._query_on_field = self._set_query_on_field(sentence)
-            self._statements =  self._remove_statements_with_no_unbound_tokens(self._statements)
-            self._statements = self._extend_statement_from_sentence_aim(self._statements)
+            statements_with_bound_tokens =  self._remove_statements_with_no_unbound_tokens(self._statements)
+            
+            #Agent from whith the ontology model is queried
+            agent = self._default_agent
+            
             self._answer = []
-            if self._statements:
-                answers = []
-                if self._process_on_location:
-                    roles = ['in', 'on','next+to', 'behind']
-                    #onto = []
-                    stmts = []
+            
+            #For all the possible subjects of a same question
+            for sn in self._sentence.sn:
+                statements = self._extend_statement_from_sentence_aim(statements_with_bound_tokens, sn)
+                if self.process_on_knowing_concept:
+                    #Get agent in a statement such as [agent knows object]
+                    for s in statements:
+                        if "knows" in s:
+                            [agent, object] = s.split(" knows ")
+                            break
                     
-                    for role in roles:
+                    #No need of statements such as [S knows O]
+                    [statements.remove(s) for s in statements if "knows" in s]
+                    self.process_on_knowing_concept = False
                         
-                        stmts = [s.replace('objectFoundInLocation', 'is' + role.capitalize()) for s in self._statements]
+                
+                if statements:
+                    
+                    answers = []
+                    if self._process_on_location:
+                        roles = ['in', 'on','next+to', 'behind']
+                        stmts = []
+                        
+                        for role in roles:
+                            
+                            stmts = [s.replace('objectFoundInLocation', 'is' + role.capitalize()) for s in statements]
+                            try:
+                                logger.debug("\tSearching the ontology: findForAgent("+ agent +", ?concept, " + str(stmts) + ")")
+                                answers = ResourcePool().ontology_server.findForAgent(agent,'?concept', stmts)
+                            except AttributeError: #the ontology server is not started of doesn't know the method
+                                pass
+                            
+                            if answers:
+                                self._answer.append([[role], answers])
+                        """
+                        roles = ['left', 'front', 'back']
+                        for role in roles:                        
+                            try:
+                                answers = ResourcePool().ontology_server.find('?location', stmts + ['?concept is'+ role.capitalize() +'Of ?location'])
+                            except AttributeError: #the ontology server is not started of doesn't know the method
+                                pass
+                            
+                            if answers:
+                                self._answer.append([[role], answers])
+                        """    
+                    else:
                         try:
-                            answers = ResourcePool().ontology_server.find('?concept', stmts)
+                            logger.debug("\tSearching the ontology: findForAgent("+ agent +", ?concept, " + str(statements) + ")")
+                            answers = ResourcePool().ontology_server.findForAgent(agent, '?concept', statements)
                         except AttributeError: #the ontology server is not started of doesn't know the method
                             pass
                         
                         if answers:
-                            self._answer.append([[role], answers])
-                    """
-                    roles = ['left', 'front', 'back']
-                    for role in roles:                        
-                        try:
-                            answers = ResourcePool().ontology_server.find('?location', stmts + ['?concept is'+ role.capitalize() +'Of ?location'])
-                        except AttributeError: #the ontology server is not started of doesn't know the method
-                            pass
-                        
-                        if answers:
-                            self._answer.append([[role], answers])
-                    """    
+                            self._answer.append([[], answers])
                 else:
-                    try:
-                        logger.debug("\tSearching the ontology: find(?concept, " + str(self._statements) + ")")
-                        answers = ResourcePool().ontology_server.find('?concept', self._statements)
-                    except AttributeError: #the ontology server is not started of doesn't know the method
-                        pass
-                    
-                    if answers:
-                        self._answer.append([[], answers])
-            else:
-                pass
+                    pass
 
-        
+                self._statements.extend(statements)
         return self._answer
         
     def _set_situation_id(self, statements):
@@ -129,11 +173,17 @@ class QuestionHandler:
                     stmts.append(s.replace('?event', sit_id[0]))
         else:
             stmts = statements
+        
+        # Find process on knowing concept
+        for s in statements:
+            if "knows" in s:
+                self.process_on_knowing_concept = True
+                break
             
         return stmts
     
     
-    def _extend_statement_from_sentence_aim(self, current_statements):
+    def _extend_statement_from_sentence_aim(self, current_statements, sn):
         """This extends the statements states so that the query answer matches the w_question aim"""
         #Case: the statement is complete from statement builder e.g: what is in the box? =>[?concept isIn ?id_box, ?id_box rdf:type Box]
         for s in current_statements:
@@ -142,28 +192,31 @@ class QuestionHandler:
         #case: the statement is partially build from statement builder
         
         stmts = []
-                    
-        for sn in self._sentence.sn:
-            for sv in self._sentence.sv:
-                for verb in sv.vrb_main:
-                    role, concept_descriptor = self.get_role_from_sentence_aim(self._query_on_field, verb)
-                    
-                    #Case of looking for the object in a location
-                    if role == 'objectFoundInLocation':
-                        self._process_on_location = True
-                    
-                    # Case of state verbs
-                    if verb.lower() in ResourcePool().state:
-                        stmts.append(sn.id + ' '+ role + ' ?concept')
-                    # Case of action verb with a passive behaviour
-                    elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
-                        stmts.append(sn.id + ' '+ verb.lower() + 's' + ' ?concept')
-                    
-                    # case of action verbs
-                    else:
-                        stmts.append('?event ' + role + ' ?concept')
-                    if concept_descriptor:
-                        stmts.append(concept_descriptor)
+        for sv in self._sentence.sv:
+            for verb in sv.vrb_main:
+                role, concept_descriptor = self.get_role_from_sentence_aim(self._query_on_field, verb)
+                
+                #Case of looking for the object in a location
+                if role == 'objectFoundInLocation':
+                    self._process_on_location = True
+                
+                # Case of state verbs
+                if verb.lower() in ResourcePool().state:
+                    stmts.append(sn.id + ' '+ role + ' ?concept')
+                # Case of action verb with a passive behaviour
+                elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
+                    stmts.append(sn.id + ' '+ verb.lower() + 's' + ' ?concept')
+                
+                # Case of know
+                elif verb.lower() == 'know':
+                    self.process_on_knowing_concept = True
+                    stmts.append(sn.id + ' knows ?concept')
+                
+                # case of action verbs
+                else:
+                    stmts.append('?event ' + role + ' ?concept')
+                if concept_descriptor:
+                    stmts.append(concept_descriptor)
         
         return current_statements + stmts
     
