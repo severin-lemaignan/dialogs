@@ -91,8 +91,13 @@ class QuestionHandler:
             self._answer = []
             
             #For all the possible subjects of a same question
-            for sn in self._sentence.sn:
-                statements = self._extend_statement_from_sentence_aim(statements_with_bound_tokens, sn)
+            if not self._sentence.sn:
+                statements_to_query = [self._extend_statement_from_sentence_aim(statements_with_bound_tokens)]
+            
+            else:
+                statements_to_query = [self._extend_statement_from_sentence_aim(statements_with_bound_tokens, sn) for sn in self._sentence.sn]
+            
+            for statements in statements_to_query:
                 if self.process_on_knowing_concept:
                     #Get agent in a statement such as [agent knows object]
                     for s in statements:
@@ -183,7 +188,7 @@ class QuestionHandler:
         return stmts
     
     
-    def _extend_statement_from_sentence_aim(self, current_statements, sn):
+    def _extend_statement_from_sentence_aim(self, current_statements, sn = None):
         """This extends the statements states so that the query answer matches the w_question aim"""
         #Case: the statement is complete from statement builder e.g: what is in the box? =>[?concept isIn ?id_box, ?id_box rdf:type Box]
         for s in current_statements:
@@ -192,32 +197,33 @@ class QuestionHandler:
         #case: the statement is partially build from statement builder
         
         stmts = []
-        for sv in self._sentence.sv:
-            for verb in sv.vrb_main:
-                role, concept_descriptor = self.get_role_from_sentence_aim(self._query_on_field, verb)
-                
-                #Case of looking for the object in a location
-                if role == 'objectFoundInLocation':
-                    self._process_on_location = True
-                
-                # Case of state verbs
-                if verb.lower() in ResourcePool().state:
-                    stmts.append(sn.id + ' '+ role + ' ?concept')
-                # Case of action verb with a passive behaviour
-                elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
-                    stmts.append(sn.id + ' '+ verb.lower() + 's' + ' ?concept')
-                
-                # Case of know
-                elif verb.lower() == 'know':
-                    self.process_on_knowing_concept = True
-                    stmts.append(sn.id + ' knows ?concept')
-                
-                # case of action verbs
-                else:
-                    stmts.append('?event ' + role + ' ?concept')
-                if concept_descriptor:
-                    stmts.append(concept_descriptor)
-        
+        if sn:
+            for sv in self._sentence.sv:
+                for verb in sv.vrb_main:
+                    role, concept_descriptor = self.get_role_from_sentence_aim(self._query_on_field, verb)
+                    
+                    #Case of looking for the object in a location
+                    if role == 'objectFoundInLocation':
+                        self._process_on_location = True
+                    
+                    # Case of state verbs
+                    if verb.lower() in ResourcePool().state:
+                        stmts.append(sn.id + ' '+ role + ' ?concept')
+                    # Case of action verb with a passive behaviour
+                    elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
+                        stmts.append(sn.id + ' '+ verb.lower() + 's' + ' ?concept')
+                    
+                    # Case of know
+                    elif verb.lower() == 'know':
+                        self.process_on_knowing_concept = True
+                        stmts.append(sn.id + ' knows ?concept')
+                    
+                    # case of action verbs
+                    else:
+                        stmts.append('?event ' + role + ' ?concept')
+                    if concept_descriptor:
+                        stmts.append(concept_descriptor)
+            
         return current_statements + stmts
     
     
