@@ -107,6 +107,7 @@ class Dialog(Thread):
                     
                     #Output towards human
                     sys.stdout.write(self._verbalizer.verbalize(uie.value['question']) + "\n")
+                    sys.stdout.flush()
                     self._logger.info(colored_print("- " +  \
                             self._verbalizer.verbalize(uie.value['question']), \
                             'blue') + "\n")
@@ -120,6 +121,7 @@ class Dialog(Thread):
                     
                     #Output towards human
                     sys.stdout.write(self._verbalizer.verbalize(uae.value['question']) + "\n")
+                    sys.stdout.flush()
                     self._logger.info("- " + colored_print( \
                             self._verbalizer.verbalize(uae.value['question']), \
                             'blue') + "\n")
@@ -133,6 +135,7 @@ class Dialog(Thread):
                 
                 nl_output = self._verbalizer.verbalize(output)
                 sys.stdout.write(nl_output + "\n")
+                sys.stdout.flush()
                 self._logger.info("- " + colored_print( \
                             nl_output, \
                             'blue') + "\n")
@@ -197,6 +200,7 @@ class Dialog(Thread):
                     parsed_sentences.remove(s)
                     self._last_output = self._anaphora_input = None
                     sys.stdout.write("Alright. Forgotten!\n")
+                    sys.stdout.flush()
                     self._logger.info("- " + colored_print( \
                             "Alright. Forgotten!", \
                             'blue') + "\n")
