@@ -850,8 +850,18 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
                   '* actsOnObject TAPE2']
         
         self.assertTrue(check_results(res[0], expected_result))
-
+    
+    def test_8(self):
+        ###
+        stmt = "can you take the tape?"
+        ####
+        answer = "forget it"
+        ###
+        res = self.dialog.test('ACHILLE', stmt, answer)
         
+        expected_result = []
+        
+        self.assertTrue(check_results(res[0], expected_result))
     
 def dump_resolved(sentence, current_speaker, current_listener, resolver):
     sentence = resolver.references_resolution(sentence,

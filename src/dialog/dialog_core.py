@@ -95,7 +95,6 @@ class Dialog(Thread):
                 self._logger.info(colored_print("\n-------[       NL INPUT      ]-------\n", 'green'))
                 self._logger.info(colored_print("- " + input + "\n", 'blue'))
                 self.in_interaction = True
-                self.waiting_for_more_info = False
                 
                 try:
                     self._process(input)
@@ -124,7 +123,6 @@ class Dialog(Thread):
                     self._logger.info("- " + colored_print( \
                             self._verbalizer.verbalize(uae.value['question']), \
                             'blue') + "\n")
-                            
                             
             except Empty:
                 pass
@@ -157,28 +155,6 @@ class Dialog(Thread):
         else:
             self.current_speaker = self._speaker
         
-        #Input for Unsifficient input  Error 
-        if self.waiting_for_more_info and self._last_output:
-            self._logger.info(colored_print("New content provided by human! merging it with the previous sentence.", 'magenta'))
-            
-            self._last_output['object_with_more_info'] = nom_gr_remerge(self._parser.parse(input, None),
-                                                                self._last_output['status'],
-                                                                self._last_output['object'])
-            #No more info needed
-            self.waiting_for_more_info = False
-        
-        #Input for Unidentified Anaphora Error
-        if self.waiting_for_more_info and self._anaphora_input:
-            self._logger.info(colored_print("Ok. Got a confirmation. Processing it.", 'magenta'))
-            
-            self._anaphora_input['object_with_more_info'] = replacement(self._parser.parse(input, None),
-                                                                                   self._anaphora_input['object'] , 
-                                                                                   self._anaphora_input['objects_list'][1:],
-                                                                                   self._anaphora_input['object_to_confirm'])
-            #No more info needed
-            self.waiting_for_more_info = False
-        
-        
         self._nl_input_queue.put(input)    
         
         
@@ -210,16 +186,49 @@ class Dialog(Thread):
     def _process(self, nl_input):
         #Parsing
         self._logger.info(colored_print("\n-------[       PARSING       ]-------\n", 'green'))
+        parsed_sentences = self._parser.parse(nl_input, None)
+        
+        #Unsifient input or unidentified anaphora Error processing
+        if self.waiting_for_more_info:
+            self._logger.info(colored_print("Waiting for more information activated\n", 'magenta'))
+            for s in parsed_sentences:
+                if s.quit_loop(self._last_output or self._anaphora_input):
+                    parsed_sentences.remove(s)
+                    self._last_output = self._anaphora_input = None
+                    sys.stdout.write(colored_print( \
+                            "Alright. Forgotten!" , \
+                            'red') + "\n")
+                    break
+                    
+            #Processing Unsifficient input  Error with sentences remerge
+            if self._last_output:
+                self._logger.info(colored_print("New content provided by human! merging it with the previous sentence.", 'magenta'))
+                
+                self._last_output['object_with_more_info'] = nom_gr_remerge(parsed_sentences,
+                                                                    self._last_output['status'],
+                                                                    self._last_output['object'])
+                #current_sentence that is to replace if it is to answer unsificient input
+                parsed_sentences = [self._last_output['sentence']]
             
-        # Current sentence possibly created from a occured exception
-        if self._last_output:
-            current_sentence = self._last_output['sentence']
-        elif self._anaphora_input:
-            current_sentence = self._anaphora_input['sentence']
-        else:
-            current_sentence = None
-               
-        [self.sentences.append(stnts) for stnts in self._parser.parse(nl_input, current_sentence)]
+            #Processing Unidentified Anaphora Error with sentences replacement
+            if self._anaphora_input:
+                self._logger.info(colored_print("Ok. Got a confirmation. Processing it.", 'magenta'))
+                
+                self._anaphora_input['object_with_more_info'] = replacement(parsed_sentences,
+                                                                       self._anaphora_input['object'] , 
+                                                                       self._anaphora_input['objects_list'][1:],
+                                                                       self._anaphora_input['object_to_confirm'])
+                #current_sentence that is to replace if it is to answer unidentified anaphora
+                parsed_sentences = [self._anaphora_input['sentence']]
+                
+            #No more info needed
+            self.waiting_for_more_info = False
+            
+        #end of Unsifient input or unidentified anaphora Error processing
+        
+        
+        #Sentences Queue()
+        [self.sentences.append(stnts) for stnts in parsed_sentences]
         
         for s in range(len(self.sentences)): #sentences is a deque. Cannot do a simple [:] to iterate over a copy
             self.active_sentence = self.sentences.popleft()

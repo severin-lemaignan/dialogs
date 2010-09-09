@@ -37,7 +37,13 @@ class StatementBuilder:
         #This field holds concepts for class grounding
         self.lear_more_concept = []
         
-
+    
+    def clear_all(self):
+        self._statements = []
+        self._statements_to_remove = []
+        self._unclarified_ids = []
+        self.lear_more_concept = []
+        
     def clear_statements(self):
         self._statements = []
     

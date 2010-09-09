@@ -487,7 +487,28 @@ class Sentence:
                 self.aim,
                 map(lambda x: x.flatten(), self.sn),
                 map(lambda x: x.flatten(), self.sv)]
-
+    
+    def quit_loop(self, force_quit):
+        #Forget it
+        if force_quit and self.data_type == "imperative" \
+            and "forget" in [verb for sv in self.sv for verb in sv.vrb_main]\
+            and "affirmative" in [sv.state for sv in self.sv]:
+            return True
+            
+        #[it] doesn't matter'
+        if force_quit \
+            and "matter" in [verb for sv in self.sv for verb in sv.vrb_main]\
+            and "negative" in [sv.state for sv in self.sv]:
+            return True
+            
+        return False
+    
+    def learn_it(self):
+        if  self.data_type == "imperative"\
+            and "learn" in [verb for sv in self.sv for verb in sv.vrb_main]\
+            and "affirmative" in [sv.state for sv in self.sv]:
+            return True
+        return False
 
 class Nominal_Group:
     """
