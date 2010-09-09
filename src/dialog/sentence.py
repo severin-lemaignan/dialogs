@@ -144,6 +144,17 @@ class SentenceFactory:
         #Nominal group holding the answer
         nominal_groupL = []
         
+        #Return. I am sorry. I don't know
+        if not w_answer:
+            return[Sentence("statement","",
+                            [Nominal_Group([], ['I'], [], [], [])],
+                            [Verbal_Group(['be'],[], "present simple", 
+                                [Nominal_Group([], [], [['sorry',[]]], [], [])],[],[],[],"affirmative", [])]),
+                    Sentence("statement","",
+                            [Nominal_Group([], ['I'], [], [], [])],
+                            [Verbal_Group(['have'],[], "present simple", 
+                                [Nominal_Group(['no'], ['answer'], [], [], [])], [], [],[],"affirmative", [])])]
+                    
         
         # Case of adjectives only
         if w_question.aim in ResourcePool().adjectives_ontology_classes:
@@ -185,16 +196,6 @@ class SentenceFactory:
             
             
         elif query_on_field == 'QUERY_ON_INDIRECT_OBJ':
-            """
-            #preposition
-            if w_question.aim == 'place':
-                sentence.sv[0].i_cmpl = Indirect_ComplementL
-                
-            elif w_question.aim == 'people':
-                prep = ['to']
-            else:
-                prep = []
-            """    
             sentence.sv[0].i_cmpl = [Indirect_Complement(ng[0], ng[1]) for ng in nominal_groupL]
         
         sentence.aim = ""
