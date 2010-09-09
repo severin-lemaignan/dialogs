@@ -4,7 +4,7 @@
 
 import logging
 
-from helpers import colored_print #to colorize the sentence output
+from helpers import colored_print, level_marker
 from resources_manager import ResourcePool
 
 """
@@ -468,17 +468,17 @@ class Sentence:
 
     
     def __str__(self):
-        res =   colored_print(">> " + self.data_type.upper(), 'bold')
+        res = level_marker() + colored_print(">> " + self.data_type.upper(), 'bold')
         if self.aim:
             res += " (aim: " + self.aim + ')'
         res += '\n'
         
         if self.sn:
             for s in self.sn:
-                res += colored_print('nominal grp', 'bold') + ':\n\t' + str(s).replace("\n", "\n\t") + "\n"
+                res += level_marker() + colored_print('nominal grp', 'bold') + ':\n\t' + str(s).replace("\n", "\n\t") +  level_marker() + "\n"
         if self.sv:
             for s in self.sv:
-                res += colored_print('verbal grp', 'bold') + ':\n\t' + str(s).replace("\n", "\n\t") + "\n"
+                res += level_marker() + colored_print('verbal grp', 'bold') + ':\n\t' + str(s).replace("\n", "\n\t") + level_marker() + "\n"
         
         #res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
         return res
@@ -548,7 +548,7 @@ class Nominal_Group:
 
     def __str__(self):
         
-        res = ''
+        res = level_marker()
         
         if self._conjunction != 'AND':
             res += colored_print('[' + self._conjunction + "] ", 'bold')
@@ -557,7 +557,7 @@ class Nominal_Group:
             res += colored_print('[' + self._quantifier + "] ", 'bold')
             
         if self._resolved:
-            res += colored_print(self.id, 'white', 'blue') + '\n' + colored_print('>resolved<', 'green')
+            res += colored_print(self.id, 'white', 'blue') + '\n' + level_marker() + colored_print('>resolved<', 'green')
             
         else:
             
@@ -576,11 +576,11 @@ class Nominal_Group:
             
             if self.noun_cmpl:
                 for s in self.noun_cmpl:
-                    res += '[OF] \n\t' + str(s).replace("\n", "\n\t") + "\n"
+                    res += level_marker() + '[OF] \n\t' + str(s).replace("\n", "\n\t") + "\n"
             
             if self.relative:
                 for rel in self.relative:
-                    res += 'relative:\n\t' + str(rel).replace("\n", "\n\t") + "\n"
+                    res += level_marker() + 'relative:\n\t' + str(rel).replace("\n", "\n\t") + "\n"
         
         return res
     
@@ -629,7 +629,7 @@ class Indirect_Complement:
         
         if self.nominal_group:
             for s in self.nominal_group:
-                res += '\n\t' + str(s).replace("\n", "\n\t") + "\n"
+                res += level_marker() + '\n\t' + str(s).replace("\n", "\n\t") + "\n"
         
         return res
 
@@ -691,29 +691,29 @@ class Verbal_Group:
                 reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
     
     def __str__(self):
-        res =   colored_print(self.vrb_main, 'magenta') + " (" + str(self.vrb_tense) + ")\n"
+        res =   level_marker() + colored_print(self.vrb_main, 'magenta') + " (" + str(self.vrb_tense) + ")\n"
         if self.advrb:
-            res += 'adverb: ' + colored_print(self.advrb, 'yellow') + "\n"
+            res += level_marker() + 'adverb: ' + colored_print(self.advrb, 'yellow') + "\n"
         if self.vrb_adv:
-            res += 'vrb adv: ' + colored_print(self.vrb_adv, 'green') + "\n"
+            res += level_marker() + 'vrb adv: ' + colored_print(self.vrb_adv, 'green') + "\n"
                 
         if self.d_obj:
-            res += 'direct objects:\n'
+            res += level_marker() + 'direct objects:\n'
             for cmpl in self.d_obj:
                 res += '\t' + str(cmpl).replace("\n", "\n\t") + "\n"
         
         if self.i_cmpl:
-            res += 'indirect objects:\n'
+            res += level_marker() + 'indirect objects:\n'
             for cmpl in self.i_cmpl:
                 res += '\t' + str(cmpl).replace("\n", "\n\t") + "\n"
         
         if self.vrb_sub_sentence:
             for vrb_sub_s in self.vrb_sub_sentence:
-                res += 'vrb_sub_sentence:\n\t' + str(vrb_sub_s).replace("\n", "\n\t") + "\n"
+                res += level_marker() + 'vrb_sub_sentence:\n\t' + str(vrb_sub_s).replace("\n", "\n\t") + "\n"
         
         if self.sv_sec:
             for vrb_sec_s in self.sv_sec:
-                res += 'secondary verbal grp:\n\t' + str(vrb_sec_s).replace("\n", "\n\t") + "\n"
+                res += level_marker() + 'secondary verbal grp:\n\t' + str(vrb_sec_s).replace("\n", "\n\t") + "\n"
         
         res += colored_print(">resolved<", 'green') if self.resolved() else colored_print(">not resolved<", 'red')
         

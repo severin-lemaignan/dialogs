@@ -44,7 +44,12 @@ def colored_print(text, fg_colour = None, bg_colour = None):
         return format_colour('$' + fg_colour.upper() + text + "$RESET", True)
     
     return format_colour('$BG-' + bg_colour.upper() + '$' + fg_colour.upper() + text + "$RESET", True)
-    
+
+def level_marker(level=1, symbol='|', color='red'):
+    """Insert 'symbol' at the beginning of the current line
+    """
+    return '\033[s\033[' + str(level) + 'G' + colored_print(symbol, color) + "\033[u\033[" + str(len(symbol) + 1) + "C"
+
 def format_colour(message, use_color = True):
     
     if not use_color:

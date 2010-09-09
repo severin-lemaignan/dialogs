@@ -31,7 +31,6 @@ class ContentAnalyser:
         self.output_sentence = []
         
         sentence = self.pre_analyse_content(sentence)
-        logger.debug("\Sentence after content pre analysis \n" + str(sentence))
         
         if sentence.data_type == 'interjection':
             pass
@@ -46,11 +45,11 @@ class ContentAnalyser:
             self.output_sentence.extend(self.sfactory.create_agree_reply())
             
         if sentence.data_type in ['imperative', 'statement']:
-            logger.debug("Processing the content of " +  ("an imperative " if sentence.data_type == 'imperative' else "a statement ") + "data_type sentence")
+            logger.debug(colored_print("Processing the content of " +  ("an imperative sentence" if sentence.data_type == 'imperative' else "a statement "), "magenta"))
             return self.process_sentence(sentence, current_speaker)
         
         if sentence.data_type in ['w_question', 'yes_no_question']:
-            logger.debug("Processing the content of " +  ("a w_question " if sentence.data_type == 'w_question' else "a yes_no_question ") + "data_type sentence")
+            logger.debug(colored_print("Processing the content of " +  ("a W question " if sentence.data_type == 'w_question' else "a YES/NO question"), "magenta"))
             return self.process_question(sentence, current_speaker)
         
         
@@ -60,16 +59,19 @@ class ContentAnalyser:
 
         stmts = self.builder.process_sentence(sentence)
         
-        logger.info("Generated statements: ")
-        for s in stmts:
-            logger.info(">> " + colored_print(s, None, 'magenta'))
-        
-        logger.info("Adding statements to the ontology")
-        
-        self.adder._unclarified_ids = self.builder._unclarified_ids
-        self.adder._statements = stmts
-        self.adder._statements_to_remove = self.builder._statements_to_remove
-        stmts = self.adder.process()
+        if stmts:
+            logger.info("Generated statements: ")
+            for s in stmts:
+                logger.info(">> " + colored_print(s, None, 'magenta'))
+            
+            self.adder._unclarified_ids = self.builder._unclarified_ids
+            self.adder._statements = stmts
+            self.adder._statements_to_remove = self.builder._statements_to_remove
+            stmts = self.adder.process()
+            
+            logger.debug("...added to the ontology")
+        else:
+            logger.info("No statements produced")
         
         # Class grounding
         if self.builder.lear_more_concept:
@@ -112,11 +114,18 @@ class ContentAnalyser:
             for sv in sentence.sv:
                 for verb in sv.vrb_main:
                     if 'can+' in verb:
+                        
                         vrb_main = verb.lstrip('can+')
                         
                         if not vrb_main in ResourcePool().state + ResourcePool().action_verb_with_passive_behaviour.keys() + ResourcePool().goal_verbs:
+                            
+                            logger.debug(colored_print("Interpreting the <can + action verb> sequence as a desire.\nApplying transformation:", "magenta"))
+                        
                             sv.vrb_main[sv.vrb_main.index(verb)] = verb.lstrip('can+')
                             sentence.data_type = 'imperative'
+                            
+                            logger.debug(str(sentence))
+                            
                             return sentence
                     
             
