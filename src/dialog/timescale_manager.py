@@ -16,6 +16,8 @@
     timescale_sentence : to  perform interpretation of time of sentence
 """
 from dialog.resources_manager import ResourcePool
+import time
+
 
 
 """
@@ -25,6 +27,8 @@ day_list = ResourcePool().days_list
 month_list = ResourcePool().months_list
 adverb = ResourcePool().time_adverbs
 preposal = ResourcePool().time_proposals
+day_list = ResourcePool().days_list
+
 
 
 def refine_val(x,y,time,value):
@@ -146,7 +150,7 @@ def day_period(time, period):
         action_time={'time_begin':time_beg, 'time_end':time_end}
     elif period==4:
         time_beg={'year':time['year'],'month':time['month'],'day':time['day'],'hour':'23','minute':'0','second':'0'}
-        time_end={'year':time['year'],'month':time['month'],'day':time['day'],'hour':'3','minute':'59','second':'59'}
+        time_end={'year':time['year'],'month':time['month'],'day':str(int(time['day'])+1),'hour':'3','minute':'59','second':'59'}
         action_time={'time_begin':time_beg, 'time_end':time_end}
     elif period==0:
         time_beg={'year':time['year'],'month':time['month'],'day':time['day'],'hour':time['hour'],'minute':time['minute'],'second':time['second']}
@@ -208,53 +212,70 @@ def timescale_i_cmpl(indirect_cmpl, action_time):
     This function perform interpretation of an indirect complement
     Input=indirect complement and action time       Output=the action time   
     """
-    if action_time['action_period']!=None:
-        aux=action_time['action_period']['time_begin']
                 
-    for i in preposal:
-        
-        if i[2]!=0 and i[0]==indirect_cmpl.prep[0] and i[0]!='from' and i[0]!='to':
-            
-            #We read all nominal groups in the indirect complement 
-            for j in indirect_cmpl.nominal_group:
+    #We read all nominal groups in the indirect complement 
+    for j in indirect_cmpl.nominal_group:
+        for i in preposal:
+            if i[2]!=0 and [i[0]]==indirect_cmpl.prep and i[0]!='from' and i[0]!='to':
                 
-                #If we have number for determinant
-                if j._quantifier=='DIGIT':
+                #Here we have an explicit noun
+                if j.noun==['year'] or j.noun==['month'] or j.noun==['day'] or j.noun==['hour'] or j.noun==['minute'] or j.noun==['second']:
                     
-                    #Here we have an explicit noun
-                    if j.noun==['year'] or j.noun==['month'] or j.noun==['day'] or j.noun==['hour'] or j.noun==['minute'] or j.noun==['second']:
-                        if action_time['effective_time']==None:
-                            action_time['effective_time']=str(int(action_time['action_period']['time_begin'][j.noun[0]])+int(j.det[0])*int(i[2]))
-                        else:
-                            action_time['effective_time']=str(int(action_time['effective_time'][j.noun[0]])+int(j.det[0])*int(i[2]))
+                    #If we have number for determinant
+                    if j.det==['a'] or j.det==['an'] or j.det==['the']:
+                        j.det=['1']
                     
-                    #We have an accurate time
-                    elif j.noun==["o'clock"] or j.noun==['pm'] or j.noun==['am']:
-                        #We will change pm on something like am
-                        if j.noun==['pm']:
-                            j.det=str(int(j.det)+12)
-                        if action_time['effective_time']==None:
-                            action_time['effective_time']={'year':aux['year'],'month':aux['month'],'day':aux['day'],
-                                                           'hour':aux['hour'],'minute':aux['minute'],'second':aux['second']}
+                    #This copy is effective if we have an effective time, why we have a flag
+                    if action_time['effective_time']==None:
+                        action_time['effective_time']=action_time['action_period']['time_begin'].copy()
+                                    
+                    if j.adj==[['next',[]]]:
+                        action_time['effective_time'][j.noun[0]]=str(int(action_time['effective_time'][j.noun[0]])+int(j.det[0]))
+                        refine_clock(action_time['effective_time'])
+                    elif j.adj==[['last',[]]]:
+                        action_time['effective_time'][j.noun[0]]=str(int(action_time['effective_time'][j.noun[0]])-int(j.det[0]))
+                        refine_clock(action_time['effective_time'])
+                    else:    
+                        action_time['effective_time'][j.noun[0]]=str(int(action_time['effective_time'][j.noun[0]])+int(j.det[0])*int(i[2]))
+                        refine_clock(action_time['effective_time'])
+                        
+                #We have an accurate time
+                elif j.noun==["o'clock"] or j.noun==['pm'] or j.noun==['am']:
+                    #This copy is effective if we have an effective time, why we have a flag
+                    if action_time['effective_time']==None:
+                        action_time['effective_time']=action_time['action_period']['time_begin'].copy()
+                        
+                    #We will change pm on something like am
+                    if j.noun==['pm']:
+                        action_time['effective_time']['hour']=str(int(j.det[0])+12)
+                    else:
                         action_time['effective_time']['hour']=str(int(j.det[0]))
                     
-                #Here We have the 3 periods of the day    
-                elif j.noun==['morning']:
-                    if action_time['effective_time']==None:
-                        action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                    else:
-                        action_time['action_period']=day_period(action_time['effective_time'], 1)
-                elif j.noun==['afternoon']:
-                    if action_time['effective_time']==None:
-                        action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                    else:
-                        action_time['action_period']=day_period(action_time['effective_time'], 2)
-                elif j.noun==['evening']:
-                    if action_time['effective_time']==None:
-                        action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
-                    else:
-                        action_time['action_period']=day_period(action_time['effective_time'], 3)      
-
+            #Here We have the 3 periods of the day    
+            if j.noun==['morning']:
+                action_time['action_period']=day_period(action_time['action_period']['time_begin'], 1)
+            elif j.noun==['afternoon']:
+                action_time['action_period']=day_period(action_time['action_period']['time_begin'], 2)
+            elif j.noun==['evening']:
+                action_time['action_period']=day_period(action_time['action_period']['time_begin'], 3)      
+            
+        for k in day_list:
+            if k==j.noun:
+                today=day_list[time.localtime()[6]]
+                day=day_list.index(k)-day_list.index(today)
+                
+                if day<=0:
+                    day=day+7
+                
+                if action_time['action_period']==None:
+                    action_time['action_period']={'time_begin':action_time['effective_time'].copy(),
+                                                  'time_end':action_time['effective_time'].copy()}
+             
+                action_time['action_period']['time_begin']['day']=str(int(action_time['action_period']['time_begin']['day'])+day)
+                action_time['action_period']['time_end']['day']=str(int(action_time['action_period']['time_end']['day'])+day)
+                break
+                                                                  
+                    
     #We return the action time       
     return action_time
 
@@ -283,10 +304,11 @@ def timescale_sentence(indirect_cmpl,adv_list,time):
     if action_time['action_period']==None:
         action_time['effective_time']=time
     elif action_time['action_period']['time_begin']==action_time['action_period']['time_end']:
-        action_time['effective_time']=action_time['action_period']['time_begin']
+        action_time['effective_time']=action_time['action_period']['time_begin'].copy()
         action_time['action_period']=None
     
     action_time=indirect_cmpl_interpretation(action_time,indirect_cmpl)
+    
     return action_time
 
 

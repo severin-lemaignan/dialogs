@@ -36,7 +36,7 @@ class TestTimescale(unittest.TestCase):
                     [], [] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "I will play a guitar a piano and a violon."
         
         print ''
         print 'The time of speaking sentence is : '
@@ -58,7 +58,7 @@ class TestTimescale(unittest.TestCase):
     
         self.assertEquals(time,rslt)
         print ''
-        
+     
     def test_02(self):
         print ''
         print ('######################## test 1.2 ##############################')
@@ -74,7 +74,7 @@ class TestTimescale(unittest.TestCase):
                     [], [] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "the bottle is on the table"
         
         print ''
         print 'The time of speaking sentence is : '
@@ -96,7 +96,7 @@ class TestTimescale(unittest.TestCase):
     
         self.assertEquals(time,rslt)
         print ''
-        
+    
     def test_03(self):
         print ''
         print ('######################## test 1.3 ##############################')
@@ -112,7 +112,7 @@ class TestTimescale(unittest.TestCase):
                     [], [] ,'negative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "you are not preparing the car and the moto of my father at the same time"
         
         print ''
         print 'The time of speaking sentence is : '
@@ -134,8 +134,7 @@ class TestTimescale(unittest.TestCase):
     
         self.assertEquals(time,rslt)
         print ''
-        
-        
+    
     def test_04(self):
         print ''
         print ('######################## test 1.4 ##############################')
@@ -151,7 +150,7 @@ class TestTimescale(unittest.TestCase):
                     [], ['here'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "what is the weather like here in the winter?"
         
         print ''
         print 'The time of speaking sentence is : '
@@ -173,7 +172,7 @@ class TestTimescale(unittest.TestCase):
     
         self.assertEquals(time,rslt)
         print ''
-
+    
     def test_05(self):
         print ''
         print ('######################## test 1.5 ##############################')
@@ -189,7 +188,7 @@ class TestTimescale(unittest.TestCase):
                     [], ['now'] ,'negative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "is not he doing his homework and his game now"
         
         print ''
         print 'The time of speaking sentence is : '
@@ -211,7 +210,7 @@ class TestTimescale(unittest.TestCase):
     
         self.assertEquals(time,rslt)
         print ''
-        
+    
     def test_06(self):
         print ''
         print ('######################## test 1.6 ##############################')
@@ -227,7 +226,7 @@ class TestTimescale(unittest.TestCase):
                     [], ['today'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "what must happen in the company today."
         
         print ''
         print 'The time of speaking sentence is : '
@@ -270,7 +269,7 @@ class TestTimescale(unittest.TestCase):
                     [], [] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "the bottle is next to the table and in front of the kitchen"
         
         print ''
         print 'The time of speaking sentence is : '
@@ -304,13 +303,13 @@ class TestTimescale(unittest.TestCase):
         d_time={'year':'2010','month':'August','day':'27','hour':'10','minute':'0','second':'0'}
         sentence=Sentence('w_question', 'thing', 
                 [Nominal_Group([],['Jido'],[],[],[])], 
-                [Verbal_Group(['do'], [], 'past simple', 
+                [Verbal_Group(['do'], [], 'future simple', 
                     [], 
                     [],
                     [], ['tomorrow'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "what will Jido do tomorrow."
         
         print ''
         print 'The time of speaking sentence is : '
@@ -336,7 +335,7 @@ class TestTimescale(unittest.TestCase):
     
         self.assertEquals(time,rslt)
         print ''
-        
+    
     def test_09(self):
         print ''
         print ('######################## test 1.9 ##############################')
@@ -344,7 +343,7 @@ class TestTimescale(unittest.TestCase):
         print ''
         
         d_time={'year':'2010','month':'August','day':'27','hour':'10','minute':'0','second':'0'}
-        sentence=Sentence('relative', 'that', 
+        sentence=Sentence('statement', '', 
                         [Nominal_Group([],['I'],[],[],[])],  
                         [Verbal_Group(['buy'],[],'past simple', 
                             [Nominal_Group(['the'],['guitar'],[],[],[])], 
@@ -352,7 +351,7 @@ class TestTimescale(unittest.TestCase):
                             [], ['yesterday'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "I bought the guitar yesterday."
         
         print ''
         print 'The time of speaking sentence is : '
@@ -378,7 +377,7 @@ class TestTimescale(unittest.TestCase):
     
         self.assertEquals(time,rslt)
         print ''
-        
+     
     def test_10(self):
         print ''
         print ('######################## test 1.10 ##############################')
@@ -394,7 +393,7 @@ class TestTimescale(unittest.TestCase):
                     [], ['tonight'] ,'affirmative',[])])
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "how long the store of your uncle is open tonight?"
         
         print ''
         print 'The time of speaking sentence is : '
@@ -416,15 +415,15 @@ class TestTimescale(unittest.TestCase):
         
         rslt={'action_period':None,'effective_time':None}
         rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'23','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'3','minute':'59','second':'59'}}
+                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'28','hour':'3','minute':'59','second':'59'}}
     
         self.assertEquals(time,rslt)
         print ''
-        
+    
     def test_11(self):
         print ''
         print ('######################## test 1.10 ##############################')
-        print "Object of this test : Yesterday"
+        print "Object of this test : using adverb with specific effective time"
         print ''
         
         d_time={'year':'2010','month':'August','day':'30','hour':'10','minute':'0','second':'0'}
@@ -437,7 +436,7 @@ class TestTimescale(unittest.TestCase):
         sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
         
         print 'The sentence that we will process is : '
-        print "I bought the bottle yesterday."
+        print "I will come back at 7 o'clock tomorrow."
         
         print ''
         print 'The time of speaking sentence is : '
@@ -464,220 +463,259 @@ class TestTimescale(unittest.TestCase):
         
         self.assertEquals(time,rslt)
         print ''
- 
     
-    
-    
-    """
-    def test_75(self):
-        print''
-        print ('######################## test 8.6 ##############################')
-        utterance=" He finish the project 10 minutes before."
-        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
-        print utterance
-        print '#################################################################'
+    def test_12(self):
         print ''
-        sentence_list=preprocessing.process_sentence(utterance)
-        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+        print ('######################## test 1.11 ##############################')
+        print "Object of this test : DIGIT in indirect complement"
+        print ''
         
-        rslt=[,
-            Sentence('statement', '', 
+        d_time={'year':'2010','month':'September','day':'8','hour':'16','minute':'11','second':'0'}
+        sentence=Sentence('statement', '', 
                 [Nominal_Group([],['he'],[],[],[])], 
                 [Verbal_Group(['finish'], [],'present simple', 
                     [Nominal_Group(['the'],['project'],[],[],[])], 
                     [Indirect_Complement(['before'],[Nominal_Group(['10'],['minute'],[],[],[])])],
-                    [], [] ,'affirmative',[])])]
+                    [], [] ,'affirmative',[])])
+        sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
         
+        print 'The sentence that we will process is : '
+        print "He finish the project 10 minutes before."
         
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
-        
-        result_test=compare_utterance(class_list,rslt,sentence_list)
-        self.assertEquals(result_test, 0)
-   
-    
-    def test_32(self):
         print ''
-        print ('######################## test 4.2 ##############################')
-        utterance="Which salesperson's competition won the award which we won in the last years"
-        print "Object of this test : Using different cases of what question with relative" 
-        print utterance
-        print '#################################################################'
+        print 'The time of speaking sentence is : '
+        print_time(d_time)
+        
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        if time['action_period']!=None:
+            print ''
+            print 'The period of the action is : '
+            print 'From : ' 
+            print_time(time['action_period']['time_begin'])
+            print 'To : '
+            print_time(time['action_period']['time_end'])
+        
+        if time['effective_time']!=None:
+            print ''
+            print 'The effective time of the action is : '
+            print_time(time['effective_time'])
+        
+        rslt={'action_period':None,'effective_time':None}
+        rslt['effective_time']={'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'16','minute':'1','second':'0'}
+        
+        self.assertEquals(time,rslt)
         print ''
-        sentence_list=preprocessing.process_sentence(utterance)
-        class_list= analyse_sentence.sentences_analyzer(sentence_list)
-        
-        rslt=[Sentence('w_question', 'choice', 
-                [Nominal_Group(['the'],['competition'],[],[Nominal_Group(['the'],['salesperson'],[],[],[])],[])], 
-                [Verbal_Group(['win'], [],'past simple', 
-                    [Nominal_Group(['the'],['award'],[],[],[Sentence('relative', 'which', 
-                        [Nominal_Group([],['we'],[],[],[])], 
-                        [Verbal_Group(['win'], [],'past simple', 
-                            [Nominal_Group(['the'],['award'],[],[],[])], 
-                            [Indirect_Complement(['in'],[Nominal_Group(['the'],['year'],[['last',[]]],[],[])])],
-                            [], [] ,'affirmative',[])])])], 
-                    [],
-                    [], [] ,'affirmative',[])])]
-        
-        rslt[0].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
-        
-        result_test=compare_utterance(class_list,rslt,sentence_list)
-        self.assertEquals(result_test, 0)
     
-
-    def test_35(self):
+    def test_13(self):
         print ''
-        print ('######################## test 4.5 ##############################')
-        utterance="what is wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago."
-        print "Object of this test : Using wrong in the what questions, using the 'or' and moving preposition like 'ago'"
-        print utterance
-        print '#################################################################'
+        print ('######################## test 1.12 ##############################')
+        print "Object of this test : Using pm as a time"
         print ''
-        sentence_list=preprocessing.process_sentence(utterance)
-        class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
-        rslt=[Sentence('w_question', 'thing', 
-                [Nominal_Group([],[],['wrong'],[],[])], 
-                [Verbal_Group(['be'], [],'present simple', 
-                    [], 
-                    [Indirect_Complement(['with'],[Nominal_Group([],['him'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['play'], [],'future simple', 
-                    [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['play'], [],'past simple', 
-                    [Nominal_Group(['a'],['guitar'],[],[],[])], 
-                    [Indirect_Complement(['ago'],[Nominal_Group(['a'],['year'],[],[],[])])],
-                    [], [] ,'affirmative',[])])]
-    
-        rslt[1].sv[0].d_obj[1]._conjunction="OR"
-        rslt[1].sv[0].d_obj[0]._quantifier="SOME"
-        rslt[1].sv[0].d_obj[1]._quantifier="SOME"
-        rslt[1].sv[0].d_obj[2]._quantifier="SOME"
-        rslt[2].sv[0].d_obj[0]._quantifier="SOME"
-        rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
-        
-        result_test=compare_utterance(class_list,rslt,sentence_list)
-        self.assertEquals(result_test, 0)
-    
-   
-    
-    
-    def test_48(self):
-        print ''
-        print ('######################## test 5.8 ##############################')
-        utterance="What must be happened in the company today? The building shouldn't be built fastly. You can be here."
-        print "Object of this test : Process be+verb+ed"
-        print utterance
-        print '#################################################################'
-        print ''
-        sentence_list=preprocessing.process_sentence(utterance)
-        class_list= analyse_sentence.sentences_analyzer(sentence_list)
-        
-        rslt=[Sentence('w_question', 'situation', 
-                [],  
-                [Verbal_Group(['must+happen'], [],'present passive', 
-                    [], 
-                    [Indirect_Complement(['in'],[Nominal_Group(['the'],['company'],[],[],[])])],
-                    [], ['today'] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group(['the'],['building'],[],[],[])],  
-                [Verbal_Group(['should+build'],[],'passive conditional', 
-                    [], 
-                    [],
-                    ['fastly'], [] ,'negative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['you'],[],[],[])],  
-                [Verbal_Group(['can+be'],[],'present simple', 
-                    [], 
-                    [],
-                    [], ['here'] ,'affirmative',[])])]
-        
-        result_test=compare_utterance(class_list,rslt,sentence_list)
-        self.assertEquals(result_test, 0)
-    
-    
- 
-    
-    def test_73(self):
-        print ''
-        print ('######################## test 8.4 ##############################')
-        utterance="I will come back on monday. I'll play with guitar. I'll play football"
-        print "Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)"
-        print utterance
-        print '#################################################################'
-        print ''
-        sentence_list=preprocessing.process_sentence(utterance)
-        class_list= analyse_sentence.sentences_analyzer(sentence_list)
-        
-        rslt=[Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['come+back'], [],'future simple', 
-                    [], 
-                    [Indirect_Complement(['on'],[Nominal_Group([],['Monday'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['play'], [],'future simple', 
-                    [], 
-                    [Indirect_Complement(['with'],[Nominal_Group(['a'],['guitar'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['play'], [],'future simple', 
-                    [Nominal_Group(['a'],['football'],[],[],[])], 
-                    [],
-                    [], [] ,'affirmative',[])])]
-        
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
-        rslt[2].sv[0].d_obj[0]._quantifier="SOME"
-        
-        result_test=compare_utterance(class_list,rslt,sentence_list)
-        self.assertEquals(result_test, 0)                   
-    
-    
-   
-   def test_77(self):
-        print''
-        print ('######################## test 8.8 ##############################')
-        utterance="The time of speaking sentence is the best. I come at 10pm. I will come tomorrow evening"
-        print "Object of this test : Add test to take off determinant and for timescale"
-        print utterance
-        print '#################################################################'
-        print ''
-        sentence_list=preprocessing.process_sentence(utterance)
-        class_list= analyse_sentence.sentences_analyzer(sentence_list)
-        
-        rslt=[Sentence('statement', '', 
-                [Nominal_Group(['the'],['time'],[],[Nominal_Group(['a'],['sentence'],[['speaking',[]]],[],[])],[])], 
-                [Verbal_Group(['be'], [],'present simple', 
-                    [Nominal_Group(['the'],[],[['best',[]]],[],[])], 
-                    [],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['come'], [],'present simple', 
-                    [], 
-                    [Indirect_Complement(['at'],[Nominal_Group(['10'],['pm'],[],[],[])])],
-                    [], [] ,'affirmative',[])]),
-            Sentence('statement', '', 
+        d_time={'year':'2010','month':'September','day':'8','hour':'16','minute':'11','second':'0'}
+        sentence=Sentence('statement', '', 
                 [Nominal_Group([],['I'],[],[],[])], 
                 [Verbal_Group(['come'], [],'future simple', 
                     [], 
                     [Indirect_Complement([],[Nominal_Group(['a'],['evening'],[],[],[])])],
-                    [], ['tomorrow'] ,'affirmative',[])])]
+                    [], ['tomorrow'] ,'affirmative',[])])
         
-        rslt[0].sn[0].noun_cmpl[0]._quantifier='SOME'
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
-        rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        print 'The sentence that we will process is : '
+        print "I will come tomorrow evening."
         
-        result_test=compare_utterance(class_list,rslt,sentence_list)
-        self.assertEquals(result_test, 0)
-    """
+        print ''
+        print 'The time of speaking sentence is : '
+        print_time(d_time)
+        
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        if time['action_period']!=None:
+            print ''
+            print 'The period of the action is : '
+            print 'From : ' 
+            print_time(time['action_period']['time_begin'])
+            print 'To : '
+            print_time(time['action_period']['time_end'])
+        
+        if time['effective_time']!=None:
+            print ''
+            print 'The effective time of the action is : '
+            print_time(time['effective_time'])
+        
+        rslt={'action_period':None,'effective_time':None}
+        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'18','minute':'0','second':'0'},
+                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'22','minute':'59','second':'59'}}
+    
+        self.assertEquals(time,rslt)
+        print ''
+        
+        
+    def test_14(self):
+        print ''
+        print ('######################## test 1.13 ##############################')
+        print "Object of this test : Using pm as a time"
+        print ''
+        
+        d_time={'year':'2010','month':'September','day':'8','hour':'16','minute':'11','second':'0'}
+        sentence=Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'past simple', 
+                    [Nominal_Group(['a'],['guitar'],[],[],[])], 
+                    [Indirect_Complement(['ago'],[Nominal_Group(['a'],['year'],[],[],[])])],
+                    [], [] ,'affirmative',[])])
+        
+        print 'The sentence that we will process is : '
+        print "I played a guitar a year ago."
+        
+        print ''
+        print 'The time of speaking sentence is : '
+        print_time(d_time)
+        
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        if time['action_period']!=None:
+            print ''
+            print 'The period of the action is : '
+            print 'From : ' 
+            print_time(time['action_period']['time_begin'])
+            print 'To : '
+            print_time(time['action_period']['time_end'])
+        
+        if time['effective_time']!=None:
+            print ''
+            print 'The effective time of the action is : '
+            print_time(time['effective_time'])
+        
+        rslt={'action_period':None,'effective_time':None}
+        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'18','minute':'0','second':'0'},
+                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'22','minute':'59','second':'59'}}
+    
+        self.assertEquals(time,rslt)
+        print ''
+    
+    def test_15(self):
+        print ''
+        print ('######################## test 1.14 ##############################')
+        print "Object of this test : Using pm as a time"
+        print ''
+        
+        d_time={'year':'2010','month':'September','day':'8','hour':'16','minute':'11','second':'0'}
+        sentence=Sentence('statement', '', 
+                        [Nominal_Group([],['we'],[],[],[])], 
+                        [Verbal_Group(['win'], [],'past simple', 
+                            [Nominal_Group(['the'],['award'],[],[],[])], 
+                            [Indirect_Complement(['in'],[Nominal_Group(['the'],['year'],[['next',[]]],[],[])])],
+                            [], [] ,'affirmative',[])])
+        
+        print 'The sentence that we will process is : '
+        print "we won in the next years."
+        
+        print ''
+        print 'The time of speaking sentence is : '
+        print_time(d_time)
+        
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        if time['action_period']!=None:
+            print ''
+            print 'The period of the action is : '
+            print 'From : ' 
+            print_time(time['action_period']['time_begin'])
+            print 'To : '
+            print_time(time['action_period']['time_end'])
+        
+        if time['effective_time']!=None:
+            print ''
+            print 'The effective time of the action is : '
+            print_time(time['effective_time'])
+        
+        rslt={'action_period':None,'effective_time':None}
+        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'18','minute':'0','second':'0'},
+                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'22','minute':'59','second':'59'}}
+    
+        self.assertEquals(time,rslt)
+        print ''
+        
+    def test_16(self):
+        print ''
+        print ('######################## test 1.15 ##############################')
+        print "Object of this test : Using pm as a time"
+        print ''
+        
+        d_time={'year':'2010','month':'September','day':'8','hour':'16','minute':'11','second':'0'}
+        sentence=Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['at'],[Nominal_Group(['10'],['pm'],[],[],[])])],
+                    [], [] ,'affirmative',[])])
+        sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        
+        print 'The sentence that we will process is : '
+        print "I come at 10pm."
+        
+        print ''
+        print 'The time of speaking sentence is : '
+        print_time(d_time)
+        
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        if time['action_period']!=None:
+            print ''
+            print 'The period of the action is : '
+            print 'From : ' 
+            print_time(time['action_period']['time_begin'])
+            print 'To : '
+            print_time(time['action_period']['time_end'])
+        
+        if time['effective_time']!=None:
+            print ''
+            print 'The effective time of the action is : '
+            print_time(time['effective_time'])
+        
+        rslt={'action_period':None,'effective_time':None}
+        rslt['effective_time']={'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'22','minute':'0','second':'0'}
+        
+        self.assertEquals(time,rslt)
+        print ''
+    
+    def test_17(self):
+        print ''
+        print ('######################## test 1.16 ##############################')
+        print "Object of this test : Using pm as a time"
+        print ''
+        
+        d_time={'year':'2010','month':'September','day':'9','hour':'16','minute':'11','second':'0'}
+        sentence=Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['come+back'], [],'future simple', 
+                    [], 
+                    [Indirect_Complement(['on'],[Nominal_Group([],['Monday'],[],[],[])])],
+                    [], [] ,'affirmative',[])])
+        
+        print 'The sentence that we will process is : '
+        print "I will come back on monday."
+        
+        print ''
+        print 'The time of speaking sentence is : '
+        print_time(d_time)
+        
+        time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
+        if time['action_period']!=None:
+            print ''
+            print 'The period of the action is : '
+            print 'From : ' 
+            print_time(time['action_period']['time_begin'])
+            print 'To : '
+            print_time(time['action_period']['time_end'])
+        
+        if time['effective_time']!=None:
+            print ''
+            print 'The effective time of the action is : '
+            print_time(time['effective_time'])
+        
+        rslt={'action_period':None,'effective_time':None}
+        rslt['effective_time']={'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'22','minute':'0','second':'0'}
+        
+        self.assertEquals(time,rslt)
+        print ''
+  
     
     
     
