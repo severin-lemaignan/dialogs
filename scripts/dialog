@@ -19,6 +19,7 @@ dialog [OPTIONS] [speaker]
   -t, --test			Runs unit-tests
   -d, --debug			Sets verbosity to debug
   -s, --silent			The module won't output anything
+  --demo				Start Dialog in demo mode (insert pause between each steps)
   --orohost				Host of ORO ontology server
   --oroport				Port of ORO ontology server
 
@@ -49,8 +50,11 @@ def main():
     logger = logging.getLogger('dialog')
     logger.setLevel(logging.WARNING)
     
+    #By default, don't start in demo mode
+    demo = False
+    
     try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version', 'orohost=', 'oroport='])
+        optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version', 'demo', 'orohost=', 'oroport='])
     except getopt.GetoptError, err:
         # print help information and exit:
         print str(err) # will print something like "option -a not recognized"
@@ -71,9 +75,12 @@ def main():
             logger.setLevel(logging.DEBUG)
         elif o in ("-s", "--silent"):
             logger.setLevel(logging.CRITICAL)
-        elif o in ("orohost"):
+        elif o in ("--demo"):
+            demo = True
+            logger.setLevel(logging.DEBUG)
+        elif o in ("--orohost"):
             ORO_HOST = a
-        elif o in ("oroport"):
+        elif o in ("--oroport"):
             ORO_PORT = int(a)
         else:
             print "Unhandled option " + o
@@ -100,7 +107,7 @@ def main():
         ResourcePool().ontology_server.add([speaker + " rdf:type Agent"])
         logger.info(speaker + " added to the ontology")
         
-    dialog = Dialog(speaker)
+    dialog = Dialog(speaker, demo = demo)
 
     dialog.start()
 

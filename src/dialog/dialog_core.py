@@ -9,7 +9,7 @@ from Queue import Queue, Empty
 from collections import deque
 
 
-from helpers import colored_print
+from helpers import colored_print, wait_for_keypress
 
 from dialog_exceptions import UnsufficientInputError, UnidentifiedAnaphoraError
 
@@ -34,11 +34,13 @@ class Dialog(Thread):
     #This holds the history of conversation of all the instances of Dialog.
     dialog_history = []
     
-    def __init__(self, speaker = None):
+    def __init__(self, speaker = None, demo = False):
         Thread.__init__(self)
         
         self.go_on = True
         self._logger = logging.getLogger('dialog')
+        
+        self._demo_mode = demo
         
         if speaker:
             self._speaker = speaker
@@ -192,6 +194,9 @@ class Dialog(Thread):
         self._logger.info(colored_print("\n-------[       PARSING       ]-------\n", 'green'))
         parsed_sentences = self._parser.parse(nl_input, None)
         
+        if self._demo_mode:
+            wait_for_keypress()
+            
         #Unsifient input or unidentified anaphora Error processing
         if self.waiting_for_more_info:
             self._logger.info(colored_print("Waiting for more information activated\n", 'magenta'))
@@ -270,12 +275,18 @@ class Dialog(Thread):
             self._logger.info(colored_print("\n[ Sentence after resolution ]", 'green'))
             self._logger.info(str(self.active_sentence))
             
+            if self._demo_mode:
+                wait_for_keypress()
+            
             #Content analysis
             self._logger.info(colored_print("\n-------[   CONTENT ANALYSIS   ]-------\n", 'green'))
             
             self.last_stmts_set = self._content_analyser.analyse(self.active_sentence, 
                                                                     self.current_speaker)
             
+            if self._demo_mode:
+                wait_for_keypress()
+                
             #Verbalization
             if self._content_analyser.analyse_output():
                 
@@ -284,6 +295,10 @@ class Dialog(Thread):
                                         self._verbalizer.verbalize(self._content_analyser.analyse_output()))
                                         
                 self._sentence_output_queue.put(self.last_sentence[0])
+                
+                if self._demo_mode:
+                    wait_for_keypress()
+                
             else:
                 self._logger.info(colored_print("\nNothing to verbalize!", 'magenta'))
                 self.last_sentence = (None, "")

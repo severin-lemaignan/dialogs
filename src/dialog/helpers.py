@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
 import logging
 logger = logging.getLogger('dialog')
 
@@ -101,6 +102,12 @@ def check_results(res, expected):
         logger.info("\t" + expected + "\n")
            
     return expected == res
+
+def wait_for_keypress():
+    """No way to reliably wait for a key press or even Enter!!
+    Tried: raw_input(), sys.stdin.readline(), sys.stdin.read(1)
+    """
+    pass
 
 if __name__ == '__main__':
 
