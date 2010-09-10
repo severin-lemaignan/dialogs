@@ -335,6 +335,9 @@ class NominalGroupStatementBuilder:
                 if negative_object:
                      self._statements.append(ng_id + " owl:differentFrom " + instance_id)
                 
+                elif nominal_group._resolved:
+                    self._statements.append(ng_id + " owl:sameAs " + instance_id)
+                
                 
             # Case : Personal pronoun
             elif not nominal_group.det and noun in ResourcePool().pronouns:
