@@ -941,7 +941,7 @@ class TestParsing(unittest.TestCase):
         rslt=[Sentence('w_question', 'opinion', 
                 [Nominal_Group([],['you'],[],[],[])], 
                 [Verbal_Group(['like'], [],'past simple', 
-                    [Nominal_Group(['the'],['movie'],[['new',[]]],[Nominal_Group([],['Steven', 'Spilburg'],[],[],[])],[])], 
+                    [Nominal_Group(['the'],['movie'],[['new',[]]],[Nominal_Group([],['Steven Spilburg'],[],[],[])],[])], 
                     [],
                     [], [] ,'affirmative',[])]),
             Sentence('w_question', 'manner', 

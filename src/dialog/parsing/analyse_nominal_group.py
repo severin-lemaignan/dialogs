@@ -372,9 +372,9 @@ def return_noun (nom_gr, adjective, determinant):
     """
 
     #If nom_gr is empty
-    if nom_gr==[]:
+    if nom_gr==[] or nom_gr[len(determinant)+len(adjective):]==[]:
         return []
-    return nom_gr[len(determinant)+len(adjective):]
+    return [" ".join(nom_gr[len(determinant)+len(adjective):])]
 
 
 
