@@ -438,7 +438,7 @@ class TestParsing(unittest.TestCase):
         print ''
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
-        
+        print sentence_list
         rslt=[Sentence('statement', '', 
                 [Nominal_Group(['the'],['man'],[],[],[Sentence('relative', 'who', 
                     [],  
@@ -2683,8 +2683,8 @@ class TestParsing(unittest.TestCase):
     def test_86(self):
         print''
         print ('######################## test 9.6 ##############################')
-        utterance="the bottle of Jido which is blue, is on the table"
-        print "Object of this test : nominal group with relative and noun complement"
+        utterance="the bottle of Jido which is blue, is on the table. I do my homework before he comes"
+        print "Object of this test : nominal group with relative and noun complement and using before as subsentence"
         print utterance
         print '#################################################################'
         print ''
@@ -2701,11 +2701,90 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['be'], [],'present simple', 
                     [], 
                     [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
-                    [], [] ,'affirmative',[])])]
+                    [], [] ,'affirmative',[])]),
+        Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['do'], [],'present simple', 
+                    [Nominal_Group(['my'],['homework'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'before', 
+                        [Nominal_Group([],['he'],[],[],[])], 
+                        [Verbal_Group(['come'], [],'present simple', 
+                            [], 
+                            [],
+                            [], [] ,'affirmative',[])])])])]
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     
+    def test_87(self):
+        print''
+        print ('######################## test 9.7 ##############################')
+        utterance="before he comes, I do my homework. I have played foot since I was a young boy."
+        print "Object of this test : Using proposal like 'before' as subsentence, i_cmpl and adjective"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['do'], [],'present simple', 
+                    [Nominal_Group(['my'],['homework'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'before', 
+                        [Nominal_Group([],['he'],[],[],[])], 
+                        [Verbal_Group(['come'], [],'present simple', 
+                            [], 
+                            [],
+                            [], [] ,'affirmative',[])])])]),
+        Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['play'], [],'present perfect', 
+                    [Nominal_Group(['a'],['foot'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'since', 
+                        [Nominal_Group([],['I'],[],[],[])], 
+                        [Verbal_Group(['be'], [],'past simple', 
+                            [Nominal_Group(['a'],['boy'],[['young',[]]],[],[])], 
+                            [],
+                            [], [] ,'affirmative',[])])])])]
+        
+        rslt[1].sv[0].d_obj[0]._quantifier="SOME"
+        rslt[1].sv[0].vrb_sub_sentence[0].sv[0].d_obj[0]._quantifier="SOME"
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
+    
+    def test_88(self):
+        print''
+        print ('######################## test 9.8 ##############################')
+        utterance="They haven't played tennis since 1987."
+        print "Object of this test : Using proposal like 'before' as subsentence, i_cmpl and adjective"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group([],['I'],[],[],[])], 
+                [Verbal_Group(['do'], [],'present simple', 
+                    [Nominal_Group(['my'],['homework'],[],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'before', 
+                        [Nominal_Group([],['he'],[],[],[])], 
+                        [Verbal_Group(['come'], [],'present simple', 
+                            [], 
+                            [],
+                            [], [] ,'affirmative',[])])])])]
+        
+        rslt[0].sv[0].d_obj[0]._quantifier="SOME"
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
+        
     
     
 def test_suite():

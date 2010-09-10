@@ -395,7 +395,10 @@ def stc_start_subsentence(sentence):
     analysis.sv[0].vrb_sub_sentence=analysis.sv[0].vrb_sub_sentence+dispatching(subsentence)
     if analysis.sv[0].vrb_sub_sentence!=[]:
         analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type='subsentence+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
-        analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0]
+        if sentence[0][0]==':':
+            analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0][1:]
+        else:
+            analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0]
     
     return analysis
 

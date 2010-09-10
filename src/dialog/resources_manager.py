@@ -254,6 +254,7 @@ class ResourcePool:
         self.action_verb_with_passive_behaviour = {}
         self.adjectives_ontology_classes = []
         self.special_verbs = []
+        self.adv_sub = []
 
         """list of tokens that can start a sentence"""
         self.sentence_starts = []
@@ -345,6 +346,9 @@ class ResourcePool:
         self.preposition_rdf_object_property = dict([(k[0],k[3:]) for k in adverbials[1]])
         self.time_proposals=adverbials[1]
         self.subsentences=[k[0] for k in adverbials[2]]
+        for k in adverbials[2]:
+            if k[1]=='1':
+                self.adv_sub=self.adv_sub+[k[0]]
         self.prep_change_place=[k[0] for k in adverbials[3]]
         
         

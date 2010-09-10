@@ -168,9 +168,8 @@ def recover_obj_iobj(phrase, vg):
     #init
     conjunction='AND'
    
-    #We search the first nominal group in sentence
     object= analyse_nominal_group.find_sn(phrase)
-    
+
     while object!=[]:
 
         #If it is not a direct object => there is a proposal
@@ -240,10 +239,10 @@ def recover_obj_iobj(phrase, vg):
                 
                 #We refine the nominal group if there is an error like ending with question mark
                 object=analyse_nominal_group.refine_nom_gr(object)
-                
+        
                 #Recovering nominal group
                 gr_nom_list=gr_nom_list+[analyse_nominal_structure.fill_nom_gr(phrase, object, pos_object, conjunction)]
-                
+        
                 #We take off the nominal group
                 phrase=analyse_nominal_group.take_off_nom_gr(phrase, object, pos_object)
                 conjunction='AND'
@@ -255,7 +254,7 @@ def recover_obj_iobj(phrase, vg):
                     end_pos_rel=other_functions.recover_end_pos_sub(phrase, rel_list)
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
-                    
+                
                 if len(phrase)!=0 and (phrase[0]=='and' or phrase[0]=='or' or phrase[0]==':but'):
                     
                     phrase=[phrase[0]]+analyse_nominal_group.find_plural(phrase[1:])
@@ -284,7 +283,7 @@ def recover_obj_iobj(phrase, vg):
         #If the last nominal group is followed by another one in plural form 
         phrase=analyse_nominal_group.find_plural(phrase)
         object= analyse_nominal_group.find_sn(phrase)
-        
+    
     return phrase
 
 
@@ -436,7 +435,10 @@ def process_subsentence(phrase,vg):
                         #We perform processing
                         vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
                         vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
-                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
+                        if w[0]==':':
+                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w[1:]
+                        else:
+                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
                     else:
                         #Exception for which
                         vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.w_quest_which('w_question', 'choice', ['the']+subsentence)]

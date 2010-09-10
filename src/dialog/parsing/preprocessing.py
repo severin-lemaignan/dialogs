@@ -8,6 +8,7 @@
  The package contains functions which are important for the pre-parsing
  We return a list of all sentence in the utterance to do processing                    
  Functions:            
+    adv_or_subsentence : to define the subsentence and the indirect complement with before, after...  
     process_and_beginning_sentence : to process the beginning of the sentence
     delete_and_from_number : to delete 'and' between two numbers
     concat_number : to concatenate numbers with '+'
@@ -65,9 +66,39 @@ day_list = ResourcePool().days_list
 month_list = ResourcePool().months_list
 proposal_list = ResourcePool().proposals
 det_list = ResourcePool().determinants
+adverb_subsentence = ResourcePool().adv_sub
 
 
 
+
+def adv_or_subsentence(sentence):
+    """
+    This function define the subsentence and the indirect complement with before, after...                                 
+    Input=sentence                                     Output=sentence               
+    """
+    
+    #init
+    i=0
+    
+    while i <len(sentence):
+        #If we have a proposal which can be for subsentence and for indirect object
+        
+        for z in adverb_subsentence:
+            if sentence[i]==z[1:]:
+                #We recovery the nominal group after
+                gr=determination_nom_gr(sentence, i+1,'of')
+              
+                if len(gr)+i+1>=len(sentence) or sentence[len(gr)+i+1] in proposal_list+['?','.','!'] :
+                    #It is an indirect complement
+                    pass
+                else:
+                    #It is a subsentence
+                    sentence[i]=':'+sentence[i]
+        i=i+1
+    return sentence
+        
+        
+        
 def process_and_beginning_sentence(sentence):
     """
     This function process the beginning of the sentence
@@ -191,8 +222,11 @@ def upper_to_lower(sentence):
         else:
             sentence[0]=sentence[0][0].lower()+sentence[0][1:]
         
+        #We make changes here because we need lower case and not upper case
         sentence=expand_contractions(sentence)
+        sentence = adv_or_subsentence(sentence)
         stc = process_and_beginning_sentence(sentence)
+        
         #If sentence is modified we can return it
         if stc!=sentence:
             return stc
@@ -225,7 +259,9 @@ def upper_to_lower(sentence):
         
     #If the sentence begins with lower case
     else:
+        #We make changes here because we need lower case and not upper case
         sentence=expand_contractions(sentence)
+        sentence = adv_or_subsentence(sentence)
         sentence = process_and_beginning_sentence(sentence)
         
         #If we find the word in the Beginning_sentence list so we can return it
@@ -767,17 +803,13 @@ def take_off_comma(sentence):
     """ 
     
     #init
-    i=k=0
+    i=0
     
-    while k < len(sentence):
-        while i < len(sentence[k]):
-            if sentence[k][i]==';':
-                for j in rel_list+sub_list:
-                    if  j==sentence[k][i+1]:
-                        sentence[k]=sentence[k][:i]+sentence[k][i+1:]
-                        break
-            i=i+1
-        k=k+1
+    while i < len(sentence):
+        if sentence[i]==';':
+            if sentence[i+1] in rel_list+sub_list:
+                sentence=sentence[:i]+sentence[i+1:]
+        i=i+1
     return sentence
           
     
@@ -848,7 +880,7 @@ def interjection(sentence):
    
     #init
     i=pos=0
-    
+
     #We will find the position of the first ','
     while i < len(sentence) and pos==0:
         if sentence[i]==';':
@@ -1001,10 +1033,11 @@ def processing(sentence):
     sentence = day_month(sentence)
     sentence = am_pm(sentence)
     sentence = double_det(sentence)
+    sentence = adv_or_subsentence(sentence)
     sentence = process_and_beginning_sentence(sentence)
+    sentence = take_off_comma(sentence)
     sentence = interjection(sentence)
     sentence = and_between_sentence(sentence)
-    sentence = take_off_comma(sentence)
     return sentence
 
     

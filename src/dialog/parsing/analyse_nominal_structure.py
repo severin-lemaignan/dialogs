@@ -138,7 +138,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     if begin_pos_rel!=-1:
         relative_phrase=phrase[begin_pos_rel+1:begin_pos_rel+end_pos_rel-1]
         relative_phrase=other_functions.recover_scd_verb_sub(relative_phrase)
-      
+        
         #If it is a place, we have not to duplicate the nominal group
         if phrase[begin_pos_rel]!='where':
             relative_phrase=analyse_nominal_group.complete_relative(relative_phrase,nom_gr)

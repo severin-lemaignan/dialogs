@@ -50,6 +50,7 @@ near+to 1 1
 next 1 1 isNextTo objectFoundInLocation
 next+to 1 0 isNextTo objectFoundInLocation
 on 1 1 isOn objectFoundInLocation
+since 1 1
 to 0 1 receivedBy
 underneath 1 0 isUnder objectFoundInLocation
 under 1 0 isUnder objectFoundInLocation
@@ -62,19 +63,28 @@ with 1 1
 This list holds subsentence proposals
 ##
 
-while
-but
-where
-when
-if
-what
-however
-although
-because
-also
-so
-which
-then
+:after 1
+also 0
+although 0
+:as 1
+as+soon+as 0
+because 0
+:before 1
+but 0
+every+time 0
+however 0
+:since 1
+so 0
+if 0
+then 0
+till 0
+until 0
+what 0
+when 0
+whenever 0
+where 0
+which 0
+while 0
 
 
 
