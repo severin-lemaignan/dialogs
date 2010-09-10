@@ -163,8 +163,10 @@ class NominalGroupStatementBuilder:
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
         
-        if onto and [ng.noun[0],"INSTANCE"] in onto:
-            return ng.noun[0]
+        if onto:
+            for c in onto:
+                if "INSTANCE" in c:
+                    return c[0]
         
         if ng.noun[0].lower() in ['i', 'me']:
             return self._current_speaker
@@ -321,16 +323,19 @@ class NominalGroupStatementBuilder:
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
             
-            if onto_id and [noun,"INSTANCE"] in onto_id:
-                logger.info("... \t" + noun + " is an existing ID in " + self._current_speaker + "'s model.")            
+            instance_id = None
+            if onto_id:
+                for c in onto_id:
+                    if "INSTANCE" in c:
+                        instance_id = c[0]
+                        break
+            
+            if instance_id:
                 #Case of Negation
                 if negative_object:
-                    self._statements.append(ng_id + " owl:differentFrom " + noun)
+                     self._statements.append(ng_id + " owl:differentFrom " + instance_id)
                 
-                #Case of affirmative form
-                else:
-                    pass
-            
+                
             # Case : Personal pronoun
             elif not nominal_group.det and noun in ResourcePool().pronouns:
                 # Case of negation

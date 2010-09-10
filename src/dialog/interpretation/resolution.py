@@ -82,7 +82,7 @@ class Resolver:
         return current_object
         
         
-    def _resolve_references(self, nominal_group, matcher, current_speaker, current_object, onto = None):
+    def _resolve_references(self, nominal_group, matcher, current_speaker, current_object):
         
         # Case of a resolved nominal group
         if nominal_group._resolved: 
@@ -91,11 +91,38 @@ class Resolver:
         # Case of a quantifier different from ONE
         #   means the nominal group holds an indefinite determiner. 
         #   E.g a robot, every plant, fruits, ...
-        if nominal_group._quantifier != 'ONE': 
-            nominal_group.id = get_class_name(nominal_group.noun[0], onto)
+        if nominal_group._quantifier in ['SOME','ALL']: 
+            # Case of a state verb
+            # id = the class name
+            # E.g: an apple is a fruit
+            #       the id of apple is Apple
+            logger.info("\t Found undefinite quatifier " + nominal_group._quantifier)
+            onto = []
+            try:
+                onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
+            except AttributeError:
+                pass
+            
+            
+            class_name =  get_class_name(nominal_group.noun[0], onto)
+            nominal_group.id = class_name
+            """
+            # case of an action verbs
+            # id = generated 
+            # E.g: An Apple grows on a tree
+            #   we get the ids of all existig apples in the ontology otherwise we generate one
+            if not verb in ResourcePool().state for verb in [vrb for sv in self.sv for vrb in sv.vrb_main]:
+                onto_id = []
+                try:
+                    onto_id = ResourcePool().findForAgent(current_speaker, '?concept', '?concept rdf:type ' + class_name)
+                except AttributeError:
+                    pass
+                
+                if 
+            """
             nominal_group._resolved = True
             return nominal_group
-        
+            
         # Case of a nominal group built by only adjectives 
         #   E.g, 'big' in 'the yellow banana is big'.
         if nominal_group.adjectives_only():
@@ -145,9 +172,19 @@ class Resolver:
             return nominal_group
         
         # Case of an existing ID in the Ontology
-        if onto and [nominal_group.noun[0],"INSTANCE"] in onto:
-            nominal_group.id = nominal_group.noun[0]
-            nominal_group._resolved = True
+        onto = []
+        try:
+            onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
+        except AttributeError: #the ontology server is not started or doesn't know the method
+            pass
+        
+        if onto:
+            logger.debug("... \t" + nominal_group.noun[0] + " is an existing ID in " + current_speaker + "'s model.")
+            for c in onto:
+                if "INSTANCE" in c:
+                    nominal_group.id = c[0]
+                    nominal_group._resolved = True
+                    break
         
         # Case of personal prounouns
         if current_speaker and nominal_group.noun[0].lower() in ['me','i']:
@@ -171,14 +208,7 @@ class Resolver:
         """This attempts to resolve every single nominal group held in a nominal group list"""
         resolved_sn = []
         for sn in array_sn:
-            onto = None
-            if sn.noun:
-                try:
-                    onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, sn.noun[0])
-                except AttributeError: #the ontology server is not started or doesn't know the method
-                    pass
-            
-            resolved_sn.append(self._resolve_references(sn, matcher, current_speaker, current_object, onto))
+            resolved_sn.append(self._resolve_references(sn, matcher, current_speaker, current_object))
            
         return resolved_sn
     

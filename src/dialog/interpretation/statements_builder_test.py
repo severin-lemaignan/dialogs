@@ -111,17 +111,18 @@ class TestStatementBuilder(unittest.TestCase):
                            '* performedBy *',
                            '* involves *',
                            '* rdf:type Car']
-        return self.process(sentence, expected_result)
+        self.process(sentence, expected_result)
         
         #in order to print the statements resulted from the test, uncomment the line below:
         #self.process(sentence, expected_result, display_statement_result = True)
         #
         #otherwise, use the following if you want to hide the statements 
-        #return self.process(sentence, expected_result)
+        #self.process(sentence, expected_result)
         #    or
-        #return self.process(sentence, expected_result, display_statement_result = False)
+        #self.process(sentence, expected_result, display_statement_result = False)
         #
     """
+    
     def test_1(self):
         logger.info("\n**** Test 1  *** ")
         logger.info("Danny drives the blue car")
