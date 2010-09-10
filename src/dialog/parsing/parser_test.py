@@ -34,7 +34,6 @@ def compare_nom_gr(ng,rslt_ng):
     j=0
     
     if len(ng)!=len(rslt_ng):
-        print "aaz"
         return 1
     else:
         while i < len(rslt_ng):
@@ -2571,7 +2570,7 @@ class TestParsing(unittest.TestCase):
         print''
         print ('######################## test 9.3 ##############################')
         utterance="to have a dialog, we need more than 1 protagonist. I finish the dialog, and I check many problems"
-        print "Object of this test : Add test to take off determinant and for timescale"
+        print "Object of this test : Having indirect complement before the sentence and to have more one sentence in utterance"
         print utterance
         print '#################################################################'
         print ''
@@ -2610,7 +2609,7 @@ class TestParsing(unittest.TestCase):
         print''
         print ('######################## test 9.4 ##############################')
         utterance="the left of what? Jido, what do you do? throw one of them. Very good"
-        print "Object of this test : Add test to take off determinant and for timescale"
+        print "Object of this test : Question at the end of sentence"
         print utterance
         print '#################################################################'
         print ''
@@ -2653,7 +2652,7 @@ class TestParsing(unittest.TestCase):
         print''
         print ('######################## test 9.5 ##############################')
         utterance="the bottle on the table, is blue. where is this tape"
-        print "Object of this test : Add test to take off determinant and for timescale"
+        print "Object of this test : add relative and process nominal group with this as determinant and be as a verb"
         print utterance
         print '#################################################################'
         print ''
@@ -2681,16 +2680,33 @@ class TestParsing(unittest.TestCase):
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     
+    def test_86(self):
+        print''
+        print ('######################## test 9.6 ##############################')
+        utterance="the bottle of Jido which is blue, is on the table"
+        print "Object of this test : nominal group with relative and noun complement"
+        print utterance
+        print '#################################################################'
+        print ''
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list= analyse_sentence.sentences_analyzer(sentence_list)
+    
+        rslt=[Sentence('statement', '', 
+                [Nominal_Group(['the'],['bottle'],[],[Nominal_Group([],['Jido'],[],[],[])],[Sentence('relative', 'which', 
+                    [], 
+                    [Verbal_Group(['be'], [],'present simple', 
+                        [Nominal_Group([],[],[['blue',[]]],[],[])], 
+                        [],
+                        [], [] ,'affirmative',[])])])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [], 
+                    [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
+        
+        result_test=compare_utterance(class_list,rslt,sentence_list)
+        self.assertEquals(result_test, 0)
     
     
-    """
-    utterance="Jido, give the bottle!"
-    sentence_list=preprocessing.process_sentence(utterance)
-    print sentence_list
-    class_list= analyse_sentence.sentences_analyzer(sentence_list)
-    for i in class_list:
-        print (str(i))
-    """
     
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)

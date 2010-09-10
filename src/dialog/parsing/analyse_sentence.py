@@ -742,7 +742,7 @@ def other_sentence(type, request, sentence):
     sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
     if sec_vrb!=[]:
         sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
-    
+
     #We recover the subsentence
     sentence=analyse_verbal_structure.process_subsentence(sentence, vg)
     

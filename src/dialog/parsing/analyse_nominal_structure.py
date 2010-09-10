@@ -8,6 +8,7 @@
  It is more used for the subject                                                  
  Functions:                                      
     recover_quantifier : to recover the quantifier and put the noun in singular form if it's in plural
+    put_rela_from_nncompl_noun : to put the relative of the complement in the main noun 
     fill_nom_gr : to fulfill a structure Nominal_Group
     recover_ns : to recovers the nominal structure of the sentence                
 """
@@ -16,6 +17,7 @@ from dialog.sentence import *
 import analyse_nominal_group
 import other_functions
 import analyse_sentence
+import preprocessing
 
 
 """
@@ -89,7 +91,26 @@ def recover_quantifier(nom_gr):
         
         return nom_gr
         
-                
+
+
+def put_rela_from_nncompl_noun(gn):
+    """
+    This function put the relative of the complement in the main noun           
+    Input=nominal group class                     Output=nominal group class                                                   
+    """
+    
+    if gn!=[]:
+        #If empty
+        if gn.noun_cmpl==[]:
+            pass
+        else:
+            put_rela_from_nncompl_noun(gn.noun_cmpl[0])
+            gn.relative=gn.relative+gn.noun_cmpl[0].relative
+            gn.noun_cmpl[0].relative=[]
+    
+    return gn
+             
+                    
 
 def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     """
@@ -117,7 +138,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     if begin_pos_rel!=-1:
         relative_phrase=phrase[begin_pos_rel+1:begin_pos_rel+end_pos_rel-1]
         relative_phrase=other_functions.recover_scd_verb_sub(relative_phrase)
-        
+      
         #If it is a place, we have not to duplicate the nominal group
         if phrase[begin_pos_rel]!='where':
             relative_phrase=analyse_nominal_group.complete_relative(relative_phrase,nom_gr)
@@ -136,7 +157,8 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     
     #We recover the quantifier
     recover_quantifier(gn)
-            
+    
+    gn=put_rela_from_nncompl_noun(gn)        
     return gn
 
 
@@ -161,17 +183,14 @@ def recover_ns(phrase, analysis, position):
         sbj=analyse_nominal_group.refine_nom_gr(sbj)
         
         analysis.sn=analysis.sn+[fill_nom_gr(phrase, sbj, position,conjunction)]
-  
-        #Pre-processing to remove the relative
-        begin_pos_rel=analyse_nominal_group.find_relative(sbj, phrase, position, propo_rel_list)
-
-        if  begin_pos_rel!=-1:
-            end_pos_rel=other_functions.recover_end_pos_sub(phrase, propo_rel_list) 
-            #We remove the relative part of the phrase
-            phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
-           
+        
         #We take off the nominal group
         phrase=analyse_nominal_group.take_off_nom_gr(phrase, sbj, phrase.index(sbj[0]))
+        
+        if  phrase[0] in propo_rel_list:
+            end_pos_rel=other_functions.recover_end_pos_sub(phrase, propo_rel_list) 
+            #We remove the relative part of the phrase
+            phrase=phrase[end_pos_rel:]
         
         #If there is 'and', we need to duplicate the information
         if len(phrase)>position and (phrase[position]=='and' or phrase[position]=='or' or phrase[position]==':but'):
