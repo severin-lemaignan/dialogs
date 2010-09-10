@@ -8,7 +8,9 @@
  Created by Chouayakh Mahdi                                                       
  21/06/2010                                                                       
  The package contains functions that affect verbal structure                      
- Functions:                                                                       
+ Functions:                                  
+    is_cmpl_pr : to return 1 if it is pronoun else 0 
+    delete_unusable_word : to delete the word that is no parssable 
     find_vrb_adv : to recover the list of adverbs bound to verb                   
     find_adv : to recover the list of adverbs                                     
     check_proposal : to know if there is a proposal before the object             
@@ -23,6 +25,8 @@
     create_nom_gr : to add it or a determinant if it is necessary
     refine_indirect_complement : to put indirect complements with same proposal together
     refine_subsentence : to transform some subsentence to relative
+    process_compare : to process the compare
+    imperative_stc : to return the possibility to have an imperative
 """
 from dialog.resources_manager import ResourcePool
 from dialog.sentence import *
@@ -51,22 +55,28 @@ unusable_word = ResourcePool().unusable_words
 
 
 
-
 def is_cmpl_pr(word):
-    for i in complement_pronoun:
-        if word==i:
-            return 1
+    """
+    This function return 1 if it is pronoun else 0                         
+    Input=word                 Output=1 or 0                 
+    """
+    
+    if word in complement_pronoun:
+        return 1
     return 0
 
 
 
 def delete_unusable_word(phrase):
+    """
+    This function delete the word that is no parssable                        
+    Input=sentence                        Output=sentence                 
+    """
     
     for i in unusable_word:
         if phrase[0]==i:
             phrase=phrase[1:]
-            delete_unusable_word(phrase)
-    
+            delete_unusable_word(phrase) 
     return phrase
     
     
@@ -82,12 +92,12 @@ def find_vrb_adv(phrase, vg):
         return phrase
 
     #If there is an auxiliary
-    for i in aux_list:
-        if i == phrase[0]:
-            if phrase[1].endswith('ly'):
-                vg.vrb_adv=vg.vrb_adv+[phrase[1]]
-                return [phrase[0]]+phrase[2:]
+    if phrase[0] in aux_list:
+        if phrase[1].endswith('ly'):
+            vg.vrb_adv=vg.vrb_adv+[phrase[1]]
+            return [phrase[0]]+phrase[2:]
     else:
+        #Using a rule of grammar
         if phrase[0].endswith('ly'):
             vg.vrb_adv=vg.vrb_adv+[phrase[0]]
             return phrase[1:]
@@ -117,22 +127,15 @@ def find_adv(phrase,vg):
             vg.advrb= vg.advrb+[phrase[i]]
             phrase=phrase[:i]+phrase[i+1:]
             
-        for j in adv_list:
-            if j==phrase[i]:
-                flg=0
-                for k in proposal_list:
-                    if i>0 and k==phrase[i-1]:
-                        vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([phrase[i-1]],[Nominal_Group([],[phrase[i]],[],[],[])])]
-                        phrase=phrase[:i-1]+phrase[i+1:]
-                        
-                        flg=1
-                if flg==0:
-                    vg.advrb=vg.advrb+[j]
-                    phrase=phrase[:i]+phrase[i+1:]
-                break   
+        if phrase[i] in adv_list:
+            if i>0 and phrase[i-1] in proposal_list:
+                vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([phrase[i-1]],[Nominal_Group([],[phrase[i]],[],[],[])])]
+                phrase=phrase[:i-1]+phrase[i+1:]
+            else:
+                vg.advrb=vg.advrb+[phrase[i]]
+                phrase=phrase[:i]+phrase[i+1:]   
         
         i=i+1
-
     return phrase
 
 
@@ -146,10 +149,9 @@ def check_proposal(phrase, object):
     if object==[]:
         return []
 
-    #si on a une preposition on renvoie l'objet
-    for i in proposal_list:
-        if object!=phrase[0:len(object)] and i==phrase[phrase.index(object[0])-1]:
-            return [i]
+    #if there is a proposal which recovery an object
+    if object!=phrase[0:len(object)] and phrase[phrase.index(object[0])-1] in proposal_list:
+        return [phrase[phrase.index(object[0])-1]]
 
     #Default case
     return []
@@ -295,23 +297,28 @@ def state_adjective(sentence, vg):
     
     #In case there is a state verb followed by an adjective
     if sentence!=[]:
-        for k in state_vrb_list:
-            if vg.vrb_main[0]==k and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
+        if vg.vrb_main[0] in state_vrb_list and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
+            
+            #Here we have juist to process adjectives, nominal groups are processed
+            pos=analyse_nominal_group.adjective_pos(sentence,0)
+            adj_list=analyse_nominal_group.process_adj_quantifier(sentence[:pos-1])
+            vg.d_obj=[Nominal_Group([],[],adj_list,[],[])]
+            sentence=sentence[pos-1:]
+            
+            #Same as nominal groups but with adjetives
+            while sentence[0]=='or' or sentence[0]==':but':
+                if sentence[0]=='or':
+                    conjunction='OR'
+                elif sentence[0]==':but':
+                    conjunction='BUT'
+                sentence=sentence[1:]
+                
                 pos=analyse_nominal_group.adjective_pos(sentence,0)
                 adj_list=analyse_nominal_group.process_adj_quantifier(sentence[:pos-1])
-                vg.d_obj=[Nominal_Group([],[],adj_list,[],[])]
+                #We put all adjectives in the direct complement
+                vg.d_obj=vg.d_obj+[Nominal_Group([],[],adj_list,[],[])]
+                vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
                 sentence=sentence[pos-1:]
-                while sentence[0]=='or' or sentence[0]==':but':
-                    if sentence[0]=='or':
-                        conjunction='OR'
-                    elif sentence[0]==':but':
-                        conjunction='BUT'
-                    sentence=sentence[1:]
-                    pos=analyse_nominal_group.adjective_pos(sentence,0)
-                    adj_list=analyse_nominal_group.process_adj_quantifier(sentence[:pos-1])
-                    vg.d_obj=vg.d_obj+[Nominal_Group([],[],adj_list,[],[])]
-                    vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
-                    sentence=sentence[pos-1:]
     return sentence
     
     
@@ -323,20 +330,15 @@ def find_scd_vrb(phrase):
     """
     
     for i in phrase:
-
         #If there is 'to'
         if i=='to':
 
             #It should not be followed by a noun or by an adverb
             if analyse_nominal_group.find_sn_pos(phrase, phrase.index(i)+1)==[]:
-
                 #If there is a proposal after 'to'
-                for j in proposal_list:
-                    if j == phrase[phrase.index(i)+1]:
-                        return []
-
+                if phrase[phrase.index(i)+1] in proposal_list:
+                    return []
                 return [phrase[phrase.index(i)+1]]
-    
     return []
 
 
@@ -402,57 +404,59 @@ def process_subsentence(phrase,vg):
     
     #We look down the list to see if there is a subsentence
     for w in sub_list:
-        for i in phrase:
-            if i == w:
+        if w in phrase:
                 
-                begin_pos=phrase.index(i)
+            begin_pos=phrase.index(w)
                 
-                #We include the relative's proposal if there are relatives in the subsentence
-                end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], sub_list+rel_list)
+            #We include the relative's proposal if there are relatives in the subsentence
+            end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], sub_list+rel_list)
                 
-                #If it is 'where', it can be relative if before we have nominal group
-                if w=='where' or w=='which':
-                    position=phrase.index(w)-1
+            #If it is 'where', it can be relative if before we have nominal group
+            if w=='where' or w=='which':
+                position=phrase.index(w)-1
                    
-                    gr=analyse_nominal_group.find_sn_pos(phrase, position)
+                gr=analyse_nominal_group.find_sn_pos(phrase, position)
                     
-                    #We have to find the nominal group just before
-                    while position>0 and gr==[]:
-                        position=position-1
-                        gr=analyse_nominal_group.find_sn_pos(phrase, position)
-                    if gr[len(gr)-1]==w:
-                        gr=gr[:len(gr)-1]
-                
-                if (w!='where' and w!='which') or (len(gr)+position!=phrase.index(w) or (len(gr)==1 and is_cmpl_pr(gr[0])==1)):
-                    #We have to remove the proposal
-                    subsentence= phrase[begin_pos+1:begin_pos+end_pos]
-                    if len(subsentence)>1:
-                        subsentence=other_functions.recover_scd_verb_sub(subsentence)
+                #We have to find the nominal group just before
+                while position>0 and gr==[]:
+                    position=position-1
+                    gr=analyse_nominal_group.find_sn_pos(phrase, position)
+                #For exceptions, if the nominal group end with the proposal 
+                if gr!=[] and gr[len(gr)-1]==w:
+                    gr=gr[:len(gr)-1]
+            
+            #Else we return the sentence and we assume it as relative
+            if (w!='where' and w!='which') or (len(gr)+position!=phrase.index(w) or (len(gr)==1 and is_cmpl_pr(gr[0])==1)):
+                #We have to remove the proposal
+                subsentence= phrase[begin_pos+1:begin_pos+end_pos]
+                if len(subsentence)>1:
+                    subsentence=other_functions.recover_scd_verb_sub(subsentence)
                         
-                        if w!='which':
-                            #We perform processing
-                            vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
-                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
-                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
-                        else:
-                            vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.w_quest_which('w_question', 'choice', ['the']+subsentence)]
-                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
-                            vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
-                            
-                        if w=='but':
-                            #If the main verb is not a verb but a part of verbal structure => we have nominal groups
-                            for k in ['.','?','!','']+proposal_list:
-                                if vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
+                    if w!='which':
+                        #We perform processing
+                        vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
+                    else:
+                        #Exception for which
+                        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.w_quest_which('w_question', 'choice', ['the']+subsentence)]
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
+                    
+                    #If 'but' is between 2 nominal group and not before subsentence
+                    if w=='but':
+                        #If the main verb is not a verb but a part of verbal structure => we have nominal groups
+                        for k in ['.','?','!','']+proposal_list:
+                            if vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
                                     
-                                    #We make changes and return the sentence with but of nominal groups
-                                    phrase[phrase.index(w)]=':but'
-                                    vg.vrb_sub_sentence=vg.vrb_sub_sentence[:len(vg.vrb_sub_sentence)-1]
-                                    return phrase
-                         
-                        #We delete the subsentence
-                        phrase=phrase[:begin_pos]+phrase[begin_pos+end_pos:]+['.']
-                        return phrase
-
+                                #We make changes and return the sentence with but of nominal groups
+                                phrase[phrase.index(w)]=':but'
+                                vg.vrb_sub_sentence=vg.vrb_sub_sentence[:len(vg.vrb_sub_sentence)-1]
+                                return phrase
+                       
+                    #We delete the subsentence
+                    phrase=phrase[:begin_pos]+phrase[begin_pos+end_pos:]+['.']
+                    return phrase
     return phrase
 
 
@@ -470,9 +474,8 @@ def process_conjunctive_sub(phrase,vg):
     if len(phrase)>0 and phrase[0]=='that' and analyse_nominal_group.find_sn_pos(phrase, 1)!=[]:
         begin_pos=0
         
-    for i in pronoun_list:
-        if len(phrase)>2 and i==phrase[0] and phrase[1]=='that' and analyse_nominal_group.find_sn_pos(phrase, 2)!=[]:
-            begin_pos=1
+    if len(phrase)>2 and phrase[0] in pronoun_list and phrase[1]=='that' and analyse_nominal_group.find_sn_pos(phrase, 2)!=[]:
+        begin_pos=1
         
     
     if begin_pos!=-1:
@@ -501,34 +504,30 @@ def correct_i_compl(phrase,verb):
     Input=sentence and verbal class         Output=sentence and verbal class         
     """
     
-    for i in direct_trans_verb_list:
-        #If we have a direct transitive verb
-        if i==verb:
+    #If we have a direct transitive verb
+    if verb in direct_trans_verb_list:
             
-            #init
-            x=0
-            while x<len(phrase):
-                for y in rel_proposal_list:
-                    
-                    #If there is a proposal with an adverbial
-                    if x+1<len(phrase) and phrase[x]==y:
-                        #If there is a plural
-                        phrase=phrase[:x]+analyse_nominal_group.find_plural(phrase[x:])
+        #init
+        x=0
+        while x<len(phrase):
+            #If there is a proposal with an adverbial
+            if x+1<len(phrase) and phrase[x] in rel_proposal_list:
+                #If there is a plural
+                phrase=phrase[:x]+analyse_nominal_group.find_plural(phrase[x:])
                         
-                        if analyse_nominal_group.find_sn_pos(phrase, x+1)!=[]:
-                            adverbial=analyse_nominal_group.find_sn_pos(phrase, x+1)
-                            begin_pos=x-1
+                if analyse_nominal_group.find_sn_pos(phrase, x+1)!=[]:
+                    adverbial=analyse_nominal_group.find_sn_pos(phrase, x+1)
+                    begin_pos=x-1
                             
-                            #We will find the subject of the relative
-                            while analyse_nominal_group.find_sn_pos(phrase, begin_pos)==[]:
-                                begin_pos=begin_pos-1
-                            nom_gr=analyse_nominal_group.find_sn_pos(phrase, begin_pos)
+                    #We will find the subject of the relative
+                    while analyse_nominal_group.find_sn_pos(phrase, begin_pos)==[]:
+                        begin_pos=begin_pos-1
+                    nom_gr=analyse_nominal_group.find_sn_pos(phrase, begin_pos)
                             
-                            #If there nominal group is just before the adverbial
-                            if begin_pos+len(nom_gr)==x:
-                                phrase=phrase[:x]+['which','is']+[phrase[x]]+adverbial+[';']+phrase[x+len(adverbial)+1:]
-                                break
-                x=x+1
+                    #If there nominal group is just before the adverbial
+                    if begin_pos+len(nom_gr)==x:
+                        phrase=phrase[:x]+['which','is']+[phrase[x]]+adverbial+[';']+phrase[x+len(adverbial)+1:]        
+            x=x+1
     return phrase
 
 
@@ -540,8 +539,9 @@ def DOC_to_IOC(vg):
     """
     
     for x in inderect_trans_verb_list:
+        #The case of the verb only and his modal form
         if vg.vrb_main!=[] and (vg.vrb_main[0]==x or vg.vrb_main[0].endswith('+'+x)):
-            #In this case we have just one direct compelment
+            #In this case we have just one direct complement
             if vg.d_obj!=[]:
                 vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([],vg.d_obj)]
                 vg.d_obj=[]
@@ -559,14 +559,18 @@ def create_nom_gr_and(sentence):
     i=0
     
     while i < len(sentence):
+        #If we have a nominal group
         nom_gr=analyse_nominal_group.find_sn_pos(sentence, i)
         i=i+len(nom_gr)
     
-        while i < len(sentence) and (sentence[i]=='and' or sentence[i]==';'):
+        while nom_gr!=[] and i < len(sentence) and (sentence[i]=='and' or sentence[i]==';'):
+            #If we have 'and'
             if sentence[i]==';':
                 sentence[i]='and'
+            #We add the determinant
             sentence=sentence[:i+1]+['a']+sentence[i+1:]
             i=i+1
+            #We continue
             nom_gr=analyse_nominal_group.find_sn_pos(sentence, i)
             i=i+len(nom_gr)
         i=i+1
@@ -581,29 +585,28 @@ def create_nom_gr(sentence,aim):
     Input=sentence                         Output=sentence       
     """
     
-    #init
-    flag=0
-    
     if sentence[0]=='.' or sentence[0]=='?' or sentence[0]=='!' or sentence[0]==';':
         return sentence[1:] 
     
-    for j in unusable_word:
-        if j==sentence[0]:
-            return sentence[1:] 
-        
+    #We delete word that we don't use
+    if sentence[0] in unusable_word:
+        return sentence[1:] 
+    
+    #Some word linked to the questions
     if sentence[0]=='from' and aim=='origin':
         return sentence[1:]
     
-    for i in proposal_list:
-        if i==sentence[0]:
-            flag=1
-    if flag==1:
+    #If we have a proposal
+    if sentence[0] in proposal_list:
         if sentence[1]!='.' and sentence[1]!='?' and sentence[1]!='!' and sentence[1]!=';':
+            #We add a determinant
             sentence = [sentence[0]]+['a']+sentence[1:]
             sentence = [sentence[0]]+ create_nom_gr_and(sentence[1:])
         else:
+            #If we have a punctuation we add 'it'
             return [sentence[0]]+['it']+sentence[1:]
     else:
+        #Default case : we add object
         sentence = ['a']+sentence
         sentence = create_nom_gr_and(sentence)
     
@@ -619,17 +622,18 @@ def refine_indirect_complement(vg):
     
     #init
     i=0
+    
     while i < len(vg.i_cmpl):
         j=i+1
         if vg.i_cmpl[i].prep!=[]:
             while j < len(vg.i_cmpl):
+                #If we have the same proposal, we concatenate them
                 if vg.i_cmpl[j].prep!=[] and vg.i_cmpl[i].prep==vg.i_cmpl[j].prep:
                     vg.i_cmpl[i].nominal_group=vg.i_cmpl[i].nominal_group+vg.i_cmpl[j].nominal_group
                     vg.i_cmpl=vg.i_cmpl[:j]+vg.i_cmpl[j+1:]
                 else:
                     j=j+1
         i=i+1
-    
     return vg    
 
 
@@ -642,6 +646,7 @@ def refine_subsentence(vg):
     
     #init
     i=0
+    
     while i < len(vg.vrb_sub_sentence):
         
         if vg.vrb_sub_sentence[i].aim=='what':
@@ -653,12 +658,11 @@ def refine_subsentence(vg):
             #We create a nominal group
             gn=Nominal_Group(['the'],['thing'],[],[],[vg.vrb_sub_sentence[i]])
             vg.d_obj=vg.d_obj+[gn]
-            #We delete the subsebtebce
+            #We delete the subsentence
             vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
             i=i-1
             
         if i>=0 and vg.vrb_sub_sentence[i].aim=='where':
-
             #We have to make some changers
             vg.vrb_sub_sentence[i].data_type='relative'
             #We create a nominal group
@@ -671,7 +675,7 @@ def refine_subsentence(vg):
                     vg.i_cmpl[len(vg.i_cmpl)-1].prep=[]
                     break
                 
-            #We delete the subsebtebce
+            #We delete the subsentence
             vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
             i=i-1
         
@@ -681,12 +685,18 @@ def refine_subsentence(vg):
 
 
 def process_compare(sentence,vg):
+    """
+    This function process the compare
+    Input=sentence and verbal structure      Output=sentence verbal structure        
+    """
+    
     #init
     i=0
     conjunction='AND'
     gr_nom_list=[]
     
     while i<len(sentence):
+        #We will find 'than'
         if sentence[i]=='than':
             compare={'nom_gr':[],'object':''}
             
@@ -716,36 +726,44 @@ def process_compare(sentence,vg):
                         conjunction='BUT'
                     else:
                         conjunction='AND'
-                    sentence=sentence[i+1:]
-                    
+                    sentence=sentence[i+1:]       
                 else:
                     object=[]
             
+            #Add the nominal group
             compare['nom_gr']=gr_nom_list
-           
+            
+            #Comparator : ends with 'er'
             if sentence[i-1].endswith('er'):
                 compare['object']=sentence[i-1]
                 sentence=sentence[:i-1]+sentence[i+1:]
+            
+            #Comparator : with 2 words
             elif sentence[i-2]=='more' or sentence[i-2]=='less':
                 compare['object']=sentence[i-2]+'+'+sentence[i-1]
                 sentence=sentence[:i-1]+sentence[i+1:]
+            
+            #Comparator : exceptions
             elif sentence[i-1]=='more' or sentence[i-1]=='less':
                 compare['object']=sentence[i-1]
                 sentence=sentence[:i-1]+sentence[i+1:]
-                
+            
             vg.comparator=vg.comparator+[compare]
-        
         i=i+1
     return sentence
 
 
 
-def imerative_stc(sentence):
+def imperative_stc(sentence):
+    """
+    This function return the possibility to have an imperative
+    Input=sentence        Output=0 can be imperative and 1 no      
+    """
+    
     if sentence==[]:
         return 1
-    for i in adv_list+proposal_list:
-        if sentence[0]==i:
-            return 1
+    if sentence[0] in adv_list+proposal_list:
+        return 1
     if sentence[0]=='.' or sentence[0]=='?' or sentence[0]=='!':
         return 1
     return 0

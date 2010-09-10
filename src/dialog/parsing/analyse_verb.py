@@ -72,9 +72,8 @@ def find_tense_statement (phrase):
         #Passive form in the present
         elif find_tense_statement(['have']+phrase[1:])=='present perfect':
             #If there is an adjective and not a verb
-            for x in adj_ed_list:
-                if x==phrase[1]:
-                    return  'present simple'
+            if phrase[1] in adj_ed_list:
+                return  'present simple'
             return 'present passive'
     
     #processing for the progressive form and passive form (in past)
@@ -84,9 +83,8 @@ def find_tense_statement (phrase):
             return 'past progressive'
         elif find_tense_statement(['have']+phrase[1:])=='present perfect':
             #If there is an adjective and not a verb
-            for x in adj_ed_list:
-                if x==phrase[1]:
-                    return  'past simple'
+            if phrase[1] in adj_ed_list:
+                return  'past simple'
             return 'past passive'
         
     #For using modal
@@ -145,7 +143,6 @@ def find_verb_statement (phrase, tense):
     
     elif tense=='past conditional' or 'passive conditional':
         return [phrase[2]]
-        
 
     #Default case
     return []
@@ -178,9 +175,8 @@ def find_tense_question (phrase, aux):
             return 'present progressive'
         elif phrase[0].endswith('ed'):
             #If there is an adjective and not a verb
-            for x in adj_ed_list:
-                if x==phrase[1]:
-                    return  'present simple'
+            if phrase[1] in adj_ed_list:
+                return  'present simple'
             return 'present passive'
         for i in past_irreg_vrb:
             if phrase[0]==i[2]:
@@ -194,9 +190,8 @@ def find_tense_question (phrase, aux):
             return 'past progressive'
         elif phrase[0].endswith('ed'):
             #If there is an adjective and not a verb
-            for x in adj_ed_list:
-                if x==phrase[1]:
-                    return  'past simple'
+            if phrase[1] in adj_ed_list:
+                return  'past simple'
             return 'past passive'
         for i in past_irreg_vrb:
             if phrase[0]==i[2]:
@@ -260,6 +255,7 @@ def find_verb_question (phrase, aux, tense):
     
     if tense=='present passive' and phrase[0]=='be':
         return [phrase[1]]
+    
     #When others
     return [phrase[0]]
 

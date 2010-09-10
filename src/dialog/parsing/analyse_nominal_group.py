@@ -55,9 +55,8 @@ def is_an_adj(word):
     """
     
     #It is a noun so we have to return 1
-    for j in noun_list+verb_list:
-        if word==j:
-            return 0
+    if word in noun_list+verb_list:
+        return 0
     
     #For the regular adjectives
     for k in adj_rules:
@@ -69,9 +68,8 @@ def is_an_adj(word):
         return 1
         
     #We use the irregular adjectives list to find it
-    for i in adjective_list+superlative_number+adj_quantifier:
-        if word==i:
-            return 1
+    if word in adjective_list+superlative_number+adj_quantifier:
+        return 1
     
     return 0
 
@@ -94,9 +92,8 @@ def adjective_pos(phrase, word_pos):
         return 0
     
     #It is a noun so we have to return 1
-    for j in noun_list:
-        if phrase[word_pos]==j:
-            return 1
+    if phrase[word_pos] in noun_list:
+        return 1
     
     #For the regular adjectives
     for k in adj_rules:
@@ -108,9 +105,8 @@ def adjective_pos(phrase, word_pos):
         return 1+adjective_pos(phrase, word_pos+1)
     
     #We use the irregular adjectives list to find it
-    for i in adjective_list+superlative_number+adj_quantifier:
-        if phrase[word_pos]==i:
-            return 1+ adjective_pos(phrase, word_pos+1)
+    if phrase[word_pos] in adjective_list+superlative_number+adj_quantifier:
+        return 1+ adjective_pos(phrase, word_pos+1)
 
     #Default case
     return 1
@@ -131,22 +127,19 @@ def find_sn_pos (phrase, begin_pos):
     end_pos = 1
     
     #If it is a pronoun
-    for i in pronoun_list:
-        if phrase[begin_pos]==i:
-            return [phrase[begin_pos]]
+    if phrase[begin_pos] in pronoun_list:
+        return [phrase[begin_pos]]
 
     #If there is a nominal group with determinant
-    for j in det_list:
-        if phrase[begin_pos]==j:
-            end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
-            return phrase[begin_pos : end_pos+begin_pos]
+    if phrase[begin_pos] in det_list:
+        end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
+        return phrase[begin_pos : end_pos+begin_pos]
     
     #If we have 'something'
     for k in composed_noun:
         if phrase[begin_pos].startswith(k):
-            for l in word_list:
-                if l==phrase[begin_pos]:
-                    return []
+            if phrase[begin_pos] in word_list:
+                return []
             return [phrase[begin_pos]]    
        
     #If there is a number, it will be the same with determinant
@@ -179,22 +172,19 @@ def find_sn (phrase):
 
     for x in phrase:
         #If there is a pronoun
-        for y in pronoun_list:
-            if x==y:
-                return [phrase[phrase.index(x)]]
+        if x in pronoun_list:
+            return [phrase[phrase.index(x)]]
 
         #If there is a nominal group with determinant
-        for j in det_list:
-            if x==j:
-                nb_position= nb_position + adjective_pos(phrase, phrase.index(x)+1)
-                return phrase[phrase.index(x) : phrase.index(x)+nb_position]
+        if x in det_list:
+            nb_position= nb_position + adjective_pos(phrase, phrase.index(x)+1)
+            return phrase[phrase.index(x) : phrase.index(x)+nb_position]
         
         #If we have 'something'
         for k in composed_noun:
             if x.startswith(k):
-                for l in word_list:
-                    if l==x:
-                        return []
+                if x in word_list:
+                    return []
                 return [phrase[phrase.index(x)]]
         
         #If there is a number, it will be the same with determinant
@@ -224,24 +214,27 @@ def find_the_plural(phrase, position):
     if len(phrase)-position-1<0:
         return -1
     
+    #It is a number the word is not a plural
     if other_functions.number(phrase[position])==1:
         return -1
     
-    for a in proposal_list:
-        if phrase[position]==a:
-            return find_the_plural(phrase, position+1)
+    #If it is proposal we continue
+    if phrase[position] in proposal_list:
+        return find_the_plural(phrase, position+1)
     
-    for i in end_s_list:
-        if i==phrase[position]:
-            return -1
+    if phrase[position] in end_s_list:
+        return -1
     
+    #If it is adjective we continue
     if is_an_adj(phrase[position])==1:
         if find_the_plural(phrase, position+1)!=-1:
             return position
     
+    #If it is an  adjective ends with 's'
     if phrase[0].endswith("'s") or phrase[position].endswith("ous"):
         return -1
     
+    #we have plural if the noun ends with 's'
     if find_sn_pos(phrase, position)==[] and phrase[position].endswith('s'):
         return position
 
@@ -255,8 +248,10 @@ def find_plural(phrase):
     Input=sentence                                   Output=sentence      
     """ 
     
+    #We find the position of the plural in the phrase
     position=find_the_plural(phrase,0)
     if position!=-1:
+        #If not -1 we have plural without determinant
         phrase=phrase[:position]+['a']+phrase[position:]
     return phrase
 
@@ -273,14 +268,12 @@ def refine_nom_gr(nom_gr):
         return nom_gr[:len(nom_gr)-1]
     
     #Case of after we have a indirect complement
-    for i in proposal_list:
-        if nom_gr[len(nom_gr)-1]==i:
-            return nom_gr[:len(nom_gr)-1]
+    if nom_gr[len(nom_gr)-1] in proposal_list:
+        return nom_gr[:len(nom_gr)-1]
     
     #Case of after we have an adverb
-    for i in adv_list:
-        if nom_gr[len(nom_gr)-1]==i:
-            return nom_gr[:len(nom_gr)-1]
+    if nom_gr[len(nom_gr)-1] in adv_list:
+        return nom_gr[:len(nom_gr)-1]
     return nom_gr
 
 
@@ -294,10 +287,10 @@ def return_det (nom_gr):
     #nom_gr is empty
     if nom_gr==[]:
         return []
-    for j in det_list:
-        #We return the first element of the list
-        if nom_gr[0]==j:
-            return [j]
+    
+    #We return the first element of the list
+    if nom_gr[0] in det_list:
+        return [nom_gr[0]]
     
     #If there is a number
     if other_functions.number(nom_gr[0])==1:
@@ -323,12 +316,11 @@ def return_adj (nom_gr):
         return []
 
     #We assumed that the noun represented by 1 element at the end
-    for j in det_list:
-        if nom_gr[0]==j:
-            while k < len(nom_gr):
-                if is_an_adj(nom_gr[k])==1:
-                    adj_list=adj_list+[nom_gr[k]]
-                k=k+1
+    if nom_gr[0] in det_list:
+        while k < len(nom_gr):
+            if is_an_adj(nom_gr[k])==1:
+                adj_list=adj_list+[nom_gr[k]]
+            k=k+1
     return adj_list
 
 
@@ -354,8 +346,7 @@ def process_adj_quantifier(adj_list):
     """
     
     #init
-    adjective_list=[]
-    flg=0     
+    adjective_list=[]   
     
     #Now, we will put quantifier (if it exist) with the adjective
     z=len(adj_list)-1
@@ -363,18 +354,13 @@ def process_adj_quantifier(adj_list):
         adjective_list=[[adj_list[z],[]]]+adjective_list
     else:
         while z >= 0:
-            for j in adj_quantifier:
-                if j==adj_list[z]:
-                    #We can't have quantifier if there is no adjective
-                    flg=1
-                    adjective_list[0][1]=[adj_list[z]]+adjective_list[0][1]
-                    break
-            if flg==0:
-                adjective_list=[[adj_list[z],[]]]+adjective_list
+            if adj_list[z] in adj_quantifier:
+                #We can't have quantifier if there is no adjective
+                adjective_list[0][1]=[adj_list[z]]+adjective_list[0][1]
             else:
-                flg=0
-            z=z-1
-        
+                adjective_list=[[adj_list[z],[]]]+adjective_list
+            
+            z=z-1     
     return adjective_list
 
 
@@ -388,7 +374,6 @@ def return_noun (nom_gr, adjective, determinant):
     #If nom_gr is empty
     if nom_gr==[]:
         return []
-    
     return nom_gr[len(determinant)+len(adjective):]
 
 
@@ -404,17 +389,14 @@ def find_nom_gr_compl (nom_gr, phrase, position):
     #If the nom_gr or phrase is empty
     if nom_gr==[]:
         return []
-
     else:
         #This condition include the case when we have 'of' at the end of the sentence
         if len(phrase)<=len(nom_gr)+position or len(phrase)==len(nom_gr)+position+1:
             return []
-
         else:
             #We have a complement when there is 'of' before
             if phrase[position+len(nom_gr)]=='of':
                 return find_sn_pos(phrase, position+len(nom_gr)+1)
-
     #Default case
     return []
 
@@ -453,18 +435,15 @@ def find_relative (nom_gr, phrase, position, propo_rel_list):
     #Nominal group or phrase is empty
     if nom_gr==[] or phrase ==[]:
         return -1
-        
+
+    #Relative motion is obtained after a proposal
     else:
-        #Relative motion is obtained after a proposal
-        for i in propo_rel_list:
-
-            #We deleted all nominal groups and their complements => we have not nom_gr+relative but relative only
-            if phrase[0:len(nom_gr)]!=nom_gr and phrase[0]==i:
-                return 0
-
-            #The proposal is after the nominal group
-            if len(phrase)>len(nom_gr)+position+1 and i == phrase[position+len(nom_gr)]:
-                return position+len(nom_gr)
+        #We deleted all nominal groups and their complements => we have not nom_gr+relative but relative only
+        if phrase[0:len(nom_gr)]!=nom_gr and phrase[0] in propo_rel_list:
+            return 0
+        #The proposal is after the nominal group
+        if len(phrase)>len(nom_gr)+position+1 and phrase[position+len(nom_gr)] in propo_rel_list:
+            return position+len(nom_gr)
     
     return -1
 
@@ -484,18 +463,18 @@ def complete_relative(phrase, sbj):
     if find_sn_pos(phrase, 0)!=[]:
         
         while i < len(phrase):
-            for j in proposal_list:
-                if j==phrase[i] and find_sn_pos(phrase, i+1)==[]:
-                    #It is an indirect complement
-                    phrase=phrase[:i+1]+sbj+phrase[i+1:]
-                    return phrase
-                elif j==phrase[i]:
-                    i=i+len(find_sn_pos(phrase, i+1))
+            if phrase[i] in proposal_list and find_sn_pos(phrase, i+1)==[]:
+                #It is an indirect complement
+                phrase=phrase[:i+1]+sbj+phrase[i+1:]
+                return phrase
+            
+            elif phrase[i] in proposal_list:
+                #We don't have an indirect object
+                i=i+len(find_sn_pos(phrase, i+1))
+            
             i=i+1
-        
         #It is a direct complement
         phrase=phrase+sbj
    
     #Default case
     return phrase               
-    

@@ -26,6 +26,8 @@ noun_end_s_sing = ResourcePool().nouns_end_s
 quantifier_list = ResourcePool().det_quantifiers
 irreg_plur_noun = ResourcePool().plural_nouns
 
+
+
 def recover_quantifier(nom_gr):
     """
     This function recover the quantifier and put the noun in singular form if it's in plural          
@@ -193,5 +195,5 @@ def recover_ns(phrase, analysis, position):
         
         else:
             sbj=[]
-    
+            
     return phrase

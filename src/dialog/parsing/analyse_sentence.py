@@ -7,15 +7,16 @@
  25/06/2010                                                                       
  The package contains functions to analyse all sentence of a utterance            
  Functions:                                 
-    recover_aux_list : to recover the auxiliary list  
-    dispatching : to distribute the sentence           
+    dispatching : to distribute the sentence          
+    separ_sentence : to process the beginning of the sentence 
     exclama_sentence : to process exclamatively sentence                     
     w_quest_where : to process many different type of where question      
     w_quest_class : to process what question about classification   
     w_quest_what  : to process many different type of what question                 
     w_quest_quant : to process many different type of how question
-    w_quest_how : to process many different type of how question                    
-    condi_sentence : to process the conditional sentence                           
+    w_quest_how : to process many different type of how question
+    w_quest_which : to process which question                    
+    stc_start_subsentence : to process the subsentence at the beginning of the sentence                           
     w_quest_whose : to process many different type of whose question   
     w_quest_whom : to process whom question
     y_n_ques : to process the yes or no question from of a sentence                 
@@ -165,22 +166,29 @@ def dispatching(sentence):
 
 
 def separ_sentence(sentence, data_type):
+    """
+    This function process the beginning of the sentence                       
+    Input=the sentence                                   Output=class Sentence   
+    """
     
-    if sentence[0]=='no' and len(sentence)>0 and sentence[1]!=';' and sentence[1]!='.'and sentence[1]!='?' and sentence[1]!='!':
-        return [other_sentence('', '', sentence)]
-    
+    #If we have good followed by another word it can be start
     if data_type=='agree' and len(sentence)>1 and (sentence[1]=='morning' or sentence[1]=='evening' or sentence[1]=='afternoon'):
         sentences=[Sentence('start', '', [], [])]
     else:
+        #init
         sentences=[Sentence(data_type, '', [], [])]
+    
     for i in sentence:
         if i==';':
+            #We put the first sentence in the aim
             sentences[0].aim=" ".join(sentence[:sentence.index(i)]).rstrip('; ')+'.'
             sentence=sentence[sentence.index(i)+1:]
+            #We process the end of the sentence as a complete sentence
             sentence = preprocessing.process_and_beginning_sentence(sentence)
             sentences = sentences + dispatching(sentence)
             break
         else:
+            #In this case, it is the end of the sentence
             sentences[0].aim=" ".join(sentence).rstrip('. ')+'.'
            
     return sentences
@@ -201,11 +209,13 @@ def exclama_sentence(sentence):
                 sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 1)
                 return analysis
             elif i[1]=='2':
+                #It is an exclamation sentence
                 analysis=Sentence('exclamation', '', [], [])
                 #We recover the subject
                 sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
                 return analysis
     
+    #If we have an imperative it can be forced
     return other_sentence('interjection', '', sentence)
      
 
@@ -250,29 +260,29 @@ def w_quest_what(type, sentence):
     """
     
     aux_list = other_functions.recover_aux_list()
-    for l in aux_list:
-        if sentence[1]==l:
-            #We start with a processing with the function of y_n_question's case
-            analysis=y_n_ques(type, 'thing',sentence[1:])
+    if sentence[1] in aux_list:
             
-            vg=analysis.sv[0]
-            #The case when we have 'happen'
-            if analysis.sv[0].vrb_main[0].endswith('happen'):
-                analysis.aim='situation'
-
-            #The case when we have 'think'
-            elif analysis.sv[0].vrb_main[0].endswith('think+of') or analysis.sv[0].vrb_main[0].endswith('think+about'):
-                analysis.aim='opinion'
-
-            #The case when we have 'like' + conditional
-            elif analysis.sv[0].vrb_main[0].endswith('like') and not(analysis.sv[0].vrb_tense.endswith('conditional')):
-                analysis.aim='description'
-
-            #The case when we have 'do' + ing form
-            elif vg.vrb_main[0].endswith('do') and vg.i_cmpl!=[] and vg.i_cmpl[0].nominal_group[0].adj!=[] and vg.i_cmpl[0].nominal_group[0].adj[0][0].endswith('ing'):
-                analysis.aim='explication'
+        #We start with a processing with the function of y_n_question's case
+        analysis=y_n_ques(type, 'thing',sentence[1:])
             
-            return analysis
+        vg=analysis.sv[0]
+        #The case when we have 'happen'
+        if analysis.sv[0].vrb_main[0].endswith('happen'):
+            analysis.aim='situation'
+
+        #The case when we have 'think'
+        elif analysis.sv[0].vrb_main[0].endswith('think+of') or analysis.sv[0].vrb_main[0].endswith('think+about'):
+            analysis.aim='opinion'
+
+        #The case when we have 'like' + conditional
+        elif analysis.sv[0].vrb_main[0].endswith('like') and not(analysis.sv[0].vrb_tense.endswith('conditional')):
+            analysis.aim='description'
+
+        #The case when we have 'do' + ing form
+        elif vg.vrb_main[0].endswith('do') and vg.i_cmpl!=[] and vg.i_cmpl[0].nominal_group[0].adj!=[] and vg.i_cmpl[0].nominal_group[0].adj[0][0].endswith('ing'):
+            analysis.aim='explication'
+            
+        return analysis
     
     analysis=y_n_ques(type, sentence[1],sentence[2:])
     return analysis
@@ -298,8 +308,8 @@ def w_quest_quant(type, request, sentence):
     if analysis.sn==[]:
         analysis.sn=[Nominal_Group(['a'],[sentence[2]],[],[],[])]
 
-    #There is not direct object in the sentence
     else:
+        #There is not direct object in the sentence
         analysis.sv[0].d_obj=[Nominal_Group(['a'],[sentence[2]],[],[],[])]
     
     return analysis
@@ -313,14 +323,13 @@ def w_quest_how(type, sentence):
     """
     
     aux_list = other_functions.recover_aux_list()
-    for l in aux_list:    
-        if sentence[1]==l:
-            analysis=y_n_ques(type, 'manner', sentence[1:])
+    if sentence[1] in aux_list:
+        analysis=y_n_ques(type, 'manner', sentence[1:])
         
-            #The case when we have 'do' + ing form
-            if analysis.sv[0].vrb_main[0].endswith('like'):
-                analysis.aim='opinion'
-            return analysis
+        #The case when we have 'do' + ing form
+        if analysis.sv[0].vrb_main[0].endswith('like'):
+            analysis.aim='opinion'
+        return analysis
         
     analysis=y_n_ques(type, sentence[1],sentence[2:])
     return analysis
@@ -328,18 +337,29 @@ def w_quest_how(type, sentence):
 
 
 def w_quest_which(type, request, sentence):
+    """
+    This function process which question                       
+    Input=type of sentence, the sentence      Output=class Sentence                  
+    """
     
+    #We start by finding the nominal group
     gr=preprocessing.determination_nom_gr(sentence, 0,'of')
+    
+    #After the first gr if there is no nominal group
     if analyse_nominal_group.find_sn_pos(sentence, len(gr))==[]:
         for i in frt_wd:
+            #If just after we have an a auxiliary
             if sentence[len(gr)]==i[0] and i[1]=='3':
+                #With subject => it is a yes or no question form
                 if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
                     analysis=y_n_ques(type, request, sentence[len(gr):])
                     nominal_gr=other_sentence(type, request, gr)
                     analysis.sv[0].d_obj=nominal_gr.sn
                     return analysis
-                           
+        #Else it is like a statement         
         return other_sentence(type, request, sentence)
+    
+    #Else if not, the first nominal group is the subject
     else:
         analysis=other_sentence(type, request, sentence[len(gr):])
         nominal_gr=other_sentence(type, request, gr)
@@ -350,14 +370,14 @@ def w_quest_which(type, request, sentence):
     
 def stc_start_subsentence(sentence):
     """
-    This function process the conditional sentence
+    This function process the subsentence at the beginning of the sentence
     Input=sentence                                          Output=class Sentence    
     """
     #We have to add punctuation if there is not
     if sentence[len(sentence)-1]!='.' and sentence[len(sentence)-1]!='?' and sentence[len(sentence)-1]!='!':
         sentence=sentence+['.']
     
-    #We recover the conditional sentence
+    #We recover the subsentence
     for i in sentence:
         if i==';' or i=='.' or i=='?' or i=='!':
             subsentence=sentence[1:sentence.index(i)]
@@ -370,6 +390,7 @@ def stc_start_subsentence(sentence):
                 analysis=Sentence('', '', [], [vg])
             break
     
+    #We process the subsentence 
     analysis.sv[0].vrb_sub_sentence=analysis.sv[0].vrb_sub_sentence+dispatching(subsentence)
     if analysis.sv[0].vrb_sub_sentence!=[]:
         analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type='subsentence+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
@@ -450,9 +471,8 @@ def y_n_ques(type, request, sentence):
     aux=sentence[0]
     
     #We have to know if there is a modal
-    for m in modal_list:
-        if aux==m:
-            modal=aux
+    if aux in modal_list:
+        modal=aux
 
     #If we have a negative form
     if sentence[1]=='not':
@@ -476,19 +496,18 @@ def y_n_ques(type, request, sentence):
     sentence=sentence[1:]
     
     #We have to separate the case using these, this or there
-    for p in det_dem_list:
-        if p==sentence[0] and analyse_verb.infinitive([aux], 'present simple')==['be']:
-            #We recover this information and remove it
-            analysis.sn=[Nominal_Group([p],[],[],[],[])]
-            if p=='there' and aux=='are':
-                analysis.sn[0]._quantifier='SOME'
-            sentence=sentence[1:]
+    if sentence[0] in det_dem_list and analyse_verb.infinitive([aux], 'present simple')==['be']:
+        #We recover this information and remove it
+        analysis.sn=[Nominal_Group([sentence[0]],[],[],[],[])]
+        if sentence[0]=='there' and aux=='are':
+            analysis.sn[0]._quantifier='SOME'
+        sentence=sentence[1:]
     
     if analysis.sn==[]:
         #We recover the subject
         sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
     
-    if aux=='do' and analyse_verbal_structure.imerative_stc(sentence)==1:
+    if aux=='do' and analyse_verbal_structure.imperative_stc(sentence)==1:
         return other_sentence('', '', stc)
     
     #If there is one element => it is an auxiliary => verb 'be'
@@ -560,12 +579,9 @@ def y_n_ques(type, request, sentence):
     for p in det_dem_list:
         if analysis.sn!=[] and analysis.sn[0].det==[p] and analysis.sn[0].noun==[]:
             if sentence!=[0] and sentence[0]=='.' and sentence[0]=='?' and sentence[0]=='!':
-                flg=0
-                for k in proposal_list:
-                    if k==sentence[0]:
-                        flg=1
-                        break
-                if flg!=1:
+                if sentence[0] in proposal_list:
+                    pass
+                else:
                     analysis.sn[0].noun=[sentence[0]]
                     sentence=sentence[1:]
                     sentence=analyse_verbal_structure.state_adjective(sentence, vg)
@@ -577,6 +593,7 @@ def y_n_ques(type, request, sentence):
         #We recover the direct, indirect complement and the adverbial
         stc=analyse_verbal_structure.recover_obj_iobj(stc, vg)
         if stc==sentence:
+            #We leave the loop
             break
         else:
             sentence=stc
@@ -621,13 +638,12 @@ def other_sentence(type, request, sentence):
 
         
         #We have to separate the case using these, this or there
-        for p in det_dem_list:
-            if p==sentence[0] and analyse_verb.infinitive([sentence[1]], 'present simple')==['be']:
-                #We recover this information and remove it
-                analysis.sn=[Nominal_Group([p],[],[],[],[])]
-                if p=='there' and sentence[1]=='are':
-                    analysis.sn[0]._quantifier='SOME'
-                sentence=sentence[1:]
+        if sentence[0] in det_dem_list and analyse_verb.infinitive([sentence[1]], 'present simple')==['be']:
+            #We recover this information and remove it
+            analysis.sn=[Nominal_Group([sentence[0]],[],[],[],[])]
+            if sentence[0]=='there' and sentence[1]=='are':
+                analysis.sn[0]._quantifier='SOME'
+            sentence=sentence[1:]
         
         if analysis.sn==[]:
             #We recover the subject
@@ -635,11 +651,10 @@ def other_sentence(type, request, sentence):
         
         if sentence!=[]:
             #We have to know if there is a modal
-            for m in modal_list:
-                if sentence[0]==m:
-                    modal=sentence[0]
-                    if modal=='can' or modal=='must' or modal=='shall' or modal=='may':
-                        sentence=sentence[1:]
+            if sentence[0] in modal_list:
+                modal=sentence[0]
+                if modal=='can' or modal=='must' or modal=='shall' or modal=='may':
+                    sentence=sentence[1:]
                     
             #We must take into account all possible cases to recover the sentence's tense
             if len(sentence)>1 and sentence[1]=='not':
@@ -693,9 +708,8 @@ def other_sentence(type, request, sentence):
         analysis.data_type='imperative'
         vg.vrb_tense='present simple'
         
-        for z in proposal_list:
-            if z==sentence[0]:
-                sentence=['.']+sentence
+        if sentence[0] in proposal_list:
+            sentence=['.']+sentence
                 
         #Negative form
         if sentence[1]=='not':
@@ -755,6 +769,7 @@ def other_sentence(type, request, sentence):
         #We recover the direct, indirect complement and the adverbial
         stc=analyse_verbal_structure.recover_obj_iobj(stc, vg)
         if stc==sentence:
+            #We leave the loop
             break
         else:
             sentence=stc
@@ -786,7 +801,6 @@ def sentences_analyzer(sentences):
             #We have to add punctuation if there is not
             if i[len(i)-1]!='.' and i[len(i)-1]!='?' and i[len(i)-1]!='!':
                 i=i+['.']
-            
             class_sentence_list=class_sentence_list+dispatching(i)
     
     #Add some information if there is an interjection
@@ -801,16 +815,18 @@ def sentences_analyzer(sentences):
     
     #To simplify the interpretation, we have to perform some changes
     for k in class_sentence_list:
-        
+        #If subject is 'there', we change it by the object
         if k.sn!=[] and k.sn[0].det==['there']:
             k.sn=k.sv[0].d_obj
             k.sv[0].d_obj=[]
         
+        #If sentence is empty, we take off the verb
         if k.sv!=[] and (k.sv[0].vrb_main==['.'] or k.sv[0].vrb_main==['?'] or k.sv[0].vrb_main==['!']):
             k.sv[0].vrb_main=[]
             if k.data_type=='imperative':
                 k.data_type='statement'
         
+        #If we have imperative with verb 'see' => end
         if k.data_type=='imperative' and k.sv[0].vrb_main==['see'] and k.sv[0].d_obj[0].noun==['you']:
             k.data_type='end'
             k.aim=''

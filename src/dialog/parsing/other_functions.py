@@ -14,6 +14,8 @@
     recover_aux_list : to recover the auxiliary list
     find_scd_verb_sub : to find 'to' of probably second verb and transform it into ':to'               
     recover_scd_verb_sub : to transform ':to' into 'to' if it isn't in subsentence of the subsentence
+    there_is_pronoun : to return 0 if all nominal groups have the same form
+    get_off_point : to get off the punctuation from the word
 """
 from dialog.resources_manager import ResourcePool
 
@@ -27,14 +29,15 @@ superlative_number = ResourcePool().adjective_numbers_digit
 sub_list = ResourcePool().subsentences
 rel_list = ResourcePool().relatives
 
+
+
 def find_cap_lettre(word):
     """
     Function return 1 if the word starts with upper case letter                       
     Input=word               Output=flag(0 if no upper case or 1 if upper case)        
     """
-    for i in cap_let_list:
-        if word[0]==i:
-            return 1
+    if word[0] in cap_let_list:
+        return 1
     return 0
 
 
@@ -69,11 +72,10 @@ def recover_end_pos_sub(phrase, propo_sub_list):
     for y in phrase:
         
         position=position+1
-        for x in propo_sub_list:
-            #If there is a proposal we increment nb_sub
-            if y==x:
-                nb_sub=nb_sub+1
-                break
+        
+        #If there is a proposal we increment nb_sub
+        if y in propo_sub_list:
+            nb_sub=nb_sub+1
         
         #If there is a ';' we decrement nb_sub
         if y==';':
@@ -99,7 +101,9 @@ def number(word):
     for n in number_list:
         if word.startswith(n[1]):
             return 1
+        
         if word.startswith(n[0]): 
+            #We have adjective-number
             if word.endswith('th'):
                 return 2
             else:
@@ -195,10 +199,9 @@ def find_scd_verb_sub(sentence):
     
     while i<len(sentence):
         
-        for j in sub_list+rel_list:
-            if sentence[i]==j:
-                flag=flag+1
-                break
+        if sentence[i] in sub_list+rel_list:
+            flag=flag+1
+                
         if sentence[i]==';':
             flag=flag-1
             
@@ -221,10 +224,9 @@ def recover_scd_verb_sub(sentence):
     
     while i<len(sentence):
         
-        for j in sub_list+rel_list:
-            if sentence[i]==j:
-                flag=flag+1
-                break
+        if sentence[i] in sub_list+rel_list:
+            flag=flag+1
+               
         if sentence[i]==';':
             flag=flag-1
             
@@ -237,23 +239,33 @@ def recover_scd_verb_sub(sentence):
 
 
 
-def there_is_pronoun(list_nom_gr, nom_gr):
+def there_is_pronoun(list_nom_gr):
+    """
+    This function return 0 if all nominal groups have the same form
+    pronoun or det+adj+noun               
+    Input=list of nominal group              Output=1 or 0                      
+    """ 
+    
+    #init
     flag=0
+    
     for i in list_nom_gr:
         if flag==1 and (len(i)!=1 or find_cap_lettre(i[0])==1):
             return 1
         if len(i)==1 and find_cap_lettre(i[0])==0:
+            #flag==1 we have a pronoun
             flag=1
-   
-    if flag==1 and (len(i)!=1 or find_cap_lettre(nom_gr)==1):
-        
-        return 1
-    
+            
     return 0
 
 
 
 def get_off_point(word):
+    """
+    This function get off the punctuation from the word              
+    Input=word                              Output=word                      
+    """ 
+    
     if word.endswith('.') or word.endswith('!') or word.endswith('?'):
         point=word[len(word)-1]
         while word.endswith(point):
