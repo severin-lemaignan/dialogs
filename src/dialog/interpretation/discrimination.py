@@ -67,10 +67,10 @@ class Discrimination():
     def get_discriminant(self, agent, objL, ignoreDesc, zPartial):
         discriminants = self.oro.discriminateForAgent(agent, objL)
         
-        logger.debug(  '> Possible discriminants: ' +  \
-                        str(colored_print(discriminants[1], 'magenta')) + \
-                        " (complete discriminants: " + \
-                        str(colored_print(discriminants[0], 'magenta')) + ")")
+        logger.debug(  colored_print('Possible discriminants: ', 'magenta') +  \
+                        str(colored_print(discriminants[1], 'blue')) + \
+                        colored_print(" (complete discriminants: ", 'magenta') + \
+                        str(colored_print(discriminants[0], 'blue')) + ")")
                         
         complete_disc = discriminants[0] 
         partial_disc = discriminants[1]
@@ -199,9 +199,11 @@ class Discrimination():
     # -----------------------------------------------------------------------------#
     def clarify(self, description, ignoreFeatureL = []):
         
-        logger.debug("> Looking in " + description[0][0] + "'s model for concepts matching " +  str(description[0][2]))
         objL = self.get_all_objects_with_desc(description)        
-        logger.debug('> Got this list of concepts: ' +  str(colored_print(objL, 'blue')))
+        if len(objL) == 0:
+            logger.debug(colored_print('Nothing found!', "magenta"))
+        else:
+            logger.debug(colored_print('Found these possible concepts ID: ', "magenta") +  colored_print(str(objL), 'blue'))
         
         if not self.oro: #No ontology server
             return 'UNKNOWN_CONCEPT'

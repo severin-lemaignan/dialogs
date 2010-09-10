@@ -4,7 +4,7 @@
 import logging
 logger = logging.getLogger("dialog")
 
-from dialog.helpers import colored_print
+from dialog.helpers import colored_print, level_marker
 
 from dialog.interpretation.statements_builder import StatementBuilder
 from dialog.interpretation.statements_safe_adder  import StatementSafeAdder
@@ -83,7 +83,11 @@ class ContentAnalyser:
         self.question_handler.set_current_speaker(current_speaker)
         answer = self.question_handler.process_sentence(sentence)
         
-        logger.info("Found: \n \t>>" + str(answer))
+        if answer:
+            logger.info(level_marker(level=2, color="yellow") + "Found: \n" + colored_print(str(answer), None, "magenta"))
+        else:
+            logger.info(level_marker(level=2, color="yellow") + "Couldn't find anything!")
+            
         if sentence.data_type == 'w_question':
             self.output_sentence.extend(self.sfactory.create_w_question_answer(sentence, 
                                                                                     answer, 

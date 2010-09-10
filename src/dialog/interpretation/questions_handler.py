@@ -1,6 +1,8 @@
 import logging
 logger = logging.getLogger("dialog")
 
+from dialog.helpers import colored_print, level_marker
+
 from dialog.interpretation.resolution import Resolver
 from dialog.interpretation.statements_builder import *
 from dialog.sentence import *
@@ -47,7 +49,7 @@ class QuestionHandler:
         #StatementBuilder
         builder = StatementBuilder(self._current_speaker)
         self._statements = builder.process_sentence(self._sentence)
-        logger.info("\tStatement from Statement Builder: " + str(self._statements))
+        logger.info(level_marker(level=2, color="yellow") + "Generated statements for this question: " + colored_print(str(self._statements), None, "magenta"))
         
         #Case the question is a y_n_question : check the fact in the ontology
         if sentence.data_type == 'yes_no_question':
@@ -64,7 +66,7 @@ class QuestionHandler:
                     
                         onto_lookup = []
                         try:
-                            logger.debug("\tLooking up for " + object + " in " + agent +"'s model")
+                            logger.debug(level_marker(level=2, color="yellow") + "Looking up for " + object + " in " + agent +"'s model")
                             onto_lookup = ResourcePool().ontology_server.lookupForAgent(agent, object)
                         except AttributeError:
                             pass
@@ -74,7 +76,7 @@ class QuestionHandler:
                 self.process_on_knowing_concept = False
             else:
                 try:
-                    logger.debug("\tChecking on the ontology: check(" + str(self._statements) + ")")
+                    logger.debug(level_marker(level=2, color="yellow") + "Checking in the ontology: " + colored_print(str(self._statements), None, "magenta"))
                     self._answer = ResourcePool().ontology_server.check(self._statements)
                 except AttributeError: #the ontology server is not started of doesn't know the method
                     pass
@@ -121,7 +123,7 @@ class QuestionHandler:
                             
                             stmts = [s.replace('objectFoundInLocation', 'is' + role.capitalize()) for s in statements]
                             try:
-                                logger.debug("\tSearching the ontology: findForAgent("+ agent +", ?concept, " + str(stmts) + ")")
+                                logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(stmts), None, "magenta"))
                                 answers = ResourcePool().ontology_server.findForAgent(agent,'?concept', stmts)
                             except AttributeError: #the ontology server is not started of doesn't know the method
                                 pass
@@ -141,7 +143,7 @@ class QuestionHandler:
                         """    
                     else:
                         try:
-                            logger.debug("\tSearching the ontology: findForAgent("+ agent +", ?concept, " + str(statements) + ")")
+                            logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(statements), None, "magenta"))
                             answers = ResourcePool().ontology_server.findForAgent(agent, '?concept', statements)
                         except AttributeError: #the ontology server is not started of doesn't know the method
                             pass

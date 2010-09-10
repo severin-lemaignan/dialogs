@@ -110,6 +110,8 @@ class Resolver:
             nominal_group.det[0].lower() in ResourcePool().demonstrative_det:
             
             onto_focus = ''
+            logger.debug(colored_print("Found a demonstrative (this/that...). Trying to resolve it based on current focus...", "magenta"))
+            logger.debug(colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' focusesOn ?concept', None, "magenta"))
             try:
                 onto_focus = ResourcePool().ontology_server.findForAgent(current_speaker, 
                                                                             '?concept', 
@@ -118,9 +120,12 @@ class Resolver:
                 pass
             
             if onto_focus:
+                logger.debug(colored_print("OK, found ", "magenta") + colored_print(str(onto_focus), "blue"))
                 nominal_group.id = onto_focus[0]
                 nominal_group._resolved = True
                 return nominal_group
+            
+            logger.debug(colored_print("No focus. Processing is as a classic anaphora.", "magenta"))
             
             # Case of 
             #   this + noun - E.g: Take this cube:
@@ -146,12 +151,12 @@ class Resolver:
         
         # Case of personal prounouns
         if current_speaker and nominal_group.noun[0].lower() in ['me','i']:
-            logger.debug("Replaced \"me\" or \"I\" by \"" + current_speaker + "\"")
+            logger.debug(colored_print("Replaced \"me\" or \"I\" by \"" + current_speaker + "\"","magenta"))
             nominal_group.id = current_speaker
             nominal_group._resolved = True
         
         if nominal_group.noun[0].lower() in ['you']:
-            logger.debug("Replaced \"you\" by \"myself\"")
+            logger.debug(colored_print("Replaced \"you\" by \"myself\"","magenta"))
             nominal_group.id = 'myself'
             nominal_group._resolved = True
         
@@ -267,11 +272,11 @@ class Resolver:
         builder.process_nominal_group(nominal_group, '?concept', None, False)
         stmts = builder.get_statements()
         builder.clear_statements()
-        logger.debug("Trying to identify this concept in "+ current_speaker + "'s model: " + colored_print('[' + ', '.join(stmts) + ']', 'bold'))
+        logger.debug(colored_print("Looking for this concept in "+ current_speaker + "'s model: \n", "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
         
         # Special case of "other" occuring in the nominal group
         if builder.process_on_other:
-            logger.debug("\tFound 'Other'. Trying to identify concept in both Dialog history and "+ current_speaker + "'s model")
+            logger.debug(colored_print("\tFound 'Other'.Looking for this concept in both Dialog history and "+ current_speaker + "'s model", "magenta"))
             nominal_group, stmts = self._resolve_nouns_with_dialog_history(nominal_group, current_speaker, stmts, builder)
             if nominal_group._resolved: return nominal_group
             
