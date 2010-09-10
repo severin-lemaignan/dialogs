@@ -167,7 +167,13 @@ class SentenceFactory:
                 ngL = []
                 for resp in response:                        
                     #Prepositions such as in, on, under
-                    if not preposition[0] in ResourcePool().direction_words:                        
+                    if not preposition:
+                        ng = self.create_nominal_group_with_object(resp, current_speaker)
+                        ng.id = resp
+                        ng._resolved = True
+                        ngL.append(ng)
+                        
+                    elif not preposition[0] in ResourcePool().direction_words:                        
                         ng = self.create_nominal_group_with_object(resp, current_speaker)
                         ng.id = resp
                         ng._resolved = True
@@ -244,12 +250,6 @@ class SentenceFactory:
                 elif ng.noun and ng.noun == ['I', 'me']:
                     ng.noun = ['you']
                 
-                elif ng.noun and ng.noun == ['myself']:
-                    ng.noun = ['yourself']
-                
-                elif ng.noun and ng.noun == ['yourself']:
-                    ng.noun = ['myself']
-                    
                 else: 
                     pass
             return nominal_groupL
@@ -519,15 +519,15 @@ class Sentence:
                 map(lambda x: x.flatten(), self.sn),
                 map(lambda x: x.flatten(), self.sv)]
     
-    def quit_loop(self, force_quit):
+    def quit_loop(self):
         #Forget it
-        if force_quit and self.data_type == "imperative" \
+        if self.data_type == "imperative" \
             and "forget" in [verb for sv in self.sv for verb in sv.vrb_main]\
             and "affirmative" in [sv.state for sv in self.sv]:
             return True
             
         #[it] doesn't matter'
-        if force_quit \
+        if self.data_type == "statement"  \
             and "matter" in [verb for sv in self.sv for verb in sv.vrb_main]\
             and "negative" in [sv.state for sv in self.sv]:
             return True
