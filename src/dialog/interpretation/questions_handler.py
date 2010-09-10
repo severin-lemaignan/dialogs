@@ -117,11 +117,17 @@ class QuestionHandler:
                     answers = []
                     if self._process_on_location:
                         
-                        roles = {'in':'isIn', 'on':'isOn','next+to':'isNextTo', 'behind':'isBehind'}
-                        stmts = []
+                        prepositions_list = ResourcePool().preposition_rdf_object_property.copy()
+                        roles = dict([(preposition,prepositions_list[preposition][0])\
+                                for preposition in prepositions_list.keys()\
+                                 if 'objectFoundInLocation' in prepositions_list[preposition]])
                         
+                        stmts = []
+                        prepositions_already_used = []
                         for role in roles:
-                            
+                            if roles[role] in prepositions_already_used:
+                                continue
+                                
                             stmts = [s.replace('objectFoundInLocation', roles[role]) for s in statements]
                             try:
                                 logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(stmts), None, "magenta"))
@@ -129,6 +135,8 @@ class QuestionHandler:
                             except AttributeError: #the ontology server is not started of doesn't know the method
                                 pass
                             
+                            prepositions_already_used.append(roles[role])
+                                                        
                             if answers:
                                 self._answer.append([[role], answers])
                         """
