@@ -2652,7 +2652,7 @@ class TestParsing(unittest.TestCase):
     def test_85(self):
         print''
         print ('######################## test 9.5 ##############################')
-        utterance="the bottle on the table, is blue."
+        utterance="the bottle on the table, is blue. where is this tape"
         print "Object of this test : Add test to take off determinant and for timescale"
         print utterance
         print '#################################################################'
@@ -2669,6 +2669,12 @@ class TestParsing(unittest.TestCase):
                         [], [] ,'affirmative',[])])])], 
                 [Verbal_Group(['be'], [],'present simple', 
                     [Nominal_Group([],[],[['blue',[]]],[],[])], 
+                    [],
+                    [], [] ,'affirmative',[])]),
+            Sentence('w_question', 'place', 
+                [Nominal_Group(['this'],['tape'],[],[],[])], 
+                [Verbal_Group(['be'], [],'present simple', 
+                    [], 
                     [],
                     [], [] ,'affirmative',[])])]
         

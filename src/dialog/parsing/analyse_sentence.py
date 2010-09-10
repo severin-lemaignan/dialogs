@@ -39,6 +39,7 @@ Statement of lists
 frt_wd = ResourcePool().sentence_starts
 det_dem_list = ResourcePool().demonstrative_det
 modal_list = ResourcePool().modal
+adv_list = ResourcePool().adverbs
 proposal_list = ResourcePool().proposals
 
 
@@ -497,11 +498,13 @@ def y_n_ques(type, request, sentence):
     
     #We have to separate the case using these, this or there
     if sentence[0] in det_dem_list and analyse_verb.infinitive([aux], 'present simple')==['be']:
-        #We recover this information and remove it
-        analysis.sn=[Nominal_Group([sentence[0]],[],[],[],[])]
-        if sentence[0]=='there' and aux=='are':
-            analysis.sn[0]._quantifier='SOME'
-        sentence=sentence[1:]
+        #If we have a verb or an adverb just after (if not, we have a noun)
+        if sentence[0].endswith('ed') or sentence[0].endswith('ing') or sentence[0].endswith('ly') or sentence[0] in adv_list:
+            #We recover this information and remove it
+            analysis.sn=[Nominal_Group([sentence[0]],[],[],[],[])]
+            if sentence[0]=='there' and aux=='are':
+                analysis.sn[0]._quantifier='SOME'
+            sentence=sentence[1:]
     
     if analysis.sn==[]:
         #We recover the subject
