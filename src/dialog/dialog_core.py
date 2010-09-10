@@ -198,20 +198,21 @@ class Dialog(Thread):
             wait_for_keypress()
             
         #Unsifient input or unidentified anaphora Error processing
+        for s in parsed_sentences:
+            if s.quit_loop():
+                parsed_sentences.remove(s)
+                self._last_output = self._anaphora_input = None
+                self.waiting_for_more_info = False
+                sys.stdout.write("Alright. Forgotten!\n")
+                sys.stdout.flush()
+                self._logger.info("- " + colored_print( \
+                        "Alright. Forgotten!", \
+                        'blue') + "\n")
+                
+                break
+                
         if self.waiting_for_more_info:
             self._logger.info(colored_print("Waiting for more information activated\n", 'magenta'))
-            for s in parsed_sentences:
-                if s.quit_loop(self._last_output or self._anaphora_input):
-                    parsed_sentences.remove(s)
-                    self._last_output = self._anaphora_input = None
-                    sys.stdout.write("Alright. Forgotten!\n")
-                    sys.stdout.flush()
-                    self._logger.info("- " + colored_print( \
-                            "Alright. Forgotten!", \
-                            'blue') + "\n")
-                    
-                    break
-                    
             #Processing Unsifficient input  Error with sentences remerge
             if self._last_output:
                 self._logger.info(colored_print("New content provided by human! merging it with the previous sentence.", 'magenta'))
