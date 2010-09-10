@@ -20,13 +20,12 @@ class SentenceFactory:
         """ Creates sentences of type: 
             Which color is the bottle? Blue or yellow.
         """
-        
-        nominal_groupL = [Nominal_Group([],[],[val],[],[]) for val in values]
+        nominal_groupL = [Nominal_Group([],[],[[val.lower(),[]]],[],[]) for val in values]
         
         sentence = [Sentence('w_question', 'choice', 
                         [Nominal_Group([],[feature],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
-                            [Nominal_Group(['the'],[obj_name],[],[],[])], 
+                            [Nominal_Group(['the'],[obj_name.lower()],[],[],[])], 
                             [], [], [] ,'affirmative',[])]),
                     Sentence('statement', '',nominal_groupL,[])]
         

@@ -288,7 +288,8 @@ class Resolver:
             id = discriminator.clarify(description, features)
         except UnsufficientInputError as uie:
             sf = SentenceFactory()
-            uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
+            if uie.value['status'] != 'SUCCESS':
+                uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
             uie.value['object'] = nominal_group
             uie.value['sentence'] = self._current_sentence
             uie.value['object_with_more_info'] = None

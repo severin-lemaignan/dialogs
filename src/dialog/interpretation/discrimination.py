@@ -255,6 +255,9 @@ class Discrimination():
                 elif descriptor == 'isLocated':
                     questions = sentence_builder.create_w_question_location_PT(values, agent)
                 
+                elif descriptor == 'rdf:type':
+                    questions = sentence_builder.create_w_question_choice(object, 'type', values)
+                    
                 else:
                     questions = sentence_builder.create_w_question_choice(object, descriptor, values)
 
