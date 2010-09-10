@@ -122,6 +122,7 @@ class QuestionHandler:
                                 for preposition in prepositions_list.keys()\
                                  if 'objectFoundInLocation' in prepositions_list[preposition]])
                         
+                        #Case of ojectFound in location
                         stmts = []
                         prepositions_already_used = []
                         for role in roles:
@@ -139,17 +140,19 @@ class QuestionHandler:
                                                         
                             if answers:
                                 self._answer.append([[role], answers])
-                        """
-                        roles = ['left', 'front', 'back']
-                        for role in roles:                        
+                        
+                        #Case of object found in location + direction
+                        stmts = [s.replace('objectFoundInLocation', 'isAt') for s in statements]
+                        for role in ResourcePool().direction_words:                        
                             try:
-                                answers = ResourcePool().ontology_server.find('?location', stmts + ['?concept is'+ role.capitalize() +'Of ?location'])
+                                logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(stmts + ['?concept is'+ role.capitalize() + 'Of ?location']), None, "magenta"))
+                                answers = ResourcePool().ontology_server.findForAgent(agent,'?location', stmts + ['?concept is'+ role.capitalize() + 'Of ?location'])
                             except AttributeError: #the ontology server is not started of doesn't know the method
                                 pass
                             
                             if answers:
                                 self._answer.append([[role], answers])
-                        """    
+                            
                     else:
                         try:
                             logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(statements), None, "magenta"))

@@ -90,7 +90,8 @@ class ContentAnalyser:
             
         if sentence.data_type == 'w_question':
             self.output_sentence.extend(self.sfactory.create_w_question_answer(sentence, 
-                                                                                    answer, 
+                                                                                    answer,
+                                                                                    self.question_handler._current_speaker,
                                                                                     self.question_handler.get_query_on_field()))
         
         if sentence.data_type == 'yes_no_question':

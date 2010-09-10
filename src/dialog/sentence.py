@@ -131,7 +131,7 @@ class SentenceFactory:
         
         
     
-    def create_w_question_answer(self, w_question, w_answer, query_on_field):
+    def create_w_question_answer(self, w_question, w_answer, current_speaker, query_on_field):
         """Create the answer of a W-Question
             w_question is the current question
             w_answer is the response found in the ontology
@@ -166,11 +166,31 @@ class SentenceFactory:
             for [preposition, response] in w_answer:
                 ngL = []
                 for resp in response:                        
-                    ng = self.create_nominal_group_with_object(resp)
-                    ng.id = resp
-                    ng._resolved = True
+                    #Prepositions such as in, on, under
+                    if not preposition[0] in ResourcePool().direction_words:                        
+                        ng = self.create_nominal_group_with_object(resp, current_speaker)
+                        ng.id = resp
+                        ng._resolved = True
+                        ngL.append(ng)
                         
-                    ngL.append(ng)
+                    #preposition such as Front, Back, Front, Top, Bottom
+                    else:
+                        if preposition[0] == 'front':
+                            preposition[0] = "in+front+of"
+                        
+                        elif preposition[0] == "back":
+                            preposition[0] == "behind"
+                        
+                        elif preposition[0] == "bottom":
+                            preposition[0] == "underneath"
+                        
+                        elif preposition[0] == "top":
+                            prepsosition[0] = "above"
+                        else:
+                            ngL = [Nominal_group(["the"],preposition,[],ngL,[])]
+                            preposition = "at"
+                            
+                        
                     
                 nominal_groupL.append([preposition, ngL])
                 
@@ -223,6 +243,12 @@ class SentenceFactory:
                     ng.noun = ['I'] if subject else ['me'] 
                 elif ng.noun and ng.noun == ['I', 'me']:
                     ng.noun = ['you']
+                
+                elif ng.noun and ng.noun == ['myself']:
+                    ng.noun = ['yourself']
+                
+                elif ng.noun and ng.noun == ['yourself']:
+                    ng.noun = ['myself']
                     
                 else: 
                     pass
@@ -247,13 +273,12 @@ class SentenceFactory:
         
         
         
-    def create_nominal_group_with_object(self, object):
+    def create_nominal_group_with_object(self, object, current_speaker):
         """Creating a nominal group by retrieving relevant information on 'object'."""
         
         
         def _filter_ontology_inferred_class(object_list):
             """Filtering infered class from the ontology such as SpatialThing, EnduringThing-Localized, ... that add no needed infos """
-            #TODO in ResourcePool()
             filter_list = ['Object', 'Location', 
                             'Agent', 'SpatialThing-Localized', 'SpatialThing',
                             'PartiallyTangible', 
@@ -274,6 +299,12 @@ class SentenceFactory:
         #end of _filter_ontology_inferred_class
         
         #Creating object components : Det, Noun, noun-cmpl, etc.
+        # reference to myself, current speaker, ...
+        if object == "myself":
+            return Nominal_Group([], ["me"], [], [], [])#No need to go further as we know "myself" ID
+        
+        if object == current_speaker:
+            return Nominal_Group([], ["you"], [], [], [])#No need to go further as we know the current speaker's ID
         
         # Label if Proper noun
         object_noun = []
