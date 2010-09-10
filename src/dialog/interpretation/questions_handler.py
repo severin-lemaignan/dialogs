@@ -116,12 +116,13 @@ class QuestionHandler:
                     
                     answers = []
                     if self._process_on_location:
-                        roles = ['in', 'on','next+to', 'behind']
+                        
+                        roles = {'in':'isIn', 'on':'isOn','next+to':'isNextTo', 'behind':'isBehind'}
                         stmts = []
                         
                         for role in roles:
                             
-                            stmts = [s.replace('objectFoundInLocation', 'is' + role.capitalize()) for s in statements]
+                            stmts = [s.replace('objectFoundInLocation', roles[role]) for s in statements]
                             try:
                                 logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(stmts), None, "magenta"))
                                 answers = ResourcePool().ontology_server.findForAgent(agent,'?concept', stmts)
