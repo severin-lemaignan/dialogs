@@ -22,6 +22,8 @@ class StatementSafeAdder():
         # This holds statements that are to be removed from the ontology.
         self._statements_to_remove = []
         
+        # This hold the current speaker
+        self._current_speaker =  "myself"
         
     def process(self):        
         # Case of Statements that are to be removed
@@ -74,6 +76,7 @@ class StatementSafeAdder():
         """ This process the commitment of new statements in the ontology
             and deals with adding inconsistency
         """
+        #Adding for myself
         try:
             if not ResourcePool().ontology_server.safeAdd(statements):
                 logger.debug(colored_print("At least one statement hasn't been " + \
@@ -81,6 +84,16 @@ class StatementSafeAdder():
                 
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
+
+        #Adding for current speaker
+        if self._current_speaker:
+            try:
+                if not ResourcePool().ontology_server.safeAddForAgent(self._current_speaker, statements):
+                    logger.debug(colored_print("At least one statement hasn't been " + \
+                    "pushed to the ontology server because it would lead to inconsistencies."))
+                    
+            except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
 
 
     def remove(self, statements):

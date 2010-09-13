@@ -64,6 +64,7 @@ class ContentAnalyser:
             for s in stmts:
                 logger.info(">> " + colored_print(s, None, 'magenta'))
             
+            self.adder._current_speaker = self.builder._current_speaker
             self.adder._unclarified_ids = self.builder._unclarified_ids
             self.adder._statements = stmts
             self.adder._statements_to_remove = self.builder._statements_to_remove

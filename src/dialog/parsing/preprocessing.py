@@ -679,9 +679,10 @@ def other_processing(sentence):
         if sentence[i]=='think' and sentence[i+1]!='that' and analyse_nominal_group.find_sn_pos(sentence, i+1)!=[]:
             sentence=sentence[:i+1]+['that']+sentence[i+1:]
         
-        #'in front of' is the same with 'in the front of'
+        #'in front of' is the same with 'at the front of'
         if sentence[i]=='front' and sentence[i-1]=='in' and sentence[i+1]=='of':
-            sentence=sentence[:i]+['the']+sentence[i:]
+            sentence=sentence[:i-1]+['at'] +['the']+sentence[i:]
+
         i=i+1
     
     return sentence

@@ -143,6 +143,10 @@ class SentenceFactory:
         #Nominal group holding the answer
         nominal_groupL = []
         
+        #if "me", "you", "us"
+        myself = False
+        yourself = False
+        
         #Return. I am sorry. I don't know
         if not w_answer:
             return[Sentence("statement","",
@@ -166,27 +170,45 @@ class SentenceFactory:
             for [preposition, response] in w_answer:
                 ngL = []
                 for resp in response:
+                    if resp == "myself":
+                        myself = True
+                    if resp == current_speaker:
+                        yourself = True
+                        
                     ng = self.create_nominal_group_with_object(resp, current_speaker)
                     ng.id = resp
                     ng._resolved = True
                     ngL.append(ng)
+                
+                #Arraging preposition
+                if preposition and preposition[0] in ResourcePool().direction_words:
+                    if preposition[0] == 'front':
+                        preposition[0] = "in+front+of"
                     
-                    if preposition and preposition[0] in ResourcePool().direction_words:
-                        if preposition[0] == 'front':
-                            preposition[0] = "in+front+of"
-                        
-                        elif preposition[0] == "back":
-                            preposition[0] == "behind"
-                        
-                        elif preposition[0] == "bottom":
-                            preposition[0] == "underneath"
-                        
-                        elif preposition[0] == "top":
-                            prepsosition[0] = "above"
-                        
-                        else:
+                    elif preposition[0] == "back":
+                        preposition[0] == "behind"
+                    
+                    elif preposition[0] == "bottom":
+                        preposition[0] == "underneath"
+                    
+                    elif preposition[0] == "top":
+                        prepsosition[0] = "above"
+                    
+                    else:
+                        # Here we try to output something similar to My left, or Your left or at the left of ACHILLE
+                        # Case of "my and your"
+                        if myself and yourself:
+                            ngL = [Nominal_Group(["our"],preposition,[],[],[])]
+                        #
+                        elif myself:
+                            ngL = [Nominal_Group(["my"],preposition,[],[],[])]
+                        elif yourself:
+                            ngL = [Nominal_Group(["your"],preposition,[],[],[])]
+
+                        else:    
                             ngL = [Nominal_Group(["the"],preposition,[],ngL,[])]
-                            preposition = ["at"]
+                        
+                        preposition = ["at"]
                                         
                 nominal_groupL.append([preposition, ngL])
                 
@@ -320,9 +342,9 @@ class SentenceFactory:
                 pass
             
             object_noun = [_filter_ontology_inferred_class(onto.keys())[0].lower()]
-            
+                       
             if object_noun == ['owl:thing']:
-                object_noun = [object]
+                object_noun = ["object"]
                 
             object_determiner = ['the']
         

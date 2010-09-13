@@ -207,8 +207,11 @@ class Resolver:
     def _resolve_groups_references(self, array_sn, matcher, current_speaker, current_object):
         """This attempts to resolve every single nominal group held in a nominal group list"""
         resolved_sn = []
-        for sn in array_sn:
-            resolved_sn.append(self._resolve_references(sn, matcher, current_speaker, current_object))
+        for ng in array_sn:
+            if ng.noun_cmpl and ng.noun and ng.noun[0] in ResourcePool().direction_words:
+                ng.noun_cmpl = self._resolve_groups_references(ng.noun_cmpl, matcher, current_speaker, current_object)
+                
+            resolved_sn.append(self._resolve_references(ng, matcher, current_speaker, current_object))
            
         return resolved_sn
     
@@ -374,6 +377,9 @@ class Resolver:
     def _resolve_groups_nouns(self, nominal_groups, current_speaker, discriminator, builder):
         resolved_sn = []
         for ng in nominal_groups:
+            if ng.noun_cmpl and ng.noun and ng.noun[0] in ResourcePool().direction_words:
+                ng.noun_cmpl = self._resolve_groups_nouns(ng.noun_cmpl, current_speaker, discriminator, builder)
+                
             resolved_sn.append(self._resolve_nouns(ng, current_speaker, discriminator, builder))
             
         return resolved_sn
@@ -595,6 +601,13 @@ class Resolver:
             ResourcePool().ontology_server.addForAgent(current_speaker, stmts)
         except AttributeError:
             pass
+            
+        if current_speaker != 'myself':
+            logger.debug(colored_print("Learning this new concept in robot's model: \n", "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
+            try:
+                ResourcePool().ontology_server.add(stmts)
+            except AttributeError:
+                pass
 
         return id
 

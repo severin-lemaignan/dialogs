@@ -101,7 +101,7 @@ class Discrimination():
     # OUTPUT:
     # - descriptor or None (if no discriminant for any agent found)
     # -----------------------------------------------------------------------------#
-    def get_descriptor(self, description, ignoreFeatureL = [], partial_disc=0):
+    def get_descriptor(self, description, ignoreFeatureL = [], partial_disc=True):
         objL = self.get_all_objects_with_desc(description)
         descriptor = None
         agent = None

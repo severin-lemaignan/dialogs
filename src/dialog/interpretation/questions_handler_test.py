@@ -25,7 +25,7 @@ class TestQuestionHandler(unittest.TestCase):
                      
                      'another_cube rdf:type Cube',
                      'another_cube isAt shelf1',
-                     'another_cube belongsTo SPEAKER',
+                     'another_cube isRelatedTo SPEAKER',
                      'another_cube hasSize small',
                      
                      'shelf1 rdf:type Shelf',
@@ -65,7 +65,7 @@ class TestQuestionHandler(unittest.TestCase):
                      
                      'another_cube rdf:type Cube',
                      'another_cube isAt shelf1',
-                     'another_cube belongsTo SPEAKER',
+                     'another_cube isRelatedTo SPEAKER',
                      'another_cube hasSize small',
                      
                      'shelf1 rdf:type Shelf',
@@ -97,7 +97,7 @@ class TestQuestionHandler(unittest.TestCase):
         
         self.qhandler = QuestionHandler("SPEAKER")
         self.resolver = Resolver()
-    """
+    
     def test_1_where_question(self):
         logger.info("\n*************  test_1_where_question ******************")
         logger.info("Where is the blue cube?")
@@ -465,7 +465,7 @@ class TestQuestionHandler(unittest.TestCase):
         expected_result = [['blue',[]]]        
         self.process(sentence ,expected_result)
         
-    """
+    
     def process(self, sentence ,expected_result):
         sentence = dump_resolved(sentence, 'SPEAKER', 'myself', self.resolver)
         res = self.qhandler.process_sentence(sentence)
@@ -524,7 +524,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                         'myself sees y_banana',
                         'myself sees shelf1',
                         'myself_name rdf:type Name',
-                        'myself_name belongsTo myself',
+                        'myself_name isRelatedTo myself',
                         'myself_name rdfs:label "Jido"',
                         'id_tom rdf:type Human',
                         'id_tom rdfs:label "Tom"',

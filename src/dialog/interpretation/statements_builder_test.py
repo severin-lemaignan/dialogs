@@ -35,7 +35,7 @@ class TestStatementBuilder(unittest.TestCase):
                           
                           'volvo hasColor blue', 
                           'volvo rdf:type Car',
-                          'volvo belongsTo SPEAKER',
+                          'volvo isRelatedTo SPEAKER',
                           
                           'id_jido rdf:type Robot',
                           'id_jido rdfs:label "Jido"',
@@ -43,26 +43,26 @@ class TestStatementBuilder(unittest.TestCase):
                           'twingo rdf:type Car',
                           'twingo hasSize small',
                           'twingo_key rdf:type Key',
-                          'twingo_key belongsTo twingo',
+                          'twingo_key isRelatedTo twingo',
                           
                           'a_man rdf:type Man',
                           
                           'SPEAKER sees a_man',
                           'id_talk performedBy a_man', 'id_talk rdf:type Talk',
                           
-                          'fiat belongsTo id_tom',
+                          'fiat isRelatedTo id_tom',
                           'fiat rdf:type Car',
                           'fiat hasColor black',
                           
                           'id_tom rdfs:label "Tom"',
                           'id_tom rdf:type Brother',
-                          'id_tom belongsTo id_danny',
+                          'id_tom isRelatedTo id_danny',
                           
                           'id_toulouse rdfs:label "Toulouse"',
                           'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
                           
                           'SPEAKER focusesOn another_cube',
-                          'another_cube belongsTo SPEAKER', 
+                          'another_cube isRelatedTo SPEAKER', 
                           'another_cube rdf:type Cube',
                           
                           'shelf1 rdf:type Shelf',
@@ -589,7 +589,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            'affirmative',
                                            [])])
-        expected_result = ['another_cube belongsTo SPEAKER']
+        expected_result = ['another_cube isRelatedTo SPEAKER']
                           
         another_expected_result = ['SPEAKER focusesOn blue_cube']
         
@@ -1409,7 +1409,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'y_banana rdf:type Banana',
                         'y_banana hasColor yellow',
                         'y_banana isOn shelf1',
-                        'y_banana belongsTo myself',
+                        'y_banana isRelatedTo myself',
                         'green_banana rdf:type Banana',
                         'green_banana hasColor green',
                         'green_banana isOn table2',
@@ -1520,7 +1520,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         ####
         res = self.dialog.test('myself', stmt)
         ###
-        expected_result = ['y_banana belongsTo myself']
+        expected_result = ['y_banana isRelatedTo myself']
         self.assertTrue(check_results(res[0], expected_result))
         
         stmt = "This is a green banana" ## INCONSISTENCY -> y_banana can not be green
