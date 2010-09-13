@@ -28,6 +28,7 @@ cap_let_list = ResourcePool().capital_letters
 superlative_number = ResourcePool().adjective_numbers_digit
 sub_list = ResourcePool().subsentences
 rel_list = ResourcePool().relatives
+noun_list = ResourcePool().special_nouns
 
 
 
@@ -107,6 +108,8 @@ def number(word):
             if word.endswith('th'):
                 return 2
             else:
+                if word in noun_list:
+                    return 0
                 return 1
     return 0
 

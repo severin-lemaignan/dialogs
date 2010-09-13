@@ -2569,7 +2569,7 @@ class TestParsing(unittest.TestCase):
     def test_83(self):
         print''
         print ('######################## test 9.3 ##############################')
-        utterance="to have a dialog, we need more than 1 protagonist. I finish the dialog, and I check many problems"
+        utterance="To have a dialog, we need more than 1 protagonist. I finish the dialog, and I check many problems"
         print "Object of this test : Having indirect complement before the sentence and to have more one sentence in utterance"
         print utterance
         print '#################################################################'
@@ -2760,8 +2760,8 @@ class TestParsing(unittest.TestCase):
     def test_88(self):
         print''
         print ('######################## test 9.8 ##############################')
-        utterance="They haven't played tennis since 1987."
-        print "Object of this test : Using proposal like 'before' as subsentence, i_cmpl and adjective"
+        utterance="They haven't played tennis since 1987. give me the glass the paper and the bottle."
+        print "Object of this test : Final test with present perfect and parsing and with many nominal group"
         print utterance
         print '#################################################################'
         print ''
@@ -2769,22 +2769,26 @@ class TestParsing(unittest.TestCase):
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
         rslt=[Sentence('statement', '', 
-                [Nominal_Group([],['I'],[],[],[])], 
-                [Verbal_Group(['do'], [],'present simple', 
-                    [Nominal_Group(['my'],['homework'],[],[],[])], 
-                    [],
-                    [], [] ,'affirmative',[Sentence('subsentence+statement', 'before', 
-                        [Nominal_Group([],['he'],[],[],[])], 
-                        [Verbal_Group(['come'], [],'present simple', 
-                            [], 
-                            [],
-                            [], [] ,'affirmative',[])])])])]
+                [Nominal_Group([],['they'],[],[],[])], 
+                [Verbal_Group(['play'], [],'present perfect', 
+                    [Nominal_Group(['a'],['tennis'],[],[],[])], 
+                    [Indirect_Complement(['since'],[Nominal_Group(['1987'],[],[],[],[])])],
+                    [], [] ,'negative',[])]),
+            Sentence('imperative', '', 
+                [], 
+                [Verbal_Group(['give'], [],'present simple', 
+                    [Nominal_Group(['the'],['glass'],[],[],[]),
+                     Nominal_Group(['the'],['paper'],[],[],[]),
+                     Nominal_Group(['the'],['bottle'],[],[],[])], 
+                    [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])])],
+                    [], [] ,'affirmative',[])])]
         
         rslt[0].sv[0].d_obj[0]._quantifier="SOME"
+        rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
-        
+    
     
     
 def test_suite():

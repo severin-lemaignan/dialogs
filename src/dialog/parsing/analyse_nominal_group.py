@@ -54,8 +54,8 @@ def is_an_adj(word):
     Input=word                Output=1 if it is an adjective and 0 if not                     
     """
     
-    #It is a noun so we have to return 1
-    if word in noun_list+verb_list:
+    #It is a noun verb pronoun or determinant so we have to return 0
+    if word in noun_list+verb_list+pronoun_list+det_list:
         return 0
     
     #For the regular adjectives

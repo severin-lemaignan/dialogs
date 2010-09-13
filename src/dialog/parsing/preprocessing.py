@@ -126,7 +126,7 @@ def process_and_beginning_sentence(sentence):
         gr=determination_nom_gr(sentence, 1,'of')
         #We put the nominal group at the end of the sentence
         if gr!=[]:
-            sentence=sentence[len(gr)+1:]+[sentence[0]]+gr
+            sentence=sentence[len(gr)+1:]+[',']+[sentence[0]]+gr
             sentence=process_and_beginning_sentence(sentence)
         else:
             #In this case we don't find a nominal group but there is a i_cmpl
@@ -135,9 +135,9 @@ def process_and_beginning_sentence(sentence):
                     #The final point of i_cmpl is the punctuation
                     phrase=sentence[:sentence.index(z)]
                     if sentence[len(sentence)-1]=='.' or sentence[len(sentence)-1]=='?' or sentence[len(sentence)-1]=='!':
-                        sentence=sentence[sentence.index(z)+1:len(sentence)-1]+phrase+[sentence[len(sentence)-1]]
+                        sentence=sentence[sentence.index(z)+1:len(sentence)-1]+[',']+phrase+[sentence[len(sentence)-1]]
                     else:
-                        sentence=sentence[sentence.index(z)+1:]+phrase
+                        sentence=sentence[sentence.index(z)+1:]+[',']+phrase
     
     #If it starts with adverb
     if sentence[0] in adv_list:
@@ -303,6 +303,7 @@ def but(sentence):
                 while fst_nom_gr==[] and begin_pos>0:
                     begin_pos=begin_pos-1
                     fst_nom_gr=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
+                #The case when but is between 2 adjectives and we have the same noun
                 if fst_nom_gr[len(fst_nom_gr)-1]=='but':
                     sentence[i]=':but'
         i=i+1
@@ -497,9 +498,10 @@ def and_nom_group(sentence):
         if i<len(sentence) and sentence[i]=='and' and list_nom_gr!=[]:
             i=i+1
             nom_gr=determination_nom_gr(sentence, i, 'of')
-            
+           
             #If the first one of the list is not a pronoun => OK
             if other_functions.there_is_pronoun(list_nom_gr+[nom_gr])==0:
+                
                 for j in list_nom_gr:
                     our_list=our_list+j+['and']
                 sentence=sentence[:position]+our_list+sentence[i:]
@@ -509,6 +511,7 @@ def and_nom_group(sentence):
             #We forgot the first nominal group and we continue just after it
             else:
                 i=position+len(list_nom_gr[0])
+                list_nom_gr=[]
         else:
             i=i+1
             list_nom_gr=[]
