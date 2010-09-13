@@ -165,22 +165,13 @@ class SentenceFactory:
         else:
             for [preposition, response] in w_answer:
                 ngL = []
-                for resp in response:                        
-                    #Prepositions such as in, on, under
-                    if not preposition:
-                        ng = self.create_nominal_group_with_object(resp, current_speaker)
-                        ng.id = resp
-                        ng._resolved = True
-                        ngL.append(ng)
-                        
-                    elif not preposition[0] in ResourcePool().direction_words:                        
-                        ng = self.create_nominal_group_with_object(resp, current_speaker)
-                        ng.id = resp
-                        ng._resolved = True
-                        ngL.append(ng)
-                        
-                    #preposition such as Front, Back, Front, Top, Bottom
-                    else:
+                for resp in response:
+                    ng = self.create_nominal_group_with_object(resp, current_speaker)
+                    ng.id = resp
+                    ng._resolved = True
+                    ngL.append(ng)
+                    
+                    if preposition and preposition[0] in ResourcePool().direction_words:
                         if preposition[0] == 'front':
                             preposition[0] = "in+front+of"
                         
@@ -192,12 +183,11 @@ class SentenceFactory:
                         
                         elif preposition[0] == "top":
                             prepsosition[0] = "above"
-                        else:
-                            ngL = [Nominal_group(["the"],preposition,[],ngL,[])]
-                            preposition = "at"
-                            
                         
-                    
+                        else:
+                            ngL = [Nominal_Group(["the"],preposition,[],ngL,[])]
+                            preposition = ["at"]
+                                        
                 nominal_groupL.append([preposition, ngL])
                 
                 
