@@ -509,7 +509,6 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                         'Banana rdfs:subClassOf Plant',
                         'y_banana rdf:type Banana',
                         'y_banana hasColor yellow',
-                        'y_banana isOn shelf1',
                         'y_banana isAt LEFT',
                         'y_banana isAt shelf1_front', 'shel1_front rdf:type Location',
                         'LEFT isLeftOf myself', 'LEFT rdf:type Location',
@@ -548,7 +547,18 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         logger.info( ">> input: " + stmt)
         
         self.assertEquals(res[1][1], "The green banana is on the blue table in front of me.")
-    
+        
+        logger.info("\n##################### test_question1_where ########################\n")
+        
+        ####
+        stmt = "Where is the yellow banana?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        logger.info( ">> input: " + stmt)
+        self.assertTrue(val in res[1][1] for val in ["The yellow banana is", "in front of the shelf", "at my left"])
+            
     
     def test_question2_what(self):
 

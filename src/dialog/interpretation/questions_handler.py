@@ -145,8 +145,8 @@ class QuestionHandler:
                         stmts = [s.replace('objectFoundInLocation', 'isAt') for s in statements]
                         for role in ResourcePool().direction_words:                        
                             try:
-                                logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(stmts + ['?concept is'+ role.capitalize() + 'Of ?location']), None, "magenta"))
-                                answers = ResourcePool().ontology_server.findForAgent(agent,'?location', stmts + ['?concept is'+ role.capitalize() + 'Of ?location'])
+                                logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(stmts + ['?concept is'+ role.capitalize() + 'Of ?obj', '?concept rdf:type Location']), None, "magenta"))
+                                answers = ResourcePool().ontology_server.findForAgent(agent,'?obj', stmts + ['?concept is'+ role.capitalize() + 'Of ?obj', '?concept rdf:type Location'])
                             except AttributeError: #the ontology server is not started of doesn't know the method
                                 pass
                             

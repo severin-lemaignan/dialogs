@@ -2008,7 +2008,7 @@ def dump_resolved(sentence, current_speaker, current_listener, resolver):
 
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestStatementBuilder)
-    #suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestBaseSentenceDialog))
+    suite.addTests( unittest.TestLoader().loadTestsFromTestCase(TestBaseSentenceDialog))
     
     
     return suite
