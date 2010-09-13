@@ -210,7 +210,13 @@ class Dialog(Thread):
                         'blue') + "\n")
                 
                 break
-                
+            
+            if s.learn_it() and self._last_output:
+                s.append_sub_sentence(self._last_output['sentence'])
+                self._last_output = None
+                self.waiting_for_more_info = False
+                break
+                    
         if self.waiting_for_more_info:
             self._logger.info(colored_print("Waiting for more information activated\n", 'magenta'))
             #Processing Unsifficient input  Error with sentences remerge

@@ -535,11 +535,19 @@ class Sentence:
         return False
     
     def learn_it(self):
+        #Learn that
         if  self.data_type == "imperative"\
             and "learn" in [verb for sv in self.sv for verb in sv.vrb_main]\
             and "affirmative" in [sv.state for sv in self.sv]:
             return True
         return False
+    
+    def append_sub_sentence(self, sub_sentence):
+        """This append a subsentence to the current sentence """
+        self.sv[0].d_obj = []
+        self.sv[0].i_cmpl = []
+        self.sv[0].vrb_sub_sentence.append(sub_sentence)
+                
 
 class Nominal_Group:
     """

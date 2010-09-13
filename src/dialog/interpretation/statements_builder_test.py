@@ -1921,7 +1921,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         self.assertTrue(check_results(res[0], expected_result))
     
     def test_sentence18(self):   
-        logger.info("\n##################### sentence with directions KNOW ########################\n")
+        logger.info("\n##################### sentence with KNOW ########################\n")
         ##sentence
         stmt = "I know the yellow banana"
         
@@ -1929,8 +1929,41 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         expected_result = []
         self.assertTrue(res[0] == expected_result)
+    
+    def test_sentence19(self):   
+        logger.info("\n##################### sentence learn that########################\n")
+        ##sentence
+        stmt = "learn that the yellow banana is on the blue table"
         
+        res = self.dialog.test('myself', stmt)
         
+        expected_result = ['y_banana isOn table2']
+        self.assertTrue(res[0] == expected_result)
+        
+    def test_sentence20(self):   
+        logger.info("\n##################### sentence learn that########################\n")
+        ##sentence
+        stmt = "learn that the yellow banana is next to the blue screen" 
+        #blue screen is unknown in the onotlogy
+        
+        res = self.dialog.test('myself', stmt)
+        
+        expected_result = ['y_banana isNextTo *']
+        self.assertTrue(check_results(res[0],expected_result))
+    
+    def test_sentence21(self):   
+        logger.info("\n##################### sentence learn that########################\n")
+        ##sentence
+        stmt = "the green banana is next to the green table" 
+        #green table is unknown in the onotlogy
+        ####
+        answer = "learn it"
+        #####
+        res = self.dialog.test('myself', stmt, answer)
+        
+        expected_result = ['green_banana isNextTo *']
+        self.assertTrue(check_results(res[0],expected_result))
+    
     def tearDown(self):
         self.dialog.stop()
         self.dialog.join()

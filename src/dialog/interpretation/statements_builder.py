@@ -80,8 +80,9 @@ class StatementBuilder:
         #Setting up attribute of verbalGroupStatementBuilder:
         #    process_on_imperative
         #    process_on_question
-        vg_stmt_builder.set_attribute_on_data_type(sentence.data_type)
-        vg_stmt_builder._process_on_resolved_sentence = sentence.resolved()
+        #     process_on_learning_new_concept
+        #     process_on_resolved_sentence
+        vg_stmt_builder.set_attribute_on_data_type(sentence)
         
         if not sentence.sn:
             vg_stmt_builder.process()
@@ -263,7 +264,7 @@ class NominalGroupStatementBuilder:
                 
             # Case 3: possessives : my, your, his, her, its, our, their """
             if det == "my" and not negative_object:
-                #Case of Direction: The leftOf, the right of ...
+                #Case of Direction: The left of, the right of ...
                 if nominal_group.noun and nominal_group.noun[0] in ResourcePool().direction_words:
                     self._statements.append(ng_id + " is"+nominal_group.noun[0].capitalize() + "Of " + self._current_speaker)
                 else:
@@ -570,12 +571,20 @@ class VerbalGroupStatementBuilder:
         
         #This field holds concepts for class grounding
         self.lear_more_concept = []
+        
+        #This field is set on True if dealing with a setence starting with "learn that/it ..."
+        # E.g: Learn that a location is a place
+        #    thus IDs are generated for concept that are possibly not known in the ontology
+        self._process_on_learning_new_concept = True
 
-    def set_attribute_on_data_type(self, data_type):
-        if data_type == 'imperative':
+    def set_attribute_on_data_type(self, sentence):
+        if sentence.data_type == 'imperative':
             self._process_on_imperative = True
-        if data_type in ['yes_no_question', 'w_question']:
+        if sentence.data_type in ['yes_no_question', 'w_question']:
             self._process_on_question = True
+        
+        self._process_on_resolved_sentence = sentence.resolved()
+        self._process_on_learning_new_concept = sentence.learn_it()
         
     def clear_statements(self):
         self._statements = []
@@ -908,7 +917,20 @@ class VerbalGroupStatementBuilder:
                 
             
     def process_vrb_subsentence(self, verbal_group):
-        pass
+        
+        if self._process_on_learning_new_concept:
+            vrb_subs_builder = StatementBuilder(self._current_speaker)
+            for vrb_sub in verbal_group.vrb_sub_sentence:
+                vrb_subs_builder.clear_all()
+                
+                if vrb_sub.sn:
+                    vrb_subs_builder.process_nominal_groups(vrb_sub.sn)
+                if vrb_sub.sv:
+                    vrb_subs_builder.process_verbal_groups(vrb_sub)
+                
+                self._statements = vrb_subs_builder._statements
+                self._unclarified_ids = vrb_subs_builder._unclarified_ids
+                self.lear_more_concept = vrb_subs_builder.lear_more_concept
         
             
 """

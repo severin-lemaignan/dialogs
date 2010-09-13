@@ -8,7 +8,7 @@ from dialog.helpers import colored_print
 
 from dialog.dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError, DialogError
 from dialog.resources_manager import ResourcePool
-from statements_builder import NominalGroupStatementBuilder, get_class_name #for nominal group discrimination
+from statements_builder import NominalGroupStatementBuilder, get_class_name, generate_id #for nominal group discrimination
 from discrimination import Discrimination
 from anaphora_matching import AnaphoraMatcher, recover_nom_gr_list, first_replacement
 from dialog.sentence import SentenceFactory, Comparator, Nominal_Group
@@ -322,13 +322,17 @@ class Resolver:
         try:
             id = discriminator.clarify(description, features)
         except UnsufficientInputError as uie:
-            sf = SentenceFactory()
-            if uie.value['status'] != 'SUCCESS':
-                uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
-            uie.value['object'] = nominal_group
-            uie.value['sentence'] = self._current_sentence
-            uie.value['object_with_more_info'] = None
-            raise uie
+            #   Create a new concept instead of raising unsificient input error, as the current sentence start with "learn that ..."
+            if self._current_sentence.learn_it():
+                id = self._ontology_learns_new_concept(stmts, current_speaker)
+            else:
+                sf = SentenceFactory()
+                if uie.value['status'] != 'SUCCESS':
+                    uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
+                uie.value['object'] = nominal_group
+                uie.value['sentence'] = self._current_sentence
+                uie.value['object_with_more_info'] = None
+                raise uie
         
         logger.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
         
@@ -508,6 +512,21 @@ class Resolver:
                 
             if sv.sv_sec:
                 sv.sv_sec = self.verbal_phrases_reference_resolution(sv.sv_sec, matcher,current_speaker, current_object)
+            
+            #Subsentence
+            if sv.vrb_sub_sentence:
+                resolved_vrb = []
+                for vrb in sv.vrb_sub_sentence:
+                    #sentence sn nominal groups reference resolution
+                    if vrb.sn:
+                        vrb.sn = self._resolve_groups_references(vrb.sn, matcher, current_speaker, current_object)
+
+                    if vrb.sv:
+                        vrb.sv = self.verbal_phrases_reference_resolution(vrb.sv, matcher,current_speaker, current_object)
+                    
+                    resolved_vrb.append(vrb)
+                
+                sv.vrb_sub_sentence = resolved_vrb
         
         return verbal_groups
         
@@ -532,9 +551,54 @@ class Resolver:
             if sv.sv_sec:
                 sv.sv_sec = self.verbal_phrases_noun_resolution(sv.sv_sec, current_speaker, discriminator, builder)
         
+            #Subsentence
+            if sv.vrb_sub_sentence:
+                resolved_vrb = []
+                for vrb in sv.vrb_sub_sentence:
+                    #sentence.sn nominal groups nouns phrase resolution
+                    if vrb.sn:
+                        vrb.sn = self._resolve_groups_nouns(vrb.sn, 
+                                                                current_speaker,
+                                                                discriminator,
+                                                                builder)
+                    #sentence.sv nominal groups nouns phrase resolution
+                    if vrb.sv:
+                        vrb.sv = self.verbal_phrases_noun_resolution(vrb.sv, current_speaker, discriminator, builder)
+                    
+                    resolved_vrb.append(vrb)
+                
+                sv.vrb_sub_sentence = resolved_vrb
+
+
         return verbal_groups
-       
-     
+
+    ##########################
+    # Learning a new concept
+    ############################
+    def _ontology_learns_new_concept(self, concept_description, current_speaker):
+        """This method commit a new concept in the ontology regarding the description that has been provided.
+            Also, it returns a randomly genrated ID of the new concept
+        """
+        #Genrating ID
+        id = generate_id(with_question_mark = False)
+        
+        #Replacing '?concept' by ID
+        stmts = [s.replace('?concept', id) for s in concept_description]
+
+        #Removing remaining statements holding unbound tokens other than '?concept' 
+        # in order not to add unbound references in the ontology.
+        stmts = [s for s in stmts if not "?" in s]
+        
+        #Commiting the ontology now, in case of a research on this concept on the remaining unresolved concepts of the sentence
+        logger.debug(colored_print("Learning this new concept in "+ current_speaker + "'s model: \n", "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
+        try:
+            ResourcePool().ontology_server.addForAgent(current_speaker, stmts)
+        except AttributeError:
+            pass
+
+        return id
+
+
 def get_last(list, nb):
     """This returns the last 'Nb' elements of the list 'list' in the reverse order"""
     #Empty list
