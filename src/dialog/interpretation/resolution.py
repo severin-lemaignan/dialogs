@@ -208,8 +208,10 @@ class Resolver:
         """This attempts to resolve every single nominal group held in a nominal group list"""
         resolved_sn = []
         for ng in array_sn:
-            if ng.noun_cmpl and ng.noun and ng.noun[0] in ResourcePool().direction_words:
-                ng.noun_cmpl = self._resolve_groups_references(ng.noun_cmpl, matcher, current_speaker, current_object)
+            if self._current_sentence.learn_it():
+                ng.noun_cmpl = self._resolve_groups_references(ng.noun_cmpl, matcher, current_speaker, None) if ng.noun_cmpl else []
+                #resolved_relative = [self.references_resolution(relative, current_speaker, None, None, None) for relative in ng.relative]
+                #ng.relative = resolved_relative
                 
             resolved_sn.append(self._resolve_references(ng, matcher, current_speaker, current_object))
            
@@ -377,8 +379,11 @@ class Resolver:
     def _resolve_groups_nouns(self, nominal_groups, current_speaker, discriminator, builder):
         resolved_sn = []
         for ng in nominal_groups:
-            if ng.noun_cmpl and ng.noun and ng.noun[0] in ResourcePool().direction_words:
-                ng.noun_cmpl = self._resolve_groups_nouns(ng.noun_cmpl, current_speaker, discriminator, builder)
+            
+            if self._current_sentence.learn_it():
+                ng.noun_cmpl = self._resolve_groups_nouns(ng.noun_cmpl, current_speaker, discriminator, builder) if ng.noun_cmpl else []
+                #resolved_relative = [self.noun_phrases_resolution(relative, current_speaker, None, None) for relative in ng.relative]
+                #ng.relative = resolved_relative
                 
             resolved_sn.append(self._resolve_nouns(ng, current_speaker, discriminator, builder))
             
