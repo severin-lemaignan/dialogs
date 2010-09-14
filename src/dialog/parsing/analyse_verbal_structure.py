@@ -35,6 +35,7 @@ import analyse_nominal_structure
 import other_functions
 import analyse_verb
 import analyse_sentence
+import preprocessing
 
 
 """
@@ -482,6 +483,7 @@ def process_conjunctive_sub(phrase,vg):
     
     if begin_pos!=-1:
         #We include the relative's and subsentence's proposal if there are relatives or subsentences in this subsentence
+        phrase = [phrase[0]]+preprocessing.remerge_sentences(phrase[1:])
         end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], ['that']+sub_list+rel_list)
         
         #We have to remove the proposal
