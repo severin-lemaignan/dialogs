@@ -1366,7 +1366,7 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['be'], [],'present simple',
                     [],
                     [Indirect_Complement(['next+to'],[Nominal_Group(['the'],['table'],[],[],[])]),
-                     Indirect_Complement(['in'],[Nominal_Group(['the'],['front'],[],[Nominal_Group(['the'],['kitchen'],[],[],[])],[])])],
+                     Indirect_Complement(['at'],[Nominal_Group(['the'],['front'],[],[Nominal_Group(['the'],['kitchen'],[],[],[])],[])])],
                     [], [] ,'affirmative',[])])]
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
@@ -2789,7 +2789,7 @@ class TestParsing(unittest.TestCase):
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     
-    
+   
     
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)

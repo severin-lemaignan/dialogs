@@ -217,8 +217,13 @@ def exclama_sentence(sentence):
                 return analysis
     
     #If we have an imperative it can be forced
-    return other_sentence('interjection', '', sentence)
-     
+    analysis=other_sentence('interjection', '', sentence)
+    if analysis.data_type=='interjection' and (analysis.sv[0].vrb_main==[] or analysis.sv[0].vrb_main[0] in ['!','?','.']):
+        pass
+    else:
+        analysis.data_type='statement'
+    return analysis
+
 
 
 def w_quest_where(type, request, stc):
@@ -831,7 +836,7 @@ def sentences_analyzer(sentences):
             k.sv[0].vrb_main=[]
             if k.data_type=='imperative':
                 k.data_type='statement'
-        
+            
         #If we have imperative with verb 'see' => end
         if k.data_type=='imperative' and k.sv[0].vrb_main==['see'] and k.sv[0].d_obj[0].noun==['you']:
             k.data_type='end'
