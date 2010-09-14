@@ -27,7 +27,7 @@ of statements with statements from both the first and the second desire.
 Features
 ========
 
-[TODO] Special case for "knows", "sees", "hears" in statement builder -> ~passive actions
+[DONE v0.2.99] Special case for "knows", "sees", "hears" in statement builder -> ~passive actions
 
 [TODO] uses discrimination.find_unambiguous_desc(self, objectID) to build 
 unambiguous descriptions of concepts when answering questions.
@@ -41,11 +41,11 @@ unambiguous descriptions of concepts when answering questions.
 [TODO:3] processing the pronouns 'its'
 -> "the bottle is in its box"
 
-[TODO:3] Create an appropriate object property to the preposition 'for'
+[DONE v0.2.99] Create an appropriate object property to the preposition 'for'
 -> " This box is for white wine" 
+-> isRelatedTo
 
-
-[TODO:3]{Complete By End-August} subsentence
+[DONE v0.3]{Complete By End-August} subsentence
 -> "learn that..."
 
 [PARTIALLY DONE]{Complete By End-August} second verb
@@ -101,13 +101,13 @@ Interface
 DOCUMENTATION
 =============
 
-[TODO] Quantifiers
+[DONE v0.3] Quantifiers
 [TODO] Anaphora (previous sentences memory + selection of nominal group)
-[TODO] Processing of human answers (like "No, no, no, I mean the blue bottle")
+[DONE v0.3] Processing of human answers (like "No, no, no, I mean the blue bottle")
 [TODO] Explain how Dialog deals (or not) with "context"
 -> where context is used (-> connection with ontology), where it is missing (eg "I'm going to Toulouse" can be right now or in 2 months. If we know we are talking about the Patrick's holidays next week, it would be clear)
-[TODO] list which questions are handled by question handler
-[TODO] Handling of 'OF' held in the field noun_cmpl of nominal groups
+[ONGOING] list which questions are handled by question handler
+[ONGOING] Handling of 'OF' held in the field noun_cmpl of nominal groups
     -> For agents :  belongsTo  " The car of Mahdi"
     -> For non-Agents : isRelatedTo  " The bottle of wine"
 [PARTIALLY DONE](On Parser OK) specify the process of 'or' as a limit of the input of Dialog module
@@ -119,12 +119,13 @@ DOCUMENTATION
 Release 0.4
 ===========
 
-* Creation of concepts: for instance "Toto is a human". 
+[DONE v0.3]* Creation of concepts: for instance "Toto is a human". 
 In 0.3, Dialog tries to resolve Toto. In cases where it doesn't find any 
 matching concepts, Dialog should offer to create a new concept, with "Toto" as
 label.
+-> use "Learn that or Learn it after a discrimination loop"
 
-* Add a special "Forget that" to leave the resolution loop where Dialog keeps on
+[DONE v0.3]* Add a special "Forget that" to leave the resolution loop where Dialog keeps on
 asking for more details.
 
 

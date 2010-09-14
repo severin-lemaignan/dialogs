@@ -1,227 +1,246 @@
+== Resolution ==
 
-=== Resolution ===
-
-
-The purpose of this module is to produce a resolved sentence, that is to accurately identify each element involved in a sentence, by affecting them 
-an existing and unique reference in the ontology.
-
-Let's suppose we are processing the natural language  input "the red cube is on the blue table".
-Before commiting this information in the ontology, we first try to uniquely identify "the red cube (1)" and "the blue table (2)".
+The purpose of this module is to produce a resolved sentence, that is to accurately identify each element involved in a sentence, by affecting them an existing and unique reference in the ontology.
+Let's suppose we are processing the natural language input _"the red cube is on the blue table"_. Before committing this information in the ontology, we first try to uniquely identify _"the red cube (1)"_ and _"the blue table (2)"_.
 To do so, we build a set of matching RDF/OWL statements in order to query the ontology. 
-Assuming that there is only one "red cube" in the ontology, we should retrieve its unique identifier; which is what we are looking for.
+Assuming that there is only one _"red cube"_ in the ontology, we should retrieve its unique identifier, which is what we are looking for.
 
-  {{{
-    The set of maching statements to "the red cube" is 
-        [?concept rdf:type Cube,
-        ?concept hasColor red]
-        
-    where "?concept" is the identifier to retrieve and to affect to the noinal group being processed.
-  }}}
+    {{{
+    The set of matching statements to "the red cube" is 
+    [ ?concept rdf:type Cube, ?concept hasColor red]
+    where "?concept" is the identifier to retrieve and to affect to the nominal group being processed.
+    }}}
 
-However, if there is more than one red cube, then we need to retrieve the accurate identifier by the process of discrimination (Cf. Discrimination)
+However, if there is more than one red cube, then we need to retrieve the accurate identifier by the process of discrimination (Cf. Discrimination).
 
-
- * The resolution of reference to the speaker, recipient or anaphora is different. We look through the nominal group elements and if we find personal pronouns such as "I" or "me", the nominal group is affected with the current speaker identifer.
- If we find a personal pronoun such as "you", the nominal group is identified with the recipient identifier; finally when anaphora such as 'it' or 'one' occur, we retrieve their matching object. (Cf. Anaphora resolution)
+    * The resolution of reference to the speaker, recipient or anaphora is different. We look through the nominal group elements and if we find personal pronouns such as "I" or "me", the nominal group is affected with the current speaker identifier.
+ If we find a personal pronoun such as "you", the nominal group is identified with the recipient identifier; finally when anaphora such as 'it' or 'one' occur, we attempt to retrieve the matching object. (Cf. Anaphora resolution)
 
 
- * Action verbs are also resolved, however differently from the nominal group resolution as, we do not build a set of RDF statements to query the ontology, 
- but instead, we lookup their matching synonims (thematic roles) in the shared files in order to retrieve their reference in the ontology.
+    * Action verbs are also resolved, however differently from the nominal group resolution as, we do not build a set of RDF statements to query the ontology, but instead, we lookup their matching synonyms (thematic roles) in the shared files in order to retrieve their reference in the ontology.
     {{{ 
     In the example: I take the bottle, the action verb "take" is referenced by "Get"
-    (Cf: thematic_roles)
-        
+    (Cf: thematic_roles)        
     }}}
     
  
  
-==== Forcing resolution ====
+==== Forcing resolution ===
  
- * Adjectives ONLY approach:
- 
- Let's consider the following example "the yellow banana is good" and assume there exists a unique yellow banana in the ontology referenced with 'Y_BANANA'.
- It is fairly possible to resolve the identifier of "the yellow banana", but how about the single information "good" ?
- 
- 'adjectives_only()' is an approach implemented in order to assume as resolved any nominal group that holds information only in its adjective attribute.
- In doing so, we can therfore derive the statements: 
- {{{
+    * Adjectives ONLY approach
+    Let's consider the following example "the yellow banana is good" and assume there exists a unique yellow banana in the ontology referenced with 'Y_BANANA'.
+    It is fairly possible to resolve the identifier of "the yellow banana", but how about the single information "good" ?
+
+    '`adjectives_only`' is an approach implemented in order to assume as resolved any nominal group that holds information only in its adjective attribute.
+    In doing so, we can therefore derive the statements: 
+    {{{
     [Y_BANANA hasFeature good]
- }}}
+    }}}
 
 
+    * Quantifier approach
+    We have implemented some quantifiers that may be used to assume that a nominal group is resolved.
 
+    Let's consider the example "Danny is a human". Resolving "Danny" should succeed as long as there exists a concept labelled "Danny"
+    However, the nominal group "a human" cannot be resoled. Although the sentence is to commit a new information, how can we assign to this particular nominal group a unique identifier? what if there are numbers of humans, which one are we talking about? 
 
- * Quantifier approach
- We have implemented some quantifiers that may be used to assume that a nominal group is resolved.
- 
- Let's consider the example "Danny is a human". Resolving "Danny" should succeed as long as there exists a concept labeled "Danny"
- However, resolving "a human" cannot be resoled. Although the sentence is to commit a new information, how can we affect to this particualr nominal group a unique identifer? what if there are numbers of humans, whichone are we talking about? 
- Also, the use the determiner "a" suggest that it is no accurate unique identification.
- 
- Therefore, we assume as resolved all nominal group with the quantifier "SOME" and "ALL". In doing so, we can allow the creation of statement towards the ontology.
- {{{
+    Therefore, we assume as resolved all nominal group with the quantifier "SOME" and "ALL". In doing so, we can allow the creation of statement towards the ontology.
+    {{{
     "Statement created"
     [DANNY rdf:type Human]
- }}}
- 
+    }}}
+     
+    Regardless the semantic interpretation of a sentence, when both the subject and object hold indefinite quantifiers - `ALL or SOME` - we create the predicate `"rdfs:subClassOf"`.
+    Doing this allow us to create class grounding. When both hold the definite quantifier `"ONE"`, we create the predicate `"owl:sameAs"`.  For the rest of the case, we use the object property `"rdf:type"`:
+    {{{
+    "Bananas are fruits"
+    ALL + ALL
+    [Banana rdfs:subClassOf Fruit]
 
-=== Discrimination ===
+    "A banana is a fruit"
+    SOME + SOME
+    [Banana rdfs:subClassOf Fruit]
+
+    "the green banana is a fruit"
+    ONE + SOME
+    [green_banana rdf:type Fruit]
+
+    "the green banana is the banana in the table"
+    ONE + ONE
+    [green_banana owl:sameAs green_banana]
+
+    cf: Interpretation for quantifier list
+
+    * Problem
+    Be cautious that,the quantifier approach is useful only if we process sentence with the state verbs (e.g: to be).
+
+    E.g: Banana grow on Tree
+    This would produce 
+    [* performedBy Banana, 
+     * rdf:type Grow,
+     * involves Tree], 
+
+    transforming "Banana" into an instance, and severely breaking future test referencing "Banana" as a Class.
+    }}}
+
+== Discrimination ==
 
     
     
-=== Statement builder ===
+== Statement builder ==
 
 This module aims to build RDF/OWL statements corresponding to the sentence that is being processed. 
 Let's notice that, statements are created either for the resolution of sentences or for querying or committing the ontology.
-Here, we discribe the latter case, and explain what feature of the sentence can be fully processed.
+Here, we describe the latter case, and explain what feature of the sentence can be fully processed.
 
 
- * Typical simple sentences:
- {{{
-    
+==== Typical simple sentences ====
+    {{{
+
     "Danny drives the blue car" 
-    
-    Let's assume there exists a unique agent labeled 'Danny' in the ontology with the reference 'DANNY';
-    also, let's assumy there is a only one blue car with the reference 'blue_car'.
-    
+
+    Let's assume there exists a unique agent labelled 'Danny' in the ontology with the reference 'DANNY';
+    also, let's assume there is a only one blue car with the reference 'blue_car'.
+
     therefore we create the following statements:
-    ['* rdf:type Drive',
-     '* performedBy DANNY',
-     '* involves blue_car']
-    
-    where the '*'' is to mention a static situation reference that is to be generated.
-    
- }}}
+    ['EVENT rdf:type Drive',
+    'EVENT performedBy DANNY',
+    'EVENT involves blue_car']
+
+    where `EVENT` is to mention a static situation reference that is to be generated.
+
+    }}}
  
  
 
 
- * This/That approach:
- Let's suppose we want to want to say something similar to this: " This is on the shelf" or "this is green".
- Processing the determiner "this" assumes, there exists in the ontology a statement such as '[* focusesOn A_CUBE]' , where the "*"
- is to mention the current speaker and 'A_CUBE' the reference of the concept that is being pointed by the current speaker.
- Therefore, any occurence of the determiner "this" affects to its parent nominal group the identifier 'A_CUBE'.
- 
-    * Problem: *
-    - What if the current speaker is pointing a red object, that is to say [A_CUBE hasColor red]? In this case, 
-    attempting to commit the ontology with the information [A_CUBE hasColor green] would produce an inconsistency.
-    
-    - What if we say "this cylinder is green" whereas the current speaker is pointing a cube, attempting to commit the ontology with
-    [A_CUBE rdf:type Cylinder] would also lead the ontology to an inconsistent state.
-    
- * Inconsistency:
- Leading the ontology to an inconsistency state occurs everytime we try to commit a new information that cannot be inferred accurately with the existing ones.
- In this project, we use the methods "safeAdd" and "safeAddForAgent" to overcome this problem. (Cf. Oro-server).
-    
-    
- * relative sentence processing
- There are two ways of processing the relative, which are derived by the subject of the sentence, as it may also be the subject of the relative:
- {{{
+==== This/That approach ====
+Let's suppose we want to want to say something similar to this: _" This is on the shelf_" or _"this is green"_.
+Processing the determiner "this" assumes, there exists in the ontology a statement such as '`[ACHILLE focusesOn A_CUBE]`' , where the "ACHILLE"
+is to mention the current speaker and 'A_CUBE' the reference of the concept that is being pointed by the current speaker.
+Therefore, any occurrence of the determiner "this" affects to its parent nominal group the identifier 'A_CUBE'.
+
+    * Problem:
+    What if the current speaker is pointing a red object, that is to say `[A_CUBE hasColor red]`?
+    In this case, 
+    attempting to commit the ontology with the information `[A_CUBE hasColor green]` would lead to an inconsistent state.
+    What if we say "this cylinder is green" whereas the current speaker is pointing a cube, attempting to commit the ontology with `[A_CUBE rdf:type Cylinder]` would also lead the ontology to an inconsistent state.
+
+    * Inconsistency:
+    Leading the ontology to an inconsistency state occurs every time we try to commit a new information that cannot be inferred accurately with the existing ones.
+    In this project, we use the methods `"safeAdd"` and `"safeAddForAgent"` to overcome this problem. (Cf. Oro-server).
+
+
+==== Relative sentence processing====
+There are two ways of processing the relative, which are derived by the subject of the sentence, as it may also be the subject of the relative:
+    {{{
     E.g: "the man that is talking is my boss"
- }}}
- 
- Or it may be an object of the relative. In this case, the subject of the sentence is duplicated.
- {{{
+    }}}
+
+Or it may be an object of the relative. In this case, the subject of the sentence is duplicated. (Cf. Parsing)
+    {{{
     E.g: "the man that you see, is my boss" is turned into "the man that you see + the man, is my boss".
- }}}
+    }}}
+
+Processing this case involves checking if the subject equals any of the object in the relative sentence, in order to keep track of the subject's reference.
  
- Processing this case involves checking if the subject equals any of the object in the relative sentence, in order to keep a ood track of the subject's reference.
- 
- * Action verb processing
+==== Action verb processing ====
     * Thematic roles
     * Goal verb
+        E.g: want, 
+    * Action verbs with passive behaviours
+        E.g: to see. to hear, to reach
+    * To know
  
  
- * Negative sentence approach
- This approach consists in commiting a negative assertion, without leading the ontology into an inconsistent state. Three forms of negations can be pointed out.
- The negation of the type (E.g: "rdf:type" or "rdfs:subclassOf" ), the negation of the property (E.g: "hasFeature") and the negation of actions. The latter may bring numbers of ambiguity .
- Let's consider all the negation with the following examples:
+==== Negative sentence approach ====
+This approach consists in committing a negative assertion, without leading the ontology into an inconsistent state. Three forms of negations can be pointed out.
+The negation of the type (E.g: "rdf:type" or "rdfs:subclassOf" ), the negation of the property (E.g: "hasFeature") and the negation of actions. The latter may bring numbers of ambiguity .
+Let's consider all the negation with the following examples:
     * Negation of the type
-     {{{
-        "Jido is not a Human".
-        
-        Here, we create the following statements:
-        [JIDO rdf:type ComplementOfHuman], JIDO is the reference of "jido" in the ontology.
-        
-        Also, we add these statements to ensure the consistency:
-        [ComplementOfHuman owl:complement of Human]
-        
-        and 
-        [ComplementOfHuman rdfs:subclassOf ComplementClasses], where the latter is to help us retrieve easily all the Complement types added in the ontology.
-        
-     }}}
-     
-     * Negation of the property
-     {{{
-        "Jido is not gray".
-        
-        Here, we create the following statements:
-        [JIDO hasColor xxx,
-          xxx owl:differentFrom gray]
-        
-        where xxx is a generated reference to a color different from gray.
-        
-     }}}
-     
-     * Negation of actions
-     {{{
-        "Jido does not drive the blue car'.
-        
-        This sentence holds numbers of ambiguities. It may be interpreted as "Jido drives a car, but not the blue one", or 
-        "Jido somehow acts on the blue car, but does not drive it" , or so on.
-        
-        Here we do not take into consideration any of those ambuiguties. We create the statements as if we were dealing with an
-        affirmative sentence.
-        
-        [?xxx rdf:type Drive,
-         ?xxx performedBy JIDO,
-         ...
-         ]
-        
-        Then, we remove these statements after identification of ?xxx in the ontology.
-     }}}
-     
-     
- 
- * verb tense approach
- This approach aims to specify wether an action occurs in the past or in the present. Therefore, we create the object property 'eventOccursIn' and bind it with the flag PAST or FUTUR. The present tenses are assumed as a default case; there is nothing to do.
     {{{
-        E.g: Danny 'went' to Toulouse.
-        
-        We create the statements:
-        [ACTION rdf:type Go,
-         ACTION performedBy DANNY
-         ...
-         ACTION eventOccursIn PAST]
+    "Jido is not a Human".
+
+    Here, we create the following statements:
+    [JIDO rdf:type ComplementOfHuman], JIDO is the reference of "jido" in the ontology.
+
+    Also, we add these statements to ensure the consistency:
+    [ComplementOfHuman owl:complement of Human]
+
+    and 
+    [ComplementOfHuman rdfs:subclassOf ComplementClasses], where the latter is to help us retrieve easily all the Complement types added in the ontology.
+
+    }}}
+
+    * Negation of the property
+    {{{
+    "Jido is not gray".
+
+    Here, we create the following statements:
+    [JIDO hasColor xxx,
+    xxx owl:differentFrom gray]
+
+    where xxx is a generated reference to a colour different from gray.
+
+    }}}
+
+    * Negation of actions
+    {{{
+    "Jido does not drive the blue car'.
+
+    This sentence holds numbers of ambiguities. It may be interpreted as "Jido drives  a car, but not the blue one", or 
+    "Jido somehow acts on the blue car, but does not drive it" , or so on.
+
+    Here we do not take into consideration any of those ambiguities. We create the statements as if we were dealing with an
+    affirmative sentence.
+
+    [?xxx rdf:type Drive,
+    ?xxx performedBy JIDO,
+    ...
+    ]
+
+    Then, we remove these statements after identification of ?xxx in the ontology.
+    }}}
+
+
+ 
+==== verb tense approach====
+This approach aims to specify whether an action occurs in the past or in the present. Therefore, we create the object property 'eventOccursIn' and bind it with the flag PAST or FUTUR. The present tenses are assumed as a default case; there is nothing to do.
+    {{{
+    E.g: Danny 'went' to Toulouse.
+
+    We create the statements:
+    [ACTION rdf:type Go,
+    ACTION performedBy DANNY
+    ...
+    ACTION eventOccursIn PAST]
     }}}
     
- * Adverb modifying the verb - procesing approach
+==== Adverb modifying the verb - processing approach====
  
- The purpose of this approach is state the way the action is undertaken, which may be slowly, carefully, quickly, or so on.
+The purpose of this approach is state the way the action is undertaken, which may be slowly, carefully, quickly, or so on.
 Assuming that this type information is taken in charge by the supervision module, we create such statements:
     {{{
-        E.g: Danny moves slowly.
-        
-        [ACTION rdf:type Move,
-         ACTION performedBy DANNY
-         ...
-         ACTION actionSupervisionMode SLOW]
+    E.g: Danny moves slowly.
+
+    [ACTION rdf:type Move,
+    ACTION performedBy DANNY
+    ...
+    ACTION actionSupervisionMode SLOW]
     }}}
+
  
- 
- * Adverb modifying the sentence - processing approach
+==== Adverb modifying the sentence - processing approach====
 
 
  
     
 === Question handler ===
-    The purpose of this module is to query the ontology. It uses the statement builder module to first create a first set of the sentence, then according to wether the query is about 
+    The purpose of this module is to query the ontology. It uses the statement builder module to first create a first set of the sentence, then according to whether the query is about 
     a location, an object, a feature, ... it extends the current statements with specific aim-based query statements.
-    With the response from the ontology, it uses a set of association that are meant to create an outpout sentence (Cf. SentenceFactory module).
+    With the response from the ontology, it uses a set of association that are meant to create an output sentence (Cf. Sentence Factory module).
     
-    
-Sentence factory from question handling
-    recursinve reseach of info found in the answer
+
     
 
 
