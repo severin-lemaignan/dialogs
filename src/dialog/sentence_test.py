@@ -409,7 +409,7 @@ class TestRemerge(unittest.TestCase):
         nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
-        print str(class_list[1])
+       
         rslt=Nominal_Group(['the'],['bottle'],[],[],[Sentence('relative', 'which', 
                         [Nominal_Group([],['he'],[],[],[])],  
                         [Verbal_Group(['buy'], [],'past simple', 
@@ -808,7 +808,32 @@ class TestRemerge(unittest.TestCase):
         
         result_test=compare_nom_gr([nom_gr_struc],[rslt])
         self.assertEquals(result_test, 0)
+
+    def test_26(self):
+        logger.info('\n######################## test 1.26 ##############################')
     
+        utterance="shelf."
+        logger.info('The speaker said :')
+        logger.info(utterance)
+        logger.info('#################################################################\n')
+        
+        sentence_list=preprocessing.process_sentence(utterance)
+        class_list=analyse_sentence.sentences_analyzer(sentence_list)
+        flag='FAILURE'
+        
+        nom_gr_struc=Nominal_Group([],['it'],[],[],[])
+        logger.info('the nominal group of the last out put')
+        logger.info(str(nom_gr_struc))
+        
+        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        logger.info('the nominal group after processing')
+        logger.info(str(nom_gr_struc))
+        
+        rslt=Nominal_Group(['the'],['shelf'],[],[],[])
+        
+        result_test=compare_nom_gr([nom_gr_struc],[rslt])
+        self.assertEquals(result_test, 0)
+        
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSentence)
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestRemerge))

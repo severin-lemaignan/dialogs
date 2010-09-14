@@ -799,9 +799,8 @@ class Comparator():
         
 
 def it_is_pronoun(word):
-    for p in pronoun_list:
-        if word==p:
-            return 1
+    if word in pronoun_list:
+        return 1
     return 0
                     
                     
@@ -826,12 +825,14 @@ def concat_gn(nom_gr_struc, new_class, flag):
     #We make change if there is 'one' or difference
     if new_class.noun!=[] and nom_gr_struc.noun!=new_class.noun and new_class.noun!=['one']:
         nom_gr_struc.noun=new_class.noun
-
+    
+    #If failure we need to change information else we add 
     if flag=='FAILURE' :
         nom_gr_struc.relative=new_class.relative
     else:
         nom_gr_struc.relative=nom_gr_struc.relative+new_class.relative
     
+    #If failure we need to change information else we add 
     if flag=='FAILURE':    
         nom_gr_struc.noun_cmpl=new_class.noun_cmpl
     else:
@@ -855,18 +856,12 @@ def process_vg_part(vg,nom_gr_struc, flag):
     ind_cmpl=i_cmpl(vg.i_cmpl)
     #For indirect complement
     for i in ind_cmpl:
-        #If it is an adverbial related to the noun, we have to add it like a relative
-        for j in adverbial_list:
-            if j==i.prep[0] and vg.vrb_main[0]!='talk':
-                rltv=Sentence('relative', 'which',[],[vg])
-                nom_gr_struc.relative=nom_gr_struc.relative+[rltv]
-                flg=1
-                break
-        
-        #Else we process the concatenate with the nominal part of the indirect complement    
-        if flg==1:
-            flg=0
+        if i.prep[0] in adverbial_list and vg.vrb_main[0]!='talk':
+            #If it is an adverbial related to the noun, we have to add it like a relative
+            rltv=Sentence('relative', 'which',[],[vg])
+            nom_gr_struc.relative=nom_gr_struc.relative+[rltv] 
         else:
+            #Else we process the concatenate with the nominal part of the indirect complement   
             for k in i.nominal_group:
                 concat_gn(nom_gr_struc, k, flag)
     
@@ -897,24 +892,22 @@ def process_vg_nega_part(vg,nom_gr_struc, flag):
     ind_cmpl=i_cmpl(vg.i_cmpl)
     #For indirect complement
     for i in ind_cmpl:
-        #If it is an adverbial related to the noun, we have to add it like a relative
-        for j in adverbial_list:
-            if j==i.prep[0] and i.nominal_group[0]._conjunction=='BUT' and vg.vrb_main[0]!='talk':
-                i.nominal_group[0]._conjunction='AND'
-                vg.i_cmpl=vg.i_cmpl[vg.i_cmpl.index(i):]
-                vg.state='affirmative'
-                rltv=Sentence('relative', 'which',[],[vg])
-                if flag=='FAILURE' and nom_gr_struc.relative!=[]:
-                    nom_gr_struc.relative=[rltv]
-                else :
-                    nom_gr_struc.relative=nom_gr_struc.relative+[rltv]
-                flg=1
-                break
         
-        #Else we process the concatenate with the nominal part of the indirect complement    
-        if flg==1:
-            flg=0
+        if i.prep[0] in adverbial_list and i.nominal_group[0]._conjunction=='BUT' and vg.vrb_main[0]!='talk':
+            #If it is an adverbial related to the noun, we have to add it like a relative
+            i.nominal_group[0]._conjunction='AND'
+            #We delete the nominal groups before this one 
+            vg.i_cmpl=vg.i_cmpl[vg.i_cmpl.index(i):]
+            vg.state='affirmative'
+            #We continue processing
+            rltv=Sentence('relative', 'which',[],[vg])
+            if flag=='FAILURE' and nom_gr_struc.relative!=[]:
+                nom_gr_struc.relative=[rltv]
+            else :
+                nom_gr_struc.relative=nom_gr_struc.relative+[rltv]
+  
         else:
+            #Else we process the concatenate with the nominal part of the indirect complement  
             for k in i.nominal_group:
                 if k._conjunction=='BUT':
                     concat_gn(nom_gr_struc, k, flag)
@@ -935,17 +928,22 @@ def refine_nom_group_relative_sv (vs,nom_gr):
     Input=nominal groups and verbal part          Output= nominal group                   
     """
     
+    #For direct complement
     for object in vs.d_obj:
         if object.noun==['one']:
             object.noun=nom_gr.noun
         refine_nom_group_relative(object)
+    
+    #For indirect complement
     for i_object in vs.i_cmpl:
         for ng in i_object.nominal_group:
             if ng.noun==['one']:
                 ng.noun=nom_gr.noun
             refine_nom_group_relative(ng)
+    
     for second_vrb in vs.sv_sec:
             refine_nom_group_relative_sv(second_vrb,nom_gr)
+
 
 
 def refine_nom_group_relative(nom_gr):
@@ -964,7 +962,14 @@ def refine_nom_group_relative(nom_gr):
             
             
 def i_cmpl(i_cmpl):
+    """
+    This function separate indirect complements when they have same preposition                                     
+    Input=indirect complement                  Output=indirect complement                   
+    """
+    
+    #init
     i=0
+    
     while i<len(i_cmpl):
         if len(i_cmpl[i].nominal_group)>1:
             list_nominal_group=i_cmpl[i].nominal_group[1:]
@@ -982,7 +987,11 @@ def nom_gr_remerge(utterance, flag , nom_gr_struc):
     Input=nominal groups, the use utterance and the flag      Output= nominal group                   
     """
 
-    for i in utterance: 
+    for i in utterance:
+        if i.data_type=='imperative':
+            i.data_type='statement'
+            i.sn=[Nominal_Group(['the'],i.sv[0].vrb_main,[],[],[])]
+      
         if i.data_type=='statement' or i.data_type.startswith('subsentence') :
 
             if i.sv[0].state=='affirmative':
