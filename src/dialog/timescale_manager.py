@@ -12,12 +12,11 @@
     timescale_adverb : to perform interpretation of an adverb
     adverbs_interpretation : to perform interpretation of all adverb list
     timescale_i_cmpl : to perform interpretation of an indirect complement
-    indirect_cmpl_interpretation : to perform interpretation of all indirect complements list
+    indirect_complement_interpretation : to perform interpretation of all indirect complements list
     timescale_sentence : to  perform interpretation of time of sentence
 """
 from dialog.resources_manager import ResourcePool
 import time
-
 
 
 """
@@ -25,15 +24,12 @@ Statement of lists
 """
 day_list = ResourcePool().days_list
 month_list = ResourcePool().months_list
-adverb = ResourcePool().time_adverbs
-preposal = ResourcePool().time_proposals
-month_list = ResourcePool().months_list
 
 
 
 def refine_val(x,y,time,value):
     """
-    This function make operation to refine time if it is not correct
+    makes operation to refine time if it is not correct
     Input=2 objects of time, the ratio between these objects and time
     Output=time   
     """
@@ -46,7 +42,7 @@ def refine_val(x,y,time,value):
 
 def negative_day(time):
     """
-    This function correct value of day if it is negative
+    corrects value of day if it is negative
     Input=time                                Output=time   
     """
     
@@ -82,7 +78,7 @@ def negative_day(time):
 
 def refine_clock(time):
     """
-    This function refine time if it is not correct
+    refines time if it is not correct
     Input=time                                Output=time   
     """
     
@@ -131,7 +127,7 @@ def refine_clock(time):
 
 def day_period(time, period):
     """
-    This function divide the day into several time
+    divide the day into several time
     Input=time and the reference of the period    
     Output=the action period   
     """
@@ -159,17 +155,17 @@ def day_period(time, period):
 
 
 
-def timescale_adverb(time, adv):
+def timescale_adverb(time, adverb):
     """
-    This function perform interpretation of an adverb
+    perform interpretation of an adverb
     Input=time and the adverb         Output=the action period   
     """
     
     #init
     action_time=None
     
-    for i in adverb:
-        if adv==i[0]:
+    for i in ResourcePool().time_adverbs:
+        if adverb==i[0]:
             #If the adverb is about a day (like tomorrow)
             if i[1]=='day':
                 time['day']=int(time['day'])+int(i[2])
@@ -189,15 +185,15 @@ def timescale_adverb(time, adv):
 
 
 
-def adverbs_interpretation(time, adv_list):
+def adverbs_interpretation(time, adverb_list):
     """
-    This function perform interpretation of all adverb list
+    perform interpretation of all adverb list
     Input=time and the adverb list         Output=the action period   
     """
     #init
     action_time = None
     
-    for i in adv_list:
+    for i in adverb_list:
         #For each adverb we have more information about the action time
         action_time=timescale_adverb(time,i)
         #To mix information, we have to use the time of begin of action
@@ -207,16 +203,16 @@ def adverbs_interpretation(time, adv_list):
     
 
 
-def timescale_i_cmpl(indirect_cmpl, action_time):
+def timescale_i_cmpl(indirect_complement, action_time):
     """
-    This function perform interpretation of an indirect complement
+    perform interpretation of an indirect complement
     Input=indirect complement and action time       Output=the action time   
     """
                 
     #We read all nominal groups in the indirect complement 
-    for j in indirect_cmpl.nominal_group:
-        for i in preposal:
-            if i[2]!=0 and [i[0]]==indirect_cmpl.prep and i[0]!='from' and i[0]!='to':
+    for j in indirect_complement.nominal_group:
+        for i in ResourcePool().time_proposals:
+            if i[2]!=0 and [i[0]]==indirect_complement.prep and i[0]!='from' and i[0]!='to':
                 
                 #Here we have an explicit noun
                 if j.noun==['year'] or j.noun==['month'] or j.noun==['day'] or j.noun==['hour'] or j.noun==['minute'] or j.noun==['second']:
@@ -299,32 +295,32 @@ def timescale_i_cmpl(indirect_cmpl, action_time):
 
 
 
-def indirect_cmpl_interpretation(action_time, i_cmpl_list):
+def indirect_complement_interpretation(action_time, indirect_complement_list):
     """
-    This function perform interpretation of all indirect complements list
+    perform interpretation of all indirect complements list
     Input=time and the adverb list         Output=the action period   
     """
     
-    for i in i_cmpl_list:
+    for i in indirect_complement_list:
         action_time=timescale_i_cmpl(i,action_time)
     
     return action_time
 
 
 
-def timescale_sentence(indirect_cmpl,adv_list,time):
+def timescale_sentence(indirect_complement,adverb_list,time):
     """
-    This function perform interpretation of time of sentence
+    perform interpretation of time of sentence
     Input=indirect complement and action time       Output=the action time   
     """
     
-    action_time={'action_period':adverbs_interpretation(time,adv_list),'effective_time':None}
+    action_time={'action_period':adverbs_interpretation(time,adverb_list),'effective_time':None}
     if action_time['action_period']==None:
         action_time['effective_time']=time
     elif action_time['action_period']['time_begin']==action_time['action_period']['time_end']:
         action_time['effective_time']=action_time['action_period']['time_begin'].copy()
         action_time['action_period']=None
     
-    action_time=indirect_cmpl_interpretation(action_time,indirect_cmpl)
+    action_time=indirect_complement_interpretation(action_time,indirect_complement)
     
     return action_time
