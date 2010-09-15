@@ -18,7 +18,7 @@ class SentenceFactory:
                         [Nominal_Group([],[feature],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
                             [Nominal_Group(['the'],[obj_name.lower()],[],[],[])], 
-                            [], [], [] ,Sentence.affirmative,[])]),
+                            [], [], [] ,Verbal_Group.affirmative,[])]),
                     Sentence(Sentence.statement, '',nominal_groupL,[])]
         
                             
@@ -37,10 +37,10 @@ class SentenceFactory:
         sentence = [Sentence(Sentence.w_question, 'place',
                         [Nominal_Group(['the'],[obj_name],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
-                        [], [], [], [] ,Sentence.affirmative,[])]),
+                        [], [], [], [] ,Verbal_Group.affirmative,[])]),
                     Sentence(Sentence.yes_no_question, '', [], 
                         [Verbal_Group([], [],'', 
-                            [], indirect_complL, [], [] ,Sentence.affirmative,[])])]
+                            [], indirect_complL, [], [] ,Verbal_Group.affirmative,[])])]
                 
         for i in range(len(values)-1):
             sentence[1].sv[0].i_cmpl[i+1].nominal_group[0]._conjunction = 'OR'
@@ -73,7 +73,7 @@ class SentenceFactory:
         sentence = [Sentence(Sentence.yes_no_question, '', 
                         [Nominal_Group([],['it'],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
-                            [], indirect_complL, [], [] ,Sentence.affirmative,[])])]
+                            [], indirect_complL, [], [] ,Verbal_Group.affirmative,[])])]
                     
         for i in range(len(values)-1):
             sentence[0].sv[0].i_cmpl[i+1].nominal_group[0]._conjunction = 'OR'
@@ -88,7 +88,7 @@ class SentenceFactory:
         sentence = [Sentence(Sentence.yes_no_question, '', [object], []),
                     Sentence(Sentence.w_question, 'thing', 
                         [Nominal_Group([],['you'],[],[],[])], 
-                        [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,Sentence.affirmative,[])])]
+                        [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,Verbal_Group.affirmative,[])])]
         return sentence
     
     
@@ -105,7 +105,7 @@ class SentenceFactory:
             
         return [Sentence(Sentence.yes_no_question, '', 
                     [Nominal_Group([],['you'],[],[],[])], 
-                    [Verbal_Group(['mean'], [],'present simple', [object], [], [], [] ,Sentence.affirmative,[])])]
+                    [Verbal_Group(['mean'], [],'present simple', [object], [], [], [] ,Verbal_Group.affirmative,[])])]
         
     
     def create_what_is_a_reference(self, object, objectL):
@@ -113,7 +113,7 @@ class SentenceFactory:
             "bottles are objects? What is a bottle?"
         """
         sentence = [object, Sentence(Sentence.w_question, 'thing', 
-                        [], [Verbal_Group(['be'], [],'present simple', [], [], [], [] ,Sentence.affirmative,[])])]
+                        [], [Verbal_Group(['be'], [],'present simple', [], [], [], [] ,Verbal_Group.affirmative,[])])]
                         
         for obj in objectL:
             sentence[1].sn.append(Nominal_Group(['an' if obj[0].lower() in 'aeiou' else 'a'], 
@@ -399,7 +399,7 @@ class SentenceFactory:
                                                                        object_location,
                                                                        [],
                                                                        [],
-                                                                       Sentence.affirmative,
+                                                                       Verbal_Group.affirmative,
                                                                        [])])]
         
         

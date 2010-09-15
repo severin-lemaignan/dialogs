@@ -223,7 +223,7 @@ class Dialog(Thread):
             if self._last_output:
                 self._logger.info(colored_print("New content provided by human! merging it with the previous sentence.", 'magenta'))
                 
-                self._last_output['object_with_more_info'] = nom_gr_remerge(parsed_sentences,
+                self._last_output['object_with_more_info'] = nominal_group_remerge(parsed_sentences,
                                                                     self._last_output['status'],
                                                                     self._last_output['object'])
                 #current_sentence that is to replace if it is to answer unsificient input

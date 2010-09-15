@@ -20,7 +20,7 @@ class Sentence:
     statement = "statement"
     imperative = "imperative"
     interjection = "interjection"
-    gratualtion = "gratualtion"
+    gratulation = "gratulation"
     agree = "agree"
     disagree = "disagree"
     exclamation = "exclamation"

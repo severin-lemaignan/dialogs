@@ -115,7 +115,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])]) 
         expected_result = 'table1'
         self.process(sentence ,expected_result)
@@ -136,7 +136,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'shelf1'
         
@@ -159,7 +159,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'shelf1'
         
@@ -181,7 +181,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'blue_cube'        
         self.process(sentence ,expected_result) 
@@ -202,7 +202,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'another_cube'
         self.process(sentence ,expected_result) 
@@ -223,7 +223,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'blue_cube'
         self.process(sentence ,expected_result)
@@ -244,7 +244,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'small'
         self.process(sentence ,expected_result)
@@ -265,7 +265,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'blue'
         self.process(sentence ,expected_result)
@@ -286,7 +286,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'SPEAKER'
         self.process(sentence ,expected_result)
@@ -307,7 +307,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'id_danny'
         
@@ -334,7 +334,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = 'SPEAKER'
         self.process(sentence ,expected_result)
@@ -360,7 +360,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = True        
         self.process(sentence ,expected_result)
@@ -387,7 +387,7 @@ class TestQuestionHandler(unittest.TestCase):
                                                                                [])])],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = True        
         self.process(sentence ,expected_result)
@@ -413,7 +413,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = False        
         self.process(sentence ,expected_result)
@@ -440,7 +440,7 @@ class TestQuestionHandler(unittest.TestCase):
                                                                                [])])],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = False        
         self.process(sentence ,expected_result) 
@@ -461,7 +461,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           Sentence.affirmative,
+                                           Verbal_Group.affirmative,
                                            [])])
         expected_result = [['blue',[]]]        
         self.process(sentence ,expected_result)
@@ -547,7 +547,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         res = self.dialog.test('myself', stmt)
         logger.info( ">> input: " + stmt)
         
-        self.assertEquals(res[1][1], "The green banana is on the blue table in front of me.")
+        self.assertTrue(val in res[1][1] for val in ["The green banana", "is", "on the blue table", "in front of me"])
         
         logger.info("\n##################### test_question1_where ########################\n")
         

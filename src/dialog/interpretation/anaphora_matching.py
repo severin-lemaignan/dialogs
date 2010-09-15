@@ -235,7 +235,7 @@ def replacement(utterance, nom_gr, list_gr, last_nom_gr):
         return [nom_gr,False]
     
     #We will use remerge of nominal group to perform anaphora
-    nom_gr=nom_gr_remerge(utterance, 'FAILURE' , nom_gr)
+    nom_gr=nominal_group_remerge(utterance, 'FAILURE' , nom_gr)
     return [nom_gr,True]
 
 

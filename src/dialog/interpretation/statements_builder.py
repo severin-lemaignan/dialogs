@@ -631,7 +631,7 @@ class VerbalGroupStatementBuilder:
 
     
     def process_state(self, verbal_group):
-        if verbal_group.state == Sentence.negative:
+        if verbal_group.state == Verbal_Group.negative:
             self._process_on_negative = True
         else:
             self._process_on_negative = False

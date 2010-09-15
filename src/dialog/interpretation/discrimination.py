@@ -217,7 +217,7 @@ class Discrimination():
                         [Nominal_Group([],['information'],[['new',[]]],[],[])], 
                         [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                         Indirect_Complement(['about'],[Nominal_Group(['the'],['object'],[],[],[])])],
-                        [], [] ,Sentence.affirmative,[])])]
+                        [], [] ,Verbal_Group.affirmative,[])])]
             raise UnsufficientInputError({'status':'FAILURE', 'question':questions})
             #return "Give me knew information about the object"
             
@@ -274,7 +274,7 @@ class Discrimination():
                             [Nominal_Group([],['information'],[['more',[]]],[],[])], 
                             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                             Indirect_Complement(['about'],[Nominal_Group(['the'],[object],[],[],[])])],
-                            [], [] ,Sentence.affirmative,[])])]
+                            [], [] ,Verbal_Group.affirmative,[])])]
                 raise UnsufficientInputError({'status':'SUCCESS','question':questions})
                 #return "Give me more information about the object"
 

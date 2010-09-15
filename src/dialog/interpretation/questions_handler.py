@@ -170,7 +170,10 @@ class QuestionHandler:
         return self._answer
         
     def _set_situation_id(self, statements):
-        """This attempts to clarify the ID of an action verbs"""
+        """This attempts to clarify the ID of an action verbs
+            E.g: statement = [?event rdf:type Go, ?event performedBy myself, ?event actsOnObject xxx]
+                We attemtps to find an existing ontology ID matching '?event'
+        """
         stmts = []
         
         find_id = False
@@ -248,7 +251,7 @@ class QuestionHandler:
             E:g - [W_question] : where is the cube
                 - Answer: table
                 - query_on_field = 'QUERY_ON_INDIRECT_OBJ'
-                - Sentence buitl from answer, query_on_field, and w_question:
+                - Sentence built from answer, query_on_field, and w_question:
                     the cube is on the table
         """
         if sentence.aim == 'place':
@@ -405,7 +408,7 @@ class QuestionAimDict:
         self.dic_thing={None:self.dic_on_direct_obj.copy()}
                 
         #Dictionary for sentence.aim = 'manner' 
-        self.dic_manner={}
+        self.dic_manner={None:{'be':'hasMood'}}
         
         #Dictionary for sentence.aim = 'people'
         self.dic_people={'QUERY_ON_DIRECT_OBJ':self.dic_on_direct_obj.copy(),                                                                                              
@@ -422,6 +425,8 @@ class QuestionAimDict:
         self.dic_aim['place'] = self.dic_place
         #How-Question
         self.dic_aim['manner'] = self.dic_manner
+        #which-question
+        self.dic_aim['choice'] = self.dic_thing
 
 
 
