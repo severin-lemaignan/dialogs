@@ -13,7 +13,7 @@ from dialog.parsing import preprocessing
 from dialog.parsing import analyse_sentence
 from dialog.parsing import parser
 from anaphora_matching import *
-from dialog.parsing.parser_test import compare_nom_gr
+from dialog.parsing.parser_test import compare_nominal_group
 
 
 """
@@ -135,7 +135,7 @@ class TestAnaphora(unittest.TestCase):
         print utterance
         print '#################################################################'
         print ''
-        list_gr=recover_nom_gr_list(sentences)
+        list_gr=recover_nominal_group_list(sentences)
         print 'The list of the nominal group'
         for i in list_gr:
             print (str(i))
@@ -143,18 +143,18 @@ class TestAnaphora(unittest.TestCase):
         print '#####################################'
         print ''
         print 'the nominal group that we have to change'
-        nom_gr_struc=Nominal_Group([],['it'],[],[],[])
-        print (str(nom_gr_struc))
+        nominal_group_struc=Nominal_Group([],['it'],[],[],[])
+        print (str(nominal_group_struc))
         
         print '#####################################'
         print 'After the first replacement'
-        gr = first_replacement(list_gr, nom_gr_struc)
+        gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
         print (str(gr))
         print ''
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([gr],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([gr],[result])
         self.assertEquals(result_test, 0)
         
         print '#####################################'
@@ -166,14 +166,14 @@ class TestAnaphora(unittest.TestCase):
         class_list=analyse_sentence.sentences_analyzer(sentence_list)
         
         print '#####################################'
-        nom_gr_struc=replacement(class_list, nom_gr_struc, list_gr[1:],gr)
+        nominal_group_struc=replacement(class_list, nominal_group_struc, list_gr[1:],gr)
         print 'the nominal group after processing'
-        print (str(nom_gr_struc[0]))
+        print (str(nominal_group_struc[0]))
         print 'the flag'
-        print (str(nom_gr_struc[1]))
+        print (str(nominal_group_struc[1]))
         
-        rslt=Nominal_Group(['the'],['shelf'],[],[],[])
-        result_test=compare_nom_gr([nom_gr_struc[0]],[rslt])
+        result=Nominal_Group(['the'],['shelf'],[],[],[])
+        result_test=compare_nominal_group([nominal_group_struc[0]],[result])
         self.assertEquals(result_test, 0)
 
     def test_02(self):
@@ -189,7 +189,7 @@ class TestAnaphora(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        list_gr=recover_nom_gr_list(sentences)
+        list_gr=recover_nominal_group_list(sentences)
         print 'The list of the nominal group'
         for i in list_gr:
             print (str(i))
@@ -197,18 +197,18 @@ class TestAnaphora(unittest.TestCase):
         print '#####################################'
         print ''
         print 'the nominal group that we have to change'
-        nom_gr_struc=Nominal_Group([],['it'],[],[],[])
-        print (str(nom_gr_struc))
+        nominal_group_struc=Nominal_Group([],['it'],[],[],[])
+        print (str(nominal_group_struc))
         
         print '#####################################'
         print 'After the first replacement'
-        gr = first_replacement(list_gr, nom_gr_struc)
+        gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
         print (str(gr))
         print ''
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([gr],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([gr],[result])
         self.assertEquals(result_test, 0)
         
         print '#####################################'
@@ -220,14 +220,14 @@ class TestAnaphora(unittest.TestCase):
         class_list=analyse_sentence.sentences_analyzer(sentence_list)
         
         print '#####################################'
-        nom_gr_struc=replacement(class_list, nom_gr_struc, list_gr[1:],gr)
+        nominal_group_struc=replacement(class_list, nominal_group_struc, list_gr[1:],gr)
         print 'the nominal group after processing'
-        print (str(nom_gr_struc[0]))
+        print (str(nominal_group_struc[0]))
         print 'the flag'
-        print (str(nom_gr_struc[1]))
+        print (str(nominal_group_struc[1]))
         
-        rslt=Nominal_Group(['the'],['bottle'],[],[],[])
-        result_test=compare_nom_gr([nom_gr_struc[0]],[rslt])
+        result=Nominal_Group(['the'],['bottle'],[],[],[])
+        result_test=compare_nominal_group([nominal_group_struc[0]],[result])
         self.assertEquals(result_test, 0)
         
     def test_03(self):
@@ -243,7 +243,7 @@ class TestAnaphora(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        list_gr=recover_nom_gr_list(sentences)
+        list_gr=recover_nominal_group_list(sentences)
         print 'The list of the nominal group'
         for i in list_gr:
             print (str(i))
@@ -251,18 +251,18 @@ class TestAnaphora(unittest.TestCase):
         print '#####################################'
         print ''
         print 'the nominal group that we have to change'
-        nom_gr_struc=Nominal_Group([],['it'],[],[],[])
-        print (str(nom_gr_struc))
+        nominal_group_struc=Nominal_Group([],['it'],[],[],[])
+        print (str(nominal_group_struc))
         
         print '#####################################'
         print 'After the first replacement'
-        gr = first_replacement(list_gr, nom_gr_struc)
+        gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
         print (str(gr))
         print ''
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([gr],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([gr],[result])
         self.assertEquals(result_test, 0)
         
         print '#####################################'
@@ -274,14 +274,14 @@ class TestAnaphora(unittest.TestCase):
         class_list=analyse_sentence.sentences_analyzer(sentence_list)
         
         print '#####################################'
-        nom_gr_struc=replacement(class_list, nom_gr_struc, list_gr[1:],gr)
+        nominal_group_struc=replacement(class_list, nominal_group_struc, list_gr[1:],gr)
         print 'the nominal group after processing'
-        print (str(nom_gr_struc[0]))
+        print (str(nominal_group_struc[0]))
         print 'the flag'
-        print (str(nom_gr_struc[1]))
+        print (str(nominal_group_struc[1]))
         
-        rslt=Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])
-        result_test=compare_nom_gr([nom_gr_struc[0]],[rslt])
+        result=Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])
+        result_test=compare_nominal_group([nominal_group_struc[0]],[result])
         self.assertEquals(result_test, 0)
         
     def test_04(self):
@@ -297,7 +297,7 @@ class TestAnaphora(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        list_gr=recover_nom_gr_list(sentences)
+        list_gr=recover_nominal_group_list(sentences)
         print 'The list of the nominal group'
         for i in list_gr:
             print (str(i))
@@ -305,18 +305,18 @@ class TestAnaphora(unittest.TestCase):
         print '#####################################'
         print ''
         print 'the nominal group that we have to change'
-        nom_gr_struc=Nominal_Group([],['it'],[],[],[])
-        print (str(nom_gr_struc))
+        nominal_group_struc=Nominal_Group([],['it'],[],[],[])
+        print (str(nominal_group_struc))
         
         print '#####################################'
         print 'After the first replacement'
-        gr = first_replacement(list_gr, nom_gr_struc)
+        gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
         print (str(gr))
         print ''
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([gr],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([gr],[result])
         self.assertEquals(result_test, 0)
         
         print '#####################################'
@@ -328,14 +328,14 @@ class TestAnaphora(unittest.TestCase):
         class_list=analyse_sentence.sentences_analyzer(sentence_list)
         
         print '#####################################'
-        nom_gr_struc=replacement(class_list, nom_gr_struc, list_gr[1:],gr)
+        nominal_group_struc=replacement(class_list, nominal_group_struc, list_gr[1:],gr)
         print 'the nominal group after processing'
-        print (str(nom_gr_struc[0]))
+        print (str(nominal_group_struc[0]))
         print 'the flag'
-        print (str(nom_gr_struc[1]))
+        print (str(nominal_group_struc[1]))
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([nom_gr_struc[0]],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([nominal_group_struc[0]],[result])
         self.assertEquals(result_test, 0)
         
     def test_05(self):
@@ -351,7 +351,7 @@ class TestAnaphora(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        list_gr=recover_nom_gr_list(sentences)
+        list_gr=recover_nominal_group_list(sentences)
         print 'The list of the nominal group'
         for i in list_gr:
             print (str(i))
@@ -359,18 +359,18 @@ class TestAnaphora(unittest.TestCase):
         print '#####################################'
         print ''
         print 'the nominal group that we have to change'
-        nom_gr_struc=Nominal_Group(['this'],['one'],[],[],[])
-        print (str(nom_gr_struc))
+        nominal_group_struc=Nominal_Group(['this'],['one'],[],[],[])
+        print (str(nominal_group_struc))
         
         print '#####################################'
         print 'After the first replacement'
-        gr = first_replacement(list_gr, nom_gr_struc)
+        gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
         print (str(gr))
         print ''
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([gr],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([gr],[result])
         self.assertEquals(result_test, 0)
         
         print '#####################################'
@@ -382,14 +382,14 @@ class TestAnaphora(unittest.TestCase):
         class_list=analyse_sentence.sentences_analyzer(sentence_list)
         
         print '#####################################'
-        nom_gr_struc=replacement(class_list, nom_gr_struc, list_gr[1:],gr)
+        nominal_group_struc=replacement(class_list, nominal_group_struc, list_gr[1:],gr)
         print 'the nominal group after processing'
-        print (str(nom_gr_struc[0]))
+        print (str(nominal_group_struc[0]))
         print 'the flag'
-        print (str(nom_gr_struc[1]))
+        print (str(nominal_group_struc[1]))
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([nom_gr_struc[0]],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([nominal_group_struc[0]],[result])
         self.assertEquals(result_test, 0)
         
     def test_06(self):
@@ -405,7 +405,7 @@ class TestAnaphora(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        list_gr=recover_nom_gr_list(sentences)
+        list_gr=recover_nominal_group_list(sentences)
         print 'The list of the nominal group'
         for i in list_gr:
             print (str(i))
@@ -413,18 +413,18 @@ class TestAnaphora(unittest.TestCase):
         print '#####################################'
         print ''
         print 'the nominal group that we have to change'
-        nom_gr_struc=Nominal_Group(['this'],['one'],[],[],[])
-        print (str(nom_gr_struc))
+        nominal_group_struc=Nominal_Group(['this'],['one'],[],[],[])
+        print (str(nominal_group_struc))
         
         print '#####################################'
         print 'After the first replacement'
-        gr = first_replacement(list_gr, nom_gr_struc)
+        gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
         print (str(gr))
         print ''
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([gr],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([gr],[result])
         self.assertEquals(result_test, 0)
         
         print '#####################################'
@@ -436,14 +436,14 @@ class TestAnaphora(unittest.TestCase):
         class_list=analyse_sentence.sentences_analyzer(sentence_list)
         
         print '#####################################'
-        nom_gr_struc=replacement(class_list, nom_gr_struc, list_gr[1:],gr)
+        nominal_group_struc=replacement(class_list, nominal_group_struc, list_gr[1:],gr)
         print 'the nominal group after processing'
-        print (str(nom_gr_struc[0]))
+        print (str(nominal_group_struc[0]))
         print 'the flag'
-        print (str(nom_gr_struc[1]))
+        print (str(nominal_group_struc[1]))
         
-        rslt=Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])
-        result_test=compare_nom_gr([nom_gr_struc[0]],[rslt])
+        result=Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])
+        result_test=compare_nominal_group([nominal_group_struc[0]],[result])
         self.assertEquals(result_test, 0)
         
     def test_07(self):
@@ -459,7 +459,7 @@ class TestAnaphora(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        list_gr=recover_nom_gr_list(sentences)
+        list_gr=recover_nominal_group_list(sentences)
         print 'The list of the nominal group'
         for i in list_gr:
             print (str(i))
@@ -467,18 +467,18 @@ class TestAnaphora(unittest.TestCase):
         print '#####################################'
         print ''
         print 'the nominal group that we have to change'
-        nom_gr_struc=Nominal_Group(['this'],[],[],[],[])
-        print (str(nom_gr_struc))
+        nominal_group_struc=Nominal_Group(['this'],[],[],[],[])
+        print (str(nominal_group_struc))
         
         print '#####################################'
         print 'After the first replacement'
-        gr = first_replacement(list_gr, nom_gr_struc)
+        gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
         print (str(gr))
         print ''
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([gr],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([gr],[result])
         self.assertEquals(result_test, 0)
         
         print '#####################################'
@@ -490,14 +490,14 @@ class TestAnaphora(unittest.TestCase):
         class_list=analyse_sentence.sentences_analyzer(sentence_list)
         
         print '#####################################'
-        nom_gr_struc=replacement(class_list, nom_gr_struc, list_gr[1:],gr)
+        nominal_group_struc=replacement(class_list, nominal_group_struc, list_gr[1:],gr)
         print 'the nominal group after processing'
-        print (str(nom_gr_struc[0]))
+        print (str(nominal_group_struc[0]))
         print 'the flag'
-        print (str(nom_gr_struc[1]))
+        print (str(nominal_group_struc[1]))
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([nom_gr_struc[0]],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([nominal_group_struc[0]],[result])
         self.assertEquals(result_test, 0)
         
     def test_08(self):
@@ -513,7 +513,7 @@ class TestAnaphora(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        list_gr=recover_nom_gr_list(sentences)
+        list_gr=recover_nominal_group_list(sentences)
         print 'The list of the nominal group'
         for i in list_gr:
             print (str(i))
@@ -521,18 +521,18 @@ class TestAnaphora(unittest.TestCase):
         print '#####################################'
         print ''
         print 'the nominal group that we have to change'
-        nom_gr_struc=Nominal_Group(['this'],[],[],[],[])
-        print (str(nom_gr_struc))
+        nominal_group_struc=Nominal_Group(['this'],[],[],[],[])
+        print (str(nominal_group_struc))
         
         print '#####################################'
         print 'After the first replacement'
-        gr = first_replacement(list_gr, nom_gr_struc)
+        gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
         print (str(gr))
         print ''
         
-        rslt=Nominal_Group(['the'],['table'],[],[],[])
-        result_test=compare_nom_gr([gr],[rslt])
+        result=Nominal_Group(['the'],['table'],[],[],[])
+        result_test=compare_nominal_group([gr],[result])
         self.assertEquals(result_test, 0)
         
         print '#####################################'
@@ -544,14 +544,14 @@ class TestAnaphora(unittest.TestCase):
         class_list=analyse_sentence.sentences_analyzer(sentence_list)
         
         print '#####################################'
-        nom_gr_struc=replacement(class_list, nom_gr_struc, list_gr[1:],gr)
+        nominal_group_struc=replacement(class_list, nominal_group_struc, list_gr[1:],gr)
         print 'the nominal group after processing'
-        print (str(nom_gr_struc[0]))
+        print (str(nominal_group_struc[0]))
         print 'the flag'
-        print (str(nom_gr_struc[1]))
+        print (str(nominal_group_struc[1]))
         
-        rslt=Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])
-        result_test=compare_nom_gr([nom_gr_struc[0]],[rslt])
+        result=Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])
+        result_test=compare_nominal_group([nominal_group_struc[0]],[result])
         self.assertEquals(result_test, 0)
         
     

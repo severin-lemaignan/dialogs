@@ -7,7 +7,7 @@
  The package contains the parser unit tests + functions to perform test
  It is more used for the subject 
  Functions:
-    compare_nom_gr : to compare 2 nominal groups
+    compare_nominal_group : to compare 2 nominal groups
     compare_icompl : to compare 2 indirect complements
     compare_vs : to compare 2 verbal structures
     compare_sentence : to compare 2 sentences
@@ -24,7 +24,7 @@ import preprocessing
 import analyse_sentence
 
 
-def compare_nom_gr(ng,rslt_ng):
+def compare_nominal_group(ng,rslt_ng):
     """
     Function to compare 2 nominal groups                                            
     """
@@ -41,7 +41,7 @@ def compare_nom_gr(ng,rslt_ng):
                 return 1
             
             #We compare the noun complement
-            if compare_nom_gr(rslt_ng[i].noun_cmpl, ng[i].noun_cmpl)==1:
+            if compare_nominal_group(rslt_ng[i].noun_cmpl, ng[i].noun_cmpl)==1:
                 return 1
             
             #We compare the relative
@@ -80,7 +80,7 @@ def compare_icompl(icompl, rslt_icompl):
         while i < len(rslt_icompl):
             if rslt_icompl[i].prep!=icompl[i].prep:
                 return 1
-            if compare_nom_gr(rslt_icompl[i].nominal_group,icompl[i].nominal_group) ==1:
+            if compare_nominal_group(rslt_icompl[i].nominal_group,icompl[i].nominal_group) ==1:
                 return 1
             i=i+1
         return 0
@@ -107,7 +107,7 @@ def compare_vs(vs, rslt_vs):
                 return 1
             
             #We compare the d_obj
-            if compare_nom_gr(vs[i].d_obj,rslt_vs[i].d_obj)==1:
+            if compare_nominal_group(vs[i].d_obj,rslt_vs[i].d_obj)==1:
                 return 1
             
             #We compare the i_cmpl
@@ -137,7 +137,7 @@ def compare_sentence(stc, stc_rslt):
     """  
     if stc.data_type!=stc_rslt.data_type or stc.aim!=stc_rslt.aim:
         return 1
-    if compare_nom_gr(stc.sn,stc_rslt.sn)==1:
+    if compare_nominal_group(stc.sn,stc_rslt.sn)==1:
         return 1
     if compare_vs(stc.sv, stc_rslt.sv)==1:
         return 1
