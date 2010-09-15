@@ -408,7 +408,7 @@ class QuestionAimDict:
         self.dic_thing={None:self.dic_on_direct_obj.copy()}
                 
         #Dictionary for sentence.aim = 'manner' 
-        self.dic_manner={None:{'be':'hasMood'}}
+        self.dic_manner={None:{'be':'owl:topObjectProperty'}}
         
         #Dictionary for sentence.aim = 'people'
         self.dic_people={'QUERY_ON_DIRECT_OBJ':self.dic_on_direct_obj.copy(),                                                                                              
