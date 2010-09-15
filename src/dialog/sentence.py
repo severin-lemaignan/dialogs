@@ -5,12 +5,6 @@ import logging
 from helpers import colored_print, level_marker
 from resources_manager import ResourcePool
 
-"""
-Statement of lists
-"""
-
-pronoun_list = ResourcePool().pronouns
-adverbial_list = ResourcePool().compelement_proposals
 
     
 class Sentence:
@@ -32,6 +26,10 @@ class Sentence:
     exclamation = "exclamation"
     w_question = "w_question"
     yes_no_question = "yes_no_question"
+    subsentence = "subsentence"
+    relative = "relative"
+    start = "start"
+    end = "end"
     
 
     def __init__(
@@ -248,7 +246,11 @@ class Verbal_Group:
     vrb_adv : an adverb describing the verb
     advrb : an adverb used as an adverbial of the whole sentence
     """
-
+    
+    #List of verb state
+    affirmative = "affirmative"
+    negative = "negative"
+    
     def __init__(
             self,
             vrb_main,
@@ -348,236 +350,235 @@ class Comparator():
         
 
 def it_is_pronoun(word):
-    if word in pronoun_list:
+    if word in ResourcePool().pronouns:
         return 1
     return 0
                     
-                    
-                    
-def concat_gn(nom_gr_struc, new_class, flag):      
+                           
+def concat_gn(nominal_group_structure, new_class, flag):      
     """
-    This function concatenate 2 nominal groups                                      
+    concatenates 2 nominal groups                                      
     Input=2 nominal groups and the flag           Output= nominal group                   
     """
     
     #If failure we need to change information else we add 
-    if nom_gr_struc.adj!=new_class.adj:
+    if nominal_group_structure.adj!=new_class.adj:
         if flag=='FAILURE':
-            nom_gr_struc.adj=new_class.adj
+            nominal_group_structure.adj=new_class.adj
         elif flag=='SUCCESS':
-            nom_gr_struc.adj=nom_gr_struc.adj+new_class.adj
+            nominal_group_structure.adj=nominal_group_structure.adj+new_class.adj
     
     #If there is a difference may be it can from 'a' to  'the' or 'this'        
-    if new_class.det!= [] and nom_gr_struc.det!=new_class.det:
-        nom_gr_struc.det=new_class.det
+    if new_class.det!= [] and nominal_group_structure.det!=new_class.det:
+        nominal_group_structure.det=new_class.det
     
     #We make change if there is 'one' or difference
-    if new_class.noun!=[] and nom_gr_struc.noun!=new_class.noun and new_class.noun!=['one']:
-        nom_gr_struc.noun=new_class.noun
+    if new_class.noun!=[] and nominal_group_structure.noun!=new_class.noun and new_class.noun!=['one']:
+        nominal_group_structure.noun=new_class.noun
     
     #If failure we need to change information else we add 
     if flag=='FAILURE' :
-        nom_gr_struc.relative=new_class.relative
+        nominal_group_structure.relative=new_class.relative
     else:
-        nom_gr_struc.relative=nom_gr_struc.relative+new_class.relative
+        nominal_group_structure.relative=nominal_group_structure.relative+new_class.relative
     
     #If failure we need to change information else we add 
     if flag=='FAILURE':    
-        nom_gr_struc.noun_cmpl=new_class.noun_cmpl
+        nominal_group_structure.noun_cmpl=new_class.noun_cmpl
     else:
-        nom_gr_struc.noun_cmpl=nom_gr_struc.noun_cmpl+new_class.noun_cmpl
+        nominal_group_structure.noun_cmpl=nominal_group_structure.noun_cmpl+new_class.noun_cmpl
 
 
 
-def process_vg_part(vg,nom_gr_struc, flag):  
+def process_verbal_group_part(verbal_group,nominal_group_structure, flag):  
     """
-    This function process merge in the verbal part                                      
+    process merge in the verbal part                                      
     Input=nominal groups, the verbal part and the flag      Output= nominal group                   
     """
     
     #The direct complement is a nominal group
-    for object in vg.d_obj:
-        concat_gn(nom_gr_struc, object, flag)
+    for object in verbal_group.d_obj:
+        concat_gn(nominal_group_structure, object, flag)
     
-    ind_cmpl=i_cmpl(vg.i_cmpl)
+    ind_cmpl=i_cmpl(verbal_group.i_cmpl)
     #For indirect complement
     for i in ind_cmpl:
-        if i.prep[0] in adverbial_list and vg.vrb_main[0]!='talk':
+        if i.prep[0] in ResourcePool().compelement_proposals and verbal_group.vrb_main[0]!='talk':
             #If it is an adverbial related to the noun, we have to add it like a relative
-            rltv=Sentence('relative', 'which',[],[vg])
-            nom_gr_struc.relative=nom_gr_struc.relative+[rltv] 
+            rltv=Sentence('relative', 'which',[],[verbal_group])
+            nominal_group_structure.relative=nominal_group_structure.relative+[rltv] 
         else:
             #Else we process the concatenate with the nominal part of the indirect complement   
             for k in i.nominal_group:
-                concat_gn(nom_gr_struc, k, flag)
+                concat_gn(nominal_group_structure, k, flag)
     
-    for i in vg.sv_sec:
-        process_vg_part(i,nom_gr_struc, flag)
+    for i in verbal_group.sv_sec:
+        process_verbal_group_part(i,nominal_group_structure, flag)
     
     #For the subsentences
-    nom_gr_remerge(vg.vrb_sub_sentence, flag , nom_gr_struc)
+    nominal_group_remerge(verbal_group.vrb_sub_sentence, flag , nominal_group_structure)
     
-    return nom_gr_struc
+    return nominal_group_structure
 
 
 
-def process_vg_nega_part(vg,nom_gr_struc, flag):  
+def process_verbal_group_nega_part(verbal_group,nominal_group_structure, flag):  
     """
-    This function process merge in the verbal part when we have negative sentence                                    
+    process merge in the verbal part when we have negative sentence                                    
     Input=nominal groups, the verbal part and the flag      Output= nominal group                   
     """
     
     #The direct complement is a nominal group
-    for object in vg.d_obj:
+    for object in verbal_group.d_obj:
         if object._conjunction=='BUT':
-            concat_gn(nom_gr_struc, object, flag)
+            concat_gn(nominal_group_structure, object, flag)
     
-    ind_cmpl=i_cmpl(vg.i_cmpl)
+    ind_cmpl=i_cmpl(verbal_group.i_cmpl)
     #For indirect complement
     for i in ind_cmpl:
         
-        if i.prep[0] in adverbial_list and i.nominal_group[0]._conjunction=='BUT' and vg.vrb_main[0]!='talk':
+        if i.prep[0] in ResourcePool().compelement_proposals and i.nominal_group[0]._conjunction=='BUT' and verbal_group.vrb_main[0]!='talk':
             #If it is an adverbial related to the noun, we have to add it like a relative
             i.nominal_group[0]._conjunction='AND'
             #We delete the nominal groups before this one 
-            vg.i_cmpl=vg.i_cmpl[vg.i_cmpl.index(i):]
-            vg.state='affirmative'
+            verbal_group.i_cmpl=verbal_group.i_cmpl[verbal_group.i_cmpl.index(i):]
+            verbal_group.state='affirmative'
             #We continue processing
-            rltv=Sentence('relative', 'which',[],[vg])
-            if flag=='FAILURE' and nom_gr_struc.relative!=[]:
-                nom_gr_struc.relative=[rltv]
+            rltv=Sentence('relative', 'which',[],[verbal_group])
+            if flag=='FAILURE' and nominal_group_structure.relative!=[]:
+                nominal_group_structure.relative=[rltv]
             else :
-                nom_gr_struc.relative=nom_gr_struc.relative+[rltv]
+                nominal_group_structure.relative=nominal_group_structure.relative+[rltv]
   
         else:
             #Else we process the concatenate with the nominal part of the indirect complement  
             for k in i.nominal_group:
                 if k._conjunction=='BUT':
-                    concat_gn(nom_gr_struc, k, flag)
+                    concat_gn(nominal_group_structure, k, flag)
     
-    for i in vg.sv_sec:
-        process_vg_part(i,nom_gr_struc, flag)
+    for i in verbal_group.sv_sec:
+        process_verbal_group_part(i,nominal_group_structure, flag)
     
     #For the subsentences
-    nom_gr_remerge(vg.vrb_sub_sentence, flag , nom_gr_struc)
+    nominal_group_remerge(verbal_group.vrb_sub_sentence, flag , nominal_group_structure)
     
-    return nom_gr_struc
+    return nominal_group_structure
 
 
 
-def refine_nom_group_relative_sv (vs,nom_gr):
+def refine_nominal_groupoup_relative_sv (verbal_structure,nominal_group):
     """
-    This function replace one by the noun in verbal part of relative                                      
+    replaces one by the noun in verbal part of relative                                      
     Input=nominal groups and verbal part          Output= nominal group                   
     """
     
     #For direct complement
-    for object in vs.d_obj:
+    for object in verbal_structure.d_obj:
         if object.noun==['one']:
-            object.noun=nom_gr.noun
-        refine_nom_group_relative(object)
+            object.noun=nominal_group.noun
+        refine_nominal_groupoup_relative(object)
     
     #For indirect complement
-    for i_object in vs.i_cmpl:
+    for i_object in verbal_structure.i_cmpl:
         for ng in i_object.nominal_group:
             if ng.noun==['one']:
-                ng.noun=nom_gr.noun
-            refine_nom_group_relative(ng)
+                ng.noun=nominal_group.noun
+            refine_nominal_groupoup_relative(ng)
     
-    for second_vrb in vs.sv_sec:
-            refine_nom_group_relative_sv(second_vrb,nom_gr)
+    for second_vrb in verbal_structure.sv_sec:
+            refine_nominal_groupoup_relative_sv(second_vrb,nominal_group)
 
 
 
-def refine_nom_group_relative(nom_gr):
+def refine_nominal_groupoup_relative(nominal_group):
     """
-    This function replace one by the noun in relative                                      
+    replaces one by the noun in relative                                      
     Input=nominal groups                      Output= nominal group                   
     """
     
-    for i in nom_gr.relative:
+    for i in nominal_group.relative:
         for ns in i.sn:
             if ns.noun==['one']:
-                ns.noun=nom_gr.noun
-            refine_nom_group_relative(ns)
-        for vs in i.sv:
-            refine_nom_group_relative_sv(vs,nom_gr)
+                ns.noun=nominal_group.noun
+            refine_nominal_groupoup_relative(ns)
+        for verbal_structure in i.sv:
+            refine_nominal_groupoup_relative_sv(verbal_structure,nominal_group)
             
             
-def i_cmpl(i_cmpl):
+def i_cmpl(indirect_complement):
     """
-    This function separate indirect complements when they have same preposition                                     
+    separates indirect complements when they have same preposition                                     
     Input=indirect complement                  Output=indirect complement                   
     """
     
     #init
     i=0
     
-    while i<len(i_cmpl):
-        if len(i_cmpl[i].nominal_group)>1:
-            list_nominal_group=i_cmpl[i].nominal_group[1:]
-            i_cmpl[i].nominal_group=[i_cmpl[i].nominal_group[1]]
+    while i<len(indirect_complement):
+        if len(indirect_complement[i].nominal_group)>1:
+            list_nominal_group=indirect_complement[i].nominal_group[1:]
+            indirect_complement[i].nominal_group=[indirect_complement[i].nominal_group[1]]
             for k in list_nominal_group:
-                i_cmpl=i_cmpl+[Indirect_Complement(i_cmpl[i].prep,[k])]
+                indirect_complement=indirect_complement+[Indirect_Complement(indirect_complement[i].prep,[k])]
         i=i+1  
-    return i_cmpl
+    return indirect_complement
         
         
         
-def nom_gr_remerge(utterance, flag , nom_gr_struc):
+def nominal_group_remerge(utterance, flag , nominal_group_structure):
     """
-    This function process merge                                      
+    process merge                                      
     Input=nominal groups, the use utterance and the flag      Output= nominal group                   
     """
 
     for i in utterance:
-        if i.data_type=='imperative':
-            i.data_type='statement'
+        if i.data_type==Sentence.imperative:
+            i.data_type=Sentence.statement
             i.sn=[Nominal_Group(['the'],i.sv[0].vrb_main,[],[],[])]
       
-        if i.data_type=='statement' or i.data_type.startswith('subsentence') :
+        if i.data_type==Sentence.statement or i.data_type.startswith(Sentence.subsentence) :
 
-            if i.sv[0].state=='affirmative':
+            if i.sv[0].state==Verbal_Group.affirmative:
             
                 if  flag=='FAILURE':
                     #We can have just the subject
                     if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                         for k in i.sn:
-                            concat_gn(nom_gr_struc, k, flag)
-                        refine_nom_group_relative(nom_gr_struc)
-                        return nom_gr_struc
+                            concat_gn(nominal_group_structure, k, flag)
+                        refine_nominal_groupoup_relative(nominal_group_structure)
+                        return nominal_group_structure
                     #Else there is no subject and the information is on the verbal structure
                     for v in i.sv:
-                        nom_gr_struc=process_vg_part(v,nom_gr_struc, flag)
+                        nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)
         
                 elif flag=='SUCCESS':
                     #We can have just the subject
                     if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                         for k in i.sn:
-                            concat_gn(nom_gr_struc, k, flag)
-                        refine_nom_group_relative(nom_gr_struc)
-                        return nom_gr_struc
+                            concat_gn(nominal_group_structure, k, flag)
+                        refine_nominal_groupoup_relative(nominal_group_structure)
+                        return nominal_group_structure
                     
                     for k in i.sn:
                         if it_is_pronoun(k.noun[0])==0:
-                            concat_gn(nom_gr_struc, k, flag)
+                            concat_gn(nominal_group_structure, k, flag)
                     
                     #We finish the process with the verbal part
                     for v in i.sv:
-                        nom_gr_struc=process_vg_part(v,nom_gr_struc, flag)        
+                        nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)        
             
-            elif i.sv[0].state=='negative':
+            elif i.sv[0].state==Verbal_Group.negative:
                 #For all other sentences flag will be FAILURE
                 flag='FAILURE'
                 
                 for k in i.sn:
                     if it_is_pronoun(k.noun[0])==0:
-                        concat_gn(nom_gr_struc, k, flag)
+                        concat_gn(nominal_group_structure, k, flag)
                         
                 #We finish the process with the verbal part
                 for v in i.sv:
-                    nom_gr_struc=process_vg_nega_part(v,nom_gr_struc, flag)   
+                    nominal_group_structure=process_verbal_group_nega_part(v,nominal_group_structure, flag)   
                 
             
-    refine_nom_group_relative(nom_gr_struc)
-    return nom_gr_struc
+    refine_nominal_groupoup_relative(nominal_group_structure)
+    return nominal_group_structure

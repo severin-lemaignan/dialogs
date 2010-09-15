@@ -134,7 +134,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -161,7 +161,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -188,7 +188,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -214,7 +214,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -240,7 +240,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -271,7 +271,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -302,7 +302,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -328,7 +328,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -354,7 +354,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -380,7 +380,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -406,7 +406,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
        
@@ -437,7 +437,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -468,7 +468,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -494,7 +494,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -520,7 +520,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -545,7 +545,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -570,7 +570,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -595,7 +595,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -630,7 +630,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -660,7 +660,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -685,7 +685,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -710,7 +710,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -735,7 +735,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -770,7 +770,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -800,7 +800,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
@@ -825,7 +825,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
         
-        nom_gr_struc=nom_gr_remerge(class_list, flag , nom_gr_struc)
+        nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
         
