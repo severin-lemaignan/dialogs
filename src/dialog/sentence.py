@@ -846,9 +846,6 @@ def process_vg_part(vg,nom_gr_struc, flag):
     Input=nominal groups, the verbal part and the flag      Output= nominal group                   
     """
     
-    #init 
-    flg=0
-    
     #The direct complement is a nominal group
     for object in vg.d_obj:
         concat_gn(nom_gr_struc, object, flag)
@@ -880,9 +877,6 @@ def process_vg_nega_part(vg,nom_gr_struc, flag):
     This function process merge in the verbal part when we have negative sentence                                    
     Input=nominal groups, the verbal part and the flag      Output= nominal group                   
     """
-    
-    #init 
-    flg=0
     
     #The direct complement is a nominal group
     for object in vg.d_obj:
