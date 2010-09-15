@@ -50,29 +50,30 @@ However, if there is more than one red cube, then we need to retrieve the accura
     [DANNY rdf:type Human]
     }}}
      
-    Regardless the semantic interpretation of a sentence, when both the subject and object hold indefinite quantifiers - `ALL or SOME` - we create the predicate `"rdfs:subClassOf"`.
-    Doing this allow us to create class grounding. When both hold the definite quantifier `"ONE"`, we create the predicate `"owl:sameAs"`.  For the rest of the case, we use the object property `"rdf:type"`:
+    Regardless the semantic interpretation of a sentence, when both the subject and object hold indefinite quantifiers - either `ALL` or `SOME` - we create the predicate `"rdfs:subClassOf"`.
+    Doing this allow us to create class grounding. When both hold the definite quantifier `"ONE"`, we create the predicate `"owl:sameAs"`.  For other case, we use the object property `"rdf:type"`:
     {{{
-    "Bananas are fruits"
-    ALL + ALL
-    [Banana rdfs:subClassOf Fruit]
+    "Bananas         are             fruits"
+      ALL             +               ALL                   => rdfs:subClassOf
+    [Banana     rdfs:subClassOf      Fruit]
 
-    "A banana is a fruit"
-    SOME + SOME
-    [Banana rdfs:subClassOf Fruit]
+    "A banana        is               a fruit"
+      SOME           +                 SOME                 => rdfs:subClassOf
+    [Banana     rdfs:subClassOf       Fruit]
 
-    "the green banana is a fruit"
-    ONE + SOME
-    [green_banana rdf:type Fruit]
+    "the green banana    is           a fruit"
+       ONE               +             SOME                 => rdf:type
+    [green_banana    rdf:type         Fruit]
 
-    "the green banana is the banana in the table"
-    ONE + ONE
-    [green_banana owl:sameAs green_banana]
+    "the green banana     is       the banana in the table"
+        ONE               +                ONE              => owl:sameAs
+    [green_banana    owl:sameAs       green_banana]
 
-    cf: Interpretation for quantifier list
-
-    * Problem
-    Be cautious that,the quantifier approach is useful only if we process sentence with the state verbs (e.g: to be).
+    cf: Parsing for quantifier list
+    
+    
+    PROBLEM:
+    The quantifier approach is useful only if we process sentence with the state verbs (e.g: to be).
 
     E.g: Banana grow on Tree
     This would produce 
@@ -80,7 +81,7 @@ However, if there is more than one red cube, then we need to retrieve the accura
      * rdf:type Grow,
      * involves Tree], 
 
-    transforming "Banana" into an instance, and severely breaking future test referencing "Banana" as a Class.
+    This would transform "Banana" into an instance, and severely break future test referencing "Banana" as a Class.
     }}}
 
 == Discrimination ==
@@ -144,13 +145,42 @@ Or it may be an object of the relative. In this case, the subject of the sentenc
 
 Processing this case involves checking if the subject equals any of the object in the relative sentence, in order to keep track of the subject's reference.
  
-==== Action verb processing ====
-    * Thematic roles
+==== Verb processing ====
+    In most cases, processing a verb consists into generating a reference for a situation, that is performed by an agent and involves an object, regarding a circumstance that could represent a temporal or spatial aspect, or even the fact of an agent receiving something.
+    {{{
+    E.g: "I drive my car in Toulouse"
+    Generated statement:
+        [EVENT performedBy MYSELF, EVENT rdf:type Drive, EVENT involves MY_CAR, EVENT isIn TOULOUSE]
+    where EVENT, MYSELF, MY_CAR and TOULOUSE are unique references of respectively the situation that is to describe, the current speaker, the car of the current speaker and the city of Toulouse.
+    Here , only the reference EVENT is generated whereas the others are obtained form resolution.
+    }}}
+        
+    * State verbs (E.g: to be, to become)
+    In the case of state verbs, we do not describe a situation, but the subject of the sentence. This will consist in either class grounding (cf Quantifier approach) or features description.
+        
+    * Thematic roles 
+    Cf /share/dialog/thematic_roles
+        
     * Goal verb
-        E.g: want, 
-    * Action verbs with passive behaviours
-        E.g: to see. to hear, to reach
+    Goal verbs are used to express the speaker's desire. 
+    {{{
+    E.g: "I want to get the blue cube"
+    Generated statements: 
+        [MYSELF desires EVENT, 
+        ...
+        ]
+    }}}
+    
+    * Action verbs with passive behaviours (E.g: to see. to hear, to reach, to know)
+    {{{
+        [MYSELF sees EVENT, 
+        ...
+        ]
+    }}}
+        
     * To know
+    For the case of 'to know', we first create a set of statements such as `[MYSELF knows CONCEPT, ...]`, then we update or query the ontology on the `CONCEPT` for an agent that is supposed to be MYSELF
+ 
  
  
 ==== Negative sentence approach ====
@@ -231,16 +261,33 @@ Assuming that this type information is taken in charge by the supervision module
 
  
 ==== Adverb modifying the sentence - processing approach====
-
+    Cf /dialog/timescale_manager.py
 
  
     
 === Question handler ===
-    The purpose of this module is to query the ontology. It uses the statement builder module to first create a first set of the sentence, then according to whether the query is about 
-    a location, an object, a feature, ... it extends the current statements with specific aim-based query statements.
-    With the response from the ontology, it uses a set of association that are meant to create an output sentence (Cf. Sentence Factory module).
-    
 
+The purpose of this module is to query the ontology regarding the question's aim and type.
+    * Query_on_field
+    This field is to determine the part of the sentence structure that is to modify with the query answer
+    Three values are presented in Question Handler that are _`QUERY_ON_DIRECT_OBJ`_, _`QUERY_ON_INDIRECT_OBJ`_ and the default value _None_.
+    {{{
+    E:g "Where is the cube?"
+    This question can be turned into 
+        "The cube is on xxx "
+    where, the answer 'xxx' is to fill the indirect complement of the sentence.
+    Therefore, query_on_field is assigned the value 'QUERY_ON_INDIRECT_OBJ'
+    }}}
+    
+==== Wh-question ====
+Processing a wh-question consists in finding a concept that matches the description that has been built from the sentence's structure and aim.
+The sentence's aim helps us to determine whether the question is about an object, a feature, a location... and is to be taken into consideration while building the RDF statements to query the ontology.
+
+
+==== Yes-No-Question ====
+
+    * Case of Can-You-do-something?
+    
     
 
 
