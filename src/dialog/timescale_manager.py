@@ -27,7 +27,7 @@ day_list = ResourcePool().days_list
 month_list = ResourcePool().months_list
 adverb = ResourcePool().time_adverbs
 preposal = ResourcePool().time_proposals
-day_list = ResourcePool().days_list
+month_list = ResourcePool().months_list
 
 
 
@@ -258,24 +258,42 @@ def timescale_i_cmpl(indirect_cmpl, action_time):
                 action_time['action_period']=day_period(action_time['action_period']['time_begin'], 2)
             elif j.noun==['evening']:
                 action_time['action_period']=day_period(action_time['action_period']['time_begin'], 3)      
-            
+        
+        #If we have a day as a noun
         for k in day_list:
             if k==j.noun:
+                #We recovery the day
                 today=day_list[time.localtime()[6]]
+                #We calculate the day on digit
                 day=day_list.index(k)-day_list.index(today)
-                
                 if day<=0:
                     day=day+7
                 
+                #We add information
                 if action_time['action_period']==None:
                     action_time['action_period']={'time_begin':action_time['effective_time'].copy(),
                                                   'time_end':action_time['effective_time'].copy()}
-             
                 action_time['action_period']['time_begin']['day']=str(int(action_time['action_period']['time_begin']['day'])+day)
                 action_time['action_period']['time_end']['day']=str(int(action_time['action_period']['time_end']['day'])+day)
                 break
-                                                                  
-                    
+        
+        #If we have a month as a noun
+        for k in month_list:
+            if k==j.noun:
+                #We recovery the day
+                month=month_list[time.localtime()[11]]
+                #We calculate the day on digit
+                mth=month_list.index(k)-month_list.index(month)
+                if mth<=0:
+                    mth=mth+12
+                
+                #We add information
+                if action_time['action_period']==None:
+                    action_time['action_period']={'time_begin':action_time['effective_time'].copy(),
+                                                  'time_end':action_time['effective_time'].copy()}
+                action_time['action_period']['time_begin']['month']=str(int(action_time['action_period']['time_begin']['month'])+month)
+                action_time['action_period']['time_end']['month']=str(int(action_time['action_period']['time_end']['month'])+month)
+                break                                         
     #We return the action time       
     return action_time
 
@@ -310,5 +328,3 @@ def timescale_sentence(indirect_cmpl,adv_list,time):
     action_time=indirect_cmpl_interpretation(action_time,indirect_cmpl)
     
     return action_time
-
-

@@ -717,8 +717,6 @@ class TestTimescale(unittest.TestCase):
         print ''
   
     
-    
-    
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestTimescale)
     
