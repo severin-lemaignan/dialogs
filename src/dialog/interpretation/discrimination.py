@@ -12,6 +12,8 @@ logger = logging.getLogger("dialog")
 from dialog.resources_manager import ResourcePool
 from dialog.dialog_exceptions import UnsufficientInputError
 from dialog.sentence import *
+from dialog.sentence_factory import SentenceFactory
+
  
 class Discrimination():
 
@@ -209,13 +211,13 @@ class Discrimination():
             return 'UNKNOWN_CONCEPT'
             
         if len(objL) == 0:
-            questions = [Sentence('imperative', '', 
+            questions = [Sentence(Sentence.imperative, '', 
                         [], 
                         [Verbal_Group(['give'], [],'present simple', 
                         [Nominal_Group([],['information'],[['new',[]]],[],[])], 
                         [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                         Indirect_Complement(['about'],[Nominal_Group(['the'],['object'],[],[],[])])],
-                        [], [] ,'affirmative',[])])]
+                        [], [] ,Sentence.affirmative,[])])]
             raise UnsufficientInputError({'status':'FAILURE', 'question':questions})
             #return "Give me knew information about the object"
             
@@ -267,12 +269,12 @@ class Discrimination():
                 #return questions
                     
             else:
-                questions = [Sentence('imperative', '', [], 
+                questions = [Sentence(Sentence.imperative, '', [], 
                             [Verbal_Group(['give'], [],'present simple', 
                             [Nominal_Group([],['information'],[['more',[]]],[],[])], 
                             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
                             Indirect_Complement(['about'],[Nominal_Group(['the'],[object],[],[],[])])],
-                            [], [] ,'affirmative',[])])]
+                            [], [] ,Sentence.affirmative,[])])]
                 raise UnsufficientInputError({'status':'SUCCESS','question':questions})
                 #return "Give me more information about the object"
 

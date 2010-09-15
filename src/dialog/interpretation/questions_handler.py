@@ -6,6 +6,7 @@ from dialog.helpers import colored_print, level_marker
 from dialog.interpretation.resolution import Resolver
 from dialog.interpretation.statements_builder import *
 from dialog.sentence import *
+from dialog.sentence_factory import SentenceFactory
 
 from pyoro import OroServerError
 from dialog.resources_manager import ResourcePool
@@ -52,7 +53,7 @@ class QuestionHandler:
         logger.info(level_marker(level=2, color="yellow") + "Generated statements for this question: " + colored_print(str(self._statements), None, "magenta"))
         
         #Case the question is a y_n_question : check the fact in the ontology
-        if sentence.data_type == 'yes_no_question':
+        if sentence.data_type == Sentence.yes_no_question:
             self._statements = self._set_situation_id(self._statements)
             
             #Processing :Do you know something?
@@ -82,7 +83,7 @@ class QuestionHandler:
                     pass
                 
         #Case the question is a w_question : find the concept the concept that answers the question
-        if sentence.data_type == 'w_question':
+        if sentence.data_type == Sentence.w_question:
             #
             self._query_on_field = self._set_query_on_field(sentence)
             statements_with_bound_tokens =  self._remove_statements_with_no_unbound_tokens(self._statements)

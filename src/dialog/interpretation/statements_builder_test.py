@@ -90,7 +90,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_my_unittest():
         logger.info("**** Test My unit test  *** ")
         logger.info("Danny drives a car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -103,7 +103,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])    
         
         expected_result = ['* rdfs:label "Danny"',
@@ -126,7 +126,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_1(self):
         logger.info("\n**** Test 1  *** ")
         logger.info("Danny drives the blue car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -139,7 +139,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])    
         
         expected_result = ['* rdf:type Drive',
@@ -153,7 +153,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
         logger.info("Danny gets the blue car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -166,7 +166,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = [ '* rdf:type Get',
                             '* performedBy id_danny',
@@ -178,7 +178,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
         logger.info("Danny put the blue cube next to the blue car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -192,7 +192,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                 [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])])],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = [ '* rdf:type Put',
                             '* performedBy id_danny',
@@ -204,7 +204,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_1_goal_verb(self):
         logger.info("\n**** Test 1  *** ")
         logger.info("Danny wants the blue car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -217,7 +217,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])    
         
         expected_result = ['id_danny desires *',
@@ -230,7 +230,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.stmt.clear_statements()
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -244,14 +244,14 @@ class TestStatementBuilder(unittest.TestCase):
                                                                    [],
                                                                    [],
                                                                    [],
-                                                                   'affirmative',
+                                                                   Sentence.affirmative,
                                                                    [])],
                                            'present simple',
                                            [],
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])    
         
         expected_result = ['id_danny desires *',
@@ -264,7 +264,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_2(self):
         logger.info("\n**** Test 2  *** ")
         logger.info("my car is blue")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['my'],
                                             ['car'],
                                             [],
@@ -281,7 +281,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['volvo hasColor blue']   
         self.process(sentence, expected_result, display_statement_result = True)
@@ -290,7 +290,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_3_quantifier_one_some(self):
         logger.info("\n**** test_3_quantifier_one_some *** ")
         logger.info("Jido is a robot")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Jido'],
                                             [],
@@ -303,7 +303,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                           [])]) 
         #quantifier
         sentence.sv[0].d_obj[0]._quantifier = 'SOME' # robot
@@ -315,7 +315,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_4(self):
         logger.info("\n**** Test 4  *** ")
         logger.info("the man that I saw , has a small car")
-        relative4 = Sentence("statement", "", 
+        relative4 = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['I'],
                                             [],
@@ -328,10 +328,10 @@ class TestStatementBuilder(unittest.TestCase):
                                           [],
                                           [],
                                           [],
-                                          'affirmative',
+                                          Sentence.affirmative,
                                           [])])
          
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['the'],
                                             ['man'],
                                             [],
@@ -349,7 +349,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])]) 
         expected_result = ['* rdf:type Have',
                           '* performedBy a_man',
@@ -360,7 +360,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_5(self):
         logger.info("\n**** Test 5  *** ")
         logger.info("the man that talks , has a small car")
-        relative5 = Sentence("statement", "", 
+        relative5 = Sentence(Sentence.statement, "", 
                             [], 
                             [Verbal_Group(['talk'],
                                           [],
@@ -369,9 +369,9 @@ class TestStatementBuilder(unittest.TestCase):
                                           [],
                                           [],
                                           [],
-                                          'affirmative',
+                                          Sentence.affirmative,
                                           [])]) 
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['the'],
                                             ['man'],
                                             [],
@@ -389,7 +389,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])    
         
         expected_result = ['* rdf:type Have',
@@ -402,7 +402,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** Test 6  *** ")
         logger.info("I gave you the car of the brother of Danny")   
-        sentence = Sentence("statement", 
+        sentence = Sentence(Sentence.statement, 
                              "",
                              [Nominal_Group([],
                                             ['I'],
@@ -433,7 +433,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                                 [])])], 
                                             [],
                                             [],
-                                            'affirmative', 
+                                            Sentence.affirmative, 
                                             [])])
         expected_result = ['* rdf:type Give',
                           '* performedBy SPEAKER',
@@ -447,7 +447,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** Test 7  *** ")
         logger.info("I went to Toulouse")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['I'],
                                             [],
@@ -460,7 +460,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [Indirect_Complement(['to'], [Nominal_Group([],['Toulouse'],[],[],[])])],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['* rdf:type Move',
                           '* performedBy SPEAKER',
@@ -471,7 +471,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_8(self):
         logger.info("\n**** Test 8  *** ")
         logger.info("put the green bottle in the blue car")
-        sentence = Sentence("imperative", "", 
+        sentence = Sentence(Sentence.imperative, "", 
                              [],                                         
                              [Verbal_Group(['place'],
                                            [],
@@ -481,7 +481,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                 [Nominal_Group(['the'],['car'],[['blue',[]]],[],[])]) ],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['SPEAKER desires *',
                           '* rdf:type Put',
@@ -496,7 +496,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_8_relative(self):
         logger.info("\n**** Test 8 relative *** ")
         logger.info("show me the bottle that is in the twingo")
-        relative8 = Sentence("statement", "", 
+        relative8 = Sentence(Sentence.statement, "", 
                             [], 
                             [Verbal_Group(['be'],
                                           [],
@@ -506,9 +506,9 @@ class TestStatementBuilder(unittest.TestCase):
                                                                 [Nominal_Group(['the'],['twingo'],[],[],[])]) ],
                                           [],
                                           [],
-                                          'affirmative',
+                                          Sentence.affirmative,
                                           [])])
-        sentence = Sentence("imperative", "", 
+        sentence = Sentence(Sentence.imperative, "", 
                              [],                                         
                              [Verbal_Group(['show'],
                                            [],
@@ -522,7 +522,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                 [Nominal_Group([],['me'],[],[],[])]) ],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['SPEAKER desires *',
                           '* rdf:type Show',
@@ -537,7 +537,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** test_9_this  *** ")
         logger.info("this is a blue cube")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -554,7 +554,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         #Quantifier
         sentence.sv[0].d_obj[0]._quantifier = 'SOME' # a blue cube
@@ -570,7 +570,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** test_9_this_my  *** ")
         logger.info("this is my cube")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -587,7 +587,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['another_cube isRelatedTo SPEAKER']
                           
@@ -599,7 +599,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** test_10_this  *** ")
         logger.info("this is on the shelf1")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -613,7 +613,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                 [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['another_cube isOn shelf1']
         another_expected_result = ['SPEAKER focusesOn blue_cube']
@@ -625,7 +625,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** test_11_this  *** ")
         logger.info("this goes to the shelf1")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -639,7 +639,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                 [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['* rdf:type Move',
                           '* performedBy another_cube',
@@ -651,7 +651,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** test_12_this  *** ")
         logger.info("this cube goes to the shelf1")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['this'],
                                             ['cube'],
                                             [],
@@ -665,7 +665,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                 [Nominal_Group(['the'],['shelf1'],[],[],[])]) ],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['* rdf:type Move',
                           '* performedBy another_cube',
@@ -679,7 +679,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** test_13_this  *** ")
         logger.info("this cube is blue ")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['this'],
                                             ['cube'],
                                             [],
@@ -696,7 +696,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['another_cube hasColor blue']
         
@@ -707,7 +707,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_14_quantifier_all_all(self):        
         logger.info("\n**** test_14_quantifier_all_all  *** ")
         logger.info("Apples are fruits")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['apple'],#apple is common noun. Therefore, do not capitalize.
                                             [],
@@ -724,7 +724,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                             [])])
         
         #quantifier
@@ -737,7 +737,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_15_quantifier_some_some(self):        
         logger.info("\n**** test_15_quantifier_some_some  *** ")
         logger.info("an apple is a fruit")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['an'],
                                             ['apple'],#apple is common noun. Therefore, do not capitalize.
                                             [],
@@ -754,7 +754,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                             [])])
         
         #quantifier
@@ -768,7 +768,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_15_quantifier_action_verb(self):        
         logger.info("\n**** test_15_quantifier_action_verb  *** ")
         logger.info("a mango grows on a tree")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['a'],
                                             ['mango'],#mango is common noun. Therefore, do not capitalize.
                                             [],
@@ -786,7 +786,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                                 [])])],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                             [])])
         
         #quantifier
@@ -805,7 +805,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_16_adverb(self):
         logger.info("\n**** test_16_adverb *** ")
         logger.info("Danny slowly drives the blue car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -822,7 +822,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            ['quickly'],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['* rdf:type Drive', 
                             '* performedBy id_danny',
@@ -835,7 +835,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_17_verb_tense(self):
         logger.info("\n**** test_17_verb_tense *** ")
         logger.info("Danny will drive the blue car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -852,7 +852,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            ['quickly'],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['* rdf:type Drive', 
                             '* performedBy id_danny',
@@ -865,7 +865,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_18_negative(self):
         
         logger.info("Danny drives the blue car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -882,7 +882,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = [ '* rdf:type Drive', 
                             '* performedBy id_danny',
@@ -895,7 +895,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
         logger.info("Danny doesn't drive the blue car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -912,7 +912,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'negative',
+                                           Sentence.negative,
                                            [])])
         expected_result = [ '* rdf:type Drive', #REMOVE after finding *
                             '* performedBy id_danny',
@@ -926,7 +926,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.stmt._unclarified_ids = []
         self.stmt._statements_to_remove = []
         
-        sentence = Sentence("statement", "",
+        sentence = Sentence(Sentence.statement, "",
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -939,7 +939,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [Indirect_Complement(['in'], [Nominal_Group([],['Toulouse'],[],[],[])])],
                                            [],
                                            [],
-                                           'negative',
+                                           Sentence.negative,
                                            [])])
         expected_result = [ 'id_danny isIn *',
                             '* owl:differentFrom id_toulouse']
@@ -960,11 +960,11 @@ class TestStatementBuilder(unittest.TestCase):
                                           [],
                                           [],
                                           [],
-                                          'negative',
+                                          Sentence.negative,
                                           [])])
                                           
         
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -981,7 +981,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = [ '* rdf:type Drive', 
                             '* performedBy id_danny',
@@ -992,7 +992,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_19_negative(self):
         logger.info("\n**** test_19_negative *** ")
         logger.info("Jido is not a human")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['Jido'],
                                             [],
@@ -1009,7 +1009,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'negative',
+                                           Sentence.negative,
                                            [])])
         
         #quantifier
@@ -1022,7 +1022,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_20_negative(self):
         logger.info("\n**** test_20_negative *** ")
         logger.info("the candy is not green")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['the'],
                                             ['candy'],
                                             [],
@@ -1039,7 +1039,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'negative',
+                                           Sentence.negative,
                                            [])])
         expected_result = [ 'a_candy hasColor *']   
         self.process(sentence, expected_result, display_statement_result = True)
@@ -1048,7 +1048,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_20_negative_inconsistent(self):
         logger.info("\n**** test_20_negative *** ")
         logger.info("the candy is green")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['the'],
                                             ['candy'],
                                             [],
@@ -1065,14 +1065,14 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['a_candy hasColor green']   
         self.process(sentence, expected_result, display_statement_result = True)
         
         logger.info("\n**** test_20_negative_bis *** ")
         logger.info("the candy is red")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['the'],
                                             ['candy'],
                                             [],
@@ -1089,7 +1089,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['a_candy hasColor red']   
         self.process(sentence, expected_result, display_statement_result = True)
@@ -1098,7 +1098,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_21_negative(self):
         logger.info("\n**** test_21_negative *** ")
         logger.info("this is not the shelf1")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -1115,7 +1115,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'negative',
+                                           Sentence.negative,
                                            [])])
         
         expected_result = ['another_cube owl:differentFrom shelf1']   
@@ -1125,7 +1125,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_22_negative(self):
         logger.info("\n**** test_22_negative *** ")
         logger.info("Fruits are not humans")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['fruit'],
                                             [],
@@ -1142,7 +1142,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'negative',
+                                           Sentence.negative,
                                            [])])
                                            
         
@@ -1157,7 +1157,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_23_negative(self):
         logger.info("\n**** test_23_negative *** ")
         logger.info("you are not me")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group([],
                                             ['you'],
                                             [],
@@ -1174,7 +1174,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'negative',
+                                           Sentence.negative,
                                            [])])
         
         expected_result = [ 'myself owl:differentFrom SPEAKER']   
@@ -1184,7 +1184,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_24_negative(self):
         logger.info("\n**** test_24_negative *** ")
         logger.info("the blue car is not my car")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['the'],
                                             ['car'],
                                             [['blue',[]]],
@@ -1201,7 +1201,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'negative',
+                                           Sentence.negative,
                                            [])])
         
         expected_result = [ 'volvo owl:differentFrom volvo']   
@@ -1211,7 +1211,7 @@ class TestStatementBuilder(unittest.TestCase):
     def test_25_negative(self):
         logger.info("\n**** test_25_negative *** ")
         logger.info("I am not the brother of Danny")
-        sentence = sentence = Sentence("statement", 
+        sentence = sentence = Sentence(Sentence.statement, 
                              "",
                              [Nominal_Group([],
                                             ['I'],
@@ -1233,7 +1233,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [], 
                                             [],
                                             [],
-                                            'negative', 
+                                            Sentence.negative, 
                                             [])])
                                             
         expected_result = [ 'SPEAKER owl:differentFrom id_tom']   
@@ -1251,7 +1251,7 @@ class TestStatementBuilder(unittest.TestCase):
                                     [],
                                     [], 
                                     [] ,
-                                    'affirmative',
+                                    Sentence.affirmative,
                                     [])])
                                     
         sentence = Sentence('statement', '', 
@@ -1263,7 +1263,7 @@ class TestStatementBuilder(unittest.TestCase):
                                     [],
                                     [], 
                                     [],
-                                    'affirmative',
+                                    Sentence.affirmative,
                                     [subsentence])])
                                             
         expected_result = [ '* rdf:type Drive',
@@ -1286,7 +1286,7 @@ class TestStatementBuilder(unittest.TestCase):
                                     [],
                                     [], 
                                     [] ,
-                                    'affirmative',
+                                    Sentence.affirmative,
                                     [])])
         #Quantifier
         subsentence.sn[0]._quantifier = 'ALL' # Apples
@@ -1295,7 +1295,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence = Sentence('imperative', '', 
                                 [],
                                 [Verbal_Group(['learn'], [], 'present simple',[], [], [],[], 
-                                    'affirmative', 
+                                    Sentence.affirmative, 
                                     [subsentence])])
                                             
         expected_result = [ '* rdf:type Learn',
@@ -1316,7 +1316,7 @@ class TestStatementBuilder(unittest.TestCase):
                                     [],
                                     [], 
                                     [] ,
-                                    'affirmative',
+                                    Sentence.affirmative,
                                     [])])
                                     
         sentence = Sentence('statement', '', 
@@ -1333,7 +1333,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                                         [])])],
                                     [], 
                                     [] ,
-                                    'affirmative',
+                                    Sentence.affirmative,
                                     [subsentence])])
                                             
         expected_result = ['* rdf:type Move',
@@ -1350,7 +1350,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         logger.info("\n**** Test 29 direction  *** ")
         logger.info("the twingo is at the left")
-        sentence = Sentence("statement", "", 
+        sentence = Sentence(Sentence.statement, "", 
                              [Nominal_Group(['the'],
                                             ['twingo'],
                                             [],
@@ -1363,7 +1363,7 @@ class TestStatementBuilder(unittest.TestCase):
                                            [Indirect_Complement(['at'], [Nominal_Group(['the'],['left'],[],[],[])])],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = ['twingo isAt location_left']
         return self.process(sentence, expected_result, display_statement_result = True)

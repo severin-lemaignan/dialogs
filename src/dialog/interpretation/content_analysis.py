@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import logging
 logger = logging.getLogger("dialog")
 
@@ -9,7 +6,8 @@ from dialog.helpers import colored_print, level_marker
 from dialog.interpretation.statements_builder import StatementBuilder
 from dialog.interpretation.statements_safe_adder  import StatementSafeAdder
 from dialog.interpretation.questions_handler import QuestionHandler
-from dialog.sentence import SentenceFactory
+from dialog.sentence_factory import SentenceFactory
+from dialog.sentence import Sentence
 from dialog.resources_manager import ResourcePool
 """This module implements ...
 
@@ -32,24 +30,24 @@ class ContentAnalyser:
         
         sentence = self.pre_analyse_content(sentence)
         
-        if sentence.data_type == 'interjection':
+        if sentence.data_type == [Sentence.interjection, Sentence.exclamation]:
             pass
         
-        if sentence.data_type in ["start", "end"]:
+        if sentence.data_type in [Sentence.start, Sentence.end]:
             self.output_sentence.append(sentence)
-            
-        if sentence.data_type == "gratulation":
+           
+        if sentence.data_type == Sentence.gratulation:
             self.output_sentence.extend(self.sfactory.create_gratulation_reply())
         
-        if sentence.data_type in ["agree", "disagree"]:
+        if sentence.data_type in [Sentence.agree, Sentence.disagree]:
             self.output_sentence.extend(self.sfactory.create_agree_reply())
             
-        if sentence.data_type in ['imperative', 'statement']:
-            logger.debug(colored_print("Processing the content of " +  ("an imperative sentence" if sentence.data_type == 'imperative' else "a statement "), "magenta"))
+        if sentence.data_type in [Sentence.imperative, Sentence.statement]:
+            logger.debug(colored_print("Processing the content of " +  ("an imperative sentence" if sentence.data_type == Sentence.imperative else "a statement "), "magenta"))
             return self.process_sentence(sentence, current_speaker)
         
-        if sentence.data_type in ['w_question', 'yes_no_question']:
-            logger.debug(colored_print("Processing the content of " +  ("a W question " if sentence.data_type == 'w_question' else "a YES/NO question"), "magenta"))
+        if sentence.data_type in [Sentence.w_question, Sentence.yes_no_question]:
+            logger.debug(colored_print("Processing the content of " +  ("a W question " if sentence.data_type == Sentence.w_question else "a YES/NO question"), "magenta"))
             return self.process_question(sentence, current_speaker)
         
         
@@ -89,13 +87,13 @@ class ContentAnalyser:
         else:
             logger.info(level_marker(level=2, color="yellow") + "Couldn't find anything!")
             
-        if sentence.data_type == 'w_question':
+        if sentence.data_type == Sentence.w_question:
             self.output_sentence.extend(self.sfactory.create_w_question_answer(sentence, 
                                                                                     answer,
                                                                                     self.question_handler._current_speaker,
                                                                                     self.question_handler.get_query_on_field()))
         
-        if sentence.data_type == 'yes_no_question':
+        if sentence.data_type == Sentence.yes_no_question:
             self.output_sentence.extend(self.sfactory.create_yes_no_answer(sentence, answer))
         
         return self.question_handler._statements
@@ -107,7 +105,7 @@ class ContentAnalyser:
     def pre_analyse_content(self, sentence):
         """ this method analyse the content of a sentence ang give it another processing purpose.
             E.g: Can you give me the bottle?
-            The sentence above is of 'yes_no_question' type but should actually be processed as an order in which the current speaker
+            The sentence above is of Sentence.yes_no_question type but should actually be processed as an order in which the current speaker
             desires 'the bottle'. 
             Therefore, we turn it into 'give me the bottle'.
         """
@@ -116,7 +114,7 @@ class ContentAnalyser:
         #   -OUTPUT: Imperative + action verb
         #   
         
-        if sentence.data_type == 'yes_no_question':
+        if sentence.data_type == Sentence.yes_no_question:
             for sv in sentence.sv:
                 for verb in sv.vrb_main:
                     if 'can+' in verb:
@@ -128,7 +126,7 @@ class ContentAnalyser:
                             logger.debug(colored_print("Interpreting the <can + action verb> sequence as a desire.\nApplying transformation:", "magenta"))
                         
                             sv.vrb_main[sv.vrb_main.index(verb)] = verb.lstrip('can+')
-                            sentence.data_type = 'imperative'
+                            sentence.data_type = Sentence.imperative
                             
                             logger.debug(str(sentence))
                             
@@ -138,9 +136,4 @@ class ContentAnalyser:
             
         return sentence
 
-def unit_tests():
-    """This function tests the main features of the class ContentAnalysis"""
-    print("This is a test...")
 
-if __name__ == '__main__':
-    unit_tests()

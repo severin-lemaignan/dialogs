@@ -11,7 +11,9 @@ from dialog.resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name, generate_id #for nominal group discrimination
 from discrimination import Discrimination
 from anaphora_matching import AnaphoraMatcher, recover_nom_gr_list, first_replacement
-from dialog.sentence import SentenceFactory, Comparator, Nominal_Group
+from dialog.sentence import *
+from dialog.sentence_factory import SentenceFactory
+
 
 class Resolver:
     """Implements the concept resolution mechanisms.
@@ -36,7 +38,7 @@ class Resolver:
     
     def references_resolution(self, sentence, current_speaker, uae_object, uae_object_with_more_info, uae_object_list):
         #Skipping processing of sentences that are neither questions nor statements
-        if not sentence.data_type in ['w_question', 'yes_no_question', 'statement', 'imperative']:
+        if not sentence.data_type in [Sentence.w_question, Sentence.yes_no_question, Sentence.statement, Sentence.imperative]:
             return sentence
         
         # Current object replacement with uae object
@@ -262,7 +264,7 @@ class Resolver:
 
         logger.info(colored_print("-> Resolving noun phrases", 'green'))
         
-        if not sentence.data_type in ['w_question', 'yes_no_question', 'statement', 'imperative']:
+        if not sentence.data_type in [Sentence.w_question, Sentence.yes_no_question, Sentence.statement, Sentence.imperative]:
             return sentence
         
         #Nominal group replacement possibly after uie_object and uie_object_with_more_info are sent from Dialog to resolve missing content
@@ -320,7 +322,7 @@ class Resolver:
         
         #   Features to skip from discrimination
         features = []
-        if self._current_sentence.data_type in ['w_question', 'yes_no_question']:
+        if self._current_sentence.data_type in [Sentence.w_question, Sentence.yes_no_question]:
             features = [self._current_sentence.aim]
         
         #   Discriminate
@@ -431,7 +433,7 @@ class Resolver:
         
         logger.info(colored_print("-> Resolving verbal groups", 'green'))
         
-        if not sentence.data_type in ['w_question', 'yes_no_question', 'statement', 'imperative']:
+        if not sentence.data_type in [Sentence.w_question, Sentence.yes_no_question, Sentence.statement, Sentence.imperative]:
             return sentence
         
         for sv in sentence.sv:

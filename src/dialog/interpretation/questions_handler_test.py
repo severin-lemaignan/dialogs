@@ -8,7 +8,8 @@ import unittest
 from dialog.resources_manager import ResourcePool
 from dialog.dialog_core import Dialog
 from dialog.interpretation.questions_handler import QuestionHandler
-from dialog.sentence import SentenceFactory, Sentence
+from dialog.sentence import Sentence
+from dialog.sentence_factory import SentenceFactory
 from dialog.interpretation.statements_builder import *
 from dialog.interpretation.resolution import Resolver
 from dialog.interpretation.statements_builder_test import check_results
@@ -101,7 +102,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_1_where_question(self):
         logger.info("\n*************  test_1_where_question ******************")
         logger.info("Where is the blue cube?")
-        sentence = Sentence("w_question", "place", 
+        sentence = Sentence(Sentence.w_question, "place", 
                              [Nominal_Group(['the'],
                                             ['cube'],
                                             [['blue',[]]],
@@ -114,7 +115,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])]) 
         expected_result = 'table1'
         self.process(sentence ,expected_result)
@@ -122,7 +123,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_2_where_question(self):
         logger.info("\n*************  test_2_where_question ******************")
         logger.info("Where is the small cube?")
-        sentence = Sentence("w_question", "place", 
+        sentence = Sentence(Sentence.w_question, "place", 
                              [Nominal_Group(['the'],
                                             ['cube'],
                                             [['small',[]]],
@@ -135,7 +136,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'shelf1'
         
@@ -145,7 +146,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_3_what_question(self):
         logger.info("\n*************  test_3_what_question ******************")
         logger.info("What do you see?")
-        sentence = Sentence("w_question", "thing", 
+        sentence = Sentence(Sentence.w_question, "thing", 
                              [Nominal_Group([],
                                             ['you'],
                                             [],
@@ -158,7 +159,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'shelf1'
         
@@ -167,7 +168,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_8_what_question(self):
         logger.info("\n*************  test_8_what_question ******************")
         logger.info("what is blue?")
-        sentence = Sentence("w_question", "thing", 
+        sentence = Sentence(Sentence.w_question, "thing", 
                              [],                                         
                              [Verbal_Group(['be'],
                                            [],
@@ -180,7 +181,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'blue_cube'        
         self.process(sentence ,expected_result) 
@@ -188,7 +189,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_9_what_question_this(self):
         logger.info("\n*************  test_9_what_question_this ******************")
         logger.info("what is this?")
-        sentence = Sentence("w_question", "thing", 
+        sentence = Sentence(Sentence.w_question, "thing", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -201,7 +202,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'another_cube'
         self.process(sentence ,expected_result) 
@@ -209,7 +210,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_10_what_question(self):
         logger.info("\n*************  test_10_w_question ******************")
         logger.info("what object is blue?")
-        sentence = Sentence("w_question", "object", 
+        sentence = Sentence(Sentence.w_question, "object", 
                              [],                                         
                              [Verbal_Group(['be'],
                                            [],
@@ -222,7 +223,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'blue_cube'
         self.process(sentence ,expected_result)
@@ -230,7 +231,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_11_what_question(self):
         logger.info("\n*************  test_11_w_question ******************")
         logger.info("what size is this?")
-        sentence = Sentence("w_question", "size", 
+        sentence = Sentence(Sentence.w_question, "size", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -243,7 +244,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'small'
         self.process(sentence ,expected_result)
@@ -251,7 +252,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_12_what_question(self):
         logger.info("\n*************  test_12_what_question ******************")
         logger.info("what color is the blue_cube?")
-        sentence = Sentence("w_question", "color", 
+        sentence = Sentence(Sentence.w_question, "color", 
                              [Nominal_Group(['the'],
                                             ['blue_cube'],
                                             [],
@@ -264,7 +265,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'blue'
         self.process(sentence ,expected_result)
@@ -272,7 +273,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_13_who_question(self):
         logger.info("\n*************  test_13_who_question ******************")
         logger.info("who is the SPEAKER?")
-        sentence = Sentence("w_question", "people", 
+        sentence = Sentence(Sentence.w_question, "people", 
                              [Nominal_Group(['the'],
                                             ['SPEAKER'],
                                             [],
@@ -285,7 +286,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'SPEAKER'
         self.process(sentence ,expected_result)
@@ -293,7 +294,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_14_who_question(self):
         logger.info("\n*************  test_14_who_question ******************")
         logger.info("who sees Patrick?")
-        sentence = Sentence("w_question", "people", 
+        sentence = Sentence(Sentence.w_question, "people", 
                              [],                                         
                              [Verbal_Group(['see'],
                                            [],
@@ -306,7 +307,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'id_danny'
         
@@ -316,7 +317,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_15_who_question(self):
         logger.info("\n*************  test_15_who_question ******************")
         logger.info("who does Danny give the small cube?")
-        sentence = Sentence("w_question", "people", 
+        sentence = Sentence(Sentence.w_question, "people", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -333,7 +334,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = 'SPEAKER'
         self.process(sentence ,expected_result)
@@ -342,7 +343,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_4_y_n_question(self):
         logger.info("\n*************  test_4_y_n_question action verb******************")
         logger.info("Did you get the blue cube?")
-        sentence = Sentence("yes_no_question", "", 
+        sentence = Sentence(Sentence.yes_no_question, "", 
                              [Nominal_Group([],
                                             ['you'],
                                             [''],
@@ -359,7 +360,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = True        
         self.process(sentence ,expected_result)
@@ -368,7 +369,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_5_y_n_question(self):
         logger.info("\n*************  test_5_y_n_question verb to be followed by complement******************")
         logger.info("Is the blue cube on the table1?")
-        sentence = Sentence("yes_no_question", "", 
+        sentence = Sentence(Sentence.yes_no_question, "", 
                              [Nominal_Group(['the'],
                                             ['cube'],
                                             [['blue',[]]],
@@ -386,7 +387,7 @@ class TestQuestionHandler(unittest.TestCase):
                                                                                [])])],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = True        
         self.process(sentence ,expected_result)
@@ -395,7 +396,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_6_y_n_question(self):
         logger.info("\n*************  test_6_y_n_question ******************")
         logger.info("Is the small cube blue?")
-        sentence = Sentence("yes_no_question", "", 
+        sentence = Sentence(Sentence.yes_no_question, "", 
                              [Nominal_Group(['the'],
                                             ['cube'],
                                             [['small',[]]],
@@ -412,7 +413,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = False        
         self.process(sentence ,expected_result)
@@ -421,7 +422,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_7_y_n_question(self):
         logger.info("\n*************  test_7_y_n_question verb to be ******************")
         logger.info("Is my cube on the table1?")
-        sentence = Sentence("yes_no_question", "", 
+        sentence = Sentence(Sentence.yes_no_question, "", 
                              [Nominal_Group(['my'],
                                             ['cube'],
                                             [],
@@ -439,7 +440,7 @@ class TestQuestionHandler(unittest.TestCase):
                                                                                [])])],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = False        
         self.process(sentence ,expected_result) 
@@ -447,7 +448,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_9_how_question(self):
         logger.info("\n*************  test_9_how_question ******************")
         logger.info("How is my car?")
-        sentence = Sentence("w_question", "manner", 
+        sentence = Sentence(Sentence.w_question, "manner", 
                              [Nominal_Group(['my'],
                                             ['cube'],
                                             [],
@@ -460,7 +461,7 @@ class TestQuestionHandler(unittest.TestCase):
                                            [],
                                            [],
                                            [],
-                                           'affirmative',
+                                           Sentence.affirmative,
                                            [])])
         expected_result = [['blue',[]]]        
         self.process(sentence ,expected_result)
@@ -482,11 +483,11 @@ class TestQuestionHandler(unittest.TestCase):
         
         self.qhandler.clear_statements()
         
-        if sentence.data_type == "w_question":
+        if sentence.data_type == Sentence.w_question:
             self.assertTrue(expected_result in val[1] for val in res)
                  # res may be a list of several IDs that match the question. Here the result succeed if the expected one is among them
         
-        if sentence.data_type == "yes_no_question":
+        if sentence.data_type == Sentence.yes_no_question:
             self.assertEquals(expected_result, res)
 
 
@@ -586,7 +587,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
     def test_question4_what(self):    
         logger.info("\n##################### test_question4_what ########################\n")
         
-        stmt = "What color is the banana that is on the table?"
+        stmt = "What color is the banana that is on the blue table?"
         ####
         
         ###
@@ -741,19 +742,19 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
                             'ACHILLE rdfs:label Achille',
                             'JULIE rdf:type Human', 
                             'JULIE rdfs:label Julie',
-                            'TABLE rdf:type Table',
+                            'table1 rdf:type Table',
                             'Trashbin rdfs:subClassOf Box',
                             'CardBoardBox rdfs:subClassOf Box',
                             'CardBoardBox rdfs:label "cardboard box"',
                             'TRASHBIN rdf:type Trashbin',
                             'CARDBOARD_BOX rdf:type CardBoardBox',
-                            'CARDBOARD_BOX isOn TABLE',
+                            'CARDBOARD_BOX isOn table1',
                             'TAPE1 rdf:type VideoTape', 
                             'TAPE1 rdfs:label "The Lords of the robots"', 
-                            'TAPE1 isOn TABLE',
+                            'TAPE1 isOn table1',
                             'TAPE2 rdf:type VideoTape', 
                             'TAPE2 rdfs:label "Jido-E"', 
-                            'TAPE2 isOn TABLE',
+                            'TAPE2 isOn table1',
                             
                             'VideoTape owl:equivalentClass Tape',
                             'TAPE1 owl:differentFrom TAPE2',
@@ -769,19 +770,19 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
                             'ACHILLE rdfs:label Achille',
                             'JULIE rdf:type Human', 
                             'JULIE rdfs:label Julie',
-                            'TABLE rdf:type Table',
+                            'table1 rdf:type Table',
                             'Trashbin rdfs:subClassOf Box',
                             'CardBoardBox rdfs:subClassOf Box',
                             'CardBoardBox rdfs:label "cardboard box"',
                             'TRASHBIN rdf:type Trashbin',
                             'CARDBOARD_BOX rdf:type CardBoardBox',
-                            'CARDBOARD_BOX isOn TABLE',
+                            'CARDBOARD_BOX isOn table1',
                             'TAPE1 rdf:type VideoTape', 
                             'TAPE1 rdfs:label "The Lords of the robots"', 
-                            'TAPE1 isOn TABLE',
+                            'TAPE1 isOn table1',
                             'TAPE2 rdf:type VideoTape', 
                             'TAPE2 rdfs:label "Jido-E"', 
-                            'TAPE2 isOn TABLE',
+                            'TAPE2 isOn table1',
                             
                             'VideoTape owl:equivalentClass Tape',
                             
@@ -797,7 +798,7 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
         self.oro.addForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
         
         stmt = "Jido, what is in the box?"
-        answer = "This box"
+        answer = "this box"
         ####
         self.assertEquals(self.dialog.test('ACHILLE', stmt, answer)[1][1],"The Lords of the robots.")
     
