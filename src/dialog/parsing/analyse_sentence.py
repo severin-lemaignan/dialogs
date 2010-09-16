@@ -285,10 +285,13 @@ def w_quest_what(type, sentence):
         #The case when we have 'do' + ing form
         elif vg.vrb_main[0].endswith('do') and vg.i_cmpl!=[] and vg.i_cmpl[0].nominal_group[0].adj!=[] and vg.i_cmpl[0].nominal_group[0].adj[0][0].endswith('ing'):
             analysis.aim='explication'
-            
-        return analysis
     
-    analysis=y_n_ques(type, sentence[1],sentence[2:])
+    #There is a noun before the auxiliary
+    else:
+        #We will use the same code as the which questions
+        sentence=['the']+sentence[1:]
+        #We need to have a nominal group at the beginning
+        analysis=w_quest_which(type, 'thing', sentence)
     return analysis
 
 
@@ -348,27 +351,31 @@ def w_quest_which(type, request, sentence):
     
     #We start by finding the nominal group
     gr=preprocessing.determination_nominal_group(sentence, 0,'of')
-    
-    #After the first gr if there is no nominal group
-    if analyse_nominal_group.find_sn_pos(sentence, len(gr))==[]:
-        for i in frt_wd:
-            #If just after we have an a auxiliary
-            if sentence[len(gr)]==i[0] and i[1]=='3':
-                #With subject => it is a yes or no question form
-                if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
-                    analysis=y_n_ques(type, request, sentence[len(gr):])
-                    nominal_gr=other_sentence(type, request, gr)
-                    analysis.sv[0].d_obj=nominal_gr.sn
-                    return analysis
-        #Else it is like a statement         
-        return other_sentence(type, request, sentence)
-    
-    #Else if not, the first nominal group is the subject
+
+    #If the nominal group contain just 2 elements
+    if len(gr)==2:
+        return y_n_ques(type, sentence[1],sentence[2:])
     else:
-        analysis=other_sentence(type, request, sentence[len(gr):])
-        nominal_gr=other_sentence(type, request, gr)
-        analysis.sv[0].d_obj=nominal_gr.sn
-        return analysis
+        #After the first gr if there is no nominal group
+        if analyse_nominal_group.find_sn_pos(sentence, len(gr))==[]:
+            for i in frt_wd:
+                #If just after we have an a auxiliary
+                if sentence[len(gr)]==i[0] and i[1]=='3':
+                    #With subject => it is a yes or no question form
+                    if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
+                        analysis=y_n_ques(type, request, sentence[len(gr):])
+                        nominal_gr=other_sentence(type, request, gr)
+                        analysis.sv[0].d_obj=nominal_gr.sn
+                        return analysis
+            #Else it is like a statement         
+            return other_sentence(type, request, sentence)
+        
+        #Else if not, the first nominal group is the subject
+        else:
+            analysis=other_sentence(type, request, sentence[len(gr):])
+            nominal_gr=other_sentence(type, request, gr)
+            analysis.sv[0].d_obj=nominal_gr.sn
+            return analysis
     
     
     

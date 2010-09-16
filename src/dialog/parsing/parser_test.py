@@ -2789,7 +2789,6 @@ class TestParsing(unittest.TestCase):
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
     
-   
     
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)
