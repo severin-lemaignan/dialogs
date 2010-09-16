@@ -128,7 +128,7 @@ class Resolver:
         # Case of a nominal group built by only adjectives 
         #   E.g, 'big' in 'the yellow banana is big'.
         if nominal_group.adjectives_only():
-            nominal_group.id = '*'
+            nominal_group.id = nominal_group.adj[0][0]
             nominal_group._resolved = True
             return nominal_group
         
@@ -297,18 +297,20 @@ class Resolver:
                         
         return sentence
     def _resolve_nouns(self, nominal_group, current_speaker, discriminator, builder):
-        """This attempts to resolve a single nominal by the use of discrimiation routines.
-            The output is the ID off the nominal group
+        """This attempts to resolve a single nominal group by the use of discrimiation routines.
+            The output is the ID of the nominal group
         """
         
         if nominal_group._resolved: #already resolved: possible after asking human for more details.
             return nominal_group
         
-        
         logger.debug(str(nominal_group))
+        
+        #Creating a concept description
         builder.process_nominal_group(nominal_group, '?concept', None, False)
         stmts = builder.get_statements()
         builder.clear_statements()
+        
         logger.debug(colored_print("Looking for this concept in "+ current_speaker + "'s model: \n", "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
         
         # Special case of "other" occuring in the nominal group

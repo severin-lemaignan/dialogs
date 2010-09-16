@@ -268,14 +268,14 @@ class NominalGroupStatementBuilder:
                 if nominal_group.noun and nominal_group.noun[0] in ResourcePool().direction_words:
                     self._statements.append(ng_id + " is"+nominal_group.noun[0].capitalize() + "Of " + self._current_speaker)
                 else:
-                    self._statements.append(ng_id + " isRelatedTo " + self._current_speaker)
+                    self._statements.append(ng_id + " belongsTo " + self._current_speaker)
                     
             elif det == "your" and not negative_object:
                 #Case of Direction: The leftOf, the right of ...
                 if nominal_group.noun and nominal_group.noun[0] in ResourcePool().direction_words:
                     self._statements.append(ng_id + " is"+nominal_group.noun[0].capitalize()+"Of myself")
                 else:
-                    self._statements.append(ng_id + " isRelatedTo myself")
+                    self._statements.append(ng_id + " belongsTo myself")
                     
             # Case 4: general determiners: See http://www.learnenglish.de/grammar/determinertext.htm"""
             
