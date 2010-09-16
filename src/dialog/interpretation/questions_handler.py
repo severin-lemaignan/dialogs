@@ -50,12 +50,12 @@ class QuestionHandler:
         #StatementBuilder
         builder = StatementBuilder(self._current_speaker)
         self._statements = builder.process_sentence(self._sentence)
-        logger.info(level_marker(level=2, color="yellow") + "Generated statements for this question: " + colored_print(str(self._statements), None, "magenta"))
+        logger.info(level_marker(level=2, color="yellow") + "Generated statements based on the sentence components: " + colored_print(str(self._statements), None, "magenta"))
         
         #Case the question is a y_n_question : check the fact in the ontology
         if sentence.data_type == Sentence.yes_no_question:
             self._statements = self._set_situation_id(self._statements)
-            
+            logger.info(level_marker(level=2, color="yellow") + "Generated statements for this question: " + colored_print(str(self._statements), None, "magenta"))
             #Processing :Do you know something?
             if self.process_on_knowing_concept:
                 #self._statements = [agent knows object]
@@ -114,6 +114,7 @@ class QuestionHandler:
                         
                 
                 if statements:
+                    logger.info(level_marker(level=2, color="yellow") + "Generated statements for this question: " + colored_print(str(self._statements), None, "magenta"))
                     
                     answers = []
                     if self._process_on_location:
@@ -207,18 +208,24 @@ class QuestionHandler:
     
     
     def _extend_statement_from_sentence_aim(self, current_statements, sn = None):
-        """This extends the statements states so that the query answer matches the w_question aim"""
+        """This extends the statements states so that the query answer matches the w_question aim
+        
+        """
+        #Concept descriptor
+        # E.g: Human, Object, ...
+        concept_descriptor = self.get_concept_descriptor()
+        
         #Case: the statement is complete from statement builder e.g: what is in the box? =>[?concept isIn ?id_box, ?id_box rdf:type Box]
         for s in current_statements:
             if '?concept' in s.split():
-                return current_statements
+                return current_statements 
         #case: the statement is partially build from statement builder
         
         stmts = []
         if sn:
             for sv in self._sentence.sv:
                 for verb in sv.vrb_main:
-                    role, concept_descriptor = self.get_role_from_sentence_aim(self._query_on_field, verb)
+                    role  = self.get_role_from_sentence_aim(self._query_on_field, verb)
                     
                     #Case of looking for the object in a location
                     if role == 'objectFoundInLocation':
@@ -239,10 +246,8 @@ class QuestionHandler:
                     # case of action verbs
                     else:
                         stmts.append('?event ' + role + ' ?concept')
-                    if concept_descriptor:
-                        stmts.append(concept_descriptor)
-            
-        return current_statements + stmts
+                    
+        return current_statements + stmts + concept_descriptor
     
     
     
@@ -275,18 +280,7 @@ class QuestionHandler:
         """ Given specific w_question aim and verb, this function attempts to define the matching object property to built
             an RDF tuple <S P O>. Cf. QuestionAimDict() for more detail.
         """
-        
-        # Specify wether the concept is an agent or not
-        concept_descriptor = ''
-        
         dic_aim = QuestionAimDict().dic_aim
-        if self._sentence.aim and not self._sentence.aim in dic_aim.keys():
-            concept_descriptor = "?concept rdf:type " + self._sentence.aim.capitalize()
-            self._sentence.aim = "thing"
-            
-        elif self._sentence.aim == "people":
-            concept_descriptor = "?concept rdf:type Agent"
-            
         try:
             if verb.lower() in dic_aim[self._sentence.aim][query_on_field]:
                 role = dic_aim[self._sentence.aim][query_on_field][verb.lower()]
@@ -298,9 +292,40 @@ class QuestionHandler:
             else:
                 role = dic_aim[self._sentence.aim][None][None]
     
-        return role, concept_descriptor
+        return role
     
     
+    def get_concept_descriptor(self):
+        """ Get the type the concept to query if it is not created in the QuestionAimDict
+            E.g: What color is the bottle?
+                Here, the aim 'color' is derived from QuestionAimDict as it is about a feature
+            
+            E.g: What Human do you see?
+                Here, the aim 'human' is not a feature, and is not in the QuestionAimDict
+                We return it in concept_descriptor = '?concept rdf:type Human'
+                
+        """
+        
+        concept_descriptor = []
+        agent = self._default_agent
+        aim = self._sentence.aim
+        
+        if self._sentence.aim and not self._sentence.aim in QuestionAimDict().dic_aim.keys():
+            logger.debug("\tFound the aim: " + aim + ".Extending statements with [?concept rdf:type aim]")
+            try:
+                onto = ResourcePool().ontology_server.lookupForAgent(agent, aim)
+            except AttributeError:
+                pass
+                
+            concept_descriptor = ["?concept rdf:type " + get_class_name(aim, onto)]
+            self._sentence.aim = "thing"
+            
+        elif self._sentence.aim == "people":
+            concept_descriptor = ["?concept rdf:type Agent"]
+        
+        return concept_descriptor
+            
+        
     """            
         what aim => 'thing'
             what kind => aim = 'thing', sn = [the kind of]
@@ -427,6 +452,3 @@ class QuestionAimDict:
         self.dic_aim['manner'] = self.dic_manner
         #which-question
         self.dic_aim['choice'] = self.dic_thing
-
-
-
