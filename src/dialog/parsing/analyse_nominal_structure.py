@@ -20,19 +20,10 @@ import analyse_sentence
 import preprocessing
 
 
-"""
-Statement of lists
-"""
-propo_rel_list = ResourcePool().relatives
-noun_end_s_sing = ResourcePool().nouns_end_s
-quantifier_list = ResourcePool().det_quantifiers
-irreg_plur_noun = ResourcePool().plural_nouns
-
-
 
 def recover_quantifier(nom_gr):
     """
-    This function recover the quantifier and put the noun in singular form if it's in plural          
+    recovers the quantifier and put the noun in singular form if it's in plural          
     Input=nominal group class                     Output=nominal group class                                                   
     """
     
@@ -56,13 +47,13 @@ def recover_quantifier(nom_gr):
             nom_gr.det=[other_functions.convert_to_digit(nom_gr.det[0])]
             
         #Here we will use the quantifier list
-        for i in quantifier_list:
+        for i in ResourcePool().det_quantifiers:
             if i[0]==nom_gr.det[0]:
                 nom_gr._quantifier=i[1] 
                     
         #If we have a plural
         if nom_gr.noun!=[] and nom_gr.noun[0].endswith('s'):
-            for x in noun_end_s_sing:
+            for x in ResourcePool().nouns_end_s:
                 if x==nom_gr.noun[0]:
                     #It is a noun singular with 's' at the end
                     flg=1
@@ -76,7 +67,7 @@ def recover_quantifier(nom_gr):
                     nom_gr._quantifier='ANY'
                 
                 #We have to put the noun in singular form
-                for y in irreg_plur_noun:
+                for y in ResourcePool().plural_nouns:
                     #If it is an irregular noun
                     if y[0]==nom_gr.noun[0]:
                         nom_gr.noun[0]=y[1]
@@ -95,7 +86,7 @@ def recover_quantifier(nom_gr):
 
 def put_rela_from_nncompl_noun(gn):
     """
-    This function put the relative of the complement in the main noun           
+    put the relative of the complement in the main noun           
     Input=nominal group class                     Output=nominal group class                                                   
     """
     
@@ -114,7 +105,7 @@ def put_rela_from_nncompl_noun(gn):
 
 def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     """
-    This function fulfills a structure Nominal_Group with given information          
+    fulfills a structure Nominal_Group with given information          
     Input=sentence, nominal group with his position                                  
     Output=the nominal group class                                                   
     """
@@ -131,8 +122,8 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
     adj=analyse_nominal_group.process_adj_quantifier(adj)
 
     #We will process the relative
-    begin_pos_rel=analyse_nominal_group.find_relative(nom_gr, phrase, pos_nom_gr, propo_rel_list)
-    end_pos_rel=other_functions.recover_end_pos_sub(phrase[begin_pos_rel:], propo_rel_list)
+    begin_pos_rel=analyse_nominal_group.find_relative(nom_gr, phrase, pos_nom_gr, ResourcePool().relatives)
+    end_pos_rel=other_functions.recover_end_pos_sub(phrase[begin_pos_rel:], ResourcePool().relatives)
     
     #There is a relative
     if begin_pos_rel!=-1:
@@ -143,7 +134,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
         if phrase[begin_pos_rel]!='where':
             relative_phrase=analyse_nominal_group.complete_relative(relative_phrase,nom_gr)
         
-        relative = relative+[analyse_sentence.other_sentence('relative',phrase[begin_pos_rel],relative_phrase)]
+        relative = relative+[analyse_sentence.other_sentence(Sentence.relative,phrase[begin_pos_rel],relative_phrase)]
 
     #If there is a nom_gr_compl, we must make a recursive process for embedded complement
     if nom_gr_compl!=[]:
@@ -165,7 +156,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
 
 def recover_ns(phrase, analysis, position):
     """
-    This function recovers the nominal structure of the sentence                     
+    recovers the nominal structure of the sentence                     
     Input=sentence, the class sentence and the position of the nominal structure     
     Output=the class sentence and sentence                                           
     """
@@ -187,8 +178,8 @@ def recover_ns(phrase, analysis, position):
         #We take off the nominal group
         phrase=analyse_nominal_group.take_off_nom_gr(phrase, sbj, phrase.index(sbj[0]))
         
-        if  phrase[0] in propo_rel_list:
-            end_pos_rel=other_functions.recover_end_pos_sub(phrase, propo_rel_list) 
+        if  phrase[0] in ResourcePool().relatives:
+            end_pos_rel=other_functions.recover_end_pos_sub(phrase, ResourcePool().relatives) 
             #We remove the relative part of the phrase
             phrase=phrase[end_pos_rel:]
         

@@ -32,34 +32,26 @@ import other_functions
 """
 Statement of lists
 """
-word_list = ResourcePool().noun_not_composed
 adj_quantifier = ResourcePool().adj_quantifiers
-end_s_list = ResourcePool().nouns_end_s
-adj_rules = ResourcePool().adjective_rules
 adjective_list = ResourcePool().adjectives.keys()
-noun_list = ResourcePool().special_nouns
-verb_list = ResourcePool().special_verbs
 pronoun_list = ResourcePool().pronouns
-adv_list = ResourcePool().adverbs
 proposal_list = ResourcePool().proposals
 det_list = ResourcePool().determinants
-composed_noun = ResourcePool().composed_nouns
-superlative_number = ResourcePool().adjective_numbers
 
 
 
 def is_an_adj(word):
     """
-    This function to know if a word is an adjective                                  
+    knows if a word is an adjective                                  
     Input=word                Output=1 if it is an adjective and 0 if not                     
     """
     
     #It is a noun verb pronoun or determinant so we have to return 0
-    if word in noun_list+verb_list+pronoun_list+det_list:
+    if word in ResourcePool().special_nouns+ResourcePool().special_verbs+pronoun_list+det_list:
         return 0
     
     #For the regular adjectives
-    for k in adj_rules:
+    for k in ResourcePool().adjective_rules:
         if word.endswith(k):
             return 1
     
@@ -68,7 +60,7 @@ def is_an_adj(word):
         return 1
         
     #We use the irregular adjectives list to find it
-    if word in adjective_list+superlative_number+adj_quantifier:
+    if word in adjective_list+ResourcePool().adjective_numbers+adj_quantifier:
         return 1
     
     return 0
@@ -77,7 +69,7 @@ def is_an_adj(word):
     
 def adjective_pos(phrase, word_pos):
     """
-    This function return the position of the end of the nominal group                
+    returns the position of the end of the nominal group                
     We have to use the list of irregular adjectives                                  
     Input=the sentence (list of strings) and the position of the first adjective    
     Output=the position of the last word of the nominal group                       
@@ -92,11 +84,11 @@ def adjective_pos(phrase, word_pos):
         return 0
     
     #It is a noun so we have to return 1
-    if phrase[word_pos] in noun_list:
+    if phrase[word_pos] in ResourcePool().special_nouns:
         return 1
     
     #For the regular adjectives
-    for k in adj_rules:
+    for k in ResourcePool().adjective_rules:
         if phrase[word_pos].endswith(k):
             return 1+adjective_pos(phrase, word_pos+1)
     
@@ -105,7 +97,7 @@ def adjective_pos(phrase, word_pos):
         return 1+adjective_pos(phrase, word_pos+1)
     
     #We use the irregular adjectives list to find it
-    if phrase[word_pos] in adjective_list+superlative_number+adj_quantifier:
+    if phrase[word_pos] in adjective_list+ResourcePool().adjective_numbers+adj_quantifier:
         return 1+ adjective_pos(phrase, word_pos+1)
 
     #Default case
@@ -136,9 +128,9 @@ def find_sn_pos (phrase, begin_pos):
         return phrase[begin_pos : end_pos+begin_pos]
     
     #If we have 'something'
-    for k in composed_noun:
+    for k in ResourcePool().composed_nouns:
         if phrase[begin_pos].startswith(k):
-            if phrase[begin_pos] in word_list:
+            if phrase[begin_pos] in ResourcePool().noun_not_composed:
                 return []
             return [phrase[begin_pos]]    
        
@@ -181,9 +173,9 @@ def find_sn (phrase):
             return phrase[phrase.index(x) : phrase.index(x)+nb_position]
         
         #If we have 'something'
-        for k in composed_noun:
+        for k in ResourcePool().composed_nouns:
             if x.startswith(k):
-                if x in word_list:
+                if x in ResourcePool().noun_not_composed:
                     return []
                 return [phrase[phrase.index(x)]]
         
@@ -207,7 +199,7 @@ def find_sn (phrase):
 
 def find_the_plural(phrase, position):
     """
-    This function find if there is a plural and add 'a'                     
+    finds if there is a plural and add 'a'                     
     Input=sentence and position of nominal group   Output=the position of plural or -1            
     """ 
     
@@ -222,7 +214,7 @@ def find_the_plural(phrase, position):
     if phrase[position] in proposal_list:
         return find_the_plural(phrase, position+1)
     
-    if phrase[position] in end_s_list:
+    if phrase[position] in ResourcePool().nouns_end_s:
         return -1
     
     #If it is adjective we continue
@@ -244,7 +236,7 @@ def find_the_plural(phrase, position):
 
 def find_plural(phrase):
     """
-    This function add 'a' for plural                    
+    adds 'a' for plural                    
     Input=sentence                                   Output=sentence      
     """ 
     
@@ -272,7 +264,7 @@ def refine_nom_gr(nom_gr):
         return nom_gr[:len(nom_gr)-1]
     
     #Case of after we have an adverb
-    if nom_gr[len(nom_gr)-1] in adv_list:
+    if nom_gr[len(nom_gr)-1] in ResourcePool().adverbs:
         return nom_gr[:len(nom_gr)-1]
     return nom_gr
 
@@ -303,7 +295,7 @@ def return_det (nom_gr):
 
 def return_adj (nom_gr):
     """
-    This function returns adjectives of the nominal group                            
+    returns adjectives of the nominal group                            
     Input=nominal group                              Output=the adjective            
     """
     
@@ -327,7 +319,7 @@ def return_adj (nom_gr):
 
 def convert_adj_to_digit(adj_list):
     """
-    This function returns the list of adjectives after change number to digit                           
+    returns the list of adjectives after change number to digit                           
     Input=the adjective                               Output=the adjective            
     """
     
@@ -341,7 +333,7 @@ def convert_adj_to_digit(adj_list):
 
 def process_adj_quantifier(adj_list):    
     """
-    This function returns adjectives of the nominal group organized with quantifier                           
+    returns adjectives of the nominal group organized with quantifier                           
     Input=the adjective                               Output=the adjective            
     """
     
@@ -367,7 +359,7 @@ def process_adj_quantifier(adj_list):
 
 def return_noun (nom_gr, adjective, determinant):
     """
-    This function returns the noun of the nominal group
+    returns the noun of the nominal group
     Input=nominal group, the determinant and the adjecvtive        Output=the noun   
     """
 
@@ -451,7 +443,7 @@ def find_relative (nom_gr, phrase, position, propo_rel_list):
 
 def complete_relative(phrase, sbj):
     """
-    Function to complete the relative with her object                                    
+    completes the relative with her object                                    
     Input=relative, the object of the relative (his nominal group)
     Output=relative concatenated to the nominal group                                        
     """

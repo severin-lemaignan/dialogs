@@ -22,12 +22,7 @@ from dialog.resources_manager import ResourcePool
 """
 Statement of lists
 """
-frt_wd = ResourcePool().sentence_starts
 number_list = ResourcePool().numbers
-cap_let_list = ResourcePool().capital_letters
-superlative_number = ResourcePool().adjective_numbers_digit
-sub_list = ResourcePool().subsentences
-rel_list = ResourcePool().relatives
 noun_list = ResourcePool().special_nouns
 
 
@@ -37,7 +32,7 @@ def find_cap_lettre(word):
     Function return 1 if the word starts with upper case letter                       
     Input=word               Output=flag(0 if no upper case or 1 if upper case)        
     """
-    if word[0] in cap_let_list:
+    if word[0] in ResourcePool().capital_letters:
         return 1
     return 0
 
@@ -121,7 +116,7 @@ def word_to_digit(word, number):
     Input=word                          Output=digit (string form)   
     """
     
-    for i in superlative_number:
+    for i in ResourcePool().adjective_numbers_digit:
         if i[0]==word:
             number=number+int(i[1])
     
@@ -184,7 +179,7 @@ def recover_aux_list():
     """
     
     aux_list=[]
-    for x in frt_wd:
+    for x in ResourcePool().sentence_starts:
         if x[1]=='3':
             aux_list=aux_list+[x[0]]
     return aux_list
@@ -202,7 +197,7 @@ def find_scd_verb_sub(sentence):
     
     while i<len(sentence):
         
-        if sentence[i] in sub_list+rel_list:
+        if sentence[i] in ResourcePool().subsentences+ResourcePool().relatives:
             flag=flag+1
                 
         if sentence[i]==';':
@@ -227,7 +222,7 @@ def recover_scd_verb_sub(sentence):
     
     while i<len(sentence):
         
-        if sentence[i] in sub_list+rel_list:
+        if sentence[i] in ResourcePool().subsentences+ResourcePool().relatives:
             flag=flag+1
                
         if sentence[i]==';':

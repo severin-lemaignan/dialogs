@@ -23,15 +23,13 @@ from dialog.resources_manager import ResourcePool
 Statement of lists
 """
 adj_ed_list = ResourcePool().adjective_verb
-past_irreg_vrb = ResourcePool().irregular_verbs_past
-present_irreg_vrb = ResourcePool().irregular_verbs_present        
-phrasal_vrb = ResourcePool().preposition_verbs
+past_irreg_vrb = ResourcePool().irregular_verbs_past      
 
 
 
 def find_tense_statement (phrase):
     """
-    This function returns the time of conjugation of the verb in a statement         
+    returns the time of conjugation of the verb in a statement         
     We have to know the list of adverbs before the verb                              
     Input=sentence and the adverb bound to the verb           Output=tense           
     """
@@ -118,7 +116,7 @@ def find_tense_statement (phrase):
 
 def find_verb_statement (phrase, tense):
     """
-    This function find the verb in a statement
+    find the verb in a statement
     Input=sentence, tense and the adverb bound to the verb      Output=main verb     
     """
 
@@ -151,7 +149,7 @@ def find_verb_statement (phrase, tense):
 
 def find_tense_question (phrase, aux):
     """
-    This function returns the time of conjugation of the verb in a question          
+    returns the time of conjugation of the verb in a question          
     We have to know the list of adverbs before the verb                              
     Input=sentence, auxiliary and the adverb bound to the verb       Output=tense     
     """
@@ -231,7 +229,7 @@ def find_tense_question (phrase, aux):
 
 def find_verb_question (phrase, aux, tense):
     """
-    This function find the verb in a question                                        
+    find the verb in a question                                        
     Input=sentence, tense, auxiliary and the adverb bound to the verb                 
     Output=main verb                                                                
     """
@@ -263,7 +261,7 @@ def find_verb_question (phrase, aux, tense):
 
 def infinitive (verb, tense):
     """
-    This function return the infinitive form of the verb                             
+    returns the infinitive form of the verb                             
     'verb' is the base so it is just the first element of Verb (list of one element) 
     Input=main verb and the tense           Output=main verb in infinitive form      
     """
@@ -274,7 +272,7 @@ def infinitive (verb, tense):
     
     #processing for the present simple
     elif tense=='present simple':
-        for i in present_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_present :
             if i[1] == verb[0] or i[0] == verb[0]:
                 return [i[0]]
             
@@ -299,7 +297,7 @@ def infinitive (verb, tense):
 
     #processing for the progressive forms
     elif tense=='present progressive' or tense=='past progressive':
-        for i in present_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_present :
             if i[2]==verb[0]:
                 return [i[0]]
         if verb[0].endswith('ing'):
@@ -318,7 +316,7 @@ def infinitive (verb, tense):
 
 def return_verb (phrase, main_verb, tense):
     """
-    This function return the final form of the verb => a list with one element       
+    returns the final form of the verb => a list with one element       
     Input=sentence, main verb and the tense                Output=verb               
     """
     
@@ -329,7 +327,7 @@ def return_verb (phrase, main_verb, tense):
     if phrase[len(phrase)-1]!=main_verb[0]:
     
         #We will recover the proposal of the verb
-        for i in phrasal_vrb:
+        for i in ResourcePool().preposition_verbs:
             if verb[0]==i[0] and phrase[phrase.index(main_verb[0])+1]==i[1]:
                 return verb+[phrase[phrase.index(main_verb[0])+1]]
     

@@ -41,18 +41,12 @@ import preprocessing
 """
 Statement of lists
 """
-aux_list = ResourcePool().auxiliary
 complement_pronoun = ResourcePool().complement_pronouns
 direct_trans_verb_list = ResourcePool().direct_transitive
 inderect_trans_verb_list = ResourcePool().indirect_transitive
-state_vrb_list = ResourcePool().state
-adv_list = ResourcePool().adverbs
-rel_proposal_list = ResourcePool().compelement_proposals
 proposal_list = ResourcePool().proposals
-pronoun_list = ResourcePool().pronouns
 rel_list = ResourcePool().relatives
 sub_list = ResourcePool().subsentences
-unusable_word = ResourcePool().unusable_words
 
 
 
@@ -70,11 +64,11 @@ def is_cmpl_pr(word):
 
 def delete_unusable_word(phrase):
     """
-    This function delete the word that is no parssable                        
+    deletes the word that is no parssable                        
     Input=sentence                        Output=sentence                 
     """
     
-    for i in unusable_word:
+    for i in ResourcePool().unusable_words:
         if phrase[0]==i:
             phrase=phrase[1:]
             delete_unusable_word(phrase) 
@@ -84,7 +78,7 @@ def delete_unusable_word(phrase):
     
 def find_vrb_adv(phrase, vg):
     """
-    This function recovers the list of adverbs bound to verb                         
+    recovers the list of adverbs bound to verb                         
     Input=sentence                        Output=sentence                 
     """
 
@@ -93,7 +87,7 @@ def find_vrb_adv(phrase, vg):
         return phrase
 
     #If there is an auxiliary
-    if phrase[0] in aux_list:
+    if phrase[0] in ResourcePool().auxiliary:
         if phrase[1].endswith('ly'):
             vg.vrb_adv=vg.vrb_adv+[phrase[1]]
             return [phrase[0]]+phrase[2:]
@@ -109,7 +103,7 @@ def find_vrb_adv(phrase, vg):
 
 def find_adv(phrase,vg):
     """
-    This function recovers the list of adverbs                                       
+    recovers the list of adverbs                                       
     Input=sentence                            Output=adverbs list                    
     """
 
@@ -128,7 +122,7 @@ def find_adv(phrase,vg):
             vg.advrb= vg.advrb+[phrase[i]]
             phrase=phrase[:i]+phrase[i+1:]
             
-        if phrase[i] in adv_list:
+        if phrase[i] in ResourcePool().adverbs:
             if i>0 and phrase[i-1] in proposal_list:
                 vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([phrase[i-1]],[Nominal_Group([],[phrase[i]],[],[],[])])]
                 phrase=phrase[:i-1]+phrase[i+1:]
@@ -143,7 +137,7 @@ def find_adv(phrase,vg):
 
 def check_proposal(phrase, object):
     """
-    This function to know if there is a proposal before the object                   
+    know if there is a proposal before the object                   
     Input=sentence and object            Output=proposal if the object is indirect   
     """
 
@@ -161,7 +155,7 @@ def check_proposal(phrase, object):
 
 def recover_obj_iobj(phrase, vg):
     """
-    This function finds the direct, indirect object and the adverbial                
+    finds the direct, indirect object and the adverbial                
     We, also, put these information in the class                                     
     Input=sentence and verbal class              Output=sentence and verbal class    
     """
@@ -297,7 +291,7 @@ def state_adjective(sentence, vg):
     
     #In case there is a state verb followed by an adjective
     if sentence!=[]:
-        if vg.vrb_main[0] in state_vrb_list and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
+        if vg.vrb_main[0] in ResourcePool().state and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
             
             #Here we have juist to process adjectives, nominal groups are processed
             pos=analyse_nominal_group.adjective_pos(sentence,0)
@@ -345,7 +339,7 @@ def find_scd_vrb(phrase):
 
 def process_scd_sentence(phrase, vg, sec_vrb):
     """
-    This function process the second sentence found                                   
+    process the second sentence found                                   
     Input=sentence, verbal class and the second verb                                 
     Output=sentence and verbal class                                                 
     """
@@ -357,12 +351,12 @@ def process_scd_sentence(phrase, vg, sec_vrb):
     #We process the verb
     if scd_sentence[0]=='not':
         scd_verb=[other_functions.convert_to_string(analyse_verb.return_verb(scd_sentence, [scd_sentence[1]], ''))]
-        vg.sv_sec=vg.sv_sec+[Verbal_Group(scd_verb, [], '', [], [], [], [], 'negative',[])]
+        vg.sv_sec=vg.sv_sec+[Verbal_Group(scd_verb, [], '', [], [], [], [], Verbal_Group.negative,[])]
         #We delete the verb
         scd_sentence= scd_sentence[phrase.index(scd_sentence[1])+1:]
     else:
         scd_verb=[other_functions.convert_to_string(analyse_verb.return_verb(scd_sentence, [scd_sentence[0]], ''))]
-        vg.sv_sec=vg.sv_sec+[Verbal_Group(scd_verb, [], '', [], [], [], [], 'affirmative',[])]
+        vg.sv_sec=vg.sv_sec+[Verbal_Group(scd_verb, [], '', [], [], [], [], Verbal_Group.affirmative,[])]
         #We delete the verb
         scd_sentence= scd_sentence[scd_sentence.index(scd_sentence[0])+1:]
     
@@ -391,7 +385,7 @@ def process_scd_sentence(phrase, vg, sec_vrb):
 
 def process_subsentence(phrase,vg):
     """
-    This function process the subsentence                                             
+    process the subsentence                                             
     Input=sentence and verbal class         Output=sentence and verbal class         
     """
     
@@ -435,15 +429,15 @@ def process_subsentence(phrase,vg):
                     if w!='which':
                         #We perform processing
                         vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
-                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=Sentence.subsentence+'+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
                         if w[0]==':':
                             vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w[1:]
                         else:
                             vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
                     else:
                         #Exception for which
-                        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.w_quest_which('w_question', 'choice', ['the']+subsentence)]
-                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type='subsentence+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.w_quest_which(Sentence.w_question, 'choice', ['the']+subsentence)]
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=Sentence.subsentence+'+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
                         vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
                     
                     #If 'but' is between 2 nominal group and not before subsentence
@@ -466,7 +460,7 @@ def process_subsentence(phrase,vg):
 
 def process_conjunctive_sub(phrase,vg):
     """
-    This function process the conjunctive subsentence
+    process the conjunctive subsentence
     Input=sentence and verbal class         Output=sentence and verbal class         
     """
     
@@ -477,7 +471,7 @@ def process_conjunctive_sub(phrase,vg):
     if len(phrase)>0 and phrase[0]=='that' and analyse_nominal_group.find_sn_pos(phrase, 1)!=[]:
         begin_pos=0
         
-    if len(phrase)>2 and phrase[0] in pronoun_list and phrase[1]=='that' and analyse_nominal_group.find_sn_pos(phrase, 2)!=[]:
+    if len(phrase)>2 and phrase[0] in ResourcePool().pronouns and phrase[1]=='that' and analyse_nominal_group.find_sn_pos(phrase, 2)!=[]:
         begin_pos=1
         
     
@@ -491,7 +485,7 @@ def process_conjunctive_sub(phrase,vg):
         subsentence=other_functions.recover_scd_verb_sub(subsentence)
         
         #We perform processing
-        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence('subsentence', 'that' ,subsentence)]
+        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence(Sentence.subsentence, 'that' ,subsentence)]
         vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type+'+statement'
         
         #We delete the subsentence
@@ -504,7 +498,7 @@ def process_conjunctive_sub(phrase,vg):
 
 def correct_i_compl(phrase,verb):
     """
-    This function transform indirect complement to relative
+    transform indirect complement to relative
     Input=sentence and verbal class         Output=sentence and verbal class         
     """
     
@@ -515,7 +509,7 @@ def correct_i_compl(phrase,verb):
         x=0
         while x<len(phrase):
             #If there is a proposal with an adverbial
-            if x+1<len(phrase) and phrase[x] in rel_proposal_list:
+            if x+1<len(phrase) and phrase[x] in ResourcePool().compelement_proposals:
                 #If there is a plural
                 phrase=phrase[:x]+analyse_nominal_group.find_plural(phrase[x:])
                         
@@ -538,7 +532,7 @@ def correct_i_compl(phrase,verb):
 
 def DOC_to_IOC(vg):
     """
-    This function put the direct complement in the indirect
+    puts the direct complement in the indirect
     Input=sentence and verbal class         Output=sentence and verbal class         
     """
     
@@ -556,7 +550,7 @@ def DOC_to_IOC(vg):
 
 def create_nom_gr_and(sentence):
     """ 
-    This function add determinant after 'and' if there is                 
+    adds determinant after 'and' if there is                 
     Input=sentence                                  Output=sentence                      
     """ 
     #init
@@ -585,7 +579,7 @@ def create_nom_gr_and(sentence):
 
 def create_nom_gr(sentence,aim):
     """
-    This function add it or a determinant if it is necessary
+    adds it or a determinant if it is necessary
     Input=sentence                         Output=sentence       
     """
     
@@ -593,7 +587,7 @@ def create_nom_gr(sentence,aim):
         return sentence[1:] 
     
     #We delete word that we don't use
-    if sentence[0] in unusable_word:
+    if sentence[0] in ResourcePool().unusable_words:
         return sentence[1:] 
     
     #Some word linked to the questions
@@ -644,7 +638,7 @@ def refine_indirect_complement(vg):
 
 def refine_subsentence(vg):
     """
-    This function transform some subsentence to relative
+    transform some subsentence to relative
     Input=verbal structure                         Output=verbal structure        
     """
     
@@ -656,7 +650,7 @@ def refine_subsentence(vg):
         if vg.vrb_sub_sentence[i].aim=='what':
             #We have to make some changers
             vg.vrb_sub_sentence[i].aim='that'
-            vg.vrb_sub_sentence[i].data_type='relative'
+            vg.vrb_sub_sentence[i].data_type=Sentence.relative
             #We add nominal group in relative as direct object
             vg.vrb_sub_sentence[i].sv[0].d_obj=vg.vrb_sub_sentence[i].sv[0].d_obj+[Nominal_Group(['the'],['thing'],[],[],[])]
             #We create a nominal group
@@ -668,7 +662,7 @@ def refine_subsentence(vg):
             
         if i>=0 and vg.vrb_sub_sentence[i].aim=='where':
             #We have to make some changers
-            vg.vrb_sub_sentence[i].data_type='relative'
+            vg.vrb_sub_sentence[i].data_type=Sentence.relative
             #We create a nominal group
             gn=Nominal_Group(['the'],['location'],[],[],[vg.vrb_sub_sentence[i]])
             #We add the relative and the nominal group into the sentence
@@ -690,7 +684,7 @@ def refine_subsentence(vg):
 
 def process_compare(sentence,vg):
     """
-    This function process the compare
+    process the compare
     Input=sentence and verbal structure      Output=sentence verbal structure        
     """
     
@@ -766,7 +760,7 @@ def imperative_stc(sentence):
     
     if sentence==[]:
         return 1
-    if sentence[0] in adv_list+proposal_list:
+    if sentence[0] in ResourcePool().adverbs+proposal_list:
         return 1
     if sentence[0]=='.' or sentence[0]=='?' or sentence[0]=='!':
         return 1
