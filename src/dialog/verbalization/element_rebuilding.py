@@ -22,9 +22,7 @@ import other_functions
 """
 Statement of lists
 """
-modal_list=['must', 'should', 'may', 'might', 'can', 'could', 'shall']
-pronoun_list = ResourcePool().pronouns
-irreg_plur_noun = ResourcePool().plural_nouns
+modal_list = ResourcePool().modal 
 vrb_to = ResourcePool().verb_need_to
 past_irreg_vrb = ResourcePool().irregular_verbs_past
 present_irreg_vrb = ResourcePool().irregular_verbs_present
@@ -57,14 +55,16 @@ def nom_struc_rebuilding(nom_struc):
         
         #We recover the nominal group and his complement
         if nom_struc[i]._quantifier=='SOME' or nom_struc[i]._quantifier=='ALL' or nom_struc[i]._quantifier=='ANY' or (nom_struc[i]._quantifier=='DIGIT' and nom_struc[i].det!='one'):
-            
-            for n in irreg_plur_noun:
+            #If there is a specific quantifier (plural)
+            for n in ResourcePool().plural_nouns:
                 if nom_struc[i].noun!=[] and n[1]==nom_struc[i].noun[0]:
                     nn=[n[0]]
             
+            #If it is not a specific plural, we add 's'
             if nom_struc[i].noun!=[] and nn==[]:
                 nn=[nom_struc[i].noun[0]+'s']
-               
+            
+            #We reconver the other information   
             nominal_structure = nominal_structure + nom_struc[i].det
             for z in nom_struc[i].adj:
                 nominal_structure = nominal_structure+z[1]+[z[0]]
@@ -72,13 +72,15 @@ def nom_struc_rebuilding(nom_struc):
             
             #Re-init
             nn=[]
+            
         else:
-
+            #if not plural
             nominal_structure = nominal_structure + nom_struc[i].det
             for z in nom_struc[i].adj:
                 nominal_structure = nominal_structure+z[1]+[z[0]]
             nominal_structure = nominal_structure+nom_struc[i].noun
-            
+        
+        #We recover noun complement
         if nom_struc[i].noun_cmpl!=[]:
             nominal_structure = nominal_structure + ['of']
             nominal_structure=nominal_structure+nom_struc_rebuilding(nom_struc[i].noun_cmpl)
@@ -92,7 +94,6 @@ def nom_struc_rebuilding(nom_struc):
             ns=[]
 
         i=i+1
-    
     return nominal_structure
 
 
@@ -108,15 +109,17 @@ def indirect_compl_rebuilding(indirect_compl):
     ind_cmpl=[]
     k=0
 
-    #We have 2 cases : with preposal and without
+    #We have 2 cases : with proposal and without
     if indirect_compl.prep!=[]:
         nom_gr= nom_struc_rebuilding(indirect_compl.nominal_group)
         
+        #If we have another i_cmpl with a different preposition
         if nom_gr!=[] and (nom_gr[0]=='and' or nom_gr[0]=='or' or nom_gr[0]=='but'):
             nom_gr=[nom_gr[0]]+indirect_compl.prep+nom_gr[1:]
         else:
             nom_gr=indirect_compl.prep+nom_gr
         
+        #For a preposition we can have different i_cmpl with different conjunctions
         while k < len(nom_gr):
             if (nom_gr[k]=='or' or nom_gr[k]=='but') and nom_gr[k+1]!=indirect_compl.prep[0]:
                 nom_gr=nom_gr[:k+1]+indirect_compl.prep+nom_gr[k+1:]
@@ -132,7 +135,7 @@ def indirect_compl_rebuilding(indirect_compl):
 
 def conjugate_vrb(tense, verb, sn, type, aim):
     """
-    This function conjugates the verb                                                
+    conjugates the verb                                                
     Input=tense, verb in infinitive form, the adverb and subject                     
     Output=the verb conjugated                                                       
     """
@@ -148,7 +151,7 @@ def conjugate_vrb(tense, verb, sn, type, aim):
             sn[0].noun=[aim[15:]]
             
     if sn==[]:
-        if type=='imperative':
+        if type==Sentence.imperative:
             #If no subject, we use the third person of plural
             sn=[Nominal_Group([],['they'],[],[],[])]
         else:
@@ -274,14 +277,14 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
         vrb_condjugated=[vrb[0]]+['be']+conjugate_vrb('present passive', vrb[1:], sn,'', aim)[1:]
 
     #Affirmative case
-    if state=='affirmative':
+    if state==Verbal_Group.affirmative:
         if len(vrb)>1:
             return [vrb_condjugated[0]]+adv+vrb_condjugated[1:]
         else:
             return adv+vrb_condjugated
 
     #Negative case : we have to use do or have or be or modal if there is no
-    elif state=='negative':
+    elif state==Verbal_Group.negative:
 
         if vrb[0]=='be' or vrb[0]=='do' or vrb[0]=='have':
             return [vrb_condjugated[0]]+['not']+adv+vrb_condjugated[1:]
@@ -297,7 +300,7 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
 
 def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     """
-    This function recovers the verb part of a question                               
+    recovers the verb part of a question                               
     Input=tense, verb in infinitive form, his state, the adverb and subject          
     Output=verb part                                                                 
     """
@@ -311,14 +314,14 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     #If there is be or have : it is ok
     if vrb[0]=='be' or vrb[0]=='have':
         vrb_condjugated=conjugate_vrb(tense, vrb, sn, '', aim)
-        if state=='negative':
+        if state==Verbal_Group.negative:
             return [vrb_condjugated[0]]+['not']+adverb+vrb_condjugated[1:]
         return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
 
     #Modal also
     for i in modal_list:
         if i==vrb[0]:
-            if state=='negative':
+            if state==Verbal_Group.negative:
                 if tense=='present passive' or tense=='passive conditional':
                     return [vrb[0]]+['not']+adverb+['be']+conjugate_vrb('present passive', vrb[1:], sn,'', aim)[1:]
                 return [vrb[0]]+['not']+adverb+vrb[1:]
@@ -329,18 +332,23 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     if tense=='present simple' or tense=='past simple':
         #We need to add the auxilary
         aux=conjugate_vrb(tense, ['do'], sn,'', aim)
-        if state=='negative':
+        if state==Verbal_Group.negative:
             return aux+['not']+adverb+vrb
         return aux+adverb+vrb
     else:
         vrb_condjugated=conjugate_vrb(tense, vrb, sn,'', aim)
-        if state=='negative':
+        if state==Verbal_Group.negative:
             return [vrb_condjugated[0]]+['not']+adverb+vrb_condjugated[1:]
         return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
     
     
 
 def scd_vrb_rebuilding(sec_vrb, phrase, flg):
+    """
+    recovers the part of the second verb                                 
+    Input=class sentence, phrase and a flag                       
+    Output=phrase                                                    
+    """
     
     if flg==1:
         phrase=phrase+sec_vrb.vrb_adv+other_functions.list_rebuilding(sec_vrb.vrb_main[0])
@@ -380,7 +388,7 @@ def scd_vrb_rebuilding(sec_vrb, phrase, flg):
 
 def end_statement_rebuilding(sentence, sv ,sn, type, aim):
     """
-    This function recovers the end of the statement                                   
+    recovers the end of the statement                                   
     Input=class sentence, subject and the verbal structure                           
     Output=end of the sentence                                                       
     """
@@ -408,7 +416,7 @@ def end_statement_rebuilding(sentence, sv ,sn, type, aim):
     
     flag=0
     for j in vrb_to:
-        if sv[0].vrb_main[0]==j:
+        if sv[0].vrb_main==[j]:
             flag=1
     
     #If there is a second verb
@@ -421,7 +429,7 @@ def end_statement_rebuilding(sentence, sv ,sn, type, aim):
 
 def end_question_rebuilding(sentence, sv ,sn, aim):
     """
-    This function recovers the end of the question                                   
+    recovers the end of the question                                   
     Input=class sentence, subject and the verbal structure                           
     Output=end of the sentence                                                       
     """
@@ -447,7 +455,7 @@ def end_question_rebuilding(sentence, sv ,sn, aim):
         
         flag=0
         for j in vrb_to:
-            if sv[0].vrb_main[0]==j:
+            if sv[0].vrb_main==[j]:
                 flag=1
                 
         #If there is a second verb
@@ -456,8 +464,4 @@ def end_question_rebuilding(sentence, sv ,sn, aim):
         
     #We add the adverb of the sentence
     phrase=phrase+sv[0].advrb
-
-    
-
-        
     return sentence+phrase

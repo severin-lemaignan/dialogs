@@ -24,23 +24,17 @@
 from dialog.resources_manager import ResourcePool
 import other_functions
 import sentence_rebuilding
+from dialog.sentence import *
+
 
 
 """
 Statement of lists
 """
-composed_noun = ResourcePool().composed_nouns
-word_list = ResourcePool().noun_not_composed
 det_list = ResourcePool().determinants
 pronoun_list = ResourcePool().pronouns
-adj_rules = ResourcePool().adjective_rules
-superlative_number = ResourcePool().adjective_numbers
-adj_quantifier = ResourcePool().adj_quantifiers
 wques_rules=[('date',['when']),('place',['where']),('origin',['where']), ('reason',['why']),('people',['who'])]
 insertion_tuples=[("'m", 'am'),("'ve", 'have'),("'re", 'are'),("'ll", 'will'),("'d", 'would'),("'s", 'is')]
-prep_list = ResourcePool().prep_change_place
-adjective_list = ResourcePool().adjectives.keys()
-noun_list = ResourcePool().special_nouns
 
 
 
@@ -51,39 +45,39 @@ def dispatching(analysis):
     """
     
     #For interjection
-    if analysis.data_type=='interjection':
+    if analysis.data_type==Sentence.interjection:
         return  sentence_rebuilding.statement(analysis)
     
     #For statement
-    if analysis.data_type=='statement':
+    if analysis.data_type==Sentence.statement:
         return sentence_rebuilding.statement(analysis)
 
     #For imperative
-    elif analysis.data_type=='imperative':
+    elif analysis.data_type==Sentence.imperative:
         return sentence_rebuilding.imperative(analysis)
 
     #For yes no question
-    elif analysis.data_type=='yes_no_question':
+    elif analysis.data_type==Sentence.yes_no_question:
         return sentence_rebuilding.y_o_question(analysis)
 
     #For start
-    elif analysis.data_type=='start':
+    elif analysis.data_type==Sentence.start:
         return ['hello','.']
     
     #For end
-    elif analysis.data_type=='end':
+    elif analysis.data_type==Sentence.end:
         return ['goodbye','.']
 
     #For agree
-    elif analysis.data_type=='agree':
+    elif analysis.data_type==Sentence.agree:
         return ['OK','.'] if not analysis.aim else [analysis.aim, '.']
 
     #For disagree
-    elif analysis.data_type=='disagree':
+    elif analysis.data_type==Sentence.disagree:
         return ['No, sorry','.'] if not analysis.aim else [analysis.aim, '.']
 
     #For w_question
-    elif analysis.data_type=='w_question':
+    elif analysis.data_type==Sentence.w_question:
         for x in wques_rules:
             if x[0]==analysis.aim:
                 return x[1]+sentence_rebuilding.y_o_question(analysis)
@@ -111,23 +105,26 @@ def dispatching(analysis):
 
 def adjective_pos(phrase, word_pos):
     """
-    This function return the position of the end of the nominal group                
+    returns the position of the end of the nominal group                
     We have to use the list of irregular adjectives                                  
     Input=the sentence (list of strings) and the position of the first adjective    
     Output=the position of the last word of the nominal group                       
     """
-
+    
     #If it is the end of the phrase
     if len(phrase)-1<=word_pos:
         return 1
     
+    #The case of '2 of them'
+    if phrase[word_pos]=='of':
+        return 0
+    
     #It is a noun so we have to return 1
-    for j in noun_list:
-        if phrase[word_pos]==j:
-            return 1
+    if phrase[word_pos] in ResourcePool().special_nouns:
+        return 1
     
     #For the regular adjectives
-    for k in adj_rules:
+    for k in ResourcePool().adjective_rules:
         if phrase[word_pos].endswith(k):
             return 1+adjective_pos(phrase, word_pos+1)
     
@@ -136,9 +133,8 @@ def adjective_pos(phrase, word_pos):
         return 1+adjective_pos(phrase, word_pos+1)
     
     #We use the irregular adjectives list to find it
-    for i in adjective_list+superlative_number+adj_quantifier:
-        if phrase[word_pos]==i:
-            return 1+ adjective_pos(phrase, word_pos+1)
+    if phrase[word_pos] in ResourcePool().adjectives.keys()+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
+        return 1+ adjective_pos(phrase, word_pos+1)
 
     #Default case
     return 1
@@ -152,29 +148,26 @@ def find_sn_pos (phrase, begin_pos):
     Input=the sentence (list of strings) and the position of the nominal group       
     Output=the nominal group                                                         
     """
-
+    
     if begin_pos>=len(phrase):
         return []
     
     end_pos = 1
     
     #If it is a pronoun
-    for i in pronoun_list:
-        if phrase[begin_pos]==i:
-            return [phrase[begin_pos]]
+    if phrase[begin_pos] in pronoun_list:
+        return [phrase[begin_pos]]
 
     #If there is a nominal group with determinant
-    for j in det_list:
-        if phrase[begin_pos]==j:
-            end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
-            return phrase[begin_pos : end_pos+begin_pos]
+    if phrase[begin_pos] in det_list:
+        end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
+        return phrase[begin_pos : end_pos+begin_pos]
     
     #If we have 'something'
-    for k in composed_noun:
+    for k in ResourcePool().composed_nouns:
         if phrase[begin_pos].startswith(k):
-            for l in word_list:
-                if l==phrase[begin_pos]:
-                    return []
+            if phrase[begin_pos] in ResourcePool().noun_not_composed:
+                return []
             return [phrase[begin_pos]]    
        
     #If there is a number, it will be the same with determinant
@@ -186,12 +179,7 @@ def find_sn_pos (phrase, begin_pos):
     counter=begin_pos
     while (counter<len(phrase) and other_functions.find_cap_lettre(phrase[counter])==1):
         counter=counter+1
-
-    #Cases like 'next week'
-    if phrase[begin_pos]=='next' or phrase[begin_pos]=='last':
-        end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
-        return phrase[begin_pos-1 : end_pos+begin_pos]
-
+    
     #Default case return [] => ok if counter=begin_pos
     return phrase[begin_pos : counter]
 
@@ -225,7 +213,6 @@ def find_nom_gr_list(phrase):
 
     #We put the elements number at the end of the list
     list=list+[nb_element]
-    
     return list
 
 
@@ -281,10 +268,9 @@ def possesion_form(sentence):
     while begin_pos < len(sentence):
         
         if sentence[begin_pos] == 'of' and sentence[begin_pos-1]=='kind':
-            for z in det_list:
-                if z==sentence[begin_pos+1]:
-                    sentence=sentence[:begin_pos+1]+sentence[begin_pos+2:]
-                    begin_pos=begin_pos+1
+            if sentence[begin_pos+1] in det_list:
+                sentence=sentence[:begin_pos+1]+sentence[begin_pos+2:]
+                begin_pos=begin_pos+1
         
         if sentence[begin_pos] == 'of' and sentence[begin_pos-1]!='think' and find_sn_pos(sentence, begin_pos+1)!=[] and sentence[begin_pos+1]!='thing':
             #We have to find the first nominal group
@@ -348,7 +334,8 @@ def and_case(sentence):
     while i < len(sentence):
         if sentence[i] == 'and':
             nom_gr=determination_nom_gr(sentence, i+1, 'of')
-
+            
+            #If the 'and' can be changed to ','
             if len(sentence)>len(nom_gr)+i+1 and sentence[len(nom_gr)+i+1]=='and':
                 sentence=sentence[:i]+[',']+sentence[i+1:]
         i=i+1
@@ -372,18 +359,16 @@ def replace_tuple(sentence):
             if sentence[i]==j[1]:
                 
                 #To perform this process we need to have a pronoun
-                for k in pronoun_list:
-                    if i!=0 and sentence[i-1]==k:
-                        sentence[i-1]=sentence[i-1]+j[0]
-                        sentence=sentence[:i]+sentence[i+1:]
-                        break
-                    
+                if i!=0 and sentence[i-1] in pronoun_list:
+                    sentence[i-1]=sentence[i-1]+j[0]
+                    sentence=sentence[:i]+sentence[i+1:]
+        
+        #The replacement includes that cases        
         if i!=0 and sentence[i]=='is' and (sentence[i-1]=='that' or sentence[i-1]=='what'):
             sentence[i-1]=sentence[i-1]+j[0]
             sentence=sentence[:i]+sentence[i+1:]
         
         i=i+1
-    
     return sentence            
     
 
@@ -398,18 +383,21 @@ def negation(sentence):
     i=0
     
     while i < len(sentence):
-            
+        #If we have a negation
         if sentence[i]=='not':
+            
+            #Unusual case
             if sentence[i-1]=='will':
                 sentence[i-1]="won't"
             elif sentence[i-1]=='can':
                 sentence[i-1]="can't"
+            
             else:
+                #General case
                 sentence[i-1]=sentence[i-1]+"n't"
                 
             sentence=sentence[:i]+sentence[i+1:]
         i=i+1
-    
     return sentence
     
 
@@ -426,7 +414,6 @@ def delete_plus(sentence):
     while i < len(sentence):
         if other_functions.find_plus(sentence[i])==1:
             sentence=sentence[:i]+other_functions.list_rebuilding(sentence[i])+sentence[i+1:]
-    
         i=i+1
     return sentence
 
@@ -442,13 +429,11 @@ def move_prep(sentence):
     i=0
     
     while i < len(sentence):
-        for p in prep_list:
-            
-            #If there is a preposal
-            if sentence[i]==p:
-                nom_gr = find_sn_pos(sentence, i+1)
-                sentence=sentence[:i]+nom_gr+[p]+sentence[i+len(nom_gr)+1:]
-                i=i+len(nom_gr)
+        #If there is a proposal
+        if sentence[i] in ResourcePool().prep_change_place:
+            nom_gr = find_sn_pos(sentence, i+1)
+            sentence=sentence[:i]+nom_gr+[sentence[i]]+sentence[i+len(nom_gr)+1:]
+            i=i+len(nom_gr)
         i=i+1
     return sentence
 
@@ -464,10 +449,12 @@ def delete_comma(sentence):
     i=0
     
     word = sentence[len(sentence)-2]
+    #There is a comma in the end, we have to delete it
     if word[len(word)-1]==',':
         word=word[:len(word)-1]
         sentence[len(sentence)-2]=word
         
+    #If the comma is as a string, we out it at the end of the word before
     while i < len(sentence):
         if sentence[i]==',':
             sentence=sentence[:i-1]+[sentence[i-1]+',']+sentence[i+1:]
@@ -482,10 +469,11 @@ def a_which_process(sentence):
     This function delete the determinant after 'which' if it exist                             
     Input=class sentence                                       Output=sentence       
     """
+    
     if sentence[0]=='which':
-        for d in det_list:
-            if d==sentence[1]:
-                return [sentence[0]]+sentence[2:]
+        #If the w_question is with 'which', we can have determinant that must be deleted
+        if sentence[1] in det_list:
+            return [sentence[0]]+sentence[2:]
     return sentence
 
 
@@ -501,10 +489,10 @@ def verbalising(class_list):
     
     #converting all classes sentence
     while i < len(class_list):
-        if class_list[i].data_type=='interjection':
+        if class_list[i].data_type==Sentence.interjection:
             flag=1
         
-        if flag==1 and class_list[i].data_type=='imperative':
+        if flag==1 and class_list[i].data_type==Sentence.imperative:
             class_list[i].sn=[]
         
         sentence = dispatching(class_list[i])
@@ -520,7 +508,7 @@ def verbalising(class_list):
         sentence=a_which_process(sentence)
         sentence=move_prep(sentence)
         
-        if i>0 and class_list[i-1].data_type=='interjection':
+        if i>0 and class_list[i-1].data_type==Sentence.interjection:
             utterance=utterance[:len(utterance)-2]+', '
         else:    
             #To have the upper case

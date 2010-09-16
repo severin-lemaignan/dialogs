@@ -17,62 +17,45 @@
 from dialog.resources_manager import ResourcePool
 
 
-"""
-Statement of lists
-"""
-number_list = ResourcePool().numbers
-cap_let_list = ResourcePool().capital_letters
-noun_end_s_sing = ResourcePool().nouns_end_s
-plural_name = ResourcePool().plural_nouns
-adj_rules = ResourcePool().adjective_rules
-adjective_list = ResourcePool().adjectives.keys()
-noun_list = ResourcePool().special_nouns
-superlative_number = ResourcePool().adjective_numbers
-adj_quantifier = ResourcePool().adj_quantifiers
-
-
 
 def find_cap_lettre(word):
     """
     Function return 1 if the word starts with upper case letter                       
     Input=word               Output=flag(0 if no upper case or 1 if upper case)        
     """
-    for i in cap_let_list:
-        if word[0]==i:
-            return 1
+    if word[0] in ResourcePool().capital_letters:
+        return 1
     return 0
 
 
 
 def find_plus(word):
     """
-    Function return 1 if the word containe '+'                       
+    returns 1 if the word containe '+'                       
     Input=word                                           Output=flag       
     """
     
-    for i in word:
-        if i=='+':
-            return 1
+    if '+' in word:
+        return 1
     return 0
 
 
 
 def list_rebuilding(string):
     """
-    This function returns the list of strings without '+'                            
+    returns the list of strings without '+'                            
     Input=the string           Output=the list of strng corresponding                
     """
 
-    for i in string:
-        if i=='+':
-            return [string[:string.index(i)]] + list_rebuilding(string[string.index(i)+1:])
+    if '+' in string:
+        return [string[:string.index('+')]] + list_rebuilding(string[string.index('+')+1:])
     return [string]
 
 
 
 def eliminate_redundancy(phrase):
     """
-    This function to eliminate redundancy in the phrase                              
+    to eliminate redundancy in the phrase                              
     Input=phrase                                             Output=phrase           
     """
 
@@ -94,7 +77,7 @@ def eliminate_redundancy(phrase):
 
 def convert_string(token_list):
     """
-     This function returns concatenate token to have a string (sentence)
+     returns concatenate token to have a string (sentence)
      Input=list of token                                    Output=sentence           
     """
 
@@ -111,25 +94,28 @@ def convert_string(token_list):
 
 def plural(word,quantifier,determinant):
     """
-    Function return 1 if the word is a plural                       
+    return 1 if the word is a plural                       
     Input=list of word             Output=flag(0 if singular or 1 if plural)       
     """
-   
+    
+    #If the word ends with 's' it is not a special one
     if word.endswith('s'):
-        for n in noun_end_s_sing:
+        for n in ResourcePool().nouns_end_s:
             if n==word:
                 return 0
         return 1
+    
+    #If it is a pronoun in plural
     if word=='we' or word=='I' or word=='you' or word=='they':
         return 1
         
-    for k in plural_name:
+    for k in ResourcePool().plural_nouns:
         if word==k[1]:
             return 1
-        
+    
+    #If the quantifier confirm it
     if quantifier=='SOME' or quantifier=='ALL' or quantifier=='ANY':
         return 1
-    
     if quantifier=='DIGIT' and determinant[0]!='one':
         return 1
     
@@ -146,14 +132,17 @@ def plural_noun(sn):
     #init
     i=1
     
+    #If we have many subject, we need to know the conjunction
     while i < len(sn):
         if sn[i]._conjunction!='AND':
             if plural(sn[i].noun[0], sn[i]._quantifier, sn[i].det)==1:
                 return 1
         else:
+            #If other conjunction, we have just one element
             return 1
         i=i+1
-        
+      
+    #If we have some we can have all possibilities  
     if sn[0].noun==[] and sn[0]._quantifier!='SOME':
         return 0
     elif sn[0]._quantifier=='SOME':
@@ -171,10 +160,12 @@ def number(word):
     Input=word          Output=flag(0 if no number or 1 if number or 2 adjective-number)        
     """
     
-    for n in number_list:
+    for n in ResourcePool().numbers:
         if word.startswith(n[1]):
             return 1
-        if word.startswith(n[0]): 
+        
+        if word.startswith(n[0]):
+            #We have adjective-number 
             if word.endswith('th'):
                 return 2
             else:
@@ -185,17 +176,16 @@ def number(word):
 
 def is_an_adj(word):
     """
-    This function to know if a word is an adjective                                  
+    knows if a word is an adjective                                  
     Input=word                Output=1 if it is an adjective and 0 if not                     
     """
     
-    #It is a noun so we have to return 1
-    for j in noun_list:
-        if word==j:
-            return 0
+    #It is a noun verb pronoun or determinant so we have to return 0
+    if word in ResourcePool().special_nouns+ResourcePool().special_verbs:
+        return 0
     
     #For the regular adjectives
-    for k in adj_rules:
+    for k in ResourcePool().adjective_rules:
         if word.endswith(k):
             return 1
     
@@ -204,8 +194,7 @@ def is_an_adj(word):
         return 1
         
     #We use the irregular adjectives list to find it
-    for i in adjective_list+superlative_number+adj_quantifier:
-        if word==i:
-            return 1
+    if word in ResourcePool().adjectives.keys()+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
+        return 1
     
     return 0

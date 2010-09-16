@@ -10,7 +10,7 @@ from dialog.dialog_exceptions import UnsufficientInputError, UnknownVerb, Uniden
 from dialog.resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name, generate_id #for nominal group discrimination
 from discrimination import Discrimination
-from anaphora_matching import AnaphoraMatcher, recover_nom_gr_list, first_replacement
+from anaphora_matching import AnaphoraMatcher, recover_nominal_group_list, first_replacement
 from dialog.sentence import *
 from dialog.sentence_factory import SentenceFactory
 

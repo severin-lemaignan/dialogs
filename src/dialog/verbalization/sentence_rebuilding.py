@@ -20,16 +20,11 @@ import element_rebuilding
 import other_functions
 from dialog.sentence import *
 
-"""
-Statement of lists
-"""
-vrb_to = ResourcePool().verb_need_to
-
 
 
 def statement(analysis):
     """
-    This function verbalises a statment                                              
+    verbalises a statment                                              
     Input=class sentence                              Output=sentence                
     """
     
@@ -48,11 +43,11 @@ def statement(analysis):
     phrase=other_functions.eliminate_redundancy(phrase)
     
     #If it is a relative form
-    if analysis.data_type=='relative' or analysis.data_type=='subsentence':
+    if analysis.data_type==Sentence.relative or analysis.data_type.startswith(Sentence.subsentence):
         if phrase[len(phrase)-1][len(phrase[len(phrase)-1])-1]!=',':
             phrase[len(phrase)-1]=phrase[len(phrase)-1]+','
         return phrase
-    if analysis.data_type=='w_question':
+    if analysis.data_type==Sentence.w_question:
         return phrase+['?']
     
     #To take of all not useless comma
@@ -64,7 +59,7 @@ def statement(analysis):
         
 def imperative(analysis):
     """
-    This function verbalises an imperative                                           
+    verbalises an imperative                                           
     Input=class sentence                              Output=sentence                
     """
 
@@ -82,7 +77,7 @@ def imperative(analysis):
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
     
-    if analysis.data_type=='relative':
+    if analysis.data_type==Sentence.relative:
         if phrase[len(phrase)-1][len(phrase[len(phrase)-1])-1]!=',':
             phrase[len(phrase)-1]=phrase[len(phrase)-1]+','
         return phrase
@@ -93,7 +88,7 @@ def imperative(analysis):
 
 def relative(relative, ns):
     """
-    This function verbalises a relative                                  
+    verbalises a relative                                  
     Input=class sentence                              Output=sentence                
     """
     
@@ -124,7 +119,7 @@ def y_o_question(analysis):
         phrase=element_rebuilding.end_question_rebuilding(phrase, analysis.sv, analysis.sn,analysis.aim)
     
         #We need special processing to find the position of the subject
-        if analysis.sv[0].state=='negative':
+        if analysis.sv[0].state==Verbal_Group.negative:
             phrase=phrase[0:2]+subject+phrase[2:]
         else:
             phrase=[phrase[0]]+subject+phrase[1:]
@@ -148,7 +143,7 @@ def y_o_question(analysis):
 
 def w_question(analysis):
     """
-    This function verbalises a w_question                                            
+    verbalises a w_question                                            
     Input=class sentence                              Output=sentence                
     """
     if analysis.sv!=[]:
@@ -183,7 +178,7 @@ def w_question(analysis):
 
 def description_ques(analysis):
     """
-    This function verbalises a question about description                               
+    verbalises a question about description                               
     Input=class sentence                              Output=sentence
     """
     if analysis.sv[0].vrb_tense.startswith('present'):
@@ -192,7 +187,7 @@ def description_ques(analysis):
         analysis.sv[0].vrb_tense='present progressive'
     sentence=y_o_question(analysis)
     for i in sentence:
-        if i=='likeing':
+        if i=='liking':
             sentence[sentence.index(i)]='like'
     return ['what']+sentence
             
@@ -233,7 +228,7 @@ def quantity_ques(analysis):
             phrase=phrase+analysis.sv[0].advrb
             
             flag=0
-            for j in vrb_to:
+            for j in  ResourcePool().verb_need_to:
                 if analysis.sv[0].vrb_main[0]==j:
                     flag=1
                 
@@ -244,7 +239,7 @@ def quantity_ques(analysis):
                 phrase=phrase+sub_process(s)
             
             #processing of the state
-            if analysis.sv[0].state=='negative':
+            if analysis.sv[0].state==Verbal_Group.negative:
                 phrase=phrase[0:2]+subject+phrase[2:]
             else:
                 phrase=[phrase[0]]+subject+phrase[1:]
@@ -255,7 +250,7 @@ def quantity_ques(analysis):
 
 def possession_ques(analysis):
     """
-    This function verbalises a question about possession                             
+    verbalises a question about possession                             
     Input=class sentence                              Output=sentence                
     """
 
@@ -272,7 +267,7 @@ def possession_ques(analysis):
 
 def sub_process(analysis):
     """
-    This function verbalises a subsentence                                           
+    verbalises a subsentence                                           
     Input=class sentence                              Output=sentence                
     """
     
