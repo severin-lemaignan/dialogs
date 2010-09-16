@@ -1,7 +1,7 @@
-## 
+###################
 This list holds numbers and there references
-##
-
+The reference is to covert numbers on digit
+###################
 zero 0
 one 1
 two 2
@@ -24,10 +24,10 @@ million 1000000
 
 
 
-
-## 
-This list holds quantifiers of determinant
-##
+###################
+This list holds quantifiers of some determinants
+We use some regulars for the others
+###################
 
 a SOME
 an SOME
@@ -44,11 +44,9 @@ another SOME
 
 
 
-
-## 
-This list holds adverbs
-##
-
+###################
+This list holds capitol letter
+###################
 A
 B
 C
@@ -79,10 +77,10 @@ Z
 
 
 
-## 
+###################
 This list holds adjective rules
-##
-
+For the other adjectives, we have a list
+###################
 al
 ous
 est
@@ -99,10 +97,10 @@ ic
 
 
 
-## 
+###################
 This list holds proposals that we have to concatenate
-##
-
+the concatenation is with '+'
+###################
 next to
 behind to
 in spite of
@@ -118,10 +116,12 @@ every time
 
 
 
-## 
+###################
 This list holds tuples that we have to change
-##
-
+The first word is the element to change
+The second is the word that we will add
+The third element is the number of letter that will be deleted
+###################
 ; ; 1
 , , 1
 'm am 2
@@ -134,10 +134,10 @@ n't not 3
 
 
 
-## 
+###################
 This list holds adjective numbers
-##
-
+We have also the reference to change them to digit
+###################
 first 1
 second 2
 third 3
@@ -146,11 +146,10 @@ ninth 9
 
 
 
-
-## 
+###################
 This list holds all forms of the verb be in present with a pronoun
-##
-
+In this case we have 'be' and not possession form
+###################
 he's
 she's
 it's
@@ -162,10 +161,9 @@ how's
 
 
 
-## 
+###################
 This list holds quantifiers of adjectives
-##
-
+###################
 very
 much
 many
@@ -175,11 +173,11 @@ well
 
 
 
-
-## 
+###################
 This list holds tuples that we have to replace
-##
-
+The first world is the element that we will delete
+The elements after are the elements to change
+###################
 won't will not
 wanna want to
 gonna going to

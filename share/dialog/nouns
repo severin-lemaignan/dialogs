@@ -1,6 +1,7 @@
-## 
+###################
 This list holds nouns whose ending could be confused with an adjective
-##
+Usually the end is the same as an adjective rule
+###################
 
 agency
 anything
@@ -31,9 +32,11 @@ thing
 victory
 vacancy
 
-## 
-This list holds all pronouns
-##
+###################
+This list holds all pronouns which can be subject or object
+We put 1 if the pronoun can be used as an object:
+Direct or Indirect complement
+###################
 
 it 1
 you 1
@@ -55,10 +58,10 @@ hers 0
 myself 0
 
 
-## 
+###################
 This list holds demonstrative determinants
-##
-
+We use them just with verb 'be'
+###################
 this
 there
 these
@@ -68,10 +71,10 @@ those
 
 
 
-## 
+###################
 This list holds determinants
-##
-
+They can be plural or not
+###################
 its
 that
 the
@@ -98,10 +101,11 @@ another
 
 
 
-## 
+###################
 This list holds word ends with 's' and it is not a plural
-##
-
+Because in processing, 's' is for plural
+And so we have to take it off
+###################
 news
 glass
 bus
@@ -115,10 +119,9 @@ boss
 tennis
 
 
-## 
+###################
 This list holds relative proposals
-##
-
+###################
 who
 which
 that
@@ -129,10 +132,10 @@ in+which
 
 
 
-## 
-This list holds composed noun (the start or end of noun)
-##
-
+###################
+This list holds composed noun 
+(the start or end of noun as 'something')
+###################
 some
 any
 every
@@ -140,11 +143,11 @@ no
 
 
 
-
-## 
+################### 
 This list holds nouns with no regular form in plural
-##
-
+Here we have:
+plural_form singular_form
+###################
 glasses glass
 busses bus
 bosses boss
@@ -156,17 +159,17 @@ o'clock o'clock
 
 
 
-## 
-This list holds noun which can be composed noun (but it is false)
-##
-
+###################
+This list holds noun which can be composed noun 
+(but it is false)
+Example : now = no+w
+###################
 now
 
 
-## 
+###################
 This list holds days
-##
-
+###################
 Monday
 Tuesday
 Wednesday
@@ -178,9 +181,10 @@ Sunday
 
 
 
-## 
+###################
 This list holds months
-##
+We have also the number of days for each month
+###################
 
 January 31
 February 28
@@ -198,10 +202,11 @@ December 31
 
 
 
-## 
+###################
 This list holds unusable words
-##
-
+If we recovery one of them in the end of the process
+We delete them to continue
+###################
 since
 only
 just
@@ -210,13 +215,16 @@ also
 
 
 
-## 
+###################
 This list holds direction words that can be used as nouns
-##
+###################
 right
 left
 front
 back
 top
 bottom
-
+south
+north
+east
+west

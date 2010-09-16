@@ -1,6 +1,8 @@
-##
-This list holds verbs with different form in past tenses
-##
+###################
+This list holds irregular verbs with different form in past tenses
+Here we have :
+present past_simple past_participal
+###################
 
 awake awoke awoken 
 be was been 
@@ -102,10 +104,11 @@ write wrote written
 
 
 
-##
+###################
 This list holds verbs with different form in present tenses
-##
-
+Here we have :
+present present_simple present_progressive
+###################
 be is being
 be are being
 be am being
@@ -119,9 +122,12 @@ take takes taking
 
 
 
-##
+###################
 This list holds verbs with preposition
-##
+That is what we call phrasal verbs
+The process put the preposition with the main verb
+And not with the object complement
+###################
 abide by
 account for
 add up
@@ -277,10 +283,10 @@ wipe off
 
 
 
-##
-This list holds modal
-##
-
+###################
+This list holds all modals
+We can have the present or conditional form
+###################
 must
 should
 may
@@ -292,19 +298,20 @@ shall
 
 
 
-##
+###################
 This list holds adjectives which are the same end as a verb in any tense
-##
-
+adjectives must be irregular because we can have regular adjectives with 'ed'
+For example : 'red' can be 'r' in the past ('red' is irregular adjective)
+###################
 red
 
 
 
 
-##
+###################
 This list holds auxiliary
-##
-
+We have the past and the present form
+###################
 have
 has
 had
@@ -318,10 +325,11 @@ will
 
 
 
-##
-This list holds direct transitive verbs
-##
-
+###################
+This list holds direct transitive verbs. For this verb, 
+An indirect complement which follow the direct one is his noun complement
+'give the bottle on the table', 'on the table' is for the direct complement 
+###################
 give
 want
 talk
@@ -331,10 +339,10 @@ make
 
 
 
-##
+###################
 This list holds indirect transitive verbs
-##
-
+All these verbs don't have a direct complement just indirect one
+###################
 tell
 say
 come
@@ -342,44 +350,44 @@ come
 
 
 
-##
+###################
 This list holds state verbs
-##
+###################
 be
 become
 
 
 
 
-##
+###################
 This list holds verbs that need 'to' to have a second verb
-##
-
+The form of let's is also processed
+###################
 let
 help
 
 
 
-##
+###################
 This list holds action verbs with a passive behaviour
-##
+each couple holds the literal verb and the object property to assign
+###################
 see sees
 hear hears
 understand understands
 reach reaches
 
 
-##
+###################
 This list holds goal verbs
-##
+###################
 need
 desire
 want
 
 
 
-## 
+####################
 This list holds verbs whose ending could be confused with an adjective
-##
-
+###################
 give

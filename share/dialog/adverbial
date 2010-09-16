@@ -17,11 +17,13 @@ else
 
 
 
-## 
+###################
 This list holds proposals 
-We use 1 if the proposal is used by functions which transform adverbial into relative
-##
-
+Second element: 1 if the proposal is used by functions which transform adverbial into relative
+Third element: for time, if 1 it is the future else if -1 in the past and else it is not used in time case
+Fourth element: the property that is to be used for generating statements
+Fifth element: helps to determine proposals that are related to an object location when querying the ontology
+###################
 about 1 1
 above 1 0 isAbove objectFoundInLocation
 after 1 1
@@ -59,10 +61,11 @@ with 1 1
 
 
 
-## 
+###################
 This list holds subsentence proposals
-##
-
+1 for proposal which can be preposition (0 not)
+':' to make a difference between preposition and proposal
+###################
 :after 1
 also 0
 although 0
@@ -89,10 +92,10 @@ while 0
 
 
 
-## 
+###################
 This list holds preposition that need change of place
-##
-
+Because they are after the nominal group
+###################
 after
 ago
 before
