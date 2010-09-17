@@ -236,7 +236,7 @@ class NominalGroupStatementBuilder:
                 #
                 # E.g "this is 'a blue cube'" provides:
                 #   [something hasColor blue, something rdf:type Cube] where something is known in the ontology as [* focusesOn something]
-                # E.g "this is 'my cube'" should provide [something isRelatedTo *]
+                # E.g "this is 'my cube'" should provide [something belongsTo *]
                 if subject_quantifier == 'ONE':
                     process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier, negative_object)
                 
@@ -456,7 +456,7 @@ class NominalGroupStatementBuilder:
         """This attempts to process the noun complment attribute of a nominal group:
             E.g: The car of Danny
             This example should provide the statements [danny_car rdf:type Car, 
-                                                        danny_car isRelatedTo DANNY]
+                                                        danny_car belongsTo DANNY]
             where 'danny_car' is the existing ID of the car of Danny in the ontology and
             'DANNY' is the ID of an existing agent named 'Danny'
         """
@@ -475,7 +475,7 @@ class NominalGroupStatementBuilder:
                 if nominal_group.noun and nominal_group.noun[0] in ResourcePool().direction_words:
                     self._statements.append(ng_id + " is" + nominal_group.noun[0].capitalize() + "Of " + noun_cmpl_id)
                 else:
-                    self._statements.append(ng_id + " isRelatedTo " + noun_cmpl_id)
+                    self._statements.append(ng_id + " belongsTo " + noun_cmpl_id)
     
     def process_relative(self, nominal_group, ng_id):
         """ The following processes the relative clause of the subject of a sentence.           

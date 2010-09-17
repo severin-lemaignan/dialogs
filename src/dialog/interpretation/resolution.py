@@ -418,7 +418,7 @@ class Resolver:
                 nominal_group._resolved = True
             
             else:
-                historic_objects_list = recover_nom_gr_list(get_last(self.sentences_store, 10))
+                historic_objects_list = recover_nominal_group_list(get_last(self.sentences_store, 10))
                 if not historic_objects_list:
                     raise DialogError("Error: possibly due to an empty dialog history")
                 

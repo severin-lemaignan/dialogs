@@ -411,7 +411,7 @@ class TestStatementBuilder(unittest.TestCase):
                                             [])], 
                               [Verbal_Group(['give'],
                                             [],
-                                            'past_simple',
+                                            'past simple',
                                             [Nominal_Group(['the'],
                                                            ['car'],
                                                            [],
@@ -762,7 +762,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence.sv[0].d_obj[0]._quantifier = 'SOME' # fruits
         expected_result = ['Apple rdfs:subClassOf Fruit']
         
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     def test_15_quantifier_action_verb(self):        
@@ -798,7 +798,7 @@ class TestStatementBuilder(unittest.TestCase):
                             '* involves *',
                             '* rdf:type Tree']
         
-        return self.process(sentence, expected_result, display_statement_result = True)
+        self.process(sentence, expected_result, display_statement_result = True)
     
     
     #Action adverbs
@@ -1418,10 +1418,10 @@ class TestBaseSentenceDialog(unittest.TestCase):
                         'big_tree hasSize big',
                         'red_apple rdf:type Apple',
                         'red_apple hasColor red',
-                        'LEFT isLeftOf myself', 'LEFT rdf:type Location',
-                        'RIGHT isRightOf myself','RIGHT rdf:type Location',
-                        'FRONT isFrontOf myself', 'FRONT rdf:type Location',
-                        'BACK isBackOf myself', 'BACK rdf:type Location',
+                        'myself_left isLeftOf myself', 'myself_left rdf:type Location',
+                        'myself_right isRightOf myself','myself_right rdf:type Location',
+                        'myself_front isFrontOf myself', 'myself_front rdf:type Location',
+                        'myself_back isBackOf myself', 'myself_back rdf:type Location',
                         'TOP isTopOf myself', 'TOP rdf:type Location',
                         'BOTTOM isBottomOf myself', 'BOTTOM rdf:type Location',
                         'shelf1_front isFrontOf shelf1', 'shelf1_front rdf:type Location',
@@ -1887,7 +1887,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         stmt = "the yellow banana is at my left"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['y_banana isAt LEFT']
+        expected_result = ['y_banana isAt myself_left']
                           
         self.assertTrue(check_results(res[0], expected_result))
     
@@ -1897,7 +1897,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         stmt = "the yellow banana is at the left"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['y_banana isAt LEFT'] #Here left is related to the agent
+        expected_result = ['y_banana isAt myself_left'] #Here left is related to the agent
         self.assertTrue(check_results(res[0], expected_result))
         
     def test_sentence16(self):   
@@ -1916,7 +1916,7 @@ class TestBaseSentenceDialog(unittest.TestCase):
         stmt = "the green banana is at the front"
         res = self.dialog.test('myself', stmt)
         
-        expected_result = ['green_banana isAt FRONT'] #Here front is related to the agent
+        expected_result = ['green_banana isAt myself_front'] #Here front is related to the agent
         
         self.assertTrue(check_results(res[0], expected_result))
     

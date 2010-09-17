@@ -218,7 +218,7 @@ class QuestionHandler:
         #Case: the statement is complete from statement builder e.g: what is in the box? =>[?concept isIn ?id_box, ?id_box rdf:type Box]
         for s in current_statements:
             if '?concept' in s.split():
-                return current_statements 
+                return current_statements + concept_descriptor
         #case: the statement is partially build from statement builder
         
         stmts = []

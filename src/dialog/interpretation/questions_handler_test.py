@@ -530,6 +530,7 @@ class TestQuestionHandlerDialog(unittest.TestCase):
                         'id_tom rdf:type Human',
                         'id_tom rdfs:label "Tom"',
                         'id_tom isNextTo myself',
+                        'Banana rdfs:subClassOf Object',
                         ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
@@ -592,8 +593,8 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         
         ###
         res = self.dialog.test('myself', stmt)
-        self.assertEquals(res[1][1], "The banana that's on the table, is green.")
-    
+        self.assertTrue(val in res[1][1] for val in ["The banana", "that's", "on the blue table", "is green"])
+        
     def test_question5_what(self):    
         logger.info("\n##################### test_question5_what ########################\n")
         
@@ -725,6 +726,17 @@ class TestQuestionHandlerDialog(unittest.TestCase):
         ###
         res = self.dialog.test('myself', stmt)
         self.assertEquals(res[1][1], "Yes. I know the yellow banana.")
+        
+    
+    def test_question16(self):
+        logger.info("\n##################### WHICH ########################\n")
+        
+        stmt = "which banana is at the left?"
+        ####
+        
+        ###
+        res = self.dialog.test('myself', stmt)
+        self.assertEquals(res[1][1], "The yellow banana.")
 
 class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
     """Tests the processing of question by the Dialog module.
