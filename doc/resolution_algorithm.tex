@@ -1,0 +1,78 @@
+\documentclass[a4paper]{article}  
+\usepackage{pseudocode}
+
+\begin{document}
+
+\begin{pseudocode}[ruled]{Resolution}{sentence, currentSpeaker}
+\label{Resolution}
+
+\PROCEDURE{GenerateDescription}{group} 
+   noun \GETS \CALL{GetNoun}{group} \\ 
+   \IF \CALL{Ontology.Lookup}{noun} \in (Instances) \STMTNUM{7.5em}{st.lookup} \THEN
+     \RETURN{\CALL{Ontology.Lookup}{noun}}
+   \ELSE
+      \mathcal{D} = \mathcal{D} + \{ *\ {\tt type}\ <noun>\} \\
+   
+   \\
+   det \GETS \CALL{GetDeterminant}{group} \\
+   \IF det \in {\mbox(possessives)} \THEN
+       \mathcal{D} = \mathcal{D} + \{ *\ {\tt isRelatedTo}\ <possessor>\} \\
+    
+    \IF det \in {\mbox(demonstratives)} \THEN
+        \BEGIN
+        \IF \CALL{Ontology.Check}{\{<currentSpeaker>\ {\tt focusesOn}\ *\}} \THEN 
+            \mathcal{D} = \mathcal{D} + \{<currentSpeaker>\ {\tt focusesOn}\ *\}
+        \ELSE
+            \mathcal{D} = \mathcal{D} + \CALL{AnaphoricMatching}{} \STMTNUM{4em}{st.anaphoric} \\
+        \END \\
+   \\
+   adjs \GETS \CALL{GetAdjectives}{group} \\
+   \FOREACH adj \in adjs \DO
+     \mathcal{D} = \mathcal{D} + \{ *\ {\tt hasFeature}\ <adj>\} \STMTNUM{9em}{st.adj} \\
+   
+   \RETURN{\mathcal{D}} 
+\ENDPROCEDURE
+
+\MAIN
+
+\COMMENT{Extract nominal groups from the sentence} \\
+\mathcal{G} \GETS \CALL{ParseNominalGroups}{sentence} \\
+
+\FOREACH g \in \mathcal{G} \DO 
+\BEGIN
+   \mathcal{D} \GETS \CALL{GenerateDescription}{g} \\
+   candidates \GETS \CALL{Ontology.Find}{\mathcal{D}} \\
+   
+   \IF \left|{candidates}\right| = 0 \THEN
+    \BEGIN
+      \OUTPUT{\mbox{Couldn't resolve the group!}} \\
+      \EXIT \\
+    \END
+   \ELSEIF \left|{candidates}\right| = 1 \THEN
+      id \GETS candidates[0]
+   \ELSE
+      \BEGIN
+        \IF \CALL{Ontology.CheckEquivalent}{candidates} \THEN
+          id \GETS candidates[0] \\
+        \ELSE
+          id \GETS \CALL{Discrimination}{candidates} \STMTNUM{1em}{st.discrimination}\\
+      \END \\
+   \CALL{Replace}{g, id, sentence}
+\END
+\ENDMAIN
+\end{pseudocode}
+
+The discrimination routine called at (\ref{st.discrimination}) is describe separately. 
+Two remarks must be made that doesn't appear in alg.~\ref{Resolution}:
+\begin{enumerate}
+    \item If a sentence starts with {\it Learn that...}, failures during 
+    discrimination are interpreted as new concepts, and instead of marking the 
+    nominal as not resolved, and new identifier is created.
+    \item For questions like {\it Which color is the bottle?}, the discrimination 
+    algorithm can not use the feature {\it color} to identify to bottle. The 
+    resolution algorithm pass this kind of constraints as a parameter of the 
+    \sc{Discrimination} routines.
+\end{enumerate}
+
+
+\end{document}
