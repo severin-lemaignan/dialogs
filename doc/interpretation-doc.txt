@@ -1,26 +1,33 @@
-====== Natural Language Processing ======
+<texit info>
+author=Patrick Tsemengue, Mahdi Chouayakh
+title= Dialog: Verbal interaction grounding in robotics context
+</texit>
+
+====== Natural Language Parsing ======
+
+====== Referent grounding ======
+
 ===== Resolution =====
 
-
-
 The purpose of this module is to produce a resolved sentence, that is to accurately identify each element involved in a sentence, by affecting them an existing and unique reference in the ontology.
-Let's suppose we are processing the natural language input //"the red cube is on the blue table"//. Before committing this information in the ontology, we first try to uniquely identify //"the red cube (1)"// and //"the blue table (2)"//.
+Let's suppose we are processing the natural language input //the red cube is on the blue table//. Before committing this information in the ontology, we first try to uniquely identify //the red cube// (1) and //the blue table// (2).
 To do so, we build a set of matching RDF/OWL statements in order to query the ontology. 
-Assuming that there is only one //"red cube"// in the ontology, we should retrieve its unique identifier, which is what we are looking for.
+Assuming that there is only one //red cube// in the ontology, we should retrieve its unique identifier, which is what we are looking for.
 
-    E.g:
-    The set of matching statements to "the red cube" is 
-    [ ?concept rdf:type Cube, ?concept hasColor red]
-    where "?concept" is the identifier to retrieve and to affect to the nominal group being processed.
-    
+Let's consider the example below,''?concept'' is the identifier to retrieve and to affect to the nominal group being processed.    
+However, if there is more than one red cube, then we need to retrieve the accurate identifier by the process of discrimination (Cf. [[#Discrimination]]). 
 
-However, if there is more than one red cube, then we need to retrieve the accurate identifier by the process of discrimination (Cf. Discrimination).
+E.g:  "the red cube" 
+  Generated statements:
+  [ ?concept rdf:type Cube, ?concept hasColor red]
+ 
 
-    * The resolution of reference to the speaker, recipient or anaphora is different. We look through the nominal group elements and if we find personal pronouns such as "I" or "me", the nominal group is affected with the current speaker identifier.
+
+The resolution of reference to the speaker, recipient or anaphora is different. We look through the nominal group elements and if we find personal pronouns such as "I" or "me", the nominal group is affected with the current speaker identifier.
  If we find a personal pronoun such as "you", the nominal group is identified with the recipient identifier; finally when anaphora such as 'it' or 'one' occur, we attempt to retrieve the matching object. (Cf. Anaphora resolution)
 
 
-    * Action verbs are also resolved, however differently from the nominal group resolution as, we do not build a set of RDF statements to query the ontology, but instead, we lookup their matching synonyms (thematic roles) in the shared files in order to retrieve their reference in the ontology.
+Action verbs are also resolved, however differently from the nominal group resolution as, we do not build a set of RDF statements to query the ontology, but instead, we lookup their matching synonyms (thematic roles) in the shared files in order to retrieve their reference in the ontology.
     
     E.g:
     In the example: I take the bottle, the action verb "take" is referenced by "Get"
@@ -90,26 +97,87 @@ The quantifier approach is useful only if we process sentence with the state ver
     This would transform "Banana" into an instance, and severely break a future test referencing "Banana" as a Class.
     
 
-==== This/That approach ====
+==== Demonstratives determiners approach ====
 Let's suppose we want to want to say something similar to this: //" This is on the shelf"// or //"this is green"//.
-Processing the determiner "this" assumes, there exists in the ontology a statement such as '[ACHILLE focusesOn A_CUBE]' , where the "ACHILLE"
+Processing demonstrative determiners such as "this" assumes, there exists in the ontology a statement such as '[ACHILLE focusesOn A_CUBE]' , where the "ACHILLE"
 is to mention the current speaker and 'A_CUBE' the reference of the concept that is being pointed by the current speaker.
 Therefore, any occurrence of the determiner "this" affects to its parent nominal group the identifier 'A_CUBE'.
 
 === No focus? ===
-  *  this + Nothing or this  + anaphora
-      *  anaphora matcher
-  * this + nouns  
-      * => the + nouns => going to discrimination
+What if there is nothing pointed by the current speaker? The resolution of the parent nominal group will involves either anaphora matching or discrimination.
+
+Let's consider the example below on "Take this one!" or "Take this!".
+Would you get that the Human means to take "the green cup" or "the red bottle"?. 
+Resolving the nominal group that hold "this" implies the use of anaphora matching that is to replace the "this one" with a possible object that has been stated earlier in the conversation.
+
+    E.g: 
+    [Human] - What are the objects on the table?
+    [Robot] - The green cup and the red bottle
+    [Human] - Okay, I'll get the green cup. You, take this one! //Here, the Human is not pointing any object
+
+However, if instead of "take this one" , the //Human// says: "Take this bottle". Resolving the nominal group involves discrimination. 
+
+
+
+<code python>
+    # MODULES
+    # - Oro: this offers services of the ontology server
+    # - AnaphoraMatcher: this offers methods to resolve anaphoric words
+    # - Discrimination: this offers methods to discriminate a nouns, using theirs statements descriptions
+    # ROUTINES
+    # - get_description(): this provides statements with the description of the nominal group that is called in its parameter
+    # - get_noun_history(): this provides a list of all recent nominal groups that have been involved during a conversation 
+    
+    def Resolve_demonstrative_determiner(noun):
+        
+        # Retrieving in the ontology the concept that is pointed by the current speaker
+        # if there exists one, then the resolution of 'this' or 'that' is done
+        ontology_candidates = Oro.find('?concept', [current_speaker + ' focusesOn ?concept'])
+        if ontology_candidates:
+            id = ontology_candidates[0]
+        
+        # if there exists no concept pointed by the current speaker
+        # then attempting to resolve it with anaphora matching or discrimination
+        else:
+            if is_anaphora(noun):
+                id = AnaphoraMatcher.match(noun, get_noun_history())
+                
+            else:
+                # Retrieving in the ontology all the concepts of the same description as the one that is to be resolved.
+                # Then discriminating
+                id = Discrimination.clarify(get_description(noun))
+                    
+        return id
+</code>
 
  
 
 ==== Occurrence of the words 'OTHER' ====
 
-* concept description
-* intersection between nominal group's ID from history and ID from ontology  matching the concept description
-* retrieving the candidate nominal group
-* Discrimination of concepts different from the candidate nominal group
+Let's consider the dialogue below with an occurrence of the word 'other'. Processing "give me the other one" or "Give me the other bottle" consists in determining a possible bottle that has been stated earlier in the conversation, and looking up through the ontology bottles different from that one.
+    E.g:
+    [Human]  - what is on the blue table?
+    [Robots] - The green bottle and the blue bottle
+    [Human]  - Give me the green bottle.
+    [Human]  - Now, give me the other one 
+
+
+<code python>
+    def Resolve_other(noun):
+        # Retrieving in the ontology all the concepts of the same description as the one that is to be resolved.
+        # Then attempting to identify it with the intersection of ontology's concept candidates and history candidates
+        ontology_candidates = Oro.find('?concept', get_description(noun))
+        
+        # Intersection
+        candidates = [c for c in get_noun_history() if c in ontology_candidates]
+        
+        # If there exists some candidates from the preceding intersection, 
+        # the one that is to be retrieved is the first one in the list, as the intersection has ordered the list elements according to the nominal group history
+        if candidates:
+            id = Discrimination.clarify(get_description(noun) + ['?concept owl:differentForm ' + candidates[0])
+                
+        return id
+</code>
 
 ==== Handling Unidentified Anaphora error ====
   * Intercepting the Unidentified Anaphora error
@@ -130,7 +198,8 @@ Cf: Discrimination
 
 
     
-    
+====== Outputs of the Dialog module ======
+
 =====  Statement builder =====
 
 
@@ -208,6 +277,9 @@ Goal verbs are used to express the speaker's desire.
 == To know ==
 
 For the case of 'to know', we first create a set of statements such as `[MYSELF knows CONCEPT, ...]`, then we update or query the ontology on the `CONCEPT` for an agent that is supposed to be MYSELF
+        Ontology.lookupForAgent(MYSELF, CONCEPT)
+               
+
 
 
 
@@ -257,6 +329,7 @@ Let's consider all the negation with the following examples:
     ]
     Then, we remove these statements after identification of ?xxx in the ontology.
     
+
 ==== verb tense approach====
 This approach aims to specify whether an action occurs in the past or in the present. Therefore, we create the object property 'eventOccursIn' and bind it with the flag PAST or FUTUR. The present tenses are assumed as a default case; there is nothing to do.
     
@@ -307,4 +380,11 @@ The sentence's aim helps us to determine whether the question is about an object
 === Yes-No-Question ===
 
 * Case of Can-You-do-something?
+
+
+===== Verbalization =====
+
+====== Use-Cases ======
+===== Roman scenario =====
+
     

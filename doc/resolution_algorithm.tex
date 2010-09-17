@@ -6,12 +6,10 @@
 \begin{pseudocode}[ruled]{Resolution}{sentence, currentSpeaker}
 \label{Resolution}
 
-\PROCEDURE{GenerateDescription}{group} 
+\PROCEDURE{GenerateDescriptionForNominalGroup}{group} 
    noun \GETS \CALL{GetNoun}{group} \\ 
-   \IF \CALL{Ontology.Lookup}{noun} \in (Instances) \STMTNUM{7.5em}{st.lookup} \THEN
-     \RETURN{\CALL{Ontology.Lookup}{noun}}
-   \ELSE
-      \mathcal{D} = \mathcal{D} + \{ *\ {\tt type}\ <noun>\} \\
+   \IF \NOT \CALL{Ontology.Lookup}{noun} \in (Instances) \STMTNUM{7.5em}{st.lookup} \THEN
+    \mathcal{D} = \mathcal{D} + \{ *\ {\tt type}\ <noun>\} \\
    
    \\
    det \GETS \CALL{GetDeterminant}{group} \\
@@ -29,6 +27,19 @@
    adjs \GETS \CALL{GetAdjectives}{group} \\
    \FOREACH adj \in adjs \DO
      \mathcal{D} = \mathcal{D} + \{ *\ {\tt hasFeature}\ <adj>\} \STMTNUM{9em}{st.adj} \\
+   
+   \\  
+   nounComplements \GETS \CALL{GetNounComplements}{group} \\
+   \FOREACH nouncmpl \in nounComplements \DO
+     \mathcal{D} = \mathcal{D} + {\CALL{GenerateDescriptionForNominalGroup}{nouncmpl}}\\
+   
+   
+   \\  
+   relativeClauses \GETS \CALL{GetSubordinateRelativeClause}{group} \\
+   \FOREACH rel \in relativeClauses \DO
+     \mathcal{D} = \mathcal{D} + {\CALL{GenerateDescriptionForNominalGroup}{rel}}\\
+     \mathcal{D} = \mathcal{D} + {\CALL{GenerateDescriptionForVerbalGroup}{rel}}\\
+     
    
    \RETURN{\mathcal{D}} 
 \ENDPROCEDURE

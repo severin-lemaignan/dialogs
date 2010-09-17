@@ -235,8 +235,8 @@ class QuestionHandler:
                     if verb.lower() in ResourcePool().state:
                         stmts.append(sn.id + ' '+ role + ' ?concept')
                     # Case of action verb with a passive behaviour
-                    elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour:
-                        stmts.append(sn.id + ' '+ verb.lower() + 's' + ' ?concept')
+                    elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour.keys():
+                        stmts.append(sn.id + ' '+ ResourcePool().action_verb_with_passive_behaviour[verb.lower()] + ' ?concept')
                     
                     # Case of know
                     elif verb.lower() == 'know':
