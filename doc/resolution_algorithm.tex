@@ -2,14 +2,18 @@
 \usepackage{pseudocode}
 
 \begin{document}
-
 \begin{pseudocode}[ruled]{Resolution}{sentence, currentSpeaker}
 \label{Resolution}
 
-\PROCEDURE{GenerateDescriptionForNominalGroup}{group} 
+\PROCEDURE{GenerateDescription}{group} 
    noun \GETS \CALL{GetNoun}{group} \\ 
-   \IF \NOT \CALL{Ontology.Lookup}{noun} \in (Instances) \STMTNUM{7.5em}{st.lookup} \THEN
-    \mathcal{D} = \mathcal{D} + \{ *\ {\tt type}\ <noun>\} \\
+   \IF \CALL{Ontology.Lookup}{noun} \in (Instances) \STMTNUM{7.5em}{st.lookup} \THEN
+   		\BEGIN
+		id \GETS \CALL{Ontology.lookup}{noun}\\	
+		\RETURN {\mathcal{D} + \{ *\ {\tt sameAs}\ <id> \}}\\
+		\END
+   \ELSE
+    	\mathcal{D} = \mathcal{D} + \{ *\ {\tt type}\ <noun>\} \\
    
    \\
    det \GETS \CALL{GetDeterminant}{group} \\
@@ -26,23 +30,57 @@
    \\
    adjs \GETS \CALL{GetAdjectives}{group} \\
    \FOREACH adj \in adjs \DO
-     \mathcal{D} = \mathcal{D} + \{ *\ {\tt hasFeature}\ <adj>\} \STMTNUM{9em}{st.adj} \\
-   
+   	\BEGIN
+   		\IF adj == <other> \THEN 
+   			\BEGIN
+   			id \GETS \CALL{History.GetMatchingGroup}{group} \STMTNUM{8em}{st.history}\\
+   			\mathcal{D} = \mathcal{D} + \{ *\ {\tt differentFrom}\ <id> \}\\
+   			\RETURN{D}\\
+			\END   		
+   		\ELSE
+	     	\mathcal{D} = \mathcal{D} + \{ *\ {\tt hasFeature}\ <adj>\} \STMTNUM{9em}{st.adj} \\
+    \END\\
+    
    \\  
    nounComplements \GETS \CALL{GetNounComplements}{group} \\
    \FOREACH nouncmpl \in nounComplements \DO
-     \mathcal{D} = \mathcal{D} + {\CALL{GenerateDescriptionForNominalGroup}{nouncmpl}}\\
+     \mathcal{D} = \mathcal{D} + {\CALL{GenerateDescription}{nouncmpl}}\\
    
    
    \\  
-   relativeClauses \GETS \CALL{GetSubordinateRelativeClause}{group} \\
-   \FOREACH rel \in relativeClauses \DO
-     \mathcal{D} = \mathcal{D} + {\CALL{GenerateDescriptionForNominalGroup}{rel}}\\
-     \mathcal{D} = \mathcal{D} + {\CALL{GenerateDescriptionForVerbalGroup}{rel}}\\
+   relativeClauses \GETS \CALL{GetSubordinateRelativeClauses}{group} \\
+   \FOREACH relative \in relativeClauses \DO
+   	\BEGIN
+   	 \mathcal{G} \GETS \CALL{GetNominalGroups}{relative} \\
+   	 \FOREACH g \in \mathcal{G} \DO
+     	\mathcal{D} = \mathcal{D} + {\CALL{GenerateDescription}{g}}
+    \END\\
      
-   
+   \\
    \RETURN{\mathcal{D}} 
 \ENDPROCEDURE
+
+\label{history}
+\PROCEDURE{History.GetMatchingGroup}{group}
+\COMMENT{Extract Nominal group from sentences stored in the history}\\
+\mathcal{H} \GETS \CALL{History.GetAllNominalGoup}{}\\
+\COMMENT{Generate description of the nominal group that is being processed.
+ The adjective  "other" is to be removed before calling this routine}	
+	\mathcal{G} \GETS \CALL{GenerateDescription}{group} \\ 
+	
+	candidates \GETS \mathcal{H} \cap \mathcal{G}\\
+	\IF \left|{candidates}\right| = 0 \THEN
+    \BEGIN
+      \OUTPUT{\mbox{Couldn't find another object with the same characteristics!}} \\
+      \EXIT \\
+    \END
+   \ELSEIF \left|{candidates}\right| = 1 \THEN
+      id \GETS candidates[0]
+   \ELSE
+   	  id \GETS \CALL{Discrimination}{candidates}\\
+   \RETURN{id}
+\ENDPROCEDURE
+
 
 \MAIN
 
@@ -73,7 +111,8 @@
 \ENDMAIN
 \end{pseudocode}
 
-The discrimination routine called at (\ref{st.discrimination}) is describe separately. 
+
+The discrimination routine called at (\ref{st.discrimination}) is described separately. 
 Two remarks must be made that doesn't appear in alg.~\ref{Resolution}:
 \begin{enumerate}
     \item If a sentence starts with {\it Learn that...}, failures during 
@@ -85,5 +124,6 @@ Two remarks must be made that doesn't appear in alg.~\ref{Resolution}:
     \sc{Discrimination} routines.
 \end{enumerate}
 
+The method called at (\ref{st.history}) consists in looking through sentences that have been stored in the conversation history, then extracting their nominal group in order to retrieve the identifier of the most recently mentioned concept that holds the same characteristics as the nominal group that is being processed.
 
 \end{document}
