@@ -325,12 +325,12 @@ class Resolver:
         #   Features to ignore from discrimination
         features = []
         if self._current_sentence.data_type in [Sentence.w_question, Sentence.yes_no_question]:
-            #we first get this: E.g: features = ["color"]
-            features = [self._current_sentence.aim] 
-            #Then we turn it into : E.g feature =["hasColor"]
-            features = ["has"+feature.capitalize() for feature in features if feature in ResourcePool().adjectives_ontology_classes]
-        
-        
+            if self._current_sentence.aim in ResourcePool().adjectives_ontology_classes:
+                # feature =["hasColor"]
+                features = ["has" + self._current_sentence.aim.capitalize()]
+            else:
+                features = ["rdf:type"]
+            
         #   Discriminate
         try:
             id = discriminator.clarify(description, features)
