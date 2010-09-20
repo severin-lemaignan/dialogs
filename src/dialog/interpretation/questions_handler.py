@@ -212,8 +212,8 @@ class QuestionHandler:
         
         """
         #Concept descriptor
-        # E.g: Human, Object, ...
-        concept_descriptor = self.get_concept_descriptor()
+        # E.g: Human, Object, Color ,Size...
+        concept_descriptor = self.get_concept_descriptor(sn)
         
         #Case: the statement is complete from statement builder e.g: what is in the box? =>[?concept isIn ?id_box, ?id_box rdf:type Box]
         for s in current_statements:
@@ -295,11 +295,12 @@ class QuestionHandler:
         return role
     
     
-    def get_concept_descriptor(self):
-        """ Get the type the concept to query if it is not created in the QuestionAimDict
+    def get_concept_descriptor(self, ng):
+        """ Get the type or feature of the concept to query if it is not mapped in the QuestionAimDict
             E.g: What color is the bottle?
-                Here, the aim 'color' is derived from QuestionAimDict as it is about a feature
-            
+                Here, the aim 'color' is about a feature and it is not in the QuestionAimDict.
+                We return it in concept_descriptor = 'id hasColor ?concept'
+                
             E.g: What Human do you see?
                 Here, the aim 'human' is not a feature, and is not in the QuestionAimDict
                 We return it in concept_descriptor = '?concept rdf:type Human'
@@ -310,7 +311,14 @@ class QuestionHandler:
         agent = self._default_agent
         aim = self._sentence.aim
         
-        if self._sentence.aim and not self._sentence.aim in QuestionAimDict().dic_aim.keys():
+        #Concept's Features
+        if self._sentence.aim in ResourcePool().adjectives_ontology_classes:
+            if ng:
+                concept_descriptor = [ng.id + " has" + aim.capitalize() + " ?concept"]
+                self._sentence.aim = "thing"
+        
+        #Concept's Type
+        elif not self._sentence.aim in QuestionAimDict().dic_aim.keys():
             logger.debug("\tFound the aim: " + aim + ".Extending statements with [?concept rdf:type aim]")
             try:
                 onto = ResourcePool().ontology_server.lookupForAgent(agent, aim)
@@ -361,55 +369,41 @@ class QuestionHandler:
 class QuestionAimDict:
     def __init__(self):
         """
-        Info:
-            (A): A is optional
-            <A|B>: either A or B
-            {A}: A may be replaced
-        
-        'What-question': 
-            Case  # query on a direct object
-                e.g: what do you see? 
-                append in statement [?event involves ?concept]
+        This class consits in building a map of object property regarding the 
+        Question's aim attribute and the query_on_field parameter.
+        Below is a description of what should be generated depending of the question that is processed.
+               
+        'What and which-question': 
+            Case # query_on_field = 'QUERY_ON_DIRECT_OBJ'
+                extend statements with [?event OBJ ?concept]
+                where OBJ depends on the verb. 
+                e.g: if verb == "get":
+                        OBJ = "actsOnObject"
+                     if verb == "drive":
+                        OBJ = "involves"
+                    ...                 
                                 
-                e.g: what(<object|thing>) is <this|the small cube>?
-                append in statement [* owl:sameAs ?concept]
-                
-                e.g: what <feature|color|size> is <the small cube|this>? #Feature or subClassOf Feature
-                append in statement [* hasFeature ?concept]
-                
-            Case # query on the subject
-                e.g: what is 'in' <the blue cube|this>?
-                append in statement [] # query completed from statementBuilder
-                 
-                e.g: what(<object|thing>) is blue?
-                append in statement [* hasFeature ?concept]
-                
-            Case # query on the a direct object but answer replacing subject
-                e.g: what(object) is a cube?             
-                append in statement [* {rdf:type} ?concept]
-                
-            
+            Case # query_on_field = None
+                Nothing to extend
+            Case # query_on_field = 'QUERY_ON_INDIRECT_OBJ'
+                Nothing to extend
+
         'Who-question':
+            Case # query_on_field = None
+                extend statements with [* performedBy ?concept] 
             
-            Case # query on the subject
-                e.g: who sees the man?
-                append in statement [* performedBy ?concept] 
-            
-            Case # query on a direct object with state verb
-                e.g: who is the man?
-                append in statement [* rdfs:label ?concept] 
+            Case # query_on_field = 'QUERY_ON_DIRECT_OBJ' and state verbs
+                extend statements with [* rdfs:label ?concept]
+                E.g: Who is the car's driver?
                 
-            Case # query on a direct object with action verb
-                e.g: who does the man see?
-                append in statement [* actsOnObject ?concept]
+            Case # query_on_field = 'QUERY_ON_DIRECT_OBJ' and action verbs
+                same as "what" and "which" question for 'QUERY_ON_DIRECT_OBJ'
             
-            Case # query on an indirect object
-                e.g: who does the man give a cube
-                append in statement [* receivedBy ?concept]       
-        
-        'Thematic_roles verb'
-            Cf: /share/dialog/thematic_roles 
-                also src/dialog/resource_manager.py
+            Case # query_on_field = 'QUERY_ON_INDIRECT_OBJ'
+                extend statements with [* receivedBy ?concept]       
+        'Where-question':
+            Case # query_on_field = 'QUERY_ON_INDIRECT_OBJ'
+                extend statements with [* objectFoundInLocation ?concept]  
         """
         
         self.dic_aim = {}
@@ -440,8 +434,6 @@ class QuestionAimDict:
                     'QUERY_ON_INDIRECT_OBJ':self.dic_on_indirect_obj.copy()}
         
         #Dictionary for all question aims        
-        #What-question in Features
-        self.dic_aim = dict([(feature.lower(), {None:{"be":"has"+feature.capitalize()}}) for feature in ResourcePool().adjectives_ontology_classes])
         #What-question
         self.dic_aim['thing'] = self.dic_thing
         #Who-question
