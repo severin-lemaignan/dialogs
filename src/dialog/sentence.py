@@ -466,7 +466,7 @@ def process_verbal_group_nega_part(verbal_group,nominal_group_structure, flag):
 
 
 
-def refine_nominal_groupoup_relative_sv (verbal_structure,nominal_group):
+def refine_nominal_group_relative_sv (verbal_structure,nominal_group):
     """
     replaces one by the noun in verbal part of relative                                      
     Input=nominal groups and verbal part          Output= nominal group                   
@@ -476,21 +476,21 @@ def refine_nominal_groupoup_relative_sv (verbal_structure,nominal_group):
     for object in verbal_structure.d_obj:
         if object.noun==['one']:
             object.noun=nominal_group.noun
-        refine_nominal_groupoup_relative(object)
+        refine_nominal_group_relative(object)
     
     #For indirect complement
     for i_object in verbal_structure.i_cmpl:
         for ng in i_object.nominal_group:
             if ng.noun==['one']:
                 ng.noun=nominal_group.noun
-            refine_nominal_groupoup_relative(ng)
+            refine_nominal_group_relative(ng)
     
     for second_vrb in verbal_structure.sv_sec:
-            refine_nominal_groupoup_relative_sv(second_vrb,nominal_group)
+            refine_nominal_group_relative_sv(second_vrb,nominal_group)
 
 
 
-def refine_nominal_groupoup_relative(nominal_group):
+def refine_nominal_group_relative(nominal_group):
     """
     replaces one by the noun in relative                                      
     Input=nominal groups                      Output= nominal group                   
@@ -500,9 +500,9 @@ def refine_nominal_groupoup_relative(nominal_group):
         for ns in i.sn:
             if ns.noun==['one']:
                 ns.noun=nominal_group.noun
-            refine_nominal_groupoup_relative(ns)
+            refine_nominal_group_relative(ns)
         for verbal_structure in i.sv:
-            refine_nominal_groupoup_relative_sv(verbal_structure,nominal_group)
+            refine_nominal_group_relative_sv(verbal_structure,nominal_group)
             
             
 def i_cmpl(indirect_complement):
@@ -543,7 +543,7 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
                 if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                     for k in i.sn:
                         concat_gn(nominal_group_structure, k, flag)
-                    refine_nominal_groupoup_relative(nominal_group_structure)
+                    refine_nominal_group_relative(nominal_group_structure)
                     return nominal_group_structure
                 
                 for k in i.sn:
@@ -564,5 +564,5 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
                 for v in i.sv:
                     nominal_group_structure=process_verbal_group_nega_part(v,nominal_group_structure, flag)   
                 
-    refine_nominal_groupoup_relative(nominal_group_structure)
+    refine_nominal_group_relative(nominal_group_structure)
     return nominal_group_structure
