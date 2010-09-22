@@ -779,21 +779,23 @@ def subsentence_comma(sentence):
     
     
     
-def take_off_comma(sentence):
+def take_off_comma(sentences):
     """ 
     delete ';' if it is before relative or subsentence                  
     Input=list of sentence                  Output=sentence                      
     """ 
     
     #init
-    i=0
+    i=k=0
     
-    while i < len(sentence):
-        if sentence[i]==';':
-            if sentence[i+1] in ResourcePool().subsentences+ResourcePool().relatives:
-                sentence=sentence[:i]+sentence[i+1:]
-        i=i+1
-    return sentence
+    while k < len(sentences):
+        while i < len(sentences[k]):
+            if sentences[k][i]==';':
+                if sentences[k][i+1] in ResourcePool().subsentences+ResourcePool().relatives:
+                    sentences[k]=sentences[k][:i]+sentences[k][i+1:]
+            i=i+1
+        k=k+1
+    return sentences
           
     
                         
@@ -999,7 +1001,7 @@ def processing(sentence):
     sentence = delete_empty_word(sentence)
     sentence = concat_number(sentence)
     sentence = conjunction_processing(sentence,'or')
-    sentence = conjunction_processing(sentence,':but')
+    sentence = conjunction_processing(sentence,'but')
     sentence = reorganize_adj(sentence)
     sentence = conjunction_processing(sentence,'and')
     sentence = other_processing(sentence)
@@ -1018,8 +1020,8 @@ def processing(sentence):
     sentence = double_det(sentence)
     sentence = adverbial_or_subsentence(sentence)
     sentence = process_and_beginning_sentence(sentence)
-    sentence = take_off_comma(sentence)
     sentence = interjection(sentence)
+    sentence = take_off_comma(sentence)
     sentence = and_between_sentence(sentence)
     return sentence
 
