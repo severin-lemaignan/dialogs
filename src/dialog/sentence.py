@@ -537,35 +537,21 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
             i.sn=[Nominal_Group(['the'],i.sv[0].vrb_main,[],[],[])]
       
         if i.data_type==Sentence.statement or i.data_type.startswith(Sentence.subsentence) :
-
             if i.sv[0].state==Verbal_Group.affirmative:
             
-                if  flag=='FAILURE':
-                    #We can have just the subject
-                    if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
-                        for k in i.sn:
-                            concat_gn(nominal_group_structure, k, flag)
-                        refine_nominal_groupoup_relative(nominal_group_structure)
-                        return nominal_group_structure
-                    #Else there is no subject and the information is on the verbal structure
-                    for v in i.sv:
-                        nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)
-        
-                elif flag=='SUCCESS':
-                    #We can have just the subject
-                    if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
-                        for k in i.sn:
-                            concat_gn(nominal_group_structure, k, flag)
-                        refine_nominal_groupoup_relative(nominal_group_structure)
-                        return nominal_group_structure
-                    
+                #We can have just the subject
+                if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                     for k in i.sn:
-                        if it_is_pronoun(k.noun[0])==0:
-                            concat_gn(nominal_group_structure, k, flag)
-                    
-                    #We finish the process with the verbal part
-                    for v in i.sv:
-                        nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)        
+                        concat_gn(nominal_group_structure, k, flag)
+                    refine_nominal_groupoup_relative(nominal_group_structure)
+                    return nominal_group_structure
+                
+                for k in i.sn:
+                    if it_is_pronoun(k.noun[0])==0:
+                        concat_gn(nominal_group_structure, k, flag)                    
+                #We finish the process with the verbal part
+                for v in i.sv:
+                    nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)        
             
             elif i.sv[0].state==Verbal_Group.negative:
                 #For all other sentences flag will be FAILURE
@@ -574,11 +560,9 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
                 for k in i.sn:
                     if it_is_pronoun(k.noun[0])==0:
                         concat_gn(nominal_group_structure, k, flag)
-                        
-                #We finish the process with the verbal part
+                #We finish the process with the verbal par
                 for v in i.sv:
                     nominal_group_structure=process_verbal_group_nega_part(v,nominal_group_structure, flag)   
                 
-            
     refine_nominal_groupoup_relative(nominal_group_structure)
     return nominal_group_structure
