@@ -14,6 +14,8 @@ from dialog.dialog_exceptions import UnsufficientInputError
 from dialog.sentence import *
 from dialog.sentence_factory import SentenceFactory
 
+from random import choice
+
  
 class Discrimination():
 
@@ -68,7 +70,6 @@ class Discrimination():
     # -----------------------------------------------------------------------------#
     def get_discriminant(self, agent, objL, ignoreDesc, zPartial):
         discriminants = self.oro.discriminateForAgent(agent, objL)
-        
         logger.debug(  colored_print('Possible discriminants: ', 'magenta') +  \
                         str(colored_print(discriminants[1], 'blue')) + \
                         colored_print(" (complete discriminants: ", 'magenta') + \
@@ -85,7 +86,9 @@ class Discrimination():
             res = None
             
         if res:
-            return res[0]
+            # include randomization so the same discriminant is not always returned
+            idx = choice(range(0,len(res)))
+            return res[idx]
         else:
             return None
 
@@ -104,6 +107,7 @@ class Discrimination():
     # - descriptor or None (if no discriminant for any agent found)
     # -----------------------------------------------------------------------------#
     def get_descriptor(self, description, ignoreFeatureL = [], partial_disc=True):
+        
         objL = self.get_all_objects_with_desc(description)
         descriptor = None
         agent = None
@@ -151,7 +155,9 @@ class Discrimination():
             else:
                 val = self.oro.findForAgent(agent, '?val','[' + obj + ' ' + descriptor + ' ?val]')
 
-            valL.append(val[0])
+            if val:
+                valL.append(val[0])
+            # otherwise, the object doesn't have this descriptor, and we don't include it
 
         # we make a set to remove repeated elements
         return list(set(valL))
@@ -200,8 +206,9 @@ class Discrimination():
     #   - [SUCCESS, "additional info required"]: user should give additional info (mantain previous description)
     # -----------------------------------------------------------------------------#
     def clarify(self, description, ignoreFeatureL = []):
+
+        objL = self.get_all_objects_with_desc(description)
         
-        objL = self.get_all_objects_with_desc(description)        
         if len(objL) == 0:
             logger.debug(colored_print('Nothing found!', "magenta"))
         else:
@@ -224,9 +231,8 @@ class Discrimination():
         elif len(objL) == 1:
             return objL[0]
         
-        elif len(objL) == 2:
-            if self.oro.check('[' + objL[0] + ' owl:sameAs ' + objL[1] + ']'):
-                return objL[0]
+        elif len(objL) == 2 and self.oro.check('[' + objL[0] + ' owl:sameAs ' + objL[1] + ']'):
+            return objL[0]
             
         else:
             agent, descriptor = self.get_descriptor(description, ignoreFeatureL)
