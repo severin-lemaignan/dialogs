@@ -53,3 +53,7 @@ performedBy Agent
 hasGoal [to] Location
 }
 
+think {
+performedBy Agent
+actsOnObject [on] Thing
+}
