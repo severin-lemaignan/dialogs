@@ -34,6 +34,7 @@ dialog fits into the so-called CHRIS architecture @ LAAS. More details on the
 LAAS internal Wiki:
 https://intranet.laas.fr/intranet/robots/wiki/ChrisArchitecture
 """
+    ResourcePool().close()
 
 def unit_tests():
     print("Please run the 'dialog_test' Python script.")

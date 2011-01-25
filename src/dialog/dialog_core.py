@@ -23,7 +23,7 @@ from interpretation.content_analysis import ContentAnalyser
 from interpretation.anaphora_matching import replacement
 from verbalization.verbalization import Verbalizer
 
-DIALOG_VERSION = "0.2"
+DIALOG_VERSION = "0.4"
 
 class Dialog(Thread):
     """The main Dialog class.
