@@ -87,8 +87,7 @@ class Discrimination():
             
         if res:
             # include randomization so the same discriminant is not always returned
-            idx = choice(range(0,len(res)))
-            return res[idx]
+            return choice(res)
         else:
             return None
 
@@ -156,6 +155,7 @@ class Discrimination():
                 val = self.oro.findForAgent(agent, '?val','[' + obj + ' ' + descriptor + ' ?val]')
 
             if val:
+                #TODO: we only consider the first result item!
                 valL.append(val[0])
             # otherwise, the object doesn't have this descriptor, and we don't include it
 
@@ -217,7 +217,7 @@ class Discrimination():
         if not self.oro: #No ontology server
             return 'UNKNOWN_CONCEPT'
             
-        if len(objL) == 0:
+        if not objL:
             questions = [Sentence(Sentence.imperative, '', 
                         [], 
                         [Verbal_Group(['give'], [],'present simple', 
@@ -233,7 +233,7 @@ class Discrimination():
         
         elif len(objL) == 2 and self.oro.check('[' + objL[0] + ' owl:sameAs ' + objL[1] + ']'):
             return objL[0]
-            
+        
         else:
             agent, descriptor = self.get_descriptor(description, ignoreFeatureL)
             object = self.get_type_description(description)
