@@ -1,6 +1,6 @@
-===== Dialog module Release Notes =====
+===== Dialogs module Release Notes =====
 
-This file contains a detailled summary of Dialog module evolution.
+This file contains a detailled summary of Dialogs module evolution.
 
 For more details, please refer to the GIT log.
 
@@ -56,7 +56,7 @@ For more details, please refer to the GIT log.
 == Other features: ==
   * handling of groups with only an adjective
   * "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
-  * Running dialog even if no ontology server.
+  * Running dialogs even if no ontology server.
   * Generate "subclassOf" statements:
     * E.g: Apples are Fruits
     * E.g: an Apple is a fruit
@@ -66,7 +66,7 @@ For more details, please refer to the GIT log.
   * Handling of conjunctions (AND, OR)
   * pre content-analysis -> "what color is the tape?" -> don't use the color to discriminate
   * use 'safeAdd' method to detect the inconsistencies
-  * Coloured output for easy explaination of the Dialog module behaviour
+  * Coloured output for easy explaination of the Dialogs module behaviour
   
 === General ===
 
@@ -120,7 +120,7 @@ it.
 [DONE v0.2] "this bottle is 'next to' the table" -> pre-processing to replace 
 "next to" by "next+to"
 
-[DONE v0.2]{Complete By End July}: Running dialog even if ORO is off. Need an 
+[DONE v0.2]{Complete By End July}: Running dialogs even if ORO is off. Need an 
 exception raised when a connection to ORO is required.
 
 [DONE v0.2] Resolving anaphora "it" "one"
@@ -198,7 +198,7 @@ color to discriminate
                 ?concept rdf:type Tape .
    
 [DONE v0.2] Statement to represent disjunction 'or' and conjunction 'and'?
-    specify the process of 'or' as a limit of the input of Dialog module
+    specify the process of 'or' as a limit of the input of Dialogs module
     
 [DONE v0.2] Add statement in the ontology: use 'safeAdd' method to avoid the 
 inconsistency 
@@ -216,7 +216,7 @@ inconsistency
     
 === Interfaces ===
 
-[DONE v0.2] Improve the output of the dialog module (including colors) to make clear what append (especially for demos):
+[DONE v0.2] Improve the output of the dialogs module (including colors) to make clear what append (especially for demos):
   * First parsing
   * Resolution *relying on perspective taking* + symbolic knowledge
   * Back interaction with the human
