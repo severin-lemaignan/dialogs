@@ -1,2 +1,8 @@
 *.pyc
 *~
+build/
+*.aux
+*.out
+*.pdf
+*.log
+*.swp
