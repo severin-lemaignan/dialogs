@@ -1,0 +1,746 @@
+\documentclass[twoside,a4paper,10pt]{report}
+%%\usepackage[french]{babel} %% Use your own babel language
+\usepackage[top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{pslatex}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{supertabular}
+\usepackage{pdflscape} %% Used for very big table
+\usepackage{moreverb}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{pseudocode}
+\usepackage{ulem}
+\usepackage{textcomp}
+\usepackage{wasysym}
+\usepackage{wrapfig} %%Usefull for image 
+\usepackage{eso-pic} %% Background
+\pagestyle{fancy}%
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\chaptermark}[1]{%
+	\markboth{\chaptername\ \thechapter.\ #1}{}}
+
+\renewcommand{\sectionmark}[1]{%
+	\markright{#1}{}}
+
+\fancypagestyle{plain}{%
+\fancyhf{}
+\fancyfoot[R]{\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+\fancyhf{}
+\fancyhead[L]{\rightmark}
+\fancyhead[R]{\leftmark}
+\fancyfoot[R]{\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\definecolor{codegray}{gray}{.95}
+\lstset{language=C,
+	numbers=left,
+	tabsize=2,
+	basicstyle=\scriptsize,
+	stringstyle=\textrm,
+	showstringspaces=false,
+	frame=none,
+	xleftmargin=3pt,
+	backgroundcolor=\color{codegray}}
+
+\newcommand{\settexitref}[2]{(\ref{#1}p\pageref{#1})}
+\newcommand{\dokutitlelevelone}[1]{\chapter{#1}}
+\newcommand{\dokutitleleveltwo}[1]{\section{#1}}
+\newcommand{\dokutitleleveltree}[1]{\subsection{#1}}
+\newcommand{\dokutitlelevelfour}[1]{\subsubsection{#1}}
+\newcommand{\dokutitlelevelfive}[1]{\paragraph{#1}}
+\newcommand{\dokufootnote}[1]{\footnote{#1}}
+\newcommand{\dokufootmark}[1]{\footnotemark[#1]}
+\newcommand{\dokubold}[1]{\textbf{#1}}
+\newcommand{\dokuitalic}[1]{\textsl{#1}}
+\newcommand{\dokumonospace}[1]{\texttt{#1}}
+\newcommand{\dokuunderline}[1]{\underline{#1}}
+\newcommand{\dokuoverline}[1]{\sout{#1}}
+\newcommand{\dokusupscript}[1]{\textsuperscript{#1}}
+\newcommand{\dokusubscript}[1]{$_{#1}$}
+\newcommand{\dokuhline}{\line(1,0){400}}
+\newcommand{\dokulabel}[1]{\label{#1}}
+\newcommand{\dokuitem}{\item}
+\newcommand{\dokuquoting}{\textbar}
+\newcommand{\dokutabularwidth}{\textwidth}
+\newcommand{\dokusupertabularheadbreak}{\small\sl continued from previous page}
+\newcommand{\dokusupertabulartailbreak}{\small\sl continued on next page}
+\newcommand{\dokuheadingstyle}[1]{\textbf{#1}}
+\definecolor{dokuheadingcolor}{rgb}{0,0,0.60}
+\newcommand{\dokubackground}[1]{%
+\AddToShipoutPicture{%
+  \AtTextCenter{%
+    \makebox(0,0)[c]{\resizebox{\textwidth}{!}{%
+      \rotatebox{25}{\textsf{\textbf{\textcolor[gray]{0.90}{#1}}}}}}%
+  }%
+ }%
+}
+
+\hypersetup{
+pdftitle = { Dialog: Verbal interaction grounding in robotics context},
+pdfauthor = {Patrick Tsemengue, Mahdi Chouayakh},
+pdfcreator = {DokuTeXit},
+pdfproducer = {dokuwiki + TeXit + latex + dvipdf}
+}
+\title{ {\sc Dialog}\\ Verbal interaction grounding in robotics context}
+\author{Patrick Tsemengue, Mahdi Chouayakh}
+
+\begin{document}
+\thispagestyle{empty}
+\maketitle
+\thispagestyle{empty}
+\cleardoublepage
+\tableofcontents
+\newpage
+\thispagestyle{plain}
+\cleardoublepage
+\newpage
+
+
+
+
+
+\dokutitlelevelone{Natural Language Processing}
+\label{8f1c1b9cb9fb5e1df55908ebb8f63a48}%% natural_language_processing
+\label{f0e926ab940662bebfe368ba24960a2d}%%Start: stage_natural_language_processing_-_ete_2010 => /home/slemaign/wiki/data/pages/stage_natural_language_processing_-_ete_2010.txt
+
+\dokutitleleveltwo{Resolution}
+\label{b7e164b34ff76b1cda93a058604190da}%% resolution
+
+The purpose of this module is to produce a resolved sentence, that is to accurately identify each element involved in a sentence, by affecting them an existing and unique reference in the ontology.
+Let's suppose we are processing the natural language input \dokuitalic{"the red cube is on the blue table"}. Before committing this information in the ontology, we first try to uniquely identify \dokuitalic{"the red cube (1)"} and \dokuitalic{"the blue table (2)"}.
+To do so, we build a set of matching RDF\dokufootnote{Resource Description Framework}/OWL statements in order to query the ontology. 
+Assuming that there is only one \dokuitalic{"red cube"} in the ontology, we should retrieve its unique identifier, which is what we are looking for.
+
+
+
+\small
+\begin{verbatimtab}
+  E.g:
+  The set of matching statements to "the red cube" is 
+  [ ?concept rdf:type Cube, ?concept hasColor red]
+  where "?concept" is the identifier to retrieve and to affect to the nominal group being processed.
+  
+\end{verbatimtab}
+\normalsize
+
+However, if there is more than one red cube, then we need to retrieve the accurate identifier by the process of discrimination (Cf. Discrimination).
+
+
+\begin{pseudocode}[ruled]{Resolution}{sentence, currentSpeaker}
+\label{Resolution}
+
+\PROCEDURE{GenerateDescription}{group} 
+   noun \GETS \CALL{GetNoun}{group} \\ 
+   \IF \CALL{Ontology.Lookup}{noun} \in (Instances) \STMTNUM{7.5em}{st.lookup} \THEN
+     \RETURN{\CALL{Ontology.Lookup}{noun}}
+   \ELSE
+      \mathcal{D} = \mathcal{D} + \{ *\ {\tt type}\ <noun>\} \\
+   
+   \\
+   det \GETS \CALL{GetDeterminant}{group} \\
+   \IF det \in {\mbox(possessives)} \THEN
+       \mathcal{D} = \mathcal{D} + \{ *\ {\tt isRelatedTo}\ <possessor>\} \\
+    
+    \IF det \in {\mbox(demonstratives)} \THEN
+        \BEGIN
+        \IF \CALL{Ontology.Check}{\{<currentSpeaker>\ {\tt focusesOn}\ *\}} \THEN 
+            \mathcal{D} = \mathcal{D} + \{<currentSpeaker>\ {\tt focusesOn}\ *\}
+        \ELSE
+            \mathcal{D} = \mathcal{D} + \CALL{AnaphoricMatching}{} \STMTNUM{4em}{st.anaphoric} \\
+        \END \\
+   \\
+   adjs \GETS \CALL{GetAdjectives}{group} \\
+   \FOREACH adj \in adjs \DO
+     \mathcal{D} = \mathcal{D} + \{ *\ {\tt hasFeature}\ <adj>\} \STMTNUM{9em}{st.adj} \\
+   
+   \RETURN{\mathcal{D}} 
+\ENDPROCEDURE
+
+\MAIN
+
+\COMMENT{Extract nominal groups from the sentence} \\
+\mathcal{G} \GETS \CALL{ParseNominalGroups}{sentence} \\
+
+\FOREACH g \in \mathcal{G} \DO 
+\BEGIN
+   \mathcal{D} \GETS \CALL{GenerateDescription}{g} \\
+   candidates \GETS \CALL{Ontology.Find}{\mathcal{D}} \\
+   
+   \IF \left|{candidates}\right| = 0 \THEN
+    \BEGIN
+      \OUTPUT{\mbox{Couldn't resolve the group!}} \\
+      \EXIT \\
+    \END
+   \ELSEIF \left|{candidates}\right| = 1 \THEN
+      id \GETS candidates[0]
+   \ELSE
+      \BEGIN
+        \IF \CALL{Ontology.CheckEquivalent}{candidates} \THEN
+          id \GETS candidates[0] \\
+        \ELSE
+          id \GETS \CALL{Discrimination}{candidates} \STMTNUM{1em}{st.discrimination}\\
+      \END \\
+   \CALL{Replace}{g, id, sentence}
+\END
+\ENDMAIN
+\end{pseudocode}
+
+The discrimination routine called at (\ref{st.discrimination}) is describe separately. 
+Two remarks must be made that doesn't appear in alg.~\ref{Resolution}:
+\begin{enumerate}
+    \item If a sentence starts with {\it Learn that...}, failures during 
+    discrimination are interpreted as new concepts, and instead of marking the 
+    nominal as not resolved, and new identifier is created.
+    \item For questions like {\it Which color is the bottle?}, the discrimination 
+    algorithm can not use the feature {\it color} to identify to bottle. The 
+    resolution algorithm pass this kind of constraints as a parameter of the 
+    \sc{Discrimination} routines.
+\end{enumerate}
+
+\begin{itemize}
+\item  The resolution of reference to the speaker, recipient or anaphora is different. We look through the nominal group elements and if we find personal pronouns such as "I" or "me", the nominal group is affected with the current speaker identifier.
+\end{itemize}
+
+ If we find a personal pronoun such as "you", the nominal group is identified with the recipient identifier; finally when anaphora such as 'it' or 'one' occur, we attempt to retrieve the matching object. (Cf. Anaphora resolution)
+
+\begin{itemize}
+\item  Action verbs are also resolved, however differently from the nominal group resolution as, we do not build a set of RDF\dokufootmark{1} statements to query the ontology, but instead, we lookup their matching synonyms (thematic roles) in the shared files in order to retrieve their reference in the ontology.
+\end{itemize}
+
+
+\small
+\begin{verbatimtab}
+  E.g:
+  In the example: I take the bottle, the action verb "take" is referenced by "Get"
+  (Cf: thematic_roles)
+\end{verbatimtab}
+\normalsize
+
+\dokutitleleveltree{Adjectives ONLY approach}
+\label{7ab02d5628e7f210c5eb8e862e7ddc56}%% adjectives_only_approach
+
+Let's consider the following example:
+
+
+\small
+\begin{verbatimtab}
+  "the yellow banana is good" 
+\end{verbatimtab}
+\normalsize
+and assume there exists a unique yellow banana in the ontology referenced as 'Y{\textunderscore}BANANA'.
+It is fairly possible to resolve the identifier of "the yellow banana", but how about the single information "good" ?
+
+'adjectives{\textunderscore}only' is an approach implemented in order to assume as resolved, nominal groups holding information only in the adjective attribute.
+In doing so, we can easily derive the statements: 
+
+
+\small
+\begin{verbatimtab}
+  [Y_BANANA hasFeature good]
+\end{verbatimtab}
+\normalsize
+
+\dokutitleleveltree{Quantifier approach}
+\label{3c48ef2a7bfacf5e512a249e797564d3}%% quantifier_approach
+
+We have implemented some quantifiers that may be used to assume that a nominal group is resolved.
+
+Let's consider the example "Danny is a human". Resolving "Danny" should succeed as long as there exists a concept labelled "Danny"
+However, the nominal group "a human" cannot be resoled. Although the sentence is to commit a new information, how can we assign to this particular nominal group a unique identifier? what if there are numbers of humans, which one are we talking about? 
+
+Therefore, we assume as resolved all nominal group with the quantifier "SOME" and "ALL". In doing so, we can allow the creation of statement towards the ontology.
+
+
+
+\small
+\begin{verbatimtab}
+  "Statement created"
+  [DANNY rdf:type Human]
+\end{verbatimtab}
+\normalsize
+
+ 
+Regardless the semantic interpretation of a sentence, when both the subject and object hold indefinite quantifiers - either `ALL` or `SOME` - we create the predicate `"rdfs:subClassOf"`.
+Doing this allow us to create class grounding. When both hold the definite quantifier `"ONE"`, we create the predicate `"owl:sameAs"`.  For other case, we use the object property `"rdf:type"`:
+
+
+\small
+\begin{verbatimtab}
+  
+  "Bananas         are             fruits"
+    ALL             +               ALL                   => rdfs:subClassOf
+  [Banana     rdfs:subClassOf      Fruit]
+  
+  "A banana        is               a fruit"
+    SOME           +                 SOME                 => rdfs:subClassOf
+  [Banana     rdfs:subClassOf       Fruit]
+  
+  "the green banana    is           a fruit"
+     ONE               +             SOME                 => rdf:type
+  [green_banana    rdf:type         Fruit]
+  
+  "the green banana     is       the banana in the table"
+      ONE               +                ONE              => owl:sameAs
+  [green_banana    owl:sameAs       green_banana]
+  
+  cf: Parsing for quantifier list
+  
+\end{verbatimtab}
+\normalsize
+\begin{itemize}
+\item  Problem:
+\end{itemize}
+
+
+The quantifier approach is useful only if we process sentence with the state verbs (e.g: to be).
+
+
+\small
+\begin{verbatimtab}
+  
+  E.g: Bananas grow on Trees
+  This would produce 
+  [* performedBy Banana, 
+   * rdf:type Grow,
+   * involves Tree], 
+  
+  This would transform "Banana" into an instance, and severely break a future test referencing
+"Banana" as a Class.
+  
+\end{verbatimtab}
+\normalsize
+
+\dokutitleleveltree{Demonstratives determiners approach}
+\label{b4ad6f4ec31665f1d879aeafb5ba415e}%% demonstratives_determiners_approach
+Let's suppose we want to want to say something similar to this: \dokuitalic{" This is on the shelf"} or \dokuitalic{"this is green"}.
+Processing demonstrative determiners such as "this" assumes, there exists in the ontology a statement such as '[ACHILLE focusesOn A{\textunderscore}CUBE]' , where the "ACHILLE"
+is to mention the current speaker and 'A{\textunderscore}CUBE' the reference of the concept that is being pointed by the current speaker.
+Therefore, any occurrence of the determiner "this" affects to its parent nominal group the identifier 'A{\textunderscore}CUBE'.
+
+
+\dokutitlelevelfour{No focus?}
+What if there is nothing pointed by the current speaker? The resolution of the parent nominal group will involves either anaphora matching or discrimination.
+
+Let's consider the example below on "Take this one!" or "Take this!".
+Would you get that the Human means to take "the green cup" or "the red bottle"?. 
+Resolving the nominal group that hold "this" implies the use of anaphora matching that is to replace the "this one" with a possible object that has been stated earlier in the conversation.
+
+
+
+\small
+\begin{verbatimtab}
+  E.g: 
+  [Human] - What are the objects on the table?
+  [Robot] - The green cup and the red bottle
+  [Human] - Okay, I'll get the green cup. You, take this one! //Here, the Human is not pointing any
+object
+\end{verbatimtab}
+\normalsize
+
+However, if instead of "take this one" , the \dokuitalic{Human} says: "Take this bottle". Resolving the nominal group involves discrimination. 
+
+
+\lstset{language=python}
+\begin{lstlisting}
+    # MODULES
+    # - Oro: this offers services of the ontology server
+    # - AnaphoraMatcher: this offers methods to resolve anaphoric words
+    # - Discrimination: this offers methods to discriminate a nouns, using theirs statements
+descriptions
+    # ROUTINES
+    # - get_description(): this provides statements with the description of the nominal group that
+is called in its parameter
+    # - get_noun_history(): this provides a list of all recent nominal groups that have been
+involved during a conversation 
+    
+    def Resolve_demonstrative_determiner(noun):
+        
+        # Retrieving in the ontology the concept that is pointed by the current speaker
+        # if there exists one, then the resolution of 'this' or 'that' is done
+        ontology_candidates = Oro.find('?concept', [current_speaker + ' focusesOn ?concept'])
+        if ontology_candidates:
+            id = ontology_candidates[0]
+        
+        # if there exists no concept pointed by the current speaker
+        # then attempting to resolve it with anaphora matching or discrimination
+        else:
+            if is_anaphora(noun):
+                id = AnaphoraMatcher.match(noun, get_noun_history())
+                
+            else:
+                # Retrieving in the ontology all the concepts of the same description as the one
+that is to be resolved.
+                # Then discriminating
+                id = Discrimination.clarify(get_description(noun))
+                    
+        return id
+
+\end{lstlisting}
+
+\dokutitleleveltree{Occurrence of the words 'OTHER'}
+\label{b7ebf691f8433bd42593d3ebb2d2c14a}%% occurrence_of_the_words_other
+
+Let's consider the dialogue below with an occurrence of the word 'other'. Processing "give me the other one" or "Give me the other bottle" consists in determining a possible bottle that has been stated earlier in the conversation, and looking up through the ontology bottles different from that one.
+
+
+\small
+\begin{verbatimtab}
+  E.g:
+  [Human]  - what is on the blue table?
+  [Robots] - The green bottle and the blue bottle
+  [Human]  - Give me the green bottle.
+  [Human]  - Now, give me the other one 
+\end{verbatimtab}
+\normalsize
+
+\lstset{language=python}
+\begin{lstlisting}
+    def Resolve_other(noun):
+        # Retrieving in the ontology all the concepts of the same description as the one that is to
+be resolved.
+        # Then attempting to identify it with the intersection of ontology's concept candidates and
+history candidates
+        ontology_candidates = Oro.find('?concept', get_description(noun))
+        
+        # Intersection
+        candidates = [c for c in get_noun_history() if c in ontology_candidates]
+        
+        # If there exists some candidates from the preceding intersection, 
+        # the one that is to be retrieved is the first one in the list, as the intersection has
+ordered the list elements according to the nominal group history
+        if candidates:
+            id = Discrimination.clarify(get_description(noun) + ['?concept owl:differentForm ' +
+candidates[0])
+                
+        return id
+
+\end{lstlisting}
+
+\dokutitleleveltree{Handling Unidentified Anaphora error}
+\label{e79def79eebc0ce87924efaa796970ff}%% handling_unidentified_anaphora_error
+\begin{itemize}
+\item  Intercepting the Unidentified Anaphora error
+\item  if there exist a current object possibly after human confirmation, filling in the nominal group with an anaphoric word with it
+\item  Going to discrimination
+\end{itemize}
+
+
+Cf: Anaphora matcher
+
+
+\dokutitleleveltree{Handling Insufficient input error}
+\label{a9b6979d4ccc758341445731028f7332}%% handling_insufficient_input_error
+\begin{itemize}
+\item  Retrieving the nominal group with insufficient information
+\item  Replacing it with the merged nominal group
+\item  Going to discrimination
+\end{itemize}
+
+
+Cf: Discrimination
+
+
+\dokutitleleveltwo{Discrimination}
+\label{974418acf6ac4871b739b9591436865a}%% discrimination
+
+\dokutitleleveltwo{Statement builder}
+\label{96858fc1845b81e4956d78bc03e34978}%% statement_builder
+This module aims to build RDF\dokufootmark{1}/OWL statements corresponding to the sentence that is being processed. 
+Let's notice that, statements are created either for the resolution of sentences or for querying or committing the ontology.
+Here, we describe the latter case, and explain what feature of the sentence can be fully processed.
+
+
+\dokutitleleveltree{Simple sentences}
+\label{83df2a31577b0939e5c2d716b7b579fd}%% simple_sentences
+ 
+Let's assume there exists a unique agent labelled 'Danny' in the ontology with the reference 'DANNY'; also, let's assume there is a only one blue car with the reference 'blue{\textunderscore}car'. Therefore we create the following statements:
+
+
+
+\small
+\begin{verbatimtab}
+  E.g:
+  "Danny drives the blue car"
+  
+  ['EVENT rdf:type Drive',
+  'EVENT performedBy DANNY',
+  'EVENT involves blue_car']
+  
+  where EVENT is to mention a static situation reference that is to be generated.
+\end{verbatimtab}
+\normalsize
+\begin{itemize}
+\item  Inconsistency:
+\end{itemize}
+
+What happens if we say "the blue car is red"; that is to generate [blue{\textunderscore}car hasColor red] ?
+What if we say "this cylinder is green" whereas the current speaker is pointing a cube; that is to generate such statements [CUBE rdf:type Cylinder]?
+Attempting to commit those statements would also lead the ontology to an inconsistent state.Leading the ontology to an inconsistency state occurs every time we try to commit a new information that cannot be inferred accurately with the existing ones.
+In this project, we use the methods "safeAdd" and "safeAddForAgent" to overcome this problem. (Cf. Oro-server).
+
+
+\dokutitleleveltree{Relative sentence processing}
+\label{e453b97231b3979c4f8435dc7227a770}%% relative_sentence_processing
+There are two ways of processing the relative, which are derived by the subject of the sentence, as it may also be the subject of the relative:
+
+
+\small
+\begin{verbatimtab}
+  
+  E.g: "the man that is talking is my boss"
+  
+\end{verbatimtab}
+\normalsize
+
+Or it may be an object of the relative. In this case, the subject of the sentence is duplicated. (Cf. Parsing)
+
+
+\small
+\begin{verbatimtab}
+  
+  E.g: "the man that you see, is my boss" is turned into "the man that you see + the man, is my
+boss".
+  
+\end{verbatimtab}
+\normalsize
+
+Processing this case involves checking if the subject equals any of the object in the relative sentence, in order to keep track of the subject's reference.
+ 
+
+
+
+\dokutitleleveltree{Verb processing}
+\label{d579d8cc3406c0556913bbaac7ee85e6}%% verb_processing
+In most cases, processing a verb consists into generating a reference for a situation, that is performed by an agent and involves an object, regarding a circumstance that could represent a temporal or spatial aspect, or even the fact of an agent receiving something.
+
+
+\small
+\begin{verbatimtab}
+  
+  E.g: "I drive my car in Toulouse"
+  Generated statement:
+      [EVENT performedBy MYSELF, EVENT rdf:type Drive, EVENT involves MY_CAR, EVENT isIn TOULOUSE]
+  where EVENT, MYSELF, MY_CAR and TOULOUSE are unique references of respectively the situation that
+is to describe, the current speaker, the car of the current speaker and the city of Toulouse.
+  Here , only the reference EVENT is generated whereas the others are obtained form resolution.
+  
+      
+\end{verbatimtab}
+\normalsize
+
+\dokutitlelevelfour{State verbs (E.g: to be, to become)}
+
+In the case of state verbs, we do not describe a situation, but the subject of the sentence. This will consist in either class grounding (cf Quantifier approach) or features description.
+
+
+\dokutitlelevelfour{Thematic roles}
+ 
+Cf /share/dialog/thematic{\textunderscore}roles
+
+
+\dokutitlelevelfour{Goal verb}
+
+Goal verbs are used to express the speaker's desire. 
+
+
+\small
+\begin{verbatimtab}
+  
+  E.g: "I want to get the blue cube"
+  Generated statements: 
+      [MYSELF desires EVENT, 
+      ...
+      ]
+\end{verbatimtab}
+\normalsize
+
+\dokutitlelevelfour{Action verbs with passive behaviours (E.g: to see. to hear, to reach, to know)}
+
+\small
+\begin{verbatimtab}
+      [MYSELF sees EVENT, 
+      ...
+      ]
+\end{verbatimtab}
+\normalsize
+
+\dokutitlelevelfive{To know}
+
+For the case of 'to know', we first create a set of statements such as `[MYSELF knows CONCEPT, \ldots{}]`, then we update or query the ontology on the `CONCEPT` for an agent that is supposed to be MYSELF
+
+
+\small
+\begin{verbatimtab}
+      Ontology.lookupForAgent(MYSELF, CONCEPT)
+             
+\end{verbatimtab}
+\normalsize
+
+\dokutitleleveltree{Negative sentence approach}
+\label{51e3775766a7025963abe3551cc8889c}%% negative_sentence_approach
+This approach consists in committing a negative assertion, without leading the ontology into an inconsistent state. Three forms of negations can be pointed out.
+The negation of the type (E.g: "rdf:type" or "rdfs:subclassOf" ), the negation of the property (E.g: "hasFeature") and the negation of actions. The latter may bring numbers of ambiguity .
+Let's consider all the negation with the following examples:
+
+
+
+\dokutitlelevelfour{Negation of the type}
+
+\small
+\begin{verbatimtab}
+  
+  "Jido is not a Human".
+  
+  Here, we create the following statements:
+  [JIDO rdf:type ComplementOfHuman], JIDO is the reference of "jido" in the ontology.
+  
+  Also, we add these statements to ensure the consistency:
+  [ComplementOfHuman owl:complement of Human]
+  
+  and 
+  [ComplementOfHuman rdfs:subclassOf ComplementClasses], where the latter is to help us retrieve
+easily all the Complement types added in the ontology.
+  
+\end{verbatimtab}
+\normalsize
+
+
+\dokutitlelevelfour{Negation of the predicate (object{\textunderscore}property)}
+
+\small
+\begin{verbatimtab}
+  
+  "Jido is not gray".
+  
+  Here, we create the following statements:
+  [JIDO hasColor xxx,
+  xxx owl:differentFrom gray]
+  
+  where xxx is a generated reference to a colour different from gray.
+  
+  
+  
+\end{verbatimtab}
+\normalsize
+
+\dokutitlelevelfour{Negation of actions}
+
+\small
+\begin{verbatimtab}
+  
+  "Jido does not drive the blue car'.
+  
+  This sentence holds numbers of ambiguities. It may be interpreted as "Jido drives  a car, but not
+the blue one", or 
+  "Jido somehow acts on the blue car, but does not drive it" , or so on.
+  
+  Here we do not take into consideration any of those ambiguities. We create the statements as if we
+were dealing with an
+  affirmative sentence.
+  
+  [?xxx rdf:type Drive,
+  ?xxx performedBy JIDO,
+  ...
+  ]
+  Then, we remove these statements after identification of ?xxx in the ontology.
+  
+\end{verbatimtab}
+\normalsize
+
+
+\dokutitleleveltree{verb tense approach}
+\label{08641b0199dbb907cbef92fe4bff9f19}%% verb_tense_approach
+This approach aims to specify whether an action occurs in the past or in the present. Therefore, we create the object property 'eventOccursIn' and bind it with the flag PAST or FUTUR. The present tenses are assumed as a default case; there is nothing to do.
+
+
+\small
+\begin{verbatimtab}
+  
+  E.g: Danny 'went' to Toulouse.
+  
+  We create the statements:
+  [ACTION rdf:type Go,
+  ACTION performedBy DANNY
+  ...
+  ACTION eventOccursIn PAST]
+  
+  
+\end{verbatimtab}
+\normalsize
+
+\dokutitleleveltree{Adverb modifying the verb - processing approach}
+\label{6b19ff9faa8e1c3a849daa76f49f7353}%% adverb_modifying_the_verb_-_processing_approach
+ 
+The purpose of this approach is state the way the action is undertaken, which may be slowly, carefully, quickly, or so on.
+Assuming that this type information is taken in charge by the supervision module, we create such statements:
+
+
+\small
+\begin{verbatimtab}
+  
+  E.g: Danny moves slowly.
+  
+  [ACTION rdf:type Move,
+  ACTION performedBy DANNY
+  ...
+  ACTION actionSupervisionMode SLOW]
+  
+\end{verbatimtab}
+\normalsize
+
+\dokutitleleveltree{Adverb modifying the sentence - processing approach}
+\label{c09cf52af4b6af491e8452be15d2b9d4}%% adverb_modifying_the_sentence_-_processing_approach
+
+\small
+\begin{verbatimtab}
+  Cf /dialog/timescale_manager.py
+  
+\end{verbatimtab}
+\normalsize
+
+\dokutitlelevelfour{Question handler}
+
+The purpose of this module is to query the ontology regarding the question's aim and type.
+
+
+
+\dokutitlelevelfour{Query{\textunderscore}on{\textunderscore}field}
+
+This field is to determine the part of the sentence structure that is to modify with the query answer
+Three values are presented in Question Handler that are \dokuitalic{QUERY{\textunderscore}ON{\textunderscore}DIRECT{\textunderscore}OBJ}, \dokuitalic{QUERY{\textunderscore}ON{\textunderscore}INDIRECT{\textunderscore}OBJ} and the default value \dokuitalic{None}.
+
+
+\small
+\begin{verbatimtab}
+  
+  E:g "Where is the cube?"
+  This question can be turned into 
+      "The cube is on xxx "
+  where, the answer 'xxx' is to fill the indirect complement of the sentence.
+  Therefore, query_on_field is assigned the value 'QUERY_ON_INDIRECT_OBJ'
+  
+\end{verbatimtab}
+\normalsize
+
+\dokutitlelevelfour{Wh-question}
+Processing a wh-question consists in finding a concept that matches the description that has been built from the sentence's structure and aim.
+The sentence's aim helps us to determine whether the question is about an object, a feature, a location\ldots{} and is to be taken into consideration while building the RDF\dokufootmark{1} statements to query the ontology.
+
+
+\dokutitlelevelfour{Yes-No-Question}
+
+* Case of Can-You-do-something?
+
+
+\end{document}
+

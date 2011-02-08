@@ -5,4 +5,5 @@ build/
 *.out
 *.pdf
 *.log
+*.toc
 *.swp
