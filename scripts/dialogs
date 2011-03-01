@@ -6,20 +6,19 @@ import os
 import getopt
 import logging
 
-from dialogs.dialog_core import Dialog, DIALOG_VERSION
-from dialogs.resources_manager import ResourcePool
+from dialogs.version import DIALOGS_VERSION
 
 def usage():
-    print """The LAAS-CNRS 'Dialog' module (v.""" + DIALOG_VERSION + """).
+    print """The LAAS-CNRS 'Dialogs' module (v.""" + DIALOGS_VERSION + """).
 
 Usage:
 dialog [OPTIONS] [speaker]
   -h, --help			Displays this message and exits
-  -v, --version			Returns Dialog version
+  -v, --version			Returns Dialogs version
   -t, --test			Runs unit-tests
   -d, --debug			Sets verbosity to debug
   -s, --silent			The module won't output anything
-  --demo				Start Dialog in demo mode (insert pause between each steps)
+  --demo				Start Dialogs in demo mode (insert pause between each steps)
   --orohost				Host of ORO ontology server
   --oroport				Port of ORO ontology server
 
@@ -30,106 +29,110 @@ statements that are an interpretation of the input.
 It includes as well a verbalization module that conversely turns RDF statements
 into a sentence in natural language.
 
-dialog fits into the so-called CHRIS architecture @ LAAS. More details on the 
+dialogs fits into the so-called CHRIS architecture @ LAAS. More details on the 
 LAAS internal Wiki:
 https://intranet.laas.fr/intranet/robots/wiki/ChrisArchitecture
 """
-    ResourcePool().close()
 
 def unit_tests():
-    print("Please run the 'dialog_test' Python script.")
+    print("Please run the 'dialogs_test' Python script.")
 
-def main():
 
-    #hack that tries to find out the current prefix and then the data directory
-    DATA_DIR = os.path.dirname(__file__).split('lib')[0].split('src')[0] + '/share/dialog/'
-    
-    #default for ORO_SERVER
-    ORO_HOST = 'localhost'
-    ORO_PORT = 6969
+logger = logging.getLogger('dialog')
+logger.setLevel(logging.WARNING)
 
-    logger = logging.getLogger('dialog')
-    logger.setLevel(logging.WARNING)
-    
-    #By default, don't start in demo mode
-    demo = False
-    
-    try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version', 'demo', 'orohost=', 'oroport='])
-    except getopt.GetoptError, err:
-        # print help information and exit:
-        print str(err) # will print something like "option -a not recognized"
+py_logger = logging.getLogger('pyoro')
+py_logger.setLevel(logging.CRITICAL)
+
+
+#hack that tries to find out the current prefix and then the data directory
+DATA_DIR = os.path.abspath(__file__).split('lib')[0].split('src')[0] + '/share/dialog/'
+
+#default for ORO_SERVER
+ORO_HOST = 'test'
+ORO_PORT = 6969
+
+#By default, don't start in demo mode
+demo = False
+
+try:
+    optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version', 'demo', 'orohost=', 'oroport='])
+except getopt.GetoptError, err:
+    # print help information and exit:
+    print str(err) # will print something like "option -a not recognized"
+    usage()
+    sys.exit(2)
+
+for o, a in optlist:
+    if o in ("-h", "--help"):
+        usage()
+        sys.exit(0)
+    elif o in ("-v", "--version"):
+        print("dialog - " + DIALOGS_VERSION)
+        sys.exit(0)
+    elif o in ("-t", "--test"):
+        unit_tests()
+        sys.exit(0)
+    elif o in ("-d", "--debug"):
+        logger.setLevel(logging.DEBUG)
+    elif o in ("-s", "--silent"):
+        logger.setLevel(logging.CRITICAL)
+    elif o in ("--demo"):
+        demo = True
+        logger.setLevel(logging.DEBUG)
+    elif o in ("--orohost"):
+        ORO_HOST = a
+    elif o in ("--oroport"):
+        ORO_PORT = int(a)
+    else:
+        print "Unhandled option " + o
         usage()
         sys.exit(2)
 
-    for o, a in optlist:
-        if o in ("-h", "--help"):
-            usage()
-            sys.exit(0)
-        elif o in ("-v", "--version"):
-            print("dialog - " + DIALOG_VERSION)
-            sys.exit(0)
-        elif o in ("-t", "--test"):
-            unit_tests()
-            sys.exit(0)
-        elif o in ("-d", "--debug"):
-            logger.setLevel(logging.DEBUG)
-        elif o in ("-s", "--silent"):
-            logger.setLevel(logging.CRITICAL)
-        elif o in ("--demo"):
-            demo = True
-            logger.setLevel(logging.DEBUG)
-        elif o in ("--orohost"):
-            ORO_HOST = a
-        elif o in ("--oroport"):
-            ORO_PORT = int(a)
-        else:
-            print "Unhandled option " + o
-            usage()
-            sys.exit(2)
-    
-    if args:
-        speaker = args[0]
-    else:
-        speaker = None
+if args:
+    speaker = args[0]
+else:
+    speaker = None
 
-    log_handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(message)s")
+log_handler = logging.StreamHandler()
+formatter = logging.Formatter("%(message)s")
+
+# add formatter to log_handler
+log_handler.setFormatter(formatter)
+# add log_handler to logger
+logger.addHandler(log_handler)
+
+#Loggers are set, we can import other modules.
+
+from dialogs.resources_manager import ResourcePool
+from dialogs.dialog_core import Dialog
+
+logger.info("**** DIALOG module ****")
+logger.info("v." + DIALOGS_VERSION + "\n")
+
+if speaker and ResourcePool().ontology_server:
+    ResourcePool().ontology_server.add([speaker + " rdf:type Agent"])
+    logger.info(speaker + " added to the ontology")
     
-    # add formatter to log_handler
-    log_handler.setFormatter(formatter)
-    # add log_handler to logger
-    logger.addHandler(log_handler)
-    
-    logger.info("**** DIALOG module ****")
-    logger.info("v." + DIALOG_VERSION + "\n")
-    
-    if speaker and ResourcePool().ontology_server:
-        ResourcePool().ontology_server.add([speaker + " rdf:type Agent"])
-        logger.info(speaker + " added to the ontology")
+dialog = Dialog(speaker, demo = demo)
+
+dialog.start()
+
+running = True
+while running:
+    try:
+        data = sys.stdin.readline()
+        dialog.input(data)
         
-    dialog = Dialog(speaker, demo = demo)
+    except KeyboardInterrupt:
+        logger.info("Leaving now.")
+        running = False
+        dialog.stop()
 
-    dialog.start()
+dialog.join()
 
-    running = True
-    while running:
-        try:
-            data = sys.stdin.readline()
-            dialog.input(data)
-            
-        except KeyboardInterrupt:
-            logger.info("Leaving now.")
-            running = False
-            dialog.stop()
+#Closing the connection to ORO
+ResourcePool().close()
 
-    dialog.join()
-    
-    #Closing the connection to ORO
-    ResourcePool().close()
-    
-    logger.info("Bye bye!")
-    sys.exit()
-
-if __name__ == '__main__':
-    main()
+logger.info("Bye bye!")
+sys.exit()

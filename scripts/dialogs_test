@@ -9,42 +9,6 @@ import getopt
 
 import operator
 
-from dialogs.resources_manager import ResourcePool
-
-# Add the "examples" directory the the Python path.
-EXAMPLES_DIR = os.path.dirname(__file__).split('/bin')[0].split('/scripts')[0] + '/share/examples/dialog'
-sys.path.append(EXAMPLES_DIR)
-
-#Unit-tests
-import dialogs.verbalization.verbalization_test as verbalization
-import dialogs.parsing.parser_test as parser
-import dialogs.sentence_test as sentence
-import dialogs.interpretation.discrimination_test as discrimination
-import dialogs.interpretation.statements_builder_test as statements_builder
-import dialogs.interpretation.questions_handler_test as questions_handler
-
-#Complete scenarii
-#import scenario_moving
-
-LOG_FILENAME = "dialog_test.log"
-
-def check_results(res, expected):
-    def check_triplets(tr , te):
-        tr_split = tr.split()
-        te_split = te.split()
-        
-        return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
-                (tr_split[1] == te_split[1]) and\
-                (tr_split[2] == te_split[2] or te_split[2] == '*')       
-    while res:
-        r = res.pop()
-        for e in expected:
-            if check_triplets(r, e):
-                expected.remove(e)
-    return expected == res
-
-
-    
 def usage():
     print """Unit-testing for the LAAS-CNRS 'Dialogs' module.
 
@@ -78,98 +42,137 @@ dialogs_test [OPTIONS] TEST_SUITE
   
   all_scenarii      Runs all the scenarii
 """
-if __name__ == '__main__':
-    
-    logger = logging.getLogger('dialog')
-    logger.setLevel(logging.DEBUG)
-    
-    pyoro_logger = logging.getLogger('pyoro')
-    pyoro_logger.setLevel(4)
 
-    if len(sys.argv[1:]) == 0:
+
+# Add the "examples" directory the the Python path.
+EXAMPLES_DIR = os.path.abspath(__file__).split('/bin')[0].split('/scripts')[0] + '/share/examples/dialog'
+sys.path.append(EXAMPLES_DIR)
+
+LOG_FILENAME = "dialog_test.log"
+
+#Set the loggers
+logger = logging.getLogger('dialog')
+logger.setLevel(logging.DEBUG)
+
+pyoro_logger = logging.getLogger('pyoro')
+pyoro_logger.setLevel(logging.INFO)
+
+if len(sys.argv[1:]) == 0:
+    usage()
+    sys.exit(0)
+
+log_handler = logging.StreamHandler()
+formatter = logging.Formatter("%(message)s")
+
+try:
+    optlist, args = getopt.getopt(sys.argv[1:], 'hl:', ['help', 'log='])
+except getopt.GetoptError, err:
+    # print help information and exit:
+    print str(err) # will print something like "option -a not recognized"
+    usage()
+    sys.exit(2)
+
+for o, a in optlist:
+    if o in ("-h", "--help"):
         usage()
         sys.exit(0)
-    
-    log_handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(message)s")
-    
-    try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'hl:', ['help', 'log='])
-    except getopt.GetoptError, err:
-        # print help information and exit:
-        print str(err) # will print something like "option -a not recognized"
+    elif o in ("-l", "--log"):
+        if a == "file":
+            print("The output of the unit-tests will be saved in " + LOG_FILENAME)
+            log_handler = logging.FileHandler(LOG_FILENAME)
+    else:
+        print "Unhandled option " + o
         usage()
         sys.exit(2)
 
-    for o, a in optlist:
-        if o in ("-h", "--help"):
-            usage()
-            sys.exit(0)
-        elif o in ("-l", "--log"):
-            if a == "file":
-                print("The output of the unit-tests will be saved in " + LOG_FILENAME)
-                log_handler = logging.FileHandler(LOG_FILENAME)
-        else:
-            print "Unhandled option " + o
-            usage()
-            sys.exit(2)
+# add formatter to log_handler
+log_handler.setFormatter(formatter)
+# add log_handler to logger
+logger.addHandler(log_handler)
 
-    # add formatter to log_handler
-    log_handler.setFormatter(formatter)
-    # add log_handler to logger
-    logger.addHandler(log_handler)
-    
-    pyoro_logger.addHandler(log_handler)
+pyoro_logger.addHandler(log_handler)
 
-    results = {}
-    
-    if 'parser' in args or 'all' in args:
-        suite = parser.test_suite()
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
-        results['parser'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+# Loggers are configured. We can load the resources (including the
+# ontology).
+from dialogs.resources_manager import ResourcePool
 
-    if 'sentence' in args or 'all' in args:
-        suite = sentence.test_suite()
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
-        results['sentence'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
-    
-    if 'verbalization' in args or 'all' in args:
-        suite = verbalization.test_suite()
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
-        results['verbalization'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
-    
-    if 'statements' in args or 'all' in args:
-        suite = statements_builder.test_suite()
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
-        results['statements'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+#Import unit-tests
+import dialogs.verbalization.verbalization_test as verbalization
+import dialogs.parsing.parser_test as parser
+import dialogs.sentence_test as sentence
+import dialogs.interpretation.discrimination_test as discrimination
+import dialogs.interpretation.statements_builder_test as statements_builder
+import dialogs.interpretation.questions_handler_test as questions_handler
+
+#Complete scenarii
+#import scenario_moving
+
+
+def check_results(res, expected):
+    def check_triplets(tr , te):
+        tr_split = tr.split()
+        te_split = te.split()
         
-    if 'discrimination' in args or 'all' in args:
-        suite = discrimination.test_suite()
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
-        results['discrimination'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
-        
-    if 'questions' in args or 'all' in args:
-        suite = questions_handler.test_suite()
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
-        results['questions'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
-    
-    if 'sc_moving' in args or 'all_scenarii' in args:
-        suite = scenario_moving.test_suite()
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
-        results['scenario: moving'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+        return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
+                (tr_split[1] == te_split[1]) and\
+                (tr_split[2] == te_split[2] or te_split[2] == '*')       
+    while res:
+        r = res.pop()
+        for e in expected:
+            if check_triplets(r, e):
+                expected.remove(e)
+    return expected == res
 
-    total = (0,0,0,0,0)
-    total_ok = 0
-    print("\n\n======================================================================")
-    print("| suite            | nb tests | tests run | failures | errors ||  OK |")
+
+results = {}
+
+if 'parser' in args or 'all' in args:
+    suite = parser.test_suite()
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    results['parser'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+
+if 'sentence' in args or 'all' in args:
+    suite = sentence.test_suite()
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    results['sentence'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+
+if 'verbalization' in args or 'all' in args:
+    suite = verbalization.test_suite()
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    results['verbalization'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+
+if 'statements' in args or 'all' in args:
+    suite = statements_builder.test_suite()
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    results['statements'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+    
+if 'discrimination' in args or 'all' in args:
+    suite = discrimination.test_suite()
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    results['discrimination'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+    
+if 'questions' in args or 'all' in args:
+    suite = questions_handler.test_suite()
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    results['questions'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+
+if 'sc_moving' in args or 'all_scenarii' in args:
+    suite = scenario_moving.test_suite()
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    results['scenario: moving'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
+
+total = (0,0,0,0,0)
+total_ok = 0
+print("\n\n======================================================================")
+print("| suite            | nb tests | tests run | failures | errors ||  OK |")
+print("|--------------------------------------------------------------------|")
+for name in results:
+    total = map(operator.add, total, results[name])
+    print(  "| " + name + (" "* (17 - len(name))) + \
+            "|   % 3d    |    % 3d    |   % 3d    |  % 3d   || % 3d |" % (results[name]))
     print("|--------------------------------------------------------------------|")
-    for name in results:
-        total = map(operator.add, total, results[name])
-        print(  "| " + name + (" "* (17 - len(name))) + \
-                "|   % 3d    |    % 3d    |   % 3d    |  % 3d   || % 3d |" % (results[name]))
-        print("|--------------------------------------------------------------------|")
-        
-    print("| TOTAL            |  % 4d    |   % 4d    |   % 3d    |  % 3d   || % 3d |" % (tuple(total)))
-    print("======================================================================")
+    
+print("| TOTAL            |  % 4d    |   % 4d    |   % 3d    |  % 3d   || % 3d |" % (tuple(total)))
+print("======================================================================")
 
-    ResourcePool().close()
+ResourcePool().close()
