@@ -10,8 +10,8 @@ from pyoro import Oro, OroServerError
 
 from dialog_exceptions import UnknownVerb
 
-#These values are overridden in dialogs.py. Only useful for unittesting alone.
-DATA_DIR = os.path.abspath(__file__).split('lib')[0].split('src')[0] + '/share/dialogs/' #tries to find out the current prefix and then the data directory
+#TODO: These values currently override the ones defined in dialogs.py.
+DATA_DIR = os.path.abspath(__file__).split('lib')[0].split('src')[0] + '/share/dialogs/'
 ORO_HOST = 'localhost'
 ORO_PORT = 6969
 
@@ -100,7 +100,7 @@ class ThematicRolesDict:
     """
     def __init__(self):
         self.verbs = {}
-    
+   
     def get_ref(self, verb):
         """If the verb is the synonym of a known verb, as stated in the
         thematic_roles file, return the known verb.
@@ -396,6 +396,9 @@ class ResourcePool:
             if not k in adj_s:
                 adj_s.append(k)
         self.adjectives_ontology_classes = adj_s
+   
+    def __del__(self):
+        self.close()
     
     def close(self):
         if self.ontology_server:
