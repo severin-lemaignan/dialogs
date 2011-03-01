@@ -4,6 +4,8 @@
 import logging
 logger = logging.getLogger("dialog")
 
+from pyoro import OroServerError
+
 from dialogs.helpers import colored_print
 
 from dialogs.dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError, DialogError
@@ -178,6 +180,8 @@ class Resolver:
         try:
             onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
         except AttributeError: #the ontology server is not started or doesn't know the method
+            pass
+        except OroServerError: #The ID is not present in the ontology
             pass
         
         if onto:
