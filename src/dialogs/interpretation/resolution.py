@@ -100,21 +100,24 @@ class Resolver:
             # id = the class name
             # E.g: an apple is a fruit
             #       the id of apple is Apple
-            logger.info("\t Found undefinite quatifier " + nominal_group._quantifier)
+            logger.info("\t Found undefinite quantifier " + nominal_group._quantifier)
             onto = []
             try:
                 onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
             except AttributeError:
                 pass
+            except OroServerError: # The agent does not exist in the ontology
+                pass
             
             
             class_name =  get_class_name(nominal_group.noun[0], onto)
             nominal_group.id = class_name
+
             """
             # case of an action verbs
             # id = generated 
             # E.g: An Apple grows on a tree
-            #   we get the ids of all existig apples in the ontology otherwise we generate one
+            #   we get the ids of all existing apples in the ontology otherwise we generate one
             if not verb in ResourcePool().state for verb in [vrb for sv in self.sv for vrb in sv.vrb_main]:
                 onto_id = []
                 try:
@@ -149,6 +152,8 @@ class Resolver:
                                                                             [current_speaker + ' focusesOn ?concept'])
             except AttributeError:
                 pass
+            except OroServerError: #Agent not found in the ontology
+                pass
             
             if onto_focus:
                 logger.debug(colored_print("OK, found ", "magenta") + colored_print(str(onto_focus), "blue"))
@@ -167,9 +172,21 @@ class Resolver:
             #   this + one -  E.g: Take this
             #   this + None - E.g: Take this one
             else:
-                nominal_group.noun = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
-                                                                                    current_speaker, 
-                                                                                    current_object)
+                try:
+                    nominal_group.noun = self._references_resolution_with_anaphora_matcher(
+                            nominal_group, matcher, 
+                            current_speaker, 
+                            current_object)
+                except DialogError: #...no dialog history yet! Can not do any matching over past sentences
+                    uie = UnsufficientInputError({'status':'FAILURE'})
+                    
+                    sf = SentenceFactory()
+                    uie.value['question'] = sf.create_what_do_you_mean_reference(nominal_group)
+                    uie.value['object'] = nominal_group
+                    uie.value['sentence'] = self._current_sentence
+                    uie.value['object_with_more_info'] = None
+                    raise uie
+     
             
         # Case of a nominal group with no Noun
         if not nominal_group.noun:
@@ -181,7 +198,7 @@ class Resolver:
             onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
         except AttributeError: #the ontology server is not started or doesn't know the method
             pass
-        except OroServerError: #The ID is not present in the ontology
+        except OroServerError: #The agent does not exist in the ontology
             pass
         
         if onto:

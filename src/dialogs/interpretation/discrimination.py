@@ -9,6 +9,8 @@ information.
 import logging
 logger = logging.getLogger("dialog")
 
+from pyoro import OroServerError
+
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import UnsufficientInputError
 from dialogs.sentence import *
@@ -41,7 +43,13 @@ class Discrimination():
         objL = -1
         
         for agent_desc in description:
-            obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[' + ', '.join(agent_desc[2]) + ']')
+            
+            obj_tmp = []
+
+            try:
+                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[' + ', '.join(agent_desc[2]) + ']')
+            except OroServerError: #The agent does not exist in the ontology
+                pass
 
             # if no object found, no need to continue
             if not obj_tmp: 

@@ -2,6 +2,9 @@ import logging
 logger = logging.getLogger("dialog")
 
 import random
+
+from pyoro import OroServerError
+
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import DialogError, GrammaticalError
 
@@ -322,6 +325,8 @@ class NominalGroupStatementBuilder:
             try:
                 onto_id = ResourcePool().ontology_server.lookupForAgent(self._current_speaker, noun)
             except AttributeError: #the ontology server is not started of doesn't know the method
+                pass
+            except OroServerError: #The agent does not exist in the ontology
                 pass
             
             instance_id = None
