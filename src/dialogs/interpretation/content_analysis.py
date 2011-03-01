@@ -1,14 +1,14 @@
 import logging
 logger = logging.getLogger("dialog")
 
-from dialog.helpers import colored_print, level_marker
+from dialogs.helpers import colored_print, level_marker
 
-from dialog.interpretation.statements_builder import StatementBuilder
-from dialog.interpretation.statements_safe_adder  import StatementSafeAdder
-from dialog.interpretation.questions_handler import QuestionHandler
-from dialog.sentence_factory import SentenceFactory
-from dialog.sentence import Sentence
-from dialog.resources_manager import ResourcePool
+from dialogs.interpretation.statements_builder import StatementBuilder
+from dialogs.interpretation.statements_safe_adder  import StatementSafeAdder
+from dialogs.interpretation.questions_handler import QuestionHandler
+from dialogs.sentence_factory import SentenceFactory
+from dialogs.sentence import Sentence
+from dialogs.resources_manager import ResourcePool
 """This module implements ...
 
 """

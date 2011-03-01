@@ -7,16 +7,16 @@ logger = logging.getLogger("dialog")
 
 import inspect
 import unittest
-from dialog.resources_manager import ResourcePool
+from dialogs.resources_manager import ResourcePool
 
-from dialog.helpers import check_results, get_console_handler, get_file_handler
+from dialogs.helpers import check_results, get_console_handler, get_file_handler
 
 
-from dialog.dialog_core import Dialog
-from dialog.interpretation.statements_builder import *
-from dialog.interpretation.statements_safe_adder import StatementSafeAdder
-from dialog.sentence import Sentence
-from dialog.interpretation.resolution import Resolver
+from dialogs.dialog_core import Dialog
+from dialogs.interpretation.statements_builder import *
+from dialogs.interpretation.statements_safe_adder import StatementSafeAdder
+from dialogs.sentence import Sentence
+from dialogs.interpretation.resolution import Resolver
 
 class TestStatementBuilder(unittest.TestCase):
 

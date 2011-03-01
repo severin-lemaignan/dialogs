@@ -9,10 +9,10 @@ information.
 import logging
 logger = logging.getLogger("dialog")
 
-from dialog.resources_manager import ResourcePool
-from dialog.dialog_exceptions import UnsufficientInputError
-from dialog.sentence import *
-from dialog.sentence_factory import SentenceFactory
+from dialogs.resources_manager import ResourcePool
+from dialogs.dialog_exceptions import UnsufficientInputError
+from dialogs.sentence import *
+from dialogs.sentence_factory import SentenceFactory
 
 from random import choice
 

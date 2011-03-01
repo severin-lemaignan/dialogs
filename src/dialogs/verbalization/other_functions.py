@@ -14,7 +14,7 @@
     number : return 1 if the word is a number and 2 if it is a adjective-number  
     is_an_adj : to know if a word is an adjective 
 """
-from dialog.resources_manager import ResourcePool
+from dialogs.resources_manager import ResourcePool
 
 
 

@@ -15,10 +15,10 @@
     possession_ques : to verbalise a question about possession                    
     sub_process : to verbalises a subsentence                                      
 """
-from dialog.resources_manager import ResourcePool
+from dialogs.resources_manager import ResourcePool
 import element_rebuilding
 import other_functions
-from dialog.sentence import *
+from dialogs.sentence import *
 
 
 

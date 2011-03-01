@@ -6,8 +6,8 @@ import os
 import getopt
 import logging
 
-from dialog.dialog_core import Dialog, DIALOG_VERSION
-from dialog.resources_manager import ResourcePool
+from dialogs.dialog_core import Dialog, DIALOG_VERSION
+from dialogs.resources_manager import ResourcePool
 
 def usage():
     print """The LAAS-CNRS 'Dialog' module (v.""" + DIALOG_VERSION + """).

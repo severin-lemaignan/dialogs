@@ -7,13 +7,13 @@ import logging
 
 logger = logging.getLogger('dialog')
 
-from dialog.resources_manager import ResourcePool
-from dialog.dialog_core import Dialog
+from dialogs.resources_manager import ResourcePool
+from dialogs.dialog_core import Dialog
 from discrimination import Discrimination
-from dialog.verbalization.verbalization import Verbalizer
-from dialog.dialog_exceptions import *
+from dialogs.verbalization.verbalization import Verbalizer
+from dialogs.dialog_exceptions import *
 
-from dialog.helpers import check_results, get_console_handler, get_file_handler
+from dialogs.helpers import check_results, get_console_handler, get_file_handler
 
 def check_results(res, expected):
     def check_triplets(tr , te):

@@ -13,7 +13,7 @@ from helpers import colored_print, wait_for_keypress
 
 from dialog_exceptions import UnsufficientInputError, UnidentifiedAnaphoraError
 
-from dialog.sentence import *
+from dialogs.sentence import *
 
 from speaker_identification import SpeakerIdentifier
 from parsing.parser import Parser

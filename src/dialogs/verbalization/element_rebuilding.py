@@ -13,8 +13,8 @@
     end_statement_rebuilding : to recover the end of the statement                  
     end_question_rebuilding : to recover the end of the question                    
 """
-from dialog.resources_manager import ResourcePool
-from dialog.sentence import *
+from dialogs.resources_manager import ResourcePool
+from dialogs.sentence import *
 import sentence_rebuilding
 import other_functions
 

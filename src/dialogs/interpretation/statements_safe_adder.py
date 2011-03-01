@@ -2,10 +2,10 @@ import logging
 logger = logging.getLogger("dialog")
 
 import random
-from dialog.helpers import colored_print
+from dialogs.helpers import colored_print
 
-from dialog.resources_manager import ResourcePool
-from dialog.dialog_exceptions import UnsufficientInputError
+from dialogs.resources_manager import ResourcePool
+from dialogs.dialog_exceptions import UnsufficientInputError
 
 class StatementSafeAdder():
     """ This class inserts or Removes statements in the ontology,

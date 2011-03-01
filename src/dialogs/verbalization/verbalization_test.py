@@ -14,10 +14,10 @@ import unittest
 import logging
 logger = logging.getLogger("dialog")
 
-from dialog.dialog_core import Dialog
+from dialogs.dialog_core import Dialog
 
-from dialog.parsing.parser import Parser
-from dialog.sentence import *
+from dialogs.parsing.parser import Parser
+from dialogs.sentence import *
 import utterance_rebuilding
 
 

@@ -4,8 +4,8 @@
 through the dialog_test executable.
 """
 import unittest
-from dialog.dialog_core import Dialog
-from dialog.resources_manager import ResourcePool
+from dialogs.dialog_core import Dialog
+from dialogs.resources_manager import ResourcePool
 
 class TestMovingToLondonScenario(unittest.TestCase):
     """

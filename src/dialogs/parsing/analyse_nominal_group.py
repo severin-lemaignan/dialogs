@@ -26,7 +26,7 @@
     find_relative : to find the position of the relative                          
     complete_relative : to complete the relative with her object 
 """
-from dialog.resources_manager import ResourcePool
+from dialogs.resources_manager import ResourcePool
 import other_functions
 
 """

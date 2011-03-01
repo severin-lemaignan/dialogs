@@ -14,7 +14,7 @@
 import logging
 logger = logging.getLogger("dialog")
 
-from dialog.sentence import *
+from dialogs.sentence import *
 from pyoro import OroServerError
 
 class AnaphoraMatcher:

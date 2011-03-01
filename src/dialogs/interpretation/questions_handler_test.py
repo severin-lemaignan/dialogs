@@ -5,14 +5,14 @@ logger = logging.getLogger("dialog")
 
 import unittest
 
-from dialog.resources_manager import ResourcePool
-from dialog.dialog_core import Dialog
-from dialog.interpretation.questions_handler import QuestionHandler
-from dialog.sentence import Sentence
-from dialog.sentence_factory import SentenceFactory
-from dialog.interpretation.statements_builder import *
-from dialog.interpretation.resolution import Resolver
-from dialog.interpretation.statements_builder_test import check_results
+from dialogs.resources_manager import ResourcePool
+from dialogs.dialog_core import Dialog
+from dialogs.interpretation.questions_handler import QuestionHandler
+from dialogs.sentence import Sentence
+from dialogs.sentence_factory import SentenceFactory
+from dialogs.interpretation.statements_builder import *
+from dialogs.interpretation.resolution import Resolver
+from dialogs.interpretation.statements_builder_test import check_results
 
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):

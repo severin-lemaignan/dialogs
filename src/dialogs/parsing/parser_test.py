@@ -19,7 +19,7 @@
 import unittest
 import logging
 
-from dialog.sentence import *
+from dialogs.sentence import *
 import preprocessing
 import analyse_sentence
 

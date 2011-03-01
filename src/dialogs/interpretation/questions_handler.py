@@ -1,16 +1,16 @@
 import logging
 logger = logging.getLogger("dialog")
 
-from dialog.helpers import colored_print, level_marker
+from dialogs.helpers import colored_print, level_marker
 
-from dialog.interpretation.resolution import Resolver
-from dialog.interpretation.statements_builder import *
-from dialog.sentence import *
-from dialog.sentence_factory import SentenceFactory
+from dialogs.interpretation.resolution import Resolver
+from dialogs.interpretation.statements_builder import *
+from dialogs.sentence import *
+from dialogs.sentence_factory import SentenceFactory
 
 from pyoro import OroServerError
-from dialog.resources_manager import ResourcePool
-from dialog.dialog_exceptions import DialogError, GrammaticalError
+from dialogs.resources_manager import ResourcePool
+from dialogs.dialog_exceptions import DialogError, GrammaticalError
 
 class QuestionHandler:
     

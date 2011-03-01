@@ -2,12 +2,12 @@ import logging
 logger = logging.getLogger("dialog")
 
 import random
-from dialog.resources_manager import ResourcePool
-from dialog.dialog_exceptions import DialogError, GrammaticalError
+from dialogs.resources_manager import ResourcePool
+from dialogs.dialog_exceptions import DialogError, GrammaticalError
 
 
 
-from dialog.sentence import *
+from dialogs.sentence import *
 
 """This module implements ...
 

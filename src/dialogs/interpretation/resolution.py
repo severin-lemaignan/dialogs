@@ -4,15 +4,15 @@
 import logging
 logger = logging.getLogger("dialog")
 
-from dialog.helpers import colored_print
+from dialogs.helpers import colored_print
 
-from dialog.dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError, DialogError
-from dialog.resources_manager import ResourcePool
+from dialogs.dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError, DialogError
+from dialogs.resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name, generate_id #for nominal group discrimination
 from discrimination import Discrimination
 from anaphora_matching import AnaphoraMatcher, recover_nominal_group_list, first_replacement
-from dialog.sentence import *
-from dialog.sentence_factory import SentenceFactory
+from dialogs.sentence import *
+from dialogs.sentence_factory import SentenceFactory
 
 
 class Resolver:

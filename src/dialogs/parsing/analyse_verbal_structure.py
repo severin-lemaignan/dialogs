@@ -28,8 +28,8 @@
     process_compare : to process the compare
     imperative_stc : to return the possibility to have an imperative
 """
-from dialog.resources_manager import ResourcePool
-from dialog.sentence import *
+from dialogs.resources_manager import ResourcePool
+from dialogs.sentence import *
 import analyse_nominal_group
 import analyse_nominal_structure
 import other_functions

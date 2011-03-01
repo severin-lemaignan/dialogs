@@ -17,7 +17,7 @@
     there_is_pronoun : to return 0 if all nominal groups have the same form
     get_off_point : to get off the punctuation from the word
 """
-from dialog.resources_manager import ResourcePool
+from dialogs.resources_manager import ResourcePool
 
 """
 Statement of lists

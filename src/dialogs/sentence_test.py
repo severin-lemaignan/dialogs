@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger("dialog")
 import unittest
 
-from dialog.sentence import *
+from dialogs.sentence import *
 from parsing import preprocessing
 from parsing import analyse_sentence
 from parsing import parser
