@@ -10,8 +10,8 @@ from pyoro import Oro, OroServerError
 
 from dialog_exceptions import UnknownVerb
 
-#These values are overridden in dialog.py. Only useful for unittesting alone.
-DATA_DIR = os.path.dirname(__file__).split('lib')[0].split('src')[0] + '/share/dialog/' #tries to find out the current prefix and then the data directory
+#These values are overridden in dialogs.py. Only useful for unittesting alone.
+DATA_DIR = os.path.abspath(__file__).split('lib')[0].split('src')[0] + '/share/dialogs/' #tries to find out the current prefix and then the data directory
 ORO_HOST = 'localhost'
 ORO_PORT = 6969
 
@@ -50,7 +50,7 @@ class ThematicRole:
         return res
 
 class VerbEntry:
-    def __init__(self, name, ref, roles):        
+    def __init__(self, name, ref, roles):
         self.name = name
         self.ref = ref
         self.subject = roles[0]
@@ -95,7 +95,7 @@ class VerbEntry:
 @singleton
 class ThematicRolesDict:
     """This class contains all the verbs with their associated thematic roles
-    as listed in the data/dialog/thematic_roles file. Refer to this file for 
+    as listed in the data/dialog/thematic_roles file. Refer to this file for
     details regarding syntax.
     """
     def __init__(self):
@@ -388,7 +388,7 @@ class ResourcePool:
             self.ontology_server.add(stmts)
         
         """
-            List of onotlogy classes that are used in the adjectives list
+            List of ontology classes that are used in the adjectives list
         """
         self.adjectives_ontology_classes = [self.adjectives[adj].lower() for adj in self.adjectives]
         adj_s = []
