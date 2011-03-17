@@ -791,7 +791,7 @@ class TestStatementBuilder(unittest.TestCase):
         
         #quantifier
         sentence.sn[0]._quantifier = 'SOME' # a mango
-        sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier = 'SOME' # a tree
+        sentence.sv[0].i_cmpl[0].gn[0]._quantifier = 'SOME' # a tree
         expected_result = ['* rdf:type Mango',
                             '* rdf:type Grow',
                             '* performedBy *',

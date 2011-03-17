@@ -397,7 +397,7 @@ class Resolver:
                     return sentence                    
             
             for i_cmpl in sv.i_cmpl:
-                for ng in i_cmpl.nominal_group:
+                for ng in i_cmpl.gn:
                     if cmp.compare(ng , uie_object):
                         ng = uie_object_with_more_info                        
                         return sentence       
@@ -542,10 +542,10 @@ class Resolver:
             if sv.i_cmpl:
                 resolved_i_cmpl = []
                 for i_cmpl in sv.i_cmpl:
-                    i_cmpl.nominal_group = self._resolve_groups_references(i_cmpl.nominal_group, 
-                                                                                matcher,
-                                                                                current_speaker,
-                                                                                self._current_object)
+                    i_cmpl.gn = self._resolve_groups_references(i_cmpl.gn, 
+                                                                matcher,
+                                                                current_speaker,
+                                                                self._current_object)
                     resolved_i_cmpl.append(i_cmpl)
                 
                 sv.i_cmpl = resolved_i_cmpl
@@ -581,7 +581,7 @@ class Resolver:
             if sv.i_cmpl:
                 resolved_i_cmpl = []
                 for i_cmpl in sv.i_cmpl:
-                    i_cmpl.nominal_group = self._resolve_groups_nouns(i_cmpl.nominal_group, 
+                    i_cmpl.gn = self._resolve_groups_nouns(i_cmpl.gn, 
                                                        current_speaker,
                                                        discriminator,
                                                        builder)

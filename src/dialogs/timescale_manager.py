@@ -210,7 +210,7 @@ def timescale_i_cmpl(indirect_complement, action_time):
     """
                 
     #We read all nominal groups in the indirect complement 
-    for j in indirect_complement.nominal_group:
+    for j in indirect_complement.gn:
         for i in ResourcePool().time_proposals:
             if i[2]!=0 and [i[0]]==indirect_complement.prep and i[0]!='from' and i[0]!='to':
                 

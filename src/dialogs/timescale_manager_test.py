@@ -433,7 +433,7 @@ class TestTimescale(unittest.TestCase):
                     [], 
                     [Indirect_Complement(['at'],[Nominal_Group(['7'],["o'clock"],[],[],[])])],
                     [], ['tomorrow'] ,'affirmative',[])])
-        sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        sentence.sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
         
         print 'The sentence that we will process is : '
         print "I will come back at 7 o'clock tomorrow."
@@ -477,7 +477,7 @@ class TestTimescale(unittest.TestCase):
                     [Nominal_Group(['the'],['project'],[],[],[])], 
                     [Indirect_Complement(['before'],[Nominal_Group(['10'],['minute'],[],[],[])])],
                     [], [] ,'affirmative',[])])
-        sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        sentence.sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
         
         print 'The sentence that we will process is : '
         print "He finish the project 10 minutes before."
@@ -646,7 +646,7 @@ class TestTimescale(unittest.TestCase):
                     [], 
                     [Indirect_Complement(['at'],[Nominal_Group(['10'],['pm'],[],[],[])])],
                     [], [] ,'affirmative',[])])
-        sentence.sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        sentence.sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
         
         print 'The sentence that we will process is : '
         print "I come at 10pm."

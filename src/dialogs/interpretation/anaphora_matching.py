@@ -130,7 +130,7 @@ def recover_nominal_group_list(sentences):
             nominal_group_list=nominal_group_list+j.d_obj
             
             for x in j.i_cmpl:
-                nominal_group_list=nominal_group_list+x.nominal_group
+                nominal_group_list=nominal_group_list+x.gn
             nominal_group_list=nominal_group_list+recover_nominal_group_list(j.vrb_sub_sentence)
     
     
@@ -159,7 +159,7 @@ def recover_nominal_group_list_without_id(sentences):
             nominal_group_list=nominal_group_list+j.d_obj
             
             for x in j.i_cmpl:
-                nominal_group_list=nominal_group_list+x.nominal_group
+                nominal_group_list=nominal_group_list+x.gn
             nominal_group_list=nominal_group_list+recover_nominal_group_list(j.vrb_sub_sentence)
     
     #We perform deletions

@@ -115,12 +115,12 @@ sentences=[Sentence('statement', '',
             [], [] ,'negative',[])])]
 
 sentences[0].sn[0].id='azeaz'
-sentences[0].sv[0].i_cmpl[0].nominal_group[0].id="4"
+sentences[0].sv[0].i_cmpl[0].gn[0].id="4"
 sentences[1].sv[0].d_obj[0].id='sghj'
-sentences[1].sv[0].i_cmpl[0].nominal_group[0].id="9"
+sentences[1].sv[0].i_cmpl[0].gn[0].id="9"
 sentences[2].sn[0].id='eaz'
 sentences[2].sv[0].d_obj[0].id='10'
-sentences[2].sv[0].i_cmpl[0].nominal_group[0].id="6"
+sentences[2].sv[0].i_cmpl[0].gn[0].id="6"
     
 class TestAnaphora(unittest.TestCase):
     def test_01(self):

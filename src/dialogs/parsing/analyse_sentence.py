@@ -283,7 +283,7 @@ def w_quest_what(type, sentence):
             analysis.aim='description'
 
         #The case when we have 'do' + ing form
-        elif vg.vrb_main[0].endswith('do') and vg.i_cmpl!=[] and vg.i_cmpl[0].nominal_group[0].adj!=[] and vg.i_cmpl[0].nominal_group[0].adj[0][0].endswith('ing'):
+        elif vg.vrb_main[0].endswith('do') and vg.i_cmpl!=[] and vg.i_cmpl[0].gn[0].adj!=[] and vg.i_cmpl[0].gn[0].adj[0][0].endswith('ing'):
             analysis.aim='explication'
     
     #There is a noun before the auxiliary

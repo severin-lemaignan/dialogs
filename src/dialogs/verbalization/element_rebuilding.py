@@ -111,7 +111,7 @@ def indirect_compl_rebuilding(indirect_compl):
 
     #We have 2 cases : with proposal and without
     if indirect_compl.prep!=[]:
-        nom_gr= nom_struc_rebuilding(indirect_compl.nominal_group)
+        nom_gr= nom_struc_rebuilding(indirect_compl.gn)
         
         #If we have another i_cmpl with a different preposition
         if nom_gr!=[] and (nom_gr[0]=='and' or nom_gr[0]=='or' or nom_gr[0]=='but'):
@@ -126,7 +126,7 @@ def indirect_compl_rebuilding(indirect_compl):
             k=k+1    
         
     else:
-        nom_gr= indirect_compl.prep + nom_struc_rebuilding(indirect_compl.nominal_group)
+        nom_gr= indirect_compl.prep + nom_struc_rebuilding(indirect_compl.gn)
             
     ind_cmpl=ind_cmpl+nom_gr
     return ind_cmpl

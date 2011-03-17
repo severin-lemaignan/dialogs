@@ -863,7 +863,7 @@ class TestVerbalization(unittest.TestCase):
                     [],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        sentences[0].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
+        sentences[0].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].gn[0]._quantifier="ALL"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1118,7 +1118,7 @@ class TestVerbalization(unittest.TestCase):
                      Indirect_Complement([],[Nominal_Group(['the'],['shelf'],[],[],[])])],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        sentences[0].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+        sentences[0].sv[0].i_cmpl[1].gn[0]._conjunction="OR"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1148,7 +1148,7 @@ class TestVerbalization(unittest.TestCase):
                      Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+        sentences[1].sv[0].i_cmpl[1].gn[0]._conjunction="OR"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1172,7 +1172,7 @@ class TestVerbalization(unittest.TestCase):
                      Indirect_Complement(['in+front+of'],[Nominal_Group([],['you'],[],[], [])])],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        sentences[0].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+        sentences[0].sv[0].i_cmpl[1].gn[0]._conjunction="OR"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1202,7 +1202,7 @@ class TestVerbalization(unittest.TestCase):
                      Indirect_Complement(['in+front+of'],[Nominal_Group([],['you'],[],[], [])])],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        sentences[1].sv[0].i_cmpl[1].nominal_group[0]._conjunction="OR"
+        sentences[1].sv[0].i_cmpl[1].gn[0]._conjunction="OR"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1834,7 +1834,7 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[]),Nominal_Group(['the'],['shelf'],[],[],[])])],
                     [], [] ,Verbal_Group.negative,[])])]
         
-        sentences[1].sv[0].i_cmpl[0].nominal_group[1]._conjunction="BUT"
+        sentences[1].sv[0].i_cmpl[0].gn[1]._conjunction="BUT"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -1979,8 +1979,8 @@ class TestVerbalization(unittest.TestCase):
                     [], [] ,Verbal_Group.affirmative,[])])]
         
         sentences[0].sn[0]._quantifier="ALL"
-        sentences[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
-        sentences[0].sv[0].i_cmpl[0].nominal_group[1]._quantifier="ALL"
+        sentences[0].sv[0].i_cmpl[0].gn[0]._quantifier="ALL"
+        sentences[0].sv[0].i_cmpl[0].gn[1]._quantifier="ALL"
         sentences[1].sv[0].d_obj[0]._quantifier="DIGIT"
         
         utterance=utterance_rebuilding.verbalising(sentences)
@@ -2083,11 +2083,11 @@ class TestVerbalization(unittest.TestCase):
                             [], [] ,Verbal_Group.affirmative,[])])]
         
         sentences[0].sn[0]._quantifier="ALL"
-        sentences[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
-        sentences[0].sv[0].i_cmpl[0].nominal_group[1]._quantifier="ALL"
+        sentences[0].sv[0].i_cmpl[0].gn[0]._quantifier="ALL"
+        sentences[0].sv[0].i_cmpl[0].gn[1]._quantifier="ALL"
         sentences[1].sn[0]._quantifier="SOME"
         sentences[1].sn[0].noun_cmpl[0]._quantifier="SOME"
-        sentences[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        sentences[2].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -2289,9 +2289,9 @@ class TestVerbalization(unittest.TestCase):
         sentences[0].sv[0].d_obj[0]._quantifier="SOME"
         sentences[0].sv[0].d_obj[1]._quantifier="SOME"
         sentences[0].sv[0].d_obj[2]._quantifier="SOME"
-        sentences[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
-        sentences[1].sv[0].i_cmpl[0].nominal_group[1]._quantifier="SOME"
-        sentences[1].sv[0].i_cmpl[0].nominal_group[2]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].gn[1]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].gn[2]._quantifier="SOME"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -2322,8 +2322,8 @@ class TestVerbalization(unittest.TestCase):
                     [Indirect_Complement(['before'],[Nominal_Group(['10'],['minute'],[],[],[])])],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        sentences[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
-        sentences[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        sentences[0].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
+        sentences[1].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -2365,9 +2365,9 @@ class TestVerbalization(unittest.TestCase):
         sentences[0].sv[0].d_obj[0]._quantifier="SOME"
         sentences[0].sv[0].d_obj[1]._quantifier="SOME"
         sentences[0].sv[0].d_obj[2]._quantifier="SOME"
-        sentences[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
-        sentences[1].sv[0].i_cmpl[0].nominal_group[1]._quantifier="SOME"
-        sentences[1].sv[0].i_cmpl[0].nominal_group[2]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].gn[1]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].gn[2]._quantifier="SOME"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
@@ -2405,8 +2405,8 @@ class TestVerbalization(unittest.TestCase):
                     [], ['tomorrow'] ,Verbal_Group.affirmative,[])])]
         
         sentences[0].sn[0].noun_cmpl[0]._quantifier='SOME'
-        sentences[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
-        sentences[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        sentences[1].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
+        sentences[2].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
         
         utterance=utterance_rebuilding.verbalising(sentences)
         

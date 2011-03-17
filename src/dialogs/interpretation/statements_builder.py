@@ -512,7 +512,7 @@ class NominalGroupStatementBuilder:
                 
                 #indirect object
                 for i_cmpl in sv.i_cmpl:
-                    for i_cmpl_ng in i_cmpl.nominal_group:
+                    for i_cmpl_ng in i_cmpl.gn:
                         if cmp.compare(i_cmpl_ng, current_ng):
                             i_cmpl_ng.id = parent_ng_id
 
@@ -802,8 +802,8 @@ class VerbalGroupStatementBuilder:
             #            e.g. I bought a ball for Jido. The object_property takes the value "isFor"
             
             
-            i_stmt_builder = NominalGroupStatementBuilder(ic.nominal_group, self._current_speaker)
-            for ic_noun  in ic.nominal_group:
+            i_stmt_builder = NominalGroupStatementBuilder(ic.gn, self._current_speaker)
+            for ic_noun  in ic.gn:
                 
                 #Indirect object ID
                 if ic_noun.id:

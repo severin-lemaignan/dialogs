@@ -43,7 +43,7 @@ class SentenceFactory:
                             [], indirect_complL, [], [] ,Verbal_Group.affirmative,[])])]
                 
         for i in range(len(values)-1):
-            sentence[1].sv[0].i_cmpl[i+1].nominal_group[0]._conjunction = 'OR'
+            sentence[1].sv[0].i_cmpl[i+1].gn[0]._conjunction = 'OR'
             
         return sentence
 
@@ -76,7 +76,7 @@ class SentenceFactory:
                             [], indirect_complL, [], [] ,Verbal_Group.affirmative,[])])]
                     
         for i in range(len(values)-1):
-            sentence[0].sv[0].i_cmpl[i+1].nominal_group[0]._conjunction = 'OR'
+            sentence[0].sv[0].i_cmpl[i+1].gn[0]._conjunction = 'OR'
             
         return sentence
     
@@ -270,7 +270,7 @@ class SentenceFactory:
                 
             #Indirect complement
             for i_cmpl in sv.i_cmpl:
-                i_cmpl.nominal_group = _reverse_noun_group_personal_pronoun(i_cmpl.nominal_group)
+                i_cmpl.gn = _reverse_noun_group_personal_pronoun(i_cmpl.gn)
                 
         
         return sentence

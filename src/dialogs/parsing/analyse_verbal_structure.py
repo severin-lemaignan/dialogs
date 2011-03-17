@@ -627,7 +627,7 @@ def refine_indirect_complement(vg):
             while j < len(vg.i_cmpl):
                 #If we have the same proposal, we concatenate them
                 if vg.i_cmpl[j].prep!=[] and vg.i_cmpl[i].prep==vg.i_cmpl[j].prep:
-                    vg.i_cmpl[i].nominal_group=vg.i_cmpl[i].nominal_group+vg.i_cmpl[j].nominal_group
+                    vg.i_cmpl[i].gn=vg.i_cmpl[i].gn+vg.i_cmpl[j].gn
                     vg.i_cmpl=vg.i_cmpl[:j]+vg.i_cmpl[j+1:]
                 else:
                     j=j+1

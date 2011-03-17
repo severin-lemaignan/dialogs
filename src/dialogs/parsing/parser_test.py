@@ -80,7 +80,7 @@ def compare_icompl(icompl, rslt_icompl):
         while i < len(rslt_icompl):
             if rslt_icompl[i].prep!=icompl[i].prep:
                 return 1
-            if compare_nominal_group(rslt_icompl[i].nominal_group,icompl[i].nominal_group) ==1:
+            if compare_nominal_group(rslt_icompl[i].gn,icompl[i].gn) ==1:
                 return 1
             i=i+1
         return 0
@@ -729,7 +729,7 @@ class TestParsing(unittest.TestCase):
                     [Indirect_Complement(['for'],[Nominal_Group(['a'],[],[['living',[]]],[],[])])],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -1049,7 +1049,7 @@ class TestParsing(unittest.TestCase):
                     [],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        rslt[0].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
+        rslt[0].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].gn[0]._quantifier="ALL"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -1161,7 +1161,7 @@ class TestParsing(unittest.TestCase):
         rslt[1].sv[0].d_obj[1]._quantifier="SOME"
         rslt[1].sv[0].d_obj[2]._quantifier="SOME"
         rslt[2].sv[0].d_obj[0]._quantifier="SOME"
-        rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        rslt[2].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -1222,8 +1222,8 @@ class TestParsing(unittest.TestCase):
                     [Indirect_Complement(['for'],[Nominal_Group(['a'],[],[['living',[]]],[],[])])],
                     [], ['here'] ,Verbal_Group.affirmative,[])])]
         
-        rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -1903,7 +1903,7 @@ class TestParsing(unittest.TestCase):
                     [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[]),Nominal_Group(['the'],['shelf'],[],[],[])])],
                     [], [] ,Verbal_Group.negative,[])])]
         
-        rslt[1].sv[0].i_cmpl[0].nominal_group[1]._conjunction="BUT"
+        rslt[1].sv[0].i_cmpl[0].gn[1]._conjunction="BUT"
       
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2048,8 +2048,8 @@ class TestParsing(unittest.TestCase):
                     [], [] ,Verbal_Group.affirmative,[])])]
         
         rslt[0].sn[0]._quantifier="ALL"
-        rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
-        rslt[0].sv[0].i_cmpl[0].nominal_group[1]._quantifier="ALL"
+        rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier="ALL"
+        rslt[0].sv[0].i_cmpl[0].gn[1]._quantifier="ALL"
         rslt[1].sv[0].d_obj[0]._quantifier="DIGIT"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
@@ -2095,7 +2095,7 @@ class TestParsing(unittest.TestCase):
                              [], [] ,Verbal_Group.affirmative,[])])])])]
         
         rslt[1].sv[0].d_obj[0]._quantifier="SOME"
-        rslt[1].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
+        rslt[1].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].gn[0]._quantifier="ALL"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2158,11 +2158,11 @@ class TestParsing(unittest.TestCase):
                             [], [] ,Verbal_Group.affirmative,[])])]
         
         rslt[0].sn[0]._quantifier="ALL"
-        rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="ALL"
-        rslt[0].sv[0].i_cmpl[0].nominal_group[1]._quantifier="ALL"
+        rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier="ALL"
+        rslt[0].sv[0].i_cmpl[0].gn[1]._quantifier="ALL"
         rslt[1].sn[0]._quantifier="SOME"
         rslt[1].sn[0].noun_cmpl[0]._quantifier="SOME"
-        rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        rslt[2].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2324,7 +2324,7 @@ class TestParsing(unittest.TestCase):
                     [],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
         rslt[2].sv[0].d_obj[0]._quantifier="SOME"
 
         result_test=compare_utterance(class_list,rslt,sentence_list)
@@ -2365,9 +2365,9 @@ class TestParsing(unittest.TestCase):
         rslt[0].sv[0].d_obj[0]._quantifier="SOME"
         rslt[0].sv[0].d_obj[1]._quantifier="SOME"
         rslt[0].sv[0].d_obj[2]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[1]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[2]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[1]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[2]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2396,8 +2396,8 @@ class TestParsing(unittest.TestCase):
                     [Indirect_Complement(['before'],[Nominal_Group(['10'],['minute'],[],[],[])])],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
-        rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
+        rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2437,9 +2437,9 @@ class TestParsing(unittest.TestCase):
         rslt[0].sv[0].d_obj[0]._quantifier="SOME"
         rslt[0].sv[0].d_obj[1]._quantifier="SOME"
         rslt[0].sv[0].d_obj[2]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[1]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[0].nominal_group[2]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[1]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[2]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2477,8 +2477,8 @@ class TestParsing(unittest.TestCase):
                     [], ['tomorrow'] ,Verbal_Group.affirmative,[])])]
         
         rslt[0].sn[0].noun_cmpl[0]._quantifier='SOME'
-        rslt[1].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
-        rslt[2].sv[0].i_cmpl[0].nominal_group[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
+        rslt[2].sv[0].i_cmpl[0].gn[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2561,7 +2561,7 @@ class TestParsing(unittest.TestCase):
         rslt[0].sv[0].sv_sec[0].d_obj[1]._quantifier="SOME"
         rslt[0].sv[0].sv_sec[0].d_obj[1]._conjunction="OR"
         rslt[1].sn[0]._quantifier="SOME"
-        rslt[1].sv[0].i_cmpl[1].nominal_group[0]._quantifier="SOME"
+        rslt[1].sv[0].i_cmpl[1].gn[0]._quantifier="SOME"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)
@@ -2784,7 +2784,7 @@ class TestParsing(unittest.TestCase):
                     [], [] ,Verbal_Group.affirmative,[])])]
         
         rslt[0].sv[0].d_obj[0]._quantifier="SOME"
-        rslt[0].sv[0].i_cmpl[0].nominal_group[0]._quantifier="DIGIT"
+        rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier="DIGIT"
         
         result_test=compare_utterance(class_list,rslt,sentence_list)
         self.assertEquals(result_test, 0)

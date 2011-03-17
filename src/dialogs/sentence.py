@@ -214,18 +214,18 @@ class Indirect_Complement:
     
     def __init__(self, prep, nominal_group):
         self.prep = prep
-        self.nominal_group = nominal_group
+        self.gn = nominal_group
         
     def resolved(self):
         return  reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x._resolved, self.nominal_group), 
+                        map(lambda x: x._resolved, self.gn), 
                         True)
         
     def __str__(self):
         res = colored_print(self.prep, 'yellow') + "..."
         
-        if self.nominal_group:
-            for s in self.nominal_group:
+        if self.gn:
+            for s in self.gn:
                 res += level_marker() + '\n\t' + str(s).replace("\n", "\n\t") + "\n"
         
         return res
@@ -233,7 +233,7 @@ class Indirect_Complement:
     
     def flatten(self):
         return [self.prep,
-                map(lambda x: x.flatten(), self.nominal_group)]
+                map(lambda x: x.flatten(), self.gn)]
 
 class Verbal_Group:
     """
@@ -408,7 +408,7 @@ def process_verbal_group_part(verbal_group,nominal_group_structure, flag):
             nominal_group_structure.relative=nominal_group_structure.relative+[rltv] 
         else:
             #Else we process the concatenate with the nominal part of the indirect complement   
-            for k in i.nominal_group:
+            for k in i.gn:
                 concat_gn(nominal_group_structure, k, flag)
     
     for i in verbal_group.sv_sec:
@@ -437,9 +437,9 @@ def process_verbal_group_nega_part(verbal_group,nominal_group_structure, flag):
     #For indirect complement
     for i in ind_cmpl:
         
-        if i.prep[0] in ResourcePool().compelement_proposals and i.nominal_group[0]._conjunction=='BUT' and verbal_group.vrb_main[0]!='talk':
+        if i.prep[0] in ResourcePool().compelement_proposals and i.gn[0]._conjunction=='BUT' and verbal_group.vrb_main[0]!='talk':
             #If it is an adverbial related to the noun, we have to add it like a relative
-            i.nominal_group[0]._conjunction='AND'
+            i.gn[0]._conjunction='AND'
             #We delete the nominal groups before this one 
             verbal_group.i_cmpl=verbal_group.i_cmpl[verbal_group.i_cmpl.index(i):]
             verbal_group.state='affirmative'
@@ -452,7 +452,7 @@ def process_verbal_group_nega_part(verbal_group,nominal_group_structure, flag):
   
         else:
             #Else we process the concatenate with the nominal part of the indirect complement  
-            for k in i.nominal_group:
+            for k in i.gn:
                 if k._conjunction=='BUT':
                     concat_gn(nominal_group_structure, k, flag)
     
@@ -481,7 +481,7 @@ def refine_nominal_group_relative_sv (verbal_structure,nominal_group):
     
     #For indirect complement
     for i_object in verbal_structure.i_cmpl:
-        for ng in i_object.nominal_group:
+        for ng in i_object.gn:
             if ng.noun==['one']:
                 ng.noun=nominal_group.noun
             refine_nominal_group_relative(ng)
@@ -517,9 +517,9 @@ def i_cmpl(indirect_complement):
     i=0
 
     while i<len(indirect_complement):
-        if len(indirect_complement[i].nominal_group)>1:
-            list_nominal_group=indirect_complement[i].nominal_group[1:]
-            indirect_complement[i].nominal_group=[indirect_complement[i].nominal_group[1]]
+        if len(indirect_complement[i].gn)>1:
+            list_nominal_group=indirect_complement[i].gn[1:]
+            indirect_complement[i].gn=[indirect_complement[i].gn[1]]
             for k in list_nominal_group:
                 indirect_complement=indirect_complement+[Indirect_Complement(indirect_complement[i].prep,[k])]
         i=i+1
