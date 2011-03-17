@@ -78,7 +78,7 @@ class Sentence:
                 map(lambda x: x.flatten(), self.sn),
                 map(lambda x: x.flatten(), self.sv)]
     
-    def quit_loop(self):
+    def isaborting(self):
         #Forget it
         if self.data_type == "imperative" \
             and "forget" in [verb for sv in self.sv for verb in sv.vrb_main]\
@@ -93,7 +93,7 @@ class Sentence:
             
         return False
     
-    def learn_it(self):
+    def islearning(self):
         #Learn that
         if  self.data_type == "imperative"\
             and "learn" in [verb for sv in self.sv for verb in sv.vrb_main]\
@@ -346,19 +346,17 @@ class Comparator():
     def compare(self, obj1, obj2):
         return obj1.__class__ == obj2.__class__ and \
                 obj1.flatten() == obj2.flatten()
-      
-        
 
-def it_is_pronoun(word):
+def ispronoun(word):
     if word in ResourcePool().pronouns:
-        return 1
-    return 0
-                    
-                           
+        return True
+    return False
+
 def concat_gn(nominal_group_structure, new_class, flag):      
     """
-    concatenates 2 nominal groups                                      
-    Input=2 nominal groups and the flag           Output= nominal group                   
+    concatenates 2 nominal groups
+    Input=2 nominal groups and the flag
+    Output= nominal group
     """
     
     #If failure we need to change information else we add 
@@ -392,8 +390,9 @@ def concat_gn(nominal_group_structure, new_class, flag):
 
 def process_verbal_group_part(verbal_group,nominal_group_structure, flag):  
     """
-    process merge in the verbal part                                      
-    Input=nominal groups, the verbal part and the flag      Output= nominal group                   
+    process merge in the verbal part
+    Input=nominal groups, the verbal part and the flag
+    Output= nominal group
     """
     
     #The direct complement is a nominal group
@@ -424,8 +423,9 @@ def process_verbal_group_part(verbal_group,nominal_group_structure, flag):
 
 def process_verbal_group_nega_part(verbal_group,nominal_group_structure, flag):  
     """
-    process merge in the verbal part when we have negative sentence                                    
-    Input=nominal groups, the verbal part and the flag      Output= nominal group                   
+    process merge in the verbal part when we have negative sentence
+    Input=nominal groups, the verbal part and the flag
+    Output= nominal group
     """
     
     #The direct complement is a nominal group
@@ -468,8 +468,9 @@ def process_verbal_group_nega_part(verbal_group,nominal_group_structure, flag):
 
 def refine_nominal_group_relative_sv (verbal_structure,nominal_group):
     """
-    replaces one by the noun in verbal part of relative                                      
-    Input=nominal groups and verbal part          Output= nominal group                   
+    replaces one by the noun in verbal part of relative
+    Input=nominal groups and verbal part
+    Output= nominal group
     """
     
     #For direct complement
@@ -492,8 +493,9 @@ def refine_nominal_group_relative_sv (verbal_structure,nominal_group):
 
 def refine_nominal_group_relative(nominal_group):
     """
-    replaces one by the noun in relative                                      
-    Input=nominal groups                      Output= nominal group                   
+    replaces one by the noun in relative
+    Input=nominal groups
+    Output= nominal group
     """
     
     for i in nominal_group.relative:
@@ -503,66 +505,64 @@ def refine_nominal_group_relative(nominal_group):
             refine_nominal_group_relative(ns)
         for verbal_structure in i.sv:
             refine_nominal_group_relative_sv(verbal_structure,nominal_group)
-            
-            
+
 def i_cmpl(indirect_complement):
     """
-    separates indirect complements when they have same preposition                                     
-    Input=indirect complement                  Output=indirect complement                   
+    separates indirect complements when they have same preposition
+    Input=indirect complement
+    Output=indirect complement
     """
-    
+
     #init
     i=0
-    
+
     while i<len(indirect_complement):
         if len(indirect_complement[i].nominal_group)>1:
             list_nominal_group=indirect_complement[i].nominal_group[1:]
             indirect_complement[i].nominal_group=[indirect_complement[i].nominal_group[1]]
             for k in list_nominal_group:
                 indirect_complement=indirect_complement+[Indirect_Complement(indirect_complement[i].prep,[k])]
-        i=i+1  
+        i=i+1
     return indirect_complement
-        
-        
-        
+
 def nominal_group_remerge(utterance, flag , nominal_group_structure):
     """
-    process merge                                      
-    Input=nominal groups, the use utterance and the flag      Output= nominal group                   
+    process merge
+    Input=nominal groups, the use utterance and the flag      Output= nominal group
     """
 
     for i in utterance:
         if i.data_type==Sentence.imperative:
             i.data_type=Sentence.statement
             i.sn=[Nominal_Group(['the'],i.sv[0].vrb_main,[],[],[])]
-      
+
         if i.data_type==Sentence.statement or i.data_type.startswith(Sentence.subsentence) :
             if i.sv[0].state==Verbal_Group.affirmative:
-            
+
                 #We can have just the subject
                 if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
                     for k in i.sn:
                         concat_gn(nominal_group_structure, k, flag)
                     refine_nominal_group_relative(nominal_group_structure)
                     return nominal_group_structure
-                
+
                 for k in i.sn:
-                    if it_is_pronoun(k.noun[0])==0:
-                        concat_gn(nominal_group_structure, k, flag)                    
+                    if ispronoun(k.noun[0]):
+                        concat_gn(nominal_group_structure, k, flag)
                 #We finish the process with the verbal part
                 for v in i.sv:
-                    nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)        
-            
+                    nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)
+
             elif i.sv[0].state==Verbal_Group.negative:
                 #For all other sentences flag will be FAILURE
                 flag='FAILURE'
-                
+
                 for k in i.sn:
-                    if it_is_pronoun(k.noun[0])==0:
+                    if ispronoun(k.noun[0]):
                         concat_gn(nominal_group_structure, k, flag)
                 #We finish the process with the verbal par
                 for v in i.sv:
-                    nominal_group_structure=process_verbal_group_nega_part(v,nominal_group_structure, flag)   
-                
+                    nominal_group_structure=process_verbal_group_nega_part(v,nominal_group_structure, flag)
+
     refine_nominal_group_relative(nominal_group_structure)
     return nominal_group_structure

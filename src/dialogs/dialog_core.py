@@ -209,7 +209,7 @@ class Dialog(Thread):
                 
                 break
             
-            if s.learn_it() and self._last_output:
+            if s.islearning() and self._last_output:
                 s.append_sub_sentence(self._last_output['sentence'])
                 self._last_output = None
                 self.waiting_for_more_info = False
@@ -241,7 +241,7 @@ class Dialog(Thread):
             #No more info needed
             self.waiting_for_more_info = False
             
-        #end of Unsifient input or unidentified anaphora Error processing
+        #end of Unsufficient input or unidentified anaphora Error processing
         
         
         #Sentences Queue()
@@ -254,7 +254,7 @@ class Dialog(Thread):
             self._resolver.sentences_store = Dialog.dialog_history
             uie_object = self._last_output['object'] if self._last_output else None
             uie_object_with_more_info = self._last_output['object_with_more_info'] if uie_object else None
-            self._last_output = None  
+            self._last_output = None
             
             uae_object = self._anaphora_input['object'] if self._anaphora_input else None
             uae_object_with_more_info = self._anaphora_input['object_with_more_info'] if uae_object else None
@@ -265,7 +265,7 @@ class Dialog(Thread):
             self._logger.info(colored_print("\n-------[ RESOLVING SENTENCE  ]-------\n", 'green'))
             
             self.active_sentence = self._resolver.references_resolution(self.active_sentence,
-                                                                        self.current_speaker, 
+                                                                        self.current_speaker,
                                                                         uae_object,
                                                                         uae_object_with_more_info,
                                                                         uae_object_list)
@@ -291,14 +291,14 @@ class Dialog(Thread):
             
             if self._demo_mode:
                 wait_for_keypress()
-                
+            
             #Verbalization
             if self._content_analyser.analyse_output():
-                
+            
                 self._logger.info(colored_print("\n-------[  VERBALIZATION   ]-------\n", 'green'))
                 self.last_sentence = (self._content_analyser.analyse_output(), 
                                         self._verbalizer.verbalize(self._content_analyser.analyse_output()))
-                                        
+                
                 self._sentence_output_queue.put(self.last_sentence[0])
                 
                 if self._demo_mode:

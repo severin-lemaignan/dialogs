@@ -49,7 +49,7 @@ class Resolver:
                                                                                                 uae_object,
                                                                                                 uae_object_with_more_info,
                                                                                                 uae_object_list)
-                                                                                        
+
         logger.info(colored_print("-> Resolving references and anaphors...", 'green'))
         #Record of current sentence
         self._current_sentence = sentence
@@ -231,7 +231,7 @@ class Resolver:
         """This attempts to resolve every single nominal group held in a nominal group list"""
         resolved_sn = []
         for ng in array_sn:
-            if self._current_sentence.learn_it():
+            if self._current_sentence.islearning():
                 ng.noun_cmpl = self._resolve_groups_references(ng.noun_cmpl, matcher, current_speaker, None) if ng.noun_cmpl else []
                 #resolved_relative = [self.references_resolution(relative, current_speaker, None, None, None) for relative in ng.relative]
                 #ng.relative = resolved_relative
@@ -357,7 +357,7 @@ class Resolver:
             id = discriminator.clarify(description, features)
         except UnsufficientInputError as uie:
             #   Create a new concept instead of raising unsificient input error, as the current sentence start with "learn that ..."
-            if self._current_sentence.learn_it():
+            if self._current_sentence.islearning():
                 id = self._ontology_learns_new_concept(stmts, current_speaker)
             else:
                 sf = SentenceFactory()
@@ -409,7 +409,7 @@ class Resolver:
         resolved_sn = []
         for ng in nominal_groups:
             
-            if self._current_sentence.learn_it():
+            if self._current_sentence.islearning():
                 ng.noun_cmpl = self._resolve_groups_nouns(ng.noun_cmpl, current_speaker, discriminator, builder) if ng.noun_cmpl else []
                 #resolved_relative = [self.noun_phrases_resolution(relative, current_speaker, None, None) for relative in ng.relative]
                 #ng.relative = resolved_relative
