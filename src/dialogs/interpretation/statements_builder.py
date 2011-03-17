@@ -589,7 +589,7 @@ class VerbalGroupStatementBuilder:
             self._process_on_question = True
         
         self._process_on_resolved_sentence = sentence.resolved()
-        self._process_on_learning_new_concept = sentence.learn_it()
+        self._process_on_learning_new_concept = sentence.islearning()
         
     def clear_statements(self):
         self._statements = []

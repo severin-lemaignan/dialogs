@@ -2,7 +2,7 @@ import logging
 logger = logging.getLogger("dialog")
 
 import random
-from dialogs.helpers import colored_print
+from dialogs.helpers.helpers import colored_print
 
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import UnsufficientInputError

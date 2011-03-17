@@ -9,9 +9,9 @@ from Queue import Queue, Empty
 from collections import deque
 
 
-from helpers import colored_print, wait_for_keypress
+from helpers.helpers import colored_print, wait_for_keypress
 
-from dialog_exceptions import UnsufficientInputError, UnidentifiedAnaphoraError
+from dialog_exceptions import *
 
 from dialogs.sentence import *
 

@@ -6,7 +6,7 @@ logger = logging.getLogger("dialog")
 
 from pyoro import OroServerError
 
-from dialogs.helpers import colored_print
+from dialogs.helpers.helpers import colored_print
 
 from dialogs.dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError, DialogError
 from dialogs.resources_manager import ResourcePool

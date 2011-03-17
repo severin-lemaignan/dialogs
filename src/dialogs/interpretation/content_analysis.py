@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger("dialog")
 
-from dialogs.helpers import colored_print, level_marker
+from dialogs.helpers.helpers import colored_print, level_marker
 
 from dialogs.interpretation.statements_builder import StatementBuilder
 from dialogs.interpretation.statements_safe_adder  import StatementSafeAdder

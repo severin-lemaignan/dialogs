@@ -2,11 +2,12 @@
 
 import logging
 
-from helpers import colored_print, level_marker
+
+from helpers.sentence_atoms import *
+from helpers.printers import pprint
+from helpers.helpers import colored_print, level_marker
 from resources_manager import ResourcePool
 
-
-    
 class Sentence:
     """
     A sentence is formed from:
@@ -57,7 +58,7 @@ class Sentence:
 
     
     def __str__(self):
-        res = level_marker() + colored_print(">> " + self.data_type.upper(), 'bold')
+        res = level_marker() + pprint(self.data_type, SENTENCE_TYPE)
         if self.aim:
             res += " (aim: " + self.aim + ')'
         res += '\n'

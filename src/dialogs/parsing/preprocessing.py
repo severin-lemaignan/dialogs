@@ -35,7 +35,7 @@
     interjection : to find and create interjections
     what_to_relative : to change what+to into relative form 
     day_month : to find day or month to put them with upper case  
-    am_pm : to separate 'am' or 'pm' to the digit
+    am_pm : to separate 'am' or 'pm' from the digit
     and_between_sentence : to separate sentences if between them there is 'and' 
     double_det : to delete all first determinants if there is more than one
     processing : is used by process_sentence
