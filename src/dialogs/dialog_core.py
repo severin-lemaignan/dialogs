@@ -125,6 +125,17 @@ class Dialog(Thread):
                     self._logger.info("- " + colored_print( \
                             self._verbalizer.verbalize(uae.value['question']), \
                             'blue') + "\n")
+                except GrammaticalError as ge:
+                    self._logger.info(colored_print("Grammatical error! " + \
+                        "I can not correctly parse the sentence. Asking " + \
+                        "the speaker to reformulate", 'magenta'))
+                    #waiting for more info to solve anaphora
+                    self.waiting_for_more_info = True
+                    #Output towards human
+                    sys.stdout.write("I didn't really understand your last sentence. Could you reformulate?\n")
+                    sys.stdout.flush()
+ 
+
                             
             except Empty:
                 pass
@@ -200,7 +211,12 @@ class Dialog(Thread):
 
         #Unsufficient input or unidentified anaphora Error processing
         for s in parsed_sentences:
-            if s.quit_loop():
+
+            #Check the sentence is grammatically valid, else go back to the human
+            if not s.isvalid():
+                raise GrammaticalError(s)
+ 
+            if s.isaborting():
                 parsed_sentences.remove(s)
                 self._last_output = self._anaphora_input = None
                 self.waiting_for_more_info = False

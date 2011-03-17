@@ -44,10 +44,22 @@ class Sentence:
         self.aim = aim
         self.sn = sn
         self.sv = sv
-            
+    
+    def isvalid(self):
+       """ Checks a sentence is grammatically valid
+       """
+       return  reduce( lambda c1,c2: c1 and c2, 
+                        map(lambda x: x.isvalid(), self.sn), 
+                        True) \
+                and \
+                reduce( lambda c1,c2: c1 and c2, 
+                        map(lambda x: x.isvalid(), self.sv), 
+                        True)
+
     def resolved(self):
         """returns True when the whole sentence is completely resolved
-        to concepts known by the robot."""
+        to concepts known by the robot.
+        """
         return  reduce( lambda c1,c2: c1 and c2, 
                         map(lambda x: x._resolved, self.sn), 
                         True) \
@@ -144,6 +156,14 @@ class Nominal_Group:
         self._conjunction = 'AND' #could be 'AND' or 'OR'... TODO: use constants!
         self._quantifier = 'ONE'  #could be 'ONE' or 'SOME'... TODO: use constants!
 
+    def isvalid(self):
+        """ Check this nominal group is valid.
+
+        This currently means:
+            - it has a non-null noun
+        """
+        return True if self.noun else False
+
     def __str__(self):
         
         res = level_marker()
@@ -231,7 +251,20 @@ class Indirect_Complement:
         
         return res
 
-    
+    def isvalid(self):
+        """ Check this indirect group is valid.
+        
+        This currently means:
+            - its nominal group is valid
+        """
+        return  self.gn \
+                and \
+                reduce( lambda c1,c2: c1 and c2, 
+                        map(lambda x: x.isvalid(), self.gn), 
+                        True)
+ 
+
+   
     def flatten(self):
         return [self.prep,
                 map(lambda x: x.flatten(), self.gn)]
@@ -281,6 +314,25 @@ class Verbal_Group:
         self.comparator = [] #To process comparison like stronger than you
         
         
+    def isvalid(self):
+        """ Check this verbal group is valid.
+
+        This currently means:
+            - it has a verb
+            - its direct and indirect complements, if they exists, are valid
+            - the sub sentence, if it exist, is valid 
+        """
+        return  (True if self.vrb_main else False) \
+                and \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.isvalid(), self.d_obj), True) \
+                and \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.isvalid(), self.i_cmpl), True) \
+                and \
+                reduce(lambda c1,c2: c1 and c2 , map(lambda x: x.isvalid(), self.sv_sec), True)\
+                and \
+                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.isvalid(), self.vrb_sub_sentence), True)
+ 
+
     def resolved(self):
         return  self._resolved \
                 and \
