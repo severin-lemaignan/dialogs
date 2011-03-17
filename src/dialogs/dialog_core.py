@@ -189,13 +189,16 @@ class Dialog(Thread):
 
     def _process(self, nl_input):
         #Parsing
+        self._logger.info(colored_print("\n-------[       PREPROCESSING       ]-------\n", 'green'))
+        preprocessed_sentences = self._parser.preprocess(nl_input, None)
+
         self._logger.info(colored_print("\n-------[       PARSING       ]-------\n", 'green'))
-        parsed_sentences = self._parser.parse(nl_input, None)
-        
+        parsed_sentences = self._parser.parse(preprocessed_sentences, None)
+
         if self._demo_mode:
             wait_for_keypress()
-            
-        #Unsifient input or unidentified anaphora Error processing
+
+        #Unsufficient input or unidentified anaphora Error processing
         for s in parsed_sentences:
             if s.quit_loop():
                 parsed_sentences.remove(s)
