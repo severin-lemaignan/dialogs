@@ -1,0 +1,7753 @@
+
+<html>
+    <head>
+      <meta charset="UTF-8">
+      <title> DIALOGS parser demo</title>
+      <link rel ="stylesheet" type="text/css" href="styles.css" title="Style"></link>
+      <link rel="stylesheet" href="javascript/jquery.tooltip.css" />
+
+      <script src="javascript/lib/jquery.js" type="text/javascript"></script>
+      <script src="javscript/lib/jquery.bgiframe.js" type="text/javascript"></script>
+      <script src="javascript/lib/jquery.dimensions.js" type="text/javascript"></script>
+      <script src="javascript/jquery.tooltip.js" type="text/javascript"></script>
+
+      <script type="text/javascript">
+      $(function() {
+          $('.subject').tooltip({ 
+              track: true, 
+              delay: 0, 
+              showURL: false, 
+              bodyHandler: function() { return "Subject";}, 
+              fade: 250 
+          });
+
+          $('.indirect_object').tooltip({ 
+              track: true, 
+              delay: 0, 
+              showURL: false, 
+              bodyHandler: function() { return "Indirect object";}, 
+              fade: 250 
+          });
+
+          $('.direct_object').tooltip({ 
+              track: true, 
+              delay: 0, 
+              showURL: false, 
+              bodyHandler: function() { return "Direct object";}, 
+              fade: 250 
+          });
+      });
+      </script>
+    </head>
+
+    <body>
+    <h1> DIALOGS parser</h1>
+
+<h2>The bottle is on the table. The bottle is blue. the bottle is Blue</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>blue</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>Blue</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='adjective'>blue</span> <span class='noun'>bottle</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>Jido</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>piano</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>violon</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>It's on the table. I give it to you. give me the bottle. I don't give the bottle to you.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>it</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>you</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>you</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>you aren't preparing the car and my father's moto at the same time. is the bottle of my brother in your right?</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>prepare</span> <span class='tense'>present progressive</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>car</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>moto</span> 
+		<div class='noun_cmplt'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>my</span> <span class='noun'>father</span> 
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>at</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='adjective'>same</span> <span class='noun'>time</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>my</span> <span class='noun'>brother</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>your</span> <span class='noun'>right</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? shall I go</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>should+drive</span> <span class='tense'>present conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>big</span> <span class='adjective'>new</span> <span class='noun'>car</span> 
+		<div class='noun_cmplt'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>wife</span> 
+			<div class='noun_cmplt'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>his</span> <span class='adjective'>poorest</span> <span class='noun'>uncle</span> 
+				</div>
+				
+			</div>
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>should+give</span> <span class='tense'>present conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>you</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>shall+go</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Isn't he doing his homework and his game now? Can't he take this bottle. good afternoon</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>he</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>do</span> <span class='tense'>present progressive</span> <br/><span class='adverbial'>now</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>his</span> <span class='noun'>homework</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>his</span> <span class='noun'>game</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>he</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>can+take</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>this</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>start</span> <span class='sentence_aim'>good afternoon.</span> 
+</div>
+
+<h2>Don't quickly give me the blue bottle. I wanna play with my guitar. I'd like to go to the cinema.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> <span class='verbal_adverbial'>quickly</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>blue</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>want</span> <span class='tense'>present simple</span> 	
+	<div class='secondary_verbal_group'>
+	
+		<div class='verbal_group'>
+		
+		<div class='not_resolved'>
+		<span class='verb'>play</span> <span class='tense'></span> 	<br/><span class='preposition'>with</span> 
+			<div class='indirect_object'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>my</span> <span class='noun'>guitar</span> 
+				</div>
+				
+			</div>
+			
+		
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>like</span> <span class='tense'>present conditional</span> 	
+	<div class='secondary_verbal_group'>
+	
+		<div class='verbal_group'>
+		
+		<div class='not_resolved'>
+		<span class='verb'>go</span> <span class='tense'></span> 	<br/><span class='preposition'>to</span> 
+			<div class='indirect_object'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>the</span> <span class='noun'>cinema</span> 
+				</div>
+				
+			</div>
+			
+		
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>the man, who talks, has a new car. I play the guitar, that I bought yesterday,.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>interjection</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>man</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>people</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>;</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='adjective'>new</span> <span class='noun'>car</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>ALL</span> <span class='noun'>ha</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>guitar</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>that</span> 
+			<div class='subject'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>I</span> 
+				</div>
+				
+			
+			</div>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>buy</span> <span class='tense'>past simple</span> <br/><span class='adverbial'>yesterday</span> 	
+				<div class='direct_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='noun'>guitar</span> 
+					</div>
+					
+				</div>
+				
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>don't quickly give me the bottle which is on the table, and the glass which I cleaned yesterday, at my left</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> <span class='verbal_adverbial'>quickly</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='determiner'>the</span> <span class='noun'>table</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>glass</span> 
+	<div class='relative'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>I</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>clean</span> <span class='tense'>past simple</span> <br/><span class='adverbial'>yesterday</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>the</span> <span class='noun'>glass</span> 
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>at</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>my</span> <span class='noun'>left</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>The bottle that I bought from the store which is in the shopping center, , is yours.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	<div class='relative'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>relative</span> <span class='sentence_aim'>that</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>I</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>buy</span> <span class='tense'>past simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+				</div>
+				
+			</div>
+			
+				<br/><span class='preposition'>from</span> 
+				<div class='indirect_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='noun'>store</span> 
+					<div class='relative'>
+					
+						<div class='sentence'>
+						<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+							<div class='verbal_group'>
+							
+							<div class='not_resolved'>
+							<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>in</span> 
+								<div class='indirect_object'>
+								
+									<div class='nominal_group'>
+									<span class='determiner'>the</span> <span class='adjective'>shopping</span> <span class='noun'>center</span> 
+									</div>
+									
+								</div>
+								
+							
+							</div>
+							
+							</div>
+							
+						
+						</div>
+						
+					</div>
+					
+					</div>
+					
+				</div>
+				
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>yours</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>When won't the planning session take place? when must you take the bus</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>date</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='adjective'>planning</span> <span class='noun'>session</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>take+place</span> <span class='tense'>future simple</span> 
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>date</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>must+take</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bus</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Where is Broyen ? where are you going. Where must Jido and you be from?</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>place</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Broyen</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>place</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>go</span> <span class='tense'>present progressive</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>origin</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>must+be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna the Laas?</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>time</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>news</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>TV</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>size</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>wear</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>code</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>write</span> <span class='tense'>present passive</span> 	<br/><span class='preposition'>by</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Mahdi</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>go</span> <span class='tense'>present progressive</span> 	<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>Laas</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>what is the weather like in the winter here? what were you doing? What isn't Jido going to do tomorrow</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>description</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>weather</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>like</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>here</span> 	<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>winter</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>thing</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>do</span> <span class='tense'>past progressive</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>thing</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Jido</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>go</span> <span class='tense'>present progressive</span> 	
+	<div class='secondary_verbal_group'>
+	
+		<div class='verbal_group'>
+		
+		<div class='not_resolved'>
+		<span class='verb'>do</span> <span class='tense'></span> <br/><span class='adverbial'>tomorrow</span> 
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>What's happening. What must happen in the company today? What didn't happen here. no. Sorry.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>situation</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>happen</span> <span class='tense'>present progressive</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>situation</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>must+happen</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>today</span> 	<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>company</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>situation</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>happen</span> <span class='tense'>past simple</span> <br/><span class='adverbial'>here</span> 
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>disagree</span> <span class='sentence_aim'>no.</span> 
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>disagree</span> <span class='sentence_aim'>sorry.</span> 
+</div>
+
+<h2>What is the biggest bottle's color on your left. What does your brother do for a living?</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>thing</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>color</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>biggest</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>your</span> <span class='noun'>left</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>explication</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>your</span> <span class='noun'>brother</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>do</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>for</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='adjective'>living</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>What type of people don't read this magazine? what kind of music must he listen to everyday</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>classification+people</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>read</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>this</span> <span class='noun'>magazine</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>classification+music</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>he</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>must+listen+to</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>everyday</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>What kind of sport is your favorite? what is the problem with him? what is the matter with this person</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>classification+sport</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>your</span> <span class='adjective'>favorite</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>thing</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>problem</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>with</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>him</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>thing</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>matter</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>with</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>this</span> <span class='noun'>person</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>How old are you? how long is your uncle's store opened tonight? how long is your uncle's store open tonight?</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>old</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>long</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>store</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>your</span> <span class='noun'>uncle</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>open</span> <span class='tense'>present passive</span> <br/><span class='adverbial'>tonight</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>long</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>store</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>your</span> <span class='noun'>uncle</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>tonight</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>open</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>how far is it from the hotel to the restaurant? how soon can you be here? How often does Jido go skiing?</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>far</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>from</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>hotel</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>restaurant</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>soon</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>can+be</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>here</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>often</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Jido</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>go+skiing</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>how much water should they transport? how many guests weren't at the party? how much does the motocycle cost</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>quantity</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>they</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>should+transport</span> <span class='tense'>present conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>a</span> <span class='noun'>water</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>quantity</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>a</span> <span class='noun'>guests</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>be</span> <span class='tense'>past simple</span> 	<br/><span class='preposition'>at</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>party</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>quantity</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>motocycle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>cost</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>How about going to the cinema? how have not they gotten a loan for their business? OK</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>invitation</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>go</span> <span class='tense'>present progressive</span> 	<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>cinema</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>manner</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>they</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>get</span> <span class='tense'>present perfect</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>loan</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>for</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>their</span> <span class='noun'>business</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>agree</span> <span class='sentence_aim'>OK.</span> 
+</div>
+
+<h2>How did you like Steven Spilburg's new movie. how could I get to the restaurant from here</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>opinion</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>like</span> <span class='tense'>past simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>new</span> <span class='noun'>movie</span> 
+		<div class='noun_cmplt'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>Steven Spilburg</span> 
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>manner</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>could+get+to</span> <span class='tense'>present conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>restaurant</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>from</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>here</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Why should she go to Toulouse? who could you talk to on the phone. Whose blue bottle and red glass are these.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>reason</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>she</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>should+go</span> <span class='tense'>present conditional</span> 	<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>Toulouse</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>people</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>could+talk</span> <span class='tense'>present conditional</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>phone</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>it</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>owner</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>that</span> <span class='adjective'>red</span> <span class='noun'>glass</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'></span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>What are you thinking about the idea that I present you? what color is the bottle that you bought,</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>opinion</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>think+about</span> <span class='tense'>present progressive</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>idea</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>that</span> 
+			<div class='subject'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>I</span> 
+				</div>
+				
+			
+			</div>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>present</span> <span class='tense'>present simple</span> 	
+				<div class='direct_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='noun'>idea</span> 
+					</div>
+					
+				</div>
+				
+					<br/><span class='preposition'></span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='noun'>you</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>color</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	<div class='relative'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>relative</span> <span class='sentence_aim'>that</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>you</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>buy</span> <span class='tense'>past simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Which salesperson's competition won the award which we won in the last years</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>choice</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>competition</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>salesperson</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>win</span> <span class='tense'>past simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>award</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+			<div class='subject'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>we</span> 
+				</div>
+				
+			
+			</div>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>win</span> <span class='tense'>past simple</span> 	
+				<div class='direct_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='noun'>award</span> 
+					</div>
+					
+				</div>
+				
+					<br/><span class='preposition'>in</span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='quantifier'>ALL</span> <span class='determiner'>the</span> <span class='adjective'>last</span> <span class='noun'>year</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>what'll your house look like? what do you think of the latest novel which Jido wrote</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>description</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>your</span> <span class='noun'>house</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>look+like</span> <span class='tense'>future simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>opinion</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>think+of</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>latest</span> <span class='noun'>novel</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+			<div class='subject'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>Jido</span> 
+				</div>
+				
+			
+			</div>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>write</span> <span class='tense'>past simple</span> 	
+				<div class='direct_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='adjective'>latest</span> <span class='noun'>novel</span> 
+					</div>
+					
+				</div>
+				
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>learn that I want you to give me the blue bottle,. If you do your job, you will be happy.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>learn</span> <span class='tense'>present simple</span> 	
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>that</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>I</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>want</span> <span class='tense'>present simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>you</span> 
+				</div>
+				
+			</div>
+			
+				
+			<div class='secondary_verbal_group'>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>give</span> <span class='tense'></span> 	
+				<div class='direct_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='adjective'>blue</span> <span class='noun'>bottle</span> 
+					</div>
+					
+				</div>
+				
+					<br/><span class='preposition'></span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='noun'>me</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>future simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>happy</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>if</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>you</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>do</span> <span class='tense'>present simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>your</span> <span class='noun'>job</span> 
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>what is wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>thing</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='adjective_qualifier'>r</span> <span class='adjective'>w</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>with</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>him</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='conjunction'>OR</span> <span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>piano</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>violon</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>past simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>ago</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>year</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>this is a bottle. There is a bottle on the table</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>this</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>What do you do for a living in this building? What does your brother do for a living here</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>explication</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>do</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>for</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='adjective'>living</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>this</span> <span class='noun'>building</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>explication</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>your</span> <span class='noun'>brother</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>do</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>here</span> 	<br/><span class='preposition'>for</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='adjective'>living</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>To whom are you talking? you should have the bottle. would you have played a guitar. you would have played a guitar</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>people</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>talk+to</span> <span class='tense'>present progressive</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>should+have</span> <span class='tense'>present conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>past conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>past conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>you'd like the blue bottle or the glass? the green or blue bottle is on the table. the green or the blue glass is mine?</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>like</span> <span class='tense'>present conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>blue</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='conjunction'>OR</span> <span class='determiner'>the</span> <span class='noun'>glass</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='conjunction'>OR</span> <span class='determiner'>the</span> <span class='adjective'>blue</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='conjunction'>OR</span> <span class='determiner'>the</span> <span class='adjective'>blue</span> <span class='noun'>glass</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>mine</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>learn that I want you to give me the blue bottle that is blue.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>learn</span> <span class='tense'>present simple</span> 	
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>that</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>I</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>want</span> <span class='tense'>present simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>you</span> 
+				</div>
+				
+			</div>
+			
+				
+			<div class='secondary_verbal_group'>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>give</span> <span class='tense'></span> 	
+				<div class='direct_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='adjective'>blue</span> <span class='noun'>bottle</span> 
+					<div class='relative'>
+					
+						<div class='sentence'>
+						<span class='sentence_type'>relative</span> <span class='sentence_aim'>that</span> 
+							<div class='verbal_group'>
+							
+							<div class='not_resolved'>
+							<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+							<div class='direct_object'>
+							
+								<div class='nominal_group'>
+								<span class='adjective'>blue</span> 
+								</div>
+								
+							</div>
+							
+							
+							</div>
+							
+							</div>
+							
+						
+						</div>
+						
+					</div>
+					
+					</div>
+					
+				</div>
+				
+					<br/><span class='preposition'></span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='noun'>me</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>The bottle is behind to me. The bottle is next to the table in front of the kitchen.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>behind+to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>next+to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'>in+front+of</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>kitchen</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Take the bottle carefully. I take that bottle that I drink in. I take twenty two bottles.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>take</span> <span class='tense'>present simple</span> <span class='verbal_adverbial'>carefully</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>take</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>that</span> <span class='noun'>bottle</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>that</span> 
+			<div class='subject'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>I</span> 
+				</div>
+				
+			
+			</div>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>drink</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>in</span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='determiner'>that</span> <span class='noun'>bottle</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>take</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>DIGIT</span> <span class='determiner'>22</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>I'll play Jido's guitar, a saxophone, a piano of the wife of my oncle and Patrick's violon.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>guitar</span> 
+		<div class='noun_cmplt'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>Jido</span> 
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>saxophone</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>piano</span> 
+		<div class='noun_cmplt'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>wife</span> 
+			<div class='noun_cmplt'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>my</span> <span class='noun'>oncle</span> 
+				</div>
+				
+			</div>
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>violon</span> 
+		<div class='noun_cmplt'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>Patrick</span> 
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Give me two or three bottles. the bottle is blue, big and fanny. give me the bottle on the table</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>DIGIT</span> <span class='determiner'>2</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='conjunction'>OR</span> <span class='quantifier'>DIGIT</span> <span class='determiner'>3</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>blue</span> <span class='adjective'>big</span> <span class='adjective'>fanny</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='determiner'>the</span> <span class='noun'>table</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>the boys' ball is blue. He ask me to do something. is any person courageous on the laboratory</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>ball</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>ALL</span> <span class='determiner'>the</span> <span class='noun'>boy</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>blue</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>he</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>ask</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>me</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='secondary_verbal_group'>
+	
+		<div class='verbal_group'>
+		
+		<div class='not_resolved'>
+		<span class='verb'>do</span> <span class='tense'></span> 	
+		<div class='direct_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>something</span> 
+			</div>
+			
+		</div>
+		
+		
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>ANY</span> <span class='determiner'>any</span> <span class='noun'>person</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>courageous</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>laboratory</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>What must be happened in the company today? The building shouldn't be built fastly. You can be here.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>situation</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>must+happen</span> <span class='tense'>present passive</span> <br/><span class='adverbial'>today</span> 	<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>company</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>building</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>should+build</span> <span class='tense'>passive conditional</span> <span class='verbal_adverbial'>fastly</span> 
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>can+be</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>here</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>what size is the best one? What object is blue? How good is this</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>size</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='adjective'>best</span> <span class='noun'>one</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>object</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>blue</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>good</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>this</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Patrick, the bottle is on the table. give it to me</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>interjection</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Patrick</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Patrick</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>it</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Jido, give me the bottle. Jido, Patrick and you will go to the cinema. Jido, Patrick and you, give me the bottle</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>interjection</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Jido</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Jido</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>go</span> <span class='tense'>future simple</span> 	<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>cinema</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>interjection</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>The bottle is not blue but it is red. It is not the glass but the bottle. it is blue or red</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>blue</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>but</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>it</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='adjective'>red</span> 
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>glass</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='conjunction'>BUT</span> <span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>blue</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='conjunction'>OR</span> <span class='adjective'>red</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>It is not red but blue. this is my banana. bananas are fruits.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>red</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='conjunction'>BUT</span> <span class='adjective'>blue</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>this</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>my</span> <span class='noun'>banana</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>ALL</span> <span class='noun'>banana</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>ALL</span> <span class='noun'>fruit</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>there are no bananas. All bananas are here. give me more information about the bottle.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>ANY</span> <span class='determiner'>no</span> <span class='noun'>banana</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>ALL</span> <span class='determiner'>all</span> <span class='noun'>banana</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>here</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>more</span> <span class='noun'>information</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>about</span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Jido, tell me where you go. Goodbye. Bye. there is nothing. it is another one.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>interjection</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Jido</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Jido</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>tell</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>location</span> 
+			<div class='relative'>
+			
+				<div class='sentence'>
+				<span class='sentence_type'>relative</span> <span class='sentence_aim'>where</span> 
+				<div class='subject'>
+				
+					<div class='nominal_group'>
+					<span class='noun'>you</span> 
+					</div>
+					
+				
+				</div>
+				
+					<div class='verbal_group'>
+					
+					<div class='not_resolved'>
+					<span class='verb'>go</span> <span class='tense'>present simple</span> 
+					</div>
+					
+					</div>
+					
+				
+				</div>
+				
+			</div>
+			
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>end</span> 
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>end</span> 
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>NONE</span> <span class='noun'>nothing</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>another</span> <span class='noun'>one</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>The bottle becomes blue. One piece could become two, if you smoldered it.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>become</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>blue</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>DIGIT</span> <span class='determiner'>1</span> <span class='noun'>piece</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>could+become</span> <span class='tense'>present conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>DIGIT</span> <span class='determiner'>2</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>if</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>you</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>smolder</span> <span class='tense'>past simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>it</span> 
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>This one is not the bottle of my uncle but it is the bottle of my brother. It is not on the table but on the shelf.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>this</span> <span class='noun'>one</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		<div class='noun_cmplt'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>my</span> <span class='noun'>uncle</span> 
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>but</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>it</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+				<div class='noun_cmplt'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>my</span> <span class='noun'>brother</span> 
+					</div>
+					
+				</div>
+				
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='conjunction'>BUT</span> <span class='determiner'>the</span> <span class='noun'>shelf</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Give me the fourth and seventh bottle. Give me the one thousand ninth and the thirty thousand twenty eighth bottle.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>4th</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>7th</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>1009th</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>30028th</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>the evil tyrant is in the laboratory. I don't know what are you talking about.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='adjective'>evil</span> <span class='noun'>tyrant</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>laboratory</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>know</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>thing</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>that</span> 
+			<div class='subject'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>you</span> 
+				</div>
+				
+			
+			</div>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>talk</span> <span class='tense'>present progressive</span> 	
+				<div class='direct_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='noun'>thing</span> 
+					</div>
+					
+				</div>
+				
+					<br/><span class='preposition'>about</span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='noun'>it</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>I go to the place where I was born. I study where you studied. I study where you build your house where you put the bottle.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>go</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>to</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>place</span> 
+			<div class='relative'>
+			
+				<div class='sentence'>
+				<span class='sentence_type'>relative</span> <span class='sentence_aim'>where</span> 
+				<div class='subject'>
+				
+					<div class='nominal_group'>
+					<span class='noun'>I</span> 
+					</div>
+					
+				
+				</div>
+				
+					<div class='verbal_group'>
+					
+					<div class='not_resolved'>
+					<span class='verb'>be</span> <span class='tense'>past simple</span> 	
+					<div class='direct_object'>
+					
+						<div class='nominal_group'>
+						<span class='adjective'>born</span> 
+						</div>
+						
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					
+				
+				</div>
+				
+			</div>
+			
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>study</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>location</span> 
+			<div class='relative'>
+			
+				<div class='sentence'>
+				<span class='sentence_type'>relative</span> <span class='sentence_aim'>where</span> 
+				<div class='subject'>
+				
+					<div class='nominal_group'>
+					<span class='noun'>you</span> 
+					</div>
+					
+				
+				</div>
+				
+					<div class='verbal_group'>
+					
+					<div class='not_resolved'>
+					<span class='verb'>study</span> <span class='tense'>past simple</span> 
+					</div>
+					
+					</div>
+					
+				
+				</div>
+				
+			</div>
+			
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>study</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>location</span> 
+			<div class='relative'>
+			
+				<div class='sentence'>
+				<span class='sentence_type'>relative</span> <span class='sentence_aim'>where</span> 
+				<div class='subject'>
+				
+					<div class='nominal_group'>
+					<span class='noun'>you</span> 
+					</div>
+					
+				
+				</div>
+				
+					<div class='verbal_group'>
+					
+					<div class='not_resolved'>
+					<span class='verb'>build</span> <span class='tense'>present simple</span> 	
+					<div class='direct_object'>
+					
+						<div class='nominal_group'>
+						<span class='determiner'>your</span> <span class='noun'>house</span> 
+						<div class='relative'>
+						
+							<div class='sentence'>
+							<span class='sentence_type'>relative</span> <span class='sentence_aim'>where</span> 
+							<div class='subject'>
+							
+								<div class='nominal_group'>
+								<span class='noun'>you</span> 
+								</div>
+								
+							
+							</div>
+							
+								<div class='verbal_group'>
+								
+								<div class='not_resolved'>
+								<span class='verb'>put</span> <span class='tense'>present simple</span> 	
+								<div class='direct_object'>
+								
+									<div class='nominal_group'>
+									<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+									</div>
+									
+								</div>
+								
+								
+								</div>
+								
+								</div>
+								
+							
+							</div>
+							
+						</div>
+						
+						</div>
+						
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					
+				
+				</div>
+				
+			</div>
+			
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>apples grow on trees and plants. give me three apples.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>ALL</span> <span class='noun'>apple</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>grow</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>ALL</span> <span class='noun'>tree</span> 
+			</div>
+			
+		</div>
+		
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>ALL</span> <span class='noun'>plant</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>DIGIT</span> <span class='determiner'>3</span> <span class='noun'>apple</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>When your father came, we was preparing the dinner. While I phoned, he made a sandwich with bacons.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>we</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>prepare</span> <span class='tense'>past progressive</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>dinner</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>when</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>your</span> <span class='noun'>father</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>come</span> <span class='tense'>past simple</span> 
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>he</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>make</span> <span class='tense'>past simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>sandwich</span> 
+		<div class='relative'>
+		
+			<div class='sentence'>
+			<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>with</span> 
+					<div class='indirect_object'>
+					
+						<div class='nominal_group'>
+						<span class='quantifier'>ALL</span> <span class='noun'>bacon</span> 
+						</div>
+						
+					</div>
+					
+				
+				</div>
+				
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>while</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>I</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>phone</span> <span class='tense'>past simple</span> 
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>the big and very strong man is on the corner. the too big and very strong man is on the corner.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='adjective'>big</span> <span class='adjective_qualifier'>very</span> <span class='adjective'>strong</span> <span class='noun'>man</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>corner</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='adjective_qualifier'>too</span> <span class='adjective'>big</span> <span class='adjective_qualifier'>very</span> <span class='adjective'>strong</span> <span class='noun'>man</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>corner</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>red apples grow on green trees and plants. a kind of thing. It can be played by thirty thousand twenty eight players.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>ALL</span> <span class='adjective'>red</span> <span class='noun'>apple</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>grow</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>ALL</span> <span class='adjective'>green</span> <span class='noun'>tree</span> 
+			</div>
+			
+		</div>
+		
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>ALL</span> <span class='noun'>plant</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>kind</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>thing</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>can+play</span> <span class='tense'>present passive</span> 	<br/><span class='preposition'>by</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>DIGIT</span> <span class='determiner'>30028</span> <span class='noun'>player</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>let the man go to the cinema. Is it the time to let you go. And where is the other tape.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>let</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>man</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='secondary_verbal_group'>
+	
+		<div class='verbal_group'>
+		
+		<div class='not_resolved'>
+		<span class='verb'>go</span> <span class='tense'></span> 	<br/><span class='preposition'>to</span> 
+			<div class='indirect_object'>
+			
+				<div class='nominal_group'>
+				<span class='determiner'>the</span> <span class='noun'>cinema</span> 
+				</div>
+				
+			</div>
+			
+		
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>time</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='secondary_verbal_group'>
+	
+		<div class='verbal_group'>
+		
+		<div class='not_resolved'>
+		<span class='verb'>let</span> <span class='tense'></span> 	
+		<div class='direct_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>you</span> 
+			</div>
+			
+		</div>
+		
+			
+		<div class='secondary_verbal_group'>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>go</span> <span class='tense'></span> 
+			</div>
+			
+			</div>
+			
+		</div>
+		
+		
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>place</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='adjective'>other</span> <span class='noun'>tape</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>And now, can you reach the tape. it could have been them. It is just me at the door. A strong clause can stand on its own</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>yes_no_question</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>can+reach</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>now</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>tape</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>could+be</span> <span class='tense'>passive conditional</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>them</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>it</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>me</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>at</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>door</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='adjective'>strong</span> <span class='noun'>clause</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>can+stand</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>its</span> <span class='noun'>own</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>tell me what to do. No, I can not reach it.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>tell</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>thing</span> 
+			<div class='relative'>
+			
+				<div class='sentence'>
+				<span class='sentence_type'>relative</span> <span class='sentence_aim'>that</span> 
+					<div class='verbal_group'>
+					
+					<div class='not_resolved'>
+					<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+					<div class='secondary_verbal_group'>
+					
+						<div class='verbal_group'>
+						
+						<div class='not_resolved'>
+						<span class='verb'>do</span> <span class='tense'></span> 
+						</div>
+						
+						</div>
+						
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					
+				
+				</div>
+				
+			</div>
+			
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>disagree</span> <span class='sentence_aim'>no.</span> 
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>can+reach</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>it</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>I will come back on monday. I'll play with guitar. I'll play football</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>come+back</span> <span class='tense'>future simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>Monday</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	<br/><span class='preposition'>with</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>football</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>I'll play guitar, piano and violon. I'll play with guitar, piano and violon. give me everything</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>piano</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>violon</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	<br/><span class='preposition'>with</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+			</div>
+			
+		</div>
+		
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>piano</span> 
+			</div>
+			
+		</div>
+		
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>violon</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>everything</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>I will come back at seven o'clock tomorrow. He finish the project 10 minutes before.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>come+back</span> <span class='tense'>future simple</span> <br/><span class='adverbial'>tomorrow</span> 	<br/><span class='preposition'>at</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>DIGIT</span> <span class='determiner'>7</span> <span class='noun'>o'clock</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>he</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>finish</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>project</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>before</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>DIGIT</span> <span class='determiner'>10</span> <span class='noun'>minute</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>I'll play a guitar a piano and a violon. I'll play with a guitar a piano and a violon. the boss you and me are here</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>piano</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>violon</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>future simple</span> 	<br/><span class='preposition'>with</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>guitar</span> 
+			</div>
+			
+		</div>
+		
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>piano</span> 
+			</div>
+			
+		</div>
+		
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>violon</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>me</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> <br/><span class='adverbial'>here</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>The time of speaking sentence is the best. I come at 10pm. I will come tomorrow evening</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>time</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='adjective'>speaking</span> <span class='noun'>sentence</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='adjective'>best</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>come</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>at</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>DIGIT</span> <span class='determiner'>10</span> <span class='noun'>pm</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>come</span> <span class='tense'>future simple</span> <br/><span class='adverbial'>tomorrow</span> 	<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>evening</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>I think that I know who is he. see you. So I want to go</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>think</span> <span class='tense'>present simple</span> 	
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>that</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>I</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>know</span> <span class='tense'>present simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>he</span> 
+				<div class='relative'>
+				
+					<div class='sentence'>
+					<span class='sentence_type'>relative</span> <span class='sentence_aim'>who</span> 
+						<div class='verbal_group'>
+						
+						<div class='not_resolved'>
+						<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+						<div class='direct_object'>
+						
+							<div class='nominal_group'>
+							<span class='noun'>he</span> 
+							</div>
+							
+						</div>
+						
+						
+						</div>
+						
+						</div>
+						
+					
+					</div>
+					
+				</div>
+				
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>end</span> 
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'></span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'></span> 	
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>so</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>I</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>want</span> <span class='tense'>present simple</span> 	
+			<div class='secondary_verbal_group'>
+			
+				<div class='verbal_group'>
+				
+				<div class='not_resolved'>
+				<span class='verb'>go</span> <span class='tense'></span> 
+				</div>
+				
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>the interpretation is to find a defenition or a rule for something. and in a dialog, there is an interaction between them</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>interpretation</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='secondary_verbal_group'>
+	
+		<div class='verbal_group'>
+		
+		<div class='not_resolved'>
+		<span class='verb'>find</span> <span class='tense'></span> 	
+		<div class='direct_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>defenition</span> 
+			</div>
+			
+		</div>
+		
+			
+		<div class='direct_object'>
+		
+			<div class='nominal_group'>
+			<span class='conjunction'>OR</span> <span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>rule</span> 
+			</div>
+			
+		</div>
+		
+			<br/><span class='preposition'>for</span> 
+			<div class='indirect_object'>
+			
+				<div class='nominal_group'>
+				<span class='noun'>something</span> 
+				</div>
+				
+			</div>
+			
+		
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>SOME</span> <span class='determiner'>an</span> <span class='noun'>interaction</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>between</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>them</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'>in</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>dialog</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>To have a dialog, we need more than 1 protagonist. I finish the dialog, and I check many problems</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>we</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>need</span> <span class='tense'>present simple</span> 	
+	<div class='secondary_verbal_group'>
+	
+		<div class='verbal_group'>
+		
+		<div class='not_resolved'>
+		<span class='verb'>have</span> <span class='tense'></span> 	
+		<div class='direct_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>dialog</span> 
+			</div>
+			
+		</div>
+		
+		
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>finish</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>dialog</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>check</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>ALL</span> <span class='adjective'>many</span> <span class='noun'>problem</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>the left of what? Jido, what do you do? throw one of them. Very good</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>left</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>what</span> 
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>interjection</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Jido</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>thing</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>you</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>do</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Jido</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>throw</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>DIGIT</span> <span class='determiner'>1</span> 
+		<div class='noun_cmplt'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>them</span> 
+			</div>
+			
+		</div>
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>agree</span> <span class='sentence_aim'>good.</span> 
+</div>
+
+<h2>the bottle on the table, is blue. where is this tape</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	<div class='relative'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+				<div class='indirect_object'>
+				
+					<div class='nominal_group'>
+					<span class='determiner'>the</span> <span class='noun'>table</span> 
+					</div>
+					
+				</div>
+				
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='adjective'>blue</span> 
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>w_question</span> <span class='sentence_aim'>place</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>this</span> <span class='noun'>tape</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>the bottle of Jido which is blue, is on the table. I do my homework before he comes</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+	<div class='noun_cmplt'>
+	
+		<div class='nominal_group'>
+		<span class='noun'>Jido</span> 
+		</div>
+		
+	</div>
+	
+	<div class='relative'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>relative</span> <span class='sentence_aim'>which</span> 
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>be</span> <span class='tense'>present simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='adjective'>blue</span> 
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>be</span> <span class='tense'>present simple</span> 	<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>table</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>do</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>my</span> <span class='noun'>homework</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>before</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>he</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>come</span> <span class='tense'>present simple</span> 
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>before he comes, I do my homework. I have played foot since I was a young boy.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>do</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>my</span> <span class='noun'>homework</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>before</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>he</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>come</span> <span class='tense'>present simple</span> 
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>I</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>play</span> <span class='tense'>present perfect</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>foot</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>since</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>I</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>be</span> <span class='tense'>past simple</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='adjective'>young</span> <span class='noun'>boy</span> 
+				</div>
+				
+			</div>
+			
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>They haven't played tennis since 1987. give me the glass the paper and the bottle.</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>they</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	
+	<div class='negative'>
+	<span class='verb'>play</span> <span class='tense'>present perfect</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>tennis</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>since</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>DIGIT</span> <span class='determiner'>1987</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>give</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>glass</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>paper</span> 
+		</div>
+		
+	</div>
+	
+		
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='determiner'>the</span> <span class='noun'>bottle</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>me</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+    </body>
+</html>
+

@@ -1,0 +1,111 @@
+body {
+  font: 80% "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+  background-color: #DDD;
+  color: #666666;
+}
+
+.sentence
+{
+	border: 1px solid;
+	margin: 10px;
+	padding: 5px;
+
+	border-radius: 4px;
+    background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%); /* firefox */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfff4), color-stop(40%,#dfe5d7), color-stop(100%,#b3bead)); /* webkit */
+
+}
+
+.sentence_type
+{
+	font-size:120%;
+	font-weight: bold;
+	margin-bottom: 5px;
+	text-variant: small-caps;
+}
+
+.sentence_aim
+{
+	font-style: italic;
+}
+.sentence_aim:before {content:"⇢ ";}
+
+.negative:before
+{
+	content:"NEGATION";
+	font-weight: bold;
+	color: rgb(200, 10,0);
+}
+
+.verbal_group, .nominal_group, .indirect_object, .direct_object
+{
+	margin-left: 10px;
+}
+
+.verbal_group, .nominal_group
+{
+	padding:1px;
+}
+
+.verbal_group:hover, .nominal_group:hover
+{
+	background: rgba(255,255,255, 0.3);
+	border: 1px solid rgba(0,0,0,0.2);
+	padding:0px;
+}
+
+.verb {
+	font-weight: bold;
+	color: #8836c1;
+}
+
+.tense
+{
+	font-style: italic;
+}
+
+.tense:before{content: "(tense: ";}
+.tense:after{content: ")";}
+
+.noun_cmplt:before
+{
+	font-style: italic;
+	content: "of ";
+	color: #ca590c;
+}
+
+
+.determiner 
+{
+	color: #0c99a7;
+}
+
+.adjective
+{
+	color: #0ca714;
+}
+
+.adverbial
+{
+	color: #0c670f;
+	margin-left:10px;
+}
+
+.noun 
+{
+	color: #0c37a7;
+}
+
+.preposition
+{
+	font-weight: bold;
+	color: #ca590c;
+	margin-left:10px;
+}
+
+.quantifier
+{
+	font-style: italic;
+}
+.quantifier:before {content: "[";}
+.quantifier:after {content: "]";}
