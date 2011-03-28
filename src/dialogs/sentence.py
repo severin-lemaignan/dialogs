@@ -4,8 +4,8 @@ import logging
 
 
 from helpers.sentence_atoms import *
-from helpers.printers import pprint
-from helpers.helpers import colored_print, level_marker
+from helpers.printers import pprint, level_marker
+from helpers.helpers import colored_print
 from resources_manager import ResourcePool
 
 class Sentence:
@@ -72,17 +72,20 @@ class Sentence:
     def __str__(self):
         res = level_marker() + pprint(self.data_type, SENTENCE_TYPE)
         if self.aim:
-            res += " (aim: " + self.aim + ')'
-        res += '\n'
+            res += pprint(self.aim, SENTENCE_AIM)
         
         if self.sn:
+            sn = ""
             for s in self.sn:
-                res += level_marker() + colored_print('nominal grp', 'bold') + ':\n\t' + str(s).replace("\n", "\n\t") +  level_marker() + "\n"
+                sn = str(s).replace("\n", "\n\t") + "\n"
+            res += pprint(sn, SUBJECT)
         if self.sv:
             for s in self.sv:
-                res += level_marker() + colored_print('verbal grp', 'bold') + ':\n\t' + str(s).replace("\n", "\n\t") + level_marker() + "\n"
+                res += str(s).replace("\n", "\n\t") + "\n"
         
         #res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
+
+        res = pprint(res, SENTENCE)
         return res
     
     def flatten(self):
@@ -169,38 +172,40 @@ class Nominal_Group:
         res = level_marker()
         
         if self._conjunction != 'AND':
-            res += colored_print('[' + self._conjunction + "] ", 'bold')
+            res += pprint(self._conjunction, CONJUNCTION)
         
         if self._quantifier != 'ONE':
-            res += colored_print('[' + self._quantifier + "] ", 'bold')
+            res += pprint(self._quantifier, QUANTIFIER)
             
         if self._resolved:
-            res += colored_print(self.id, 'white', 'blue') + '\n' + level_marker() + colored_print('>resolved<', 'green')
+            res += pprint(self.id, ID)
+            res = pprint(res, RESOLVED)
             
         else:
             
             
             if self.det:
-                res +=   colored_print(self.det, 'yellow') + " " 
+                res +=   pprint(" ".join(self.det), DETERMINER) 
             
             
             for k in self.adj:
-                res +=  colored_print(k[1], 'red') + " " 
-                res +=  colored_print([k[0]], 'green') + " " 
+                if k[1]:
+                    res +=  pprint(" ".join(k[1]), ADJECTIVE_QUALIFIER) 
+                res +=  pprint(k[0], ADJECTIVE)
             
             if self.noun:
-                res +=   colored_print(self.noun, 'blue') + '\n'
+                res +=   pprint(" ".join(self.noun), NOUN)
             
             
             if self.noun_cmpl:
                 for s in self.noun_cmpl:
-                    res += level_marker() + '[OF] \n\t' + str(s).replace("\n", "\n\t") + "\n"
+                    res += pprint(str(s).replace("\n", "\n\t"), NOUN_CMPLT)
             
             if self.relative:
                 for rel in self.relative:
-                    res += level_marker() + 'relative:\n\t' + str(rel).replace("\n", "\n\t") + "\n"
+                    res += pprint(str(rel).replace("\n", "\n\t"), RELATIVE)
         
-        return res
+        return pprint(res, NOMINAL_GROUP)
     
     
     def flatten(self):
@@ -243,11 +248,11 @@ class Indirect_Complement:
                         True)
         
     def __str__(self):
-        res = colored_print(self.prep, 'yellow') + "..."
+        res = pprint(" ".join(self.prep), PREPOSITION)
         
         if self.gn:
             for s in self.gn:
-                res += level_marker() + '\n\t' + str(s).replace("\n", "\n\t") + "\n"
+                res += pprint(str(s).replace("\n", "\n\t"), INDIRECT_OBJECT)
         
         return res
 
@@ -320,7 +325,7 @@ class Verbal_Group:
         This currently means:
             - it has a verb
             - its direct and indirect complements, if they exists, are valid
-            - the sub sentence, if it exist, is valid 
+            - the sub sentence, if it exists, is valid 
         """
         return  (True if self.vrb_main else False) \
                 and \
@@ -345,33 +350,32 @@ class Verbal_Group:
                 reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
     
     def __str__(self):
-        res =   level_marker() + colored_print(self.vrb_main, 'magenta') + " (" + str(self.vrb_tense) + ")\n"
+        res =  pprint(" ".join(self.vrb_main), VERB) + pprint(self.vrb_tense, TENSE)
         if self.advrb:
-            res += level_marker() + 'adverb: ' + colored_print(self.advrb, 'yellow') + "\n"
+            res += pprint(" ".join(self.advrb), ADVERBIAL)
         if self.vrb_adv:
-            res += level_marker() + 'vrb adv: ' + colored_print(self.vrb_adv, 'green') + "\n"
+            res += pprint(" ".join(self.vrb_adv), VERBAL_ADVERBIAL)
                 
         if self.d_obj:
-            res += level_marker() + 'direct objects:\n'
             for cmpl in self.d_obj:
-                res += '\t' + str(cmpl).replace("\n", "\n\t") + "\n"
+                res += '\t' + pprint(str(cmpl).replace("\n", "\n\t"), DIRECT_OBJECT) + "\n"
         
         if self.i_cmpl:
-            res += level_marker() + 'indirect objects:\n'
             for cmpl in self.i_cmpl:
                 res += '\t' + str(cmpl).replace("\n", "\n\t") + "\n"
         
         if self.vrb_sub_sentence:
             for vrb_sub_s in self.vrb_sub_sentence:
-                res += level_marker() + 'vrb_sub_sentence:\n\t' + str(vrb_sub_s).replace("\n", "\n\t") + "\n"
+                res += '\t' + pprint(str(vrb_sub_s).replace("\n", "\n\t"), SUB_SENTENCE) + "\n"
         
         if self.sv_sec:
             for vrb_sec_s in self.sv_sec:
-                res += level_marker() + 'secondary verbal grp:\n\t' + str(vrb_sec_s).replace("\n", "\n\t") + "\n"
+                res += '\t' + pprint(str(vrb_sec_s).replace("\n", "\n\t"), SECONDARY_VERBAL_GROUP) + "\n"
         
-        res += colored_print(">resolved<", 'green') if self.resolved() else colored_print(">not resolved<", 'red')
+        res = pprint(res, AFFIRMATIVE if self.state == Verbal_Group.affirmative else NEGATIVE) 
+        res = pprint(res, RESOLVED) if self.resolved() else pprint(res, NOT_RESOLVED)
         
-        return res
+        return pprint(res, VERBAL_GROUP)
 
 
     def flatten(self):
