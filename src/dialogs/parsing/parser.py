@@ -21,9 +21,6 @@ class Parser:
         #sentence with points.
         sentence_list = preprocessing.process_sentence(nl_input)
 
-        for s in sentence_list:
-            logger.debug(s)
-
         return sentence_list
  
 
@@ -37,9 +34,6 @@ class Parser:
 
         #Do the actual grammatical parsing
         self._class_list = analyse_sentence.sentences_analyzer(self._sentence_list)
-        
-        for s in self._class_list:
-            logger.debug(str(s))
         
         return self._class_list
  

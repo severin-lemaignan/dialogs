@@ -203,8 +203,14 @@ class Dialog(Thread):
         self._logger.info(colored_print("\n-------[       PREPROCESSING       ]-------\n", 'green'))
         preprocessed_sentences = self._parser.preprocess(nl_input, None)
 
+        for s in preprocessed_sentences:
+            logger.debug(s)
+
         self._logger.info(colored_print("\n-------[       PARSING       ]-------\n", 'green'))
         parsed_sentences = self._parser.parse(preprocessed_sentences, None)
+
+        for s in self._class_list:
+            logger.debug(str(s))
 
         if self._demo_mode:
             wait_for_keypress()
