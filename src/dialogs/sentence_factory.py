@@ -2,7 +2,8 @@
 
 import logging
 
-from helpers.helpers import colored_print, level_marker
+from helpers.helpers import colored_print
+from helpers.printers import level_marker
 from resources_manager import ResourcePool
 from sentence import *
 
