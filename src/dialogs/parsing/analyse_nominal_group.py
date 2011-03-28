@@ -48,22 +48,22 @@ def is_an_adj(word):
     
     #It is a noun verb pronoun or determinant so we have to return 0
     if word in ResourcePool().special_nouns+ResourcePool().special_verbs+pronoun_list+det_list:
-        return 0
+        return False
     
     #For the regular adjectives
     for k in ResourcePool().adjective_rules:
         if word.endswith(k):
-            return 1
+            return True
     
     #For adjectives created from numbers
     if word.endswith('th') and other_functions.number(word)==2:
-        return 1
+        return True
         
     #We use the irregular adjectives list to find it
     if word in adjective_list+ResourcePool().adjective_numbers+adj_quantifier:
-        return 1
+        return True
     
-    return 0
+    return False
 
     
     
