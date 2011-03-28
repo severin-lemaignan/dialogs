@@ -657,7 +657,8 @@ def other_processing(sentence):
         
         #'in front of' is the same with 'at the front of'
         if sentence[i]=='front' and sentence[i-1]=='in' and sentence[i+1]=='of':
-            sentence=sentence[:i-1]+['at'] +['the']+sentence[i:]
+            #sentence=sentence[:i-1]+['at'] +['the']+sentence[i:]
+            sentence=sentence[:i-1]+['in+front+of'] + sentence[i+2:]
             
         if sentence[i]=='i':
             sentence[i]='I'

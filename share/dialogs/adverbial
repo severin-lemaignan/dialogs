@@ -51,6 +51,7 @@ near 1 1 isNearOf objectFoundInLocation
 near+to 1 1
 next 1 1 isNextTo objectFoundInLocation
 next+to 1 0 isNextTo objectFoundInLocation
+in+front+of 1 0 inFrontOf objectFoundInLocation
 on 1 1 isOn objectFoundInLocation
 since 1 1
 to 0 1 receivedBy
