@@ -1,27 +1,18 @@
 \documentclass[twoside,a4paper,10pt]{report}
-%%\usepackage[french]{babel} %% Use your own babel language
+
 \usepackage[top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
-%\usepackage{ucs}
+
 \usepackage[utf8]{inputenc}
-\usepackage{pslatex}
 \usepackage{hyperref}
 \usepackage{graphicx}
-\usepackage{tabularx}
-\usepackage{supertabular}
-\usepackage{pdflscape} %% Used for very big table
 \usepackage{moreverb}
-\usepackage{color}
+\usepackage[table]{xcolor}
 \usepackage{listings}
-\usepackage{lastpage}
 \usepackage{fancyhdr}
-\usepackage{ulem}
-\usepackage{textcomp}
-\usepackage{wasysym}
-\usepackage{wrapfig} %%Usefull for image 
-%\usepackage{fguill} %%Use this package for guillemot[left|right] useless with babel set to french
-\usepackage{eso-pic} %% Background
+\usepackage{longtable}
 
 \usepackage{sectsty} %%Change style on every sections\pagestyle{fancy}%
+
 \renewcommand{\headrulewidth}{0.1pt}
 \renewcommand{\footrulewidth}{0pt}
 \renewcommand{\chaptermark}[1]{%
@@ -54,40 +45,33 @@
 	backgroundcolor=\color{codegray}}
 
 \newcommand{\settexitref}[2]{(\ref{#1}p\pageref{#1})}
-%\newcommand{\dokutitlelevelone}[1]{\chapter{#1}}
-\newcommand{\dokutitlelevelone}[1]{} %ignore the level one, which is the page title
-%\newcommand{\dokutitleleveltwo}[1]{\section{#1}}
-\newcommand{\dokutitleleveltwo}[1]{\chapter{#1}}
-%\newcommand{\dokutitleleveltree}[1]{\subsection{#1}}
-\newcommand{\dokutitleleveltree}[1]{\section{#1}}
-%\newcommand{\dokutitlelevelfour}[1]{\subsubsection{#1}}
-\newcommand{\dokutitlelevelfour}[1]{\subsection{#1}}
-\newcommand{\dokutitlelevelfive}[1]{\paragraph{#1}}
-\newcommand{\dokufootnote}[1]{\footnote{#1}}
-\newcommand{\dokufootmark}[1]{\footnotemark[#1]}
-\newcommand{\dokubold}[1]{\textbf{#1}}
-\newcommand{\dokuitalic}[1]{\textsl{#1}}
-\newcommand{\dokumonospace}[1]{\texttt{#1}}
-\newcommand{\dokuunderline}[1]{\underline{#1}}
-\newcommand{\dokuoverline}[1]{\sout{#1}}
-\newcommand{\dokusupscript}[1]{\textsuperscript{#1}}
-\newcommand{\dokusubscript}[1]{$_{#1}$}
-\newcommand{\dokuhline}{\line(1,0){400}}
-\newcommand{\dokulabel}[1]{\label{#1}}
-\newcommand{\dokuitem}{\item}
-\newcommand{\dokuquoting}{\textbar}
-\newcommand{\dokutabularwidth}{\textwidth}
-\newcommand{\dokusupertabularheadbreak}{\small\sl continued from previous page}
-\newcommand{\dokusupertabulartailbreak}{\small\sl continued on next page}
-\newcommand{\dokuheadingstyle}[1]{\textbf{#1}}
-\definecolor{dokuheadingcolor}{rgb}{0,0,0.60}
-\newcommand{\dokubackground}[1]{%
-%\AddToShipoutPicture{%
-%  \AtTextCenter{%
-%    \makebox(0,0)[c]{\resizebox{\textwidth}{!}{%
-%      \rotatebox{25}{\textsf{\textbf{\textcolor[gray]{0.90}{#1}}}}}}%
-%  }%
-% }%
+
+\newcommand{\chatN}[1]{{\footnotesize \textsf{#1}}}
+\newcommand{\stmt}[1]{{\footnotesize \texttt{#1}}}
+\newcommand{\chatfix}[1]{
+        & \multicolumn{2}{c}{\small \textit{[Replaced by: ``#1"]}}
+        }
+\newcommand{\wontparse}{
+        & \multicolumn{2}{c}{\color{red} \textit{[Parser failed]}}
+        }
+
+\definecolor{lightgreen1}{RGB}{230, 255, 230}
+\definecolor{lightgreen2}{RGB}{200, 255, 200}
+        
+\newenvironment{dialog}
+{
+\rowcolors{1}{lightgreen1}{lightgreen2}
+
+\begin{center}
+    \begin{longtable}{r|p{7cm}|c}
+    \hline \textbf{Speaker} & \textbf{Utterance} & Input correctly parsed? \\ 
+    \hline 
+    \endhead
+}
+{
+    \hline
+    \end{longtable}
+\end{center}
 }
 
 \hypersetup{
@@ -97,8 +81,7 @@ pdfcreator = {DokuTeXit},
 pdfproducer = {dokuwiki + TeXit + latex + dvipdf}
 }
 \title{ Dialogs: Grounding verbal interaction for robotics}
-\author{Patrick Tsemengue, Mahdi Chouayakh}
-\dokubackground{http://homepages.laas.fr/slemaign/wiki/}
+\author{Patrick Tsemengue, Mahdi Chouayakh, Séverin Lemaignan}
 \begin{document}
 
 \sffamily
@@ -116,24 +99,21 @@ pdfproducer = {dokuwiki + TeXit + latex + dvipdf}
 
 
 
-\dokutitlelevelone{Conception map}
-\label{bc34ce150ff26ff0ec4b6be60dcf178c}%% conception_map
+\chapter{Module overview}
 \label{f0e926ab940662bebfe368ba24960a2d}%%Start: stage_natural_language_processing_-_ete_2010 => /home/slemaign/wiki/data/pages/stage_natural_language_processing_-_ete_2010.txt
-
-\hyperref[d82c279ed6fd93ff2155ed19c4d2e7da]{Dialogs Module Simple Conception}
 
 \begin{figure*}[h]
 \centering
-\includegraphics[width=\linewidth]{dialog_module_simple.png}
+\includegraphics[width=0.7\linewidth]{dialogs_module_simple.png}
 \caption{Dialogs overview}
 \end{figure*}
 
 
 
-\dokutitlelevelone{Data Structure}
+\chapter{Data Structure}
 \label{c8f6850ec2ec3fb32f203c1f4e3c2fd2}%% data_structure
 
-\dokutitleleveltwo{Description}
+\section{Description}
 \label{67daf92c833c41c95db874e18fcb2786}%% description
 
 \begin{figure*}[h]
@@ -143,29 +123,29 @@ pdfproducer = {dokuwiki + TeXit + latex + dvipdf}
 \end{figure*}
 
 
-The \dokuitalic{Sentence data structure} consists of a tree of Nominal and verbal structures and \dokuitalic{Sentences}. The use of a tree eases the information fetching.
-Inner components of a \dokuitalic{Sentence} are arranged into list of objects. Therefore, the data that is transmitted through the Dialogs modules will be a list of several \dokuitalic{Sentences}.
+The \textsl{Sentence data structure} consists of a tree of Nominal and verbal structures and \textsl{Sentences}. The use of a tree eases the information fetching.
+Inner components of a \textsl{Sentence} are arranged into list of objects. Therefore, the data that is transmitted through the Dialogs modules will be a list of several \textsl{Sentences}.
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{A Sentence is made of:}
+    \item  \underline{A Sentence is made of:}
 \begin{itemize}
-\dokuitem  \dokumonospace{sn}: a nominal structure typed into a list of Nominal{\textunderscore}group
-\dokuitem  \dokumonospace{sv}: a verbal structure typed into a list of Verbal{\textunderscore}Group
-\dokuitem  \dokumonospace{aim}: used for retrieving the purpose of a question (Mandatory when processing a w{\textunderscore}question or a subsentence)
-\dokuitem  \dokumonospace{data{\textunderscore}type}: is the type of the sentence (w{\textunderscore}question, statement\ldots{})
+    \item  \texttt{sn}: a nominal structure typed into a list of Nominal{\textunderscore}group
+    \item  \texttt{sv}: a verbal structure typed into a list of Verbal{\textunderscore}Group
+    \item  \texttt{aim}: used for retrieving the purpose of a question (Mandatory when processing a w{\textunderscore}question or a subsentence)
+    \item  \texttt{data{\textunderscore}type}: is the type of the sentence (w{\textunderscore}question, statement\ldots{})
 \end{itemize}
 
 \end{itemize}
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Nominal group class declaration}
+    \item  \underline{Nominal group class declaration}
 \begin{itemize}
-\dokuitem  ‘‘det’’: determiner
-\dokuitem  \dokumonospace{noun}: a simple noun
-\dokuitem  \dokumonospace{adj}: a list of adjectives describing the noun
-\dokuitem  \dokumonospace{noun{\textunderscore}cmpl}: the noun complements attribute, which is a list of Nominal{\textunderscore}group
-\dokuitem  \dokumonospace{relative}: The relative subordinate clause, which is of a list of Sentences type
+    \item  ‘‘det’’: determiner
+    \item  \texttt{noun}: a simple noun
+    \item  \texttt{adj}: a list of adjectives describing the noun
+    \item  \texttt{noun{\textunderscore}cmpl}: the noun complements attribute, which is a list of Nominal{\textunderscore}group
+    \item  \texttt{relative}: The relative subordinate clause, which is of a list of Sentences type
 \end{itemize}
 
 \end{itemize}
@@ -174,38 +154,38 @@ Additional Nominal Group attribute are:
 
 
 \begin{itemize}
-\dokuitem  ‘‘id’’: Holding the ontology identifier of its container nominal group set by default to none.
-\dokuitem  \dokumonospace{{\textunderscore}resolved}: This hold the value TRUE when the Nominal group has been resolved (Cf. \hyperref[b7e164b34ff76b1cda93a058604190da]{Resolution})
-\dokuitem  \dokumonospace{{\textunderscore}conjunction = 'AND' \#could be 'AND' or 'OR' }\ldots{} 
-\dokuitem  \dokumonospace{ {\textunderscore}quantifier = 'ONE' \#could be 'ONE' or 'SOME' }\ldots{} (Cf. \hyperref[c9a5eb8d391a77a428b429e98ad45e2c]{Quantifier})
+    \item  ‘‘id’’: Holding the ontology identifier of its container nominal group set by default to none.
+    \item  \texttt{{\textunderscore}resolved}: This hold the value TRUE when the Nominal group has been resolved (Cf. \hyperref[b7e164b34ff76b1cda93a058604190da]{Resolution})
+    \item  \texttt{{\textunderscore}conjunction = 'AND' \#could be 'AND' or 'OR' }\ldots{} 
+    \item  \texttt{ {\textunderscore}quantifier = 'ONE' \#could be 'ONE' or 'SOME' }\ldots{} (Cf. \hyperref[c9a5eb8d391a77a428b429e98ad45e2c]{Quantifier})
 \end{itemize}
 
 \begin{itemize}
-\dokuitem  An indirect complement or adverbial is made of: 
+    \item  An indirect complement or adverbial is made of: 
 \begin{itemize}
-\dokuitem  Indirect complement class declaration
-\dokuitem  \dokumonospace{gn}: nominal group
-\dokuitem  \dokumonospace{prep}: preposition
+    \item  Indirect complement class declaration
+    \item  \texttt{gn}: nominal group
+    \item  \texttt{prep}: preposition
 \end{itemize}
 
 \end{itemize}
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Verbal group class declaration}
+    \item  \underline{Verbal group class declaration}
 \begin{itemize}
-\dokuitem  \dokumonospace{vrb{\textunderscore}main}: the main verb of a sentence
-\dokuitem  \dokumonospace{vrb{\textunderscore}sec}: an accompanying verb of the main verb
-\dokuitem  \dokumonospace{vrb{\textunderscore}tense}: the main verb tense
-\dokuitem  \dokumonospace{d{\textunderscore}obj}: the direct object referred by the main verb
-\dokuitem  \dokumonospace{i{\textunderscore}cmpl}: the indirect object referred by the main verb or an adverbial formed from a nominal group
-\dokuitem  \dokumonospace{vrb{\textunderscore}adv}: an adverb describing the verb
-\dokuitem  \dokumonospace{advrb}: an adverb used as an adverbial of the whole sentence
-\dokuitem  ‘‘comparator’’: {the nominal group, object of the comparison}. Used for comparing nominal groups grammatically (E.g.: Bigger than)
+    \item  \texttt{vrb{\textunderscore}main}: the main verb of a sentence
+    \item  \texttt{vrb{\textunderscore}sec}: an accompanying verb of the main verb
+    \item  \texttt{vrb{\textunderscore}tense}: the main verb tense
+    \item  \texttt{d{\textunderscore}obj}: the direct object referred by the main verb
+    \item  \texttt{i{\textunderscore}cmpl}: the indirect object referred by the main verb or an adverbial formed from a nominal group
+    \item  \texttt{vrb{\textunderscore}adv}: an adverb describing the verb
+    \item  \texttt{advrb}: an adverb used as an adverbial of the whole sentence
+    \item  ‘‘comparator’’: {the nominal group, object of the comparison}. Used for comparing nominal groups grammatically (E.g.: Bigger than)
 \end{itemize}
 
 \end{itemize}
 
-\dokutitleleveltwo{Examples}
+\section{Examples}
 \label{bfebe34154a0dfd9fc7b447fc9ed74e9}%% examples
 Input:
 
@@ -262,17 +242,17 @@ Result:
 \end{verbatimtab}
 \normalsize
 
-\dokutitlelevelone{Natural Language Parsing}
+\chapter{Natural Language Parsing}
 \label{40b6d909561b858c733e07e5b7595576}%% natural_language_parsing
 We decided to store different data, with different functionalities in the sentence, in the same variable. The goal is to limit the data structure attribute number.
 For example, we have decided to create a variable that contains the direct object of the verb and another one contains indirect complements of the verbs - indirect objects or adverbials that are noun phrases as both follow preposition.
 Before starting the Parsing of the utterance, we attempt to give it a formalized form that eases the parsing. The following describe functions involved in the formalization process.
 
 
-\dokutitleleveltwo{Pre-processing}
+\section{Pre-processing}
 \label{786dd9bb7bc5625a566d42a2962bebf7}%% pre-processing
 
-\dokutitleleveltree{Punctuation}
+\subsection{Punctuation}
 \label{9ac6d441030eb0844ffb83ba4f100c94}%% punctuation
 The end of the sentence phrase in an utterance is detected by the use of punctuation. At the end of the utterance, when the punctuation is missing, a full point is automatically added. Points can be attached or separated from the word that comes before.
 All commas occurring at the end of the pre-processing are deleted as they are of no use for the rest of the process.
@@ -281,11 +261,11 @@ Duplicated punctuation is truncated.
 Example: "the bottle is blue???" ? "the bottle is blue?"
 
 
-\dokutitleleveltree{Changing Words}
+\subsection{Changing Words}
 \label{179d018d9e72e2699a66b97a27313146}%% changing_words
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Concatenate prepositions}
+    \item  \underline{Concatenate prepositions}
 \end{itemize}
 Some prepositions are composed of several words; it is putting them together with "+" instead of space.
 
@@ -298,7 +278,7 @@ Some prepositions are composed of several words; it is putting them together wit
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Extension of contractions}
+    \item  \underline{Extension of contractions}
 \end{itemize}
 This function makes some changes. It eliminates a word to be replaced by other one or modify it and add some others.
 
@@ -311,7 +291,7 @@ This function makes some changes. It eliminates a word to be replaced by other o
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Is}
+    \item  \underline{Is}
 \end{itemize}
 In pre-processing, all "’s" linked to a personal pronoun or a few prepositions as "what" and "that" may not represent a relationship of possession but the verb state "is". So after this condition, change will be made or not.
 
@@ -324,7 +304,7 @@ In pre-processing, all "’s" linked to a personal pronoun or a few prepositions
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Possession}
+    \item  \underline{Possession}
 \end{itemize}
 In this module, we are processing "’s". If we have this form, certainly there is a relationship of possession that can be translated by the use of "of" ("’s" of the verb "be" was processed before). We therefore must find the noun before and after "’s". Knowing that the noun after is not preceded by a determinant, it is necessary to add it. We have consequently chosen the determinant "the" because the object is known.
 
@@ -351,7 +331,7 @@ After this process, we look into the sentence to add the missing determinant aft
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Numbers}
+    \item  \underline{Numbers}
 \end{itemize}
 The numbers are determinants. For compound numbers, we created a function that determines them and concatenates them with "+". We have also to delete "and" between them.
 
@@ -364,23 +344,23 @@ The numbers are determinants. For compound numbers, we created a function that d
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{I/i}
+    \item  \underline{I/i}
 \end{itemize}
 All "i" will be changed on "I"
 
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Month/day/pm/am}
+    \item  \underline{Month/day/pm/am}
 \end{itemize}
 Months and days must be with capitol letter, so we make change if it is indeed. For "pm" and "am", normally, they are linked to the digit before, so we separate them.
 
 
-\dokutitleleveltree{Beginning Sentence}
+\subsection{Beginning Sentence}
 \label{194989f378cb64e64758160f2e624d3f}%% beginning_sentence
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Upper case process}
+    \item  \underline{Upper case process}
 \end{itemize}
 We can start sentences with capital letters or not. But if the word starts with a capitol letter, we process it as a nominal group (proper name). So when it is an imperative sentence, the verb must be known before or it must be written with a lower case.
 Algorithmically, we know that is not an upper case, if we can determine a noun, a number, a specific start word phrase or a verb (known in advance).
@@ -409,7 +389,7 @@ Some processes require the presence of the lower case even if it is a proper nam
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Changing the beginning of sentence}
+    \item  \underline{Changing the beginning of sentence}
 \end{itemize}
 Alternative process should be done with the process of capital, is changing the placement of some elements found at the beginning of a sentence. For that, we determine the nature of the first element. If it is an adverb or adverbial, we move it at the end of the sentence and we put, just before it, a comma (if the sentence ends with a subsentence or a relative, we must separate this element from the secondary sentence).
 
@@ -435,7 +415,7 @@ If it is an indirect complement or second verb, we try to find comma after it. I
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Interjection}
+    \item  \underline{Interjection}
 \end{itemize}
 We can have interjection with exclamation mark - "!" - but also with comma - ","- if it is linked to another sentence. So we have to know the position of the first comma - ",". If before it there is a preposition, the comma is for this secondary sentence. Otherwise, we know if it is an interjection with the first word. Finally, we have to find the nature of the element which follows it. If it is a nominal group, we have a list of nominal group which are linked with "and". After recovering all these nominal groups, if we still have a comma, it is necessary an interjection. Else we continue the other processes.
 
@@ -466,13 +446,13 @@ We can have interjection with exclamation mark - "!" - but also with comma - ","
 
 \end{lstlisting}
 
-\dokutitleleveltree{Dualities}
+\subsection{Dualities}
 \label{ceb3780718f195cca0227bdf527d4a06}%% dualities
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Duality between the adverbial subsentence and adverbial nominal group}
+    \item  \underline{Duality between the adverbial subsentence and adverbial nominal group}
 \end{itemize}
-There are a few preposition of subsentence which can be as both adjective or preposition of nominal group. During this process, we determine this difference. Indeed in a main sentence if we have a preposition and a nominal group that follows it, we determine the nature of the word that comes after the noun. In the case where it is an adverb which is related to the sentence (such as \dokuitalic{tomorrow}) or another nominal group or another preposition…, this following element is another adverbial of the same sentence. 
+There are a few preposition of subsentence which can be as both adjective or preposition of nominal group. During this process, we determine this difference. Indeed in a main sentence if we have a preposition and a nominal group that follows it, we determine the nature of the word that comes after the noun. In the case where it is an adverb which is related to the sentence (such as \textsl{tomorrow}) or another nominal group or another preposition…, this following element is another adverbial of the same sentence. 
 
 
 \small
@@ -481,7 +461,7 @@ There are a few preposition of subsentence which can be as both adjective or pre
   “I do my homework before 10 minutes from now.”
 \end{verbatimtab}
 \normalsize
-Otherwise we have a verb or an adverb which preceded the verb (as \dokuitalic{quickly}) it is a subsentence. In order of the following processes make the differentiation, we added ":" for preposition to mention that is a preposition of adverbial subsentence.
+Otherwise we have a verb or an adverb which preceded the verb (as \textsl{quickly}) it is a subsentence. In order of the following processes make the differentiation, we added ":" for preposition to mention that is a preposition of adverbial subsentence.
 
 
 \small
@@ -492,7 +472,7 @@ Otherwise we have a verb or an adverb which preceded the verb (as \dokuitalic{qu
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Duality between "but" of nominal groups and "but" of subsentence}
+    \item  \underline{Duality between "but" of nominal groups and "but" of subsentence}
 \end{itemize}
 Usually, we could not differentiate "but" between two nominal groups or "but" that represents a preposition of an adverbial. So the user has to put ":" before "but" to process it as conjunction between two nominal groups. However we can limit the cases. Normally, the user must write:
 
@@ -531,11 +511,11 @@ In the other case (nominal{\textunderscore}group1 + but + nominal{\textunderscor
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{"And" processing}
+\subsection{"And" processing}
 \label{3dd83b6ed393cdcc2a450375a4147efc}%% and_processing
 
 \begin{itemize}
-\dokuitem  \dokuunderline{"and" between adjectives}
+    \item  \underline{"and" between adjectives}
 \end{itemize}
 In lists of adjectives, commas and "and" conjunctions are removed.
 
@@ -548,7 +528,7 @@ In lists of adjectives, commas and "and" conjunctions are removed.
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Adding "and" between nominal groups}
+    \item  \underline{Adding "and" between nominal groups}
 \end{itemize}
 There are two cases. During these processes, we stop them when a condition is not satisfied in a particular order.
 
@@ -622,16 +602,16 @@ If this rule is not respected, the program resumes the position of the second no
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{"and" between sentences}
+    \item  \underline{"and" between sentences}
 \end{itemize}
 We can have many sentences separate by "and". The user must add comma, just before the conjunction. With "; and", we cut the sentence into two different sentences.
 
 
-\dokutitleleveltree{Merging}
+\subsection{Merging}
 \label{65cc30ed55db36c739ab349d7c58dfe8}%% merging
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Conjunction}
+    \item  \underline{Conjunction}
 \end{itemize}
 This variable tells us the conjunction that precedes the noun. By default we have chosen to put “AND”. So for the first nominal group, this variable has no effect (if it is “AND”). This variable can be also: “OR” and “BUT”. The conjunction is linked to the nominal group which follow it
 When the conjunction is for adjectives or determinants, we have to duplicate the nominal group to extend the conjunction of the entire nouns.
@@ -652,7 +632,7 @@ Therefore, we can have several nominal groups with different conjunctions. Examp
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{What+to}
+    \item  \underline{What+to}
 \end{itemize}
     Utterance1: "tell me what to do"
     ?“tell me the thing that is to do.”
@@ -660,7 +640,7 @@ Therefore, we can have several nominal groups with different conjunctions. Examp
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Merge sentence}
+    \item  \underline{Merge sentence}
 \end{itemize}
 Some time, user forgets the verb "be". In some case, we add a relative form to correct the mistake.
 
@@ -682,7 +662,7 @@ Some time, user has to put the comma because after pre-processing we can have a 
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Infinitive verbs}
+    \item  \underline{Infinitive verbs}
 \end{itemize}
 Some verbs need infinitive form without using "to". In this function we add the preposition to make the following process easier. That creates a new verbal structure.
 
@@ -694,11 +674,11 @@ Some verbs need infinitive form without using "to". In this function we add the 
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{Other processing}
+\subsection{Other processing}
 \label{b5a7a96e3b75d0ff95064af9e93e7927}%% other_processing
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Other processing}
+    \item  \underline{Other processing}
 \end{itemize}
 In this function, we will make different processes. Starting with question with "which", this w{\textunderscore}question are about a nominal group which doesn’t have a determinant. Because of the necessity to have a determinant to recover it, we add "the".
 
@@ -729,7 +709,7 @@ Regarding the interpretation module, ‘in front of’ and ‘in the front of’
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Move some prepositions}
+    \item  \underline{Move some prepositions}
 \end{itemize}
 Some prepositions follow the noun, it is compulsory to exchange the positions.
 
@@ -742,7 +722,7 @@ Some prepositions follow the noun, it is compulsory to exchange the positions.
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{2 Determinants}
+    \item  \underline{2 Determinants}
 \end{itemize}
 When we have tow determinants with the same nominal group, we delete one of them
 
@@ -753,12 +733,12 @@ When we have tow determinants with the same nominal group, we delete one of them
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{Commas and subsentences}
+\subsection{Commas and subsentences}
 \label{f50e61d6a41031b0a4d3b4c2287c8dfa}%% commas_and_subsentences
 An adverbial is a sentence; it should be treated as sentences. The problem is to find its starting point and ending point. For starting, every adverbial have to start with a proposition. Concerning the end, we used a semicolon (Cf \hyperref[60550ca08c44dda94b3d7a018a352868]{Subsentence}). Therefore, all commas before this preposition must be deleted. The comma at the end is changed to semicolon if it is in the middle of the sentence. But if it is the end, the final point is enough.
 
 
-\dokutitleleveltree{Limits of the pre-processing that can be corrected}
+\subsection{Limits of the pre-processing that can be corrected}
 \label{751e28b2f79ada5fd6de3cc8dcb5ed90}%% limits_of_the_pre-processing_that_can_be_corrected
 v  In some functions like the one where we differentiate preposition of subsentence and preposition of indirect complement, we recover the nominal group with his noun complement. We can have with it another nominal group which is related to it by a conjunction. This case is not processed.
 
@@ -768,7 +748,7 @@ v  In some functions like the one where we differentiate preposition of subsente
   Utterance: "I do my homework before the man and he arrive."
 \end{verbatimtab}
 \normalsize
-After recovering "\dokuitalic{the man}" we have "\dokuitalic{and}" which is not an adverb or a nominal group or preposition. So it is a subsentence ? it is correct
+After recovering "\textsl{the man}" we have "\textsl{and}" which is not an adverb or a nominal group or preposition. So it is a subsentence ? it is correct
 
 
 \small
@@ -778,7 +758,7 @@ After recovering "\dokuitalic{the man}" we have "\dokuitalic{and}" which is not 
 \normalsize
 Same problem, but it is wrong because we have not a subsentence but a double indirect complements
 
-v  Some time, when we put "\dokuitalic{and}" between sentences, we delete the subjects if it is the same with the one of the first sentence. So we must duplicate it.
+v  Some time, when we put "\textsl{and}" between sentences, we delete the subjects if it is the same with the one of the first sentence. So we must duplicate it.
 
 
 \small
@@ -786,7 +766,7 @@ v  Some time, when we put "\dokuitalic{and}" between sentences, we delete the su
   Utterance: "I give you the pen and put the bottle on your left"
 \end{verbatimtab}
 \normalsize
-The second sentence will be considered as an imperative. So we have to add "\dokuitalic{I}" to correct the mistake
+The second sentence will be considered as an imperative. So we have to add "\textsl{I}" to correct the mistake
 
 
 \small
@@ -798,7 +778,7 @@ The second sentence will be considered as an imperative. So we have to add "\dok
 v  We might observe some other limits that nonetheless, are not discussed in this report.
 
 
-\dokutitleleveltwo{Main Process}
+\section{Main Process}
 \label{0e76170b5e24f80d8e04eca241527e68}%% main_process
 This module calls a chain of external functions to apply the rules of grammar to the sentence.  Once the information is stored, we will delete it from the sentence. For example, the determination of nominal group is through the determinant, the personal pronoun or uppercase.
 
@@ -812,26 +792,26 @@ This module calls a chain of external functions to apply the rules of grammar to
 When we find the nominal group, we find also his adjectives, his noun complement and his relative. After the process, we delete all this information from the sentence.
 
 
-\dokutitleleveltree{Tenses}
+\subsection{Tenses}
 \label{7664bb61dad550e6b91636502af4e390}%% tenses
 For tenses, we can process:
 
 
-\begin{enumerate}\dokuitem  Present simple ? For singular “s”
-\dokuitem  Present perfect ? “has” or “have”+ past participle
-\dokuitem  Present progressive ? “is” or “are” or “’m” + verb + “ing”
-\dokuitem  Present passive ? “is” or “are” or “’m” + past participle
-\dokuitem  Present conditional ? Using modal in conditional or “would”
-\dokuitem  Past simple ? Verb in the past
-\dokuitem  Past perfect ? “had” + past participle
-\dokuitem  Past progressive ? “was” or “were” + verb + “ing”
-\dokuitem  Past passive ? “was” pr “were” + past participle
-\dokuitem  Past conditional ? Present conditional with the present perfect
-\dokuitem  Future simple ? Using “will”
-\dokuitem  Passive conditional ? If we have “be”+past participle preceded by conditional
+\begin{enumerate}    \item  Present simple ? For singular “s”
+    \item  Present perfect ? “has” or “have”+ past participle
+    \item  Present progressive ? “is” or “are” or “’m” + verb + “ing”
+    \item  Present passive ? “is” or “are” or “’m” + past participle
+    \item  Present conditional ? Using modal in conditional or “would”
+    \item  Past simple ? Verb in the past
+    \item  Past perfect ? “had” + past participle
+    \item  Past progressive ? “was” or “were” + verb + “ing”
+    \item  Past passive ? “was” pr “were” + past participle
+    \item  Past conditional ? Present conditional with the present perfect
+    \item  Future simple ? Using “will”
+    \item  Passive conditional ? If we have “be”+past participle preceded by conditional
 \end{enumerate}
 
-\dokutitleleveltree{Sentence type}
+\subsection{Sentence type}
 \label{1cae782fdfad8b38f1b3641092175803}%% sentence_type
 Once the pre-processing ends the first processing, sentences undergo according to the type of different modules that depend on the shape of the sentence another process. This classification is done using a list that contains the words with sentence can usually start.
 
@@ -853,13 +833,13 @@ If we have an interrogative word, the sentence is a w{\textunderscore}question. 
 Examples:
 
 
-\begin{enumerate}\dokuitem  When must you take the bus ? date
-\dokuitem  Where is Broyen ? place
-\dokuitem  Where must Jido and you be from ? origin
-\dokuitem  Why should she go to Toulouse ? reason
-\dokuitem  Who could you talk to on the phone ? people
-\dokuitem  Whose blue bottle and red glass are these ? owner
-\dokuitem  To whom are you talking ? people
+\begin{enumerate}    \item  When must you take the bus ? date
+    \item  Where is Broyen ? place
+    \item  Where must Jido and you be from ? origin
+    \item  Why should she go to Toulouse ? reason
+    \item  Who could you talk to on the phone ? people
+    \item  Whose blue bottle and red glass are these ? owner
+    \item  To whom are you talking ? people
 \end{enumerate}
 
 Which salesperson's competition won the award which we won in the last years ? choice
@@ -867,20 +847,20 @@ Which salesperson's competition won the award which we won in the last years ? c
 For questions constructed with “what”, they can be processed differently. Indeed, for the issues that concern objects or conditions reported directly after “what” returns aims as examples:
 
 
-\begin{enumerate}\dokuitem  What time is the news on TV? ? time
-\dokuitem  What size do you wear? ? size
-\dokuitem  \ldots{}
+\begin{enumerate}    \item  What time is the news on TV? ? time
+    \item  What size do you wear? ? size
+    \item  \ldots{}
 \end{enumerate}
 
 Otherwise we proceed as for other w{\textunderscore}questions. However, we have to meet certain conditions:
 
 
-\begin{enumerate}\dokuitem  If verb = “happen” ? situation
-\dokuitem  If verb = “like” + tense is not conditional ? description
-\dokuitem  If verb = “go” + first i{\textunderscore}compl ends with “ing” ? explication
-\dokuitem  If verb = “think” ? opinion
-\dokuitem  Else for all other cases it is ? thing
-\dokuitem  It the case when we have “what kind” or “what type” ? classification + object of the question. The processing of the aim is not as for other w{\textunderscore}questions.
+\begin{enumerate}    \item  If verb = “happen” ? situation
+    \item  If verb = “like” + tense is not conditional ? description
+    \item  If verb = “go” + first i{\textunderscore}compl ends with “ing” ? explication
+    \item  If verb = “think” ? opinion
+    \item  Else for all other cases it is ? thing
+    \item  It the case when we have “what kind” or “what type” ? classification + object of the question. The processing of the aim is not as for other w{\textunderscore}questions.
 \end{enumerate}
 
 Utterance: "What type of people doesn’t read this magazine? What kind of music must he listen to everyday? What kind of sport is your favourite?"
@@ -899,23 +879,23 @@ For questions constructed with “how”, they can have a different processing. 
 Examples:
 
 
-\begin{enumerate}\dokuitem  How old are you? old
-\dokuitem  How long is your uncle's store opened tonight? long
-\dokuitem  How far is it from the hotel to the restaurant? far 
-\dokuitem  How soon can you be here? soon
-\dokuitem  How often does Jido go skiing? often
-\dokuitem  How much or How many? quantity
-\dokuitem  How about going? invitation
-\dokuitem  \ldots{}
+\begin{enumerate}    \item  How old are you? old
+    \item  How long is your uncle's store opened tonight? long
+    \item  How far is it from the hotel to the restaurant? far 
+    \item  How soon can you be here? soon
+    \item  How often does Jido go skiing? often
+    \item  How much or How many? quantity
+    \item  How about going? invitation
+    \item  \ldots{}
 \end{enumerate}
 Otherwise we proceed as for other w{\textunderscore}questions. However, we have to meet certain conditions:
 
 
-\begin{enumerate}\dokuitem  If verb = “like” ? opinion
-\dokuitem  Else for all other cases it is ? manner
+\begin{enumerate}    \item  If verb = “like” ? opinion
+    \item  Else for all other cases it is ? manner
 \end{enumerate}
 
-\dokutitleleveltree{Subsentence}
+\subsection{Subsentence}
 \label{60550ca08c44dda94b3d7a018a352868}%% subsentence
 An adverbial is a sentence; it should be treated as sentences. The problem is to find its starting point and end point.
 Normally a user must define the adverbial by 2 commas. The first which is normally before the preposition will be removed (so the user can omit it). The second is at the end, is not essential if it is the end of the sentence. The program will automatically add the semicolon that marks the end of the subsentence at the end of the sentence or in place of the comma. 
@@ -948,7 +928,7 @@ yesterday, at my left."
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{Sentence analysis}
+\subsection{Sentence analysis}
 \label{32c0b571d3057222f6d267b69785af3c}%% sentence_analysis
 If we have some data type as "disagree" or "start", we can have in the same sentence other phrases that must be processed. So if, after the first phrase, it is not the end of the sentence and we detect ";", we continue the processing of the second part. Else we consider that the main information is the recovered data type and we stop the analysis.
 Utterance: "Sorry, can you give me the bottle." ? We process the second part
@@ -960,14 +940,14 @@ Utterance: "when he comes, I will give him the bottle."
 The processing of all sentences is based on analysis of yes or no questions and of other sentences, so we have to discuss it.
 
 
-\dokutitleleveltree{Yes or no question and other sentences}
+\subsection{Yes or no question and other sentences}
 \label{b250d357238309c118ecc37bb80c574b}%% yes_or_no_question_and_other_sentences
 There are no many differences between the two functions, so we will explain them at the same time.
 
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Subject and nominal groups}
+    \item  \underline{Subject and nominal groups}
 \end{itemize}
 The determination of the subject is the same; we just have to take account of the inversion of subject in questions.
 When we recover a nominal group with its properties, we delete it.
@@ -975,14 +955,14 @@ When we recover a nominal group with its properties, we delete it.
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Plural}
+    \item  \underline{Plural}
 \end{itemize}
 When there is plural, usually there is no determinant, so we cannot recover the nominal group. That is why we have to add "a" before it. In the case of an indirect complement, there is a preposition, so we need to see the plural after it.
 
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Adjective quantifiers}
+    \item  \underline{Adjective quantifiers}
 \end{itemize}
 In a sentence, there are adjective quantifiers. That is why we changed the adjective list. The new form is [‘the adjective’,[‘list’, ‘of’, ‘quantifier’]]
 
@@ -994,7 +974,7 @@ In a sentence, there are adjective quantifiers. That is why we changed the adjec
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Relative}
+    \item  \underline{Relative}
 \end{itemize}
 The relative removes the redundancy through the preposition. If it replaces the subject, there is no problem. Otherwise it is necessary to recreate the redundancy to keep track of information sent. 
 
@@ -1007,42 +987,42 @@ The relative removes the redundancy through the preposition. If it replaces the 
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Determinants and quantification}
+    \item  \underline{Determinants and quantification}
 \end{itemize}
 Normally a noun is detected by its determinant. If we have a plural at the beginning of a sentence or after a verb, we can detect it and add the determinant "a". After that, we need to find the quantifier which corresponds to it. This part of process is to make the following processes easier. These are the rules of quantifications:
 
 
-\begin{enumerate}\dokuitem  a/an ? SOME
-\dokuitem  a/an+plural ? ALL (we delete the determinant because we add it in process plural)
-\dokuitem  the+pluriel ? ALL
-\dokuitem  vide+pluriel ? ALL
-\dokuitem  no ? NONE
-\dokuitem  no+pluriel ? ANY
-\dokuitem  any ? ANY
-\dokuitem  those/these ? SOME
-\dokuitem  there+are ? SOME
-\dokuitem  every ? ALL
-\dokuitem  anything ? ALL
-\dokuitem  something ? SOME
-\dokuitem  some ? SOME
-\dokuitem  else ? ONE
+\begin{enumerate}    \item  a/an ? SOME
+    \item  a/an+plural ? ALL (we delete the determinant because we add it in process plural)
+    \item  the+pluriel ? ALL
+    \item  vide+pluriel ? ALL
+    \item  no ? NONE
+    \item  no+pluriel ? ANY
+    \item  any ? ANY
+    \item  those/these ? SOME
+    \item  there+are ? SOME
+    \item  every ? ALL
+    \item  anything ? ALL
+    \item  something ? SOME
+    \item  some ? SOME
+    \item  else ? ONE
 \end{enumerate}
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Digit}
+    \item  \underline{Digit}
 \end{itemize}
 We have to convert numbers to digits. For that, we perform these rules:
 
 
-\begin{enumerate}\dokuitem  End with ‘teen’ == +10
-\dokuitem  End with ‘ty’   == *10
-\dokuitem  Hundred         == *100
-\dokuitem  Thousand        == *1000
-\dokuitem  Million         == *1000000
+\begin{enumerate}    \item  End with ‘teen’ == +10
+    \item  End with ‘ty’   == *10
+    \item  Hundred         == *100
+    \item  Thousand        == *1000
+    \item  Million         == *1000000
 \end{enumerate}
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Modal}
+    \item  \underline{Modal}
 \end{itemize}
 To find it, we used a list of all the modal forms (simple or conditional).
 The processing (for tense or other) will change if there is a modal in the sentence. The modal is used in its current form in the sentence with the main verb in vrb{\textunderscore}main.
@@ -1057,7 +1037,7 @@ bottle? Shall I go?"
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Adverb liked to the verb}
+    \item  \underline{Adverb liked to the verb}
 \end{itemize}
 We may process a particular case. In fact, the adverb may be in the end of sentences. It is therefore imperative to recover it.
 
@@ -1070,14 +1050,14 @@ We may process a particular case. In fact, the adverb may be in the end of sente
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Negation}
+    \item  \underline{Negation}
 \end{itemize}
 It takes a position in the sentence, so we have to consider it. Usually, it follows an auxiliary “do”. After the determination of the verb and its properties, we delete it to start the process of the end of the sentence.
 
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Duality between conjunctive subsentence and the nominal group}
+    \item  \underline{Duality between conjunctive subsentence and the nominal group}
 \end{itemize}
 “that” can be used as a determinant for a noun and as a preposition for an adverbial. The differentiation was made; because “that” of the subsentence is necessarily followed by a nominal group (the subject) and the preposition in main sentence must be preceded by the verb or a personal pronoun as “me”
 
@@ -1094,7 +1074,7 @@ subsentence
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Infinitive verb}
+    \item  \underline{Infinitive verb}
 \end{itemize}
 During the process, it is possible to have several verbs present in the infinitive form. It is also possible that they belong to different subsentences. Because we determine it through "to", we added ":" in the case when "to" must not be processed at this stage of the analysis.
 
@@ -1117,14 +1097,14 @@ At the beginning of the process: "I want :to tell him the thing that is :to do".
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Duality between adverbial and relative}
+    \item  \underline{Duality between adverbial and relative}
 \end{itemize}
 In the case where we have subsentences with prepositions "which" and "where", we must differentiate the relative from the adverbial. For that, we must discover the nature of the item that comes just before. If it is a nominal group in the complete form (not pronoun but det+adj+noun), it is a relative which define this nominal group. So we escape and continue the process. But if it is not a nominal group, we perform the adverbial process.
 
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Duality between indirect complement and the noun complement}
+    \item  \underline{Duality between indirect complement and the noun complement}
 \end{itemize}
 Some adverbials represent an additional noun complement for the nominal group. This depends on the verb and the place occupied in the sentence.
 
@@ -1139,14 +1119,14 @@ The bottle is on the table and not the action is on the table so we must have "g
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Compare}
+    \item  \underline{Compare}
 \end{itemize}
 This form is visible through the presence of "than". We have not had time to deepen the reasoning on this grammatical form.
 
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Duality between the direct and the indirect complement}
+    \item  \underline{Duality between the direct and the indirect complement}
 \end{itemize}
 In processing, we differentiate a direct object with the absence of preposition. Otherwise, the nominal group will be inserted in the i{\textunderscore}cmpl.
 
@@ -1179,7 +1159,7 @@ Some verbs don’t need a direct complement. So we have to move contain of d{\te
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Agent complement}
+    \item  \underline{Agent complement}
 \end{itemize}
 In a passive sentence form, we have an inversion between the subject and direct object. We have an additional officer who is preceded by “by”, we shall be considered as an adverbial and so we will put it at the i{\textunderscore}cmpl.
 
@@ -1191,7 +1171,7 @@ In a passive sentence form, we have an inversion between the subject and direct 
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{State verb}
+    \item  \underline{State verb}
 \end{itemize}
 In the case of a state verb, we note the absence of a direct object as opposed to adverbial. We have therefore chosen to use the variable d{\textunderscore}obj to convey information related to adjectives.
 
@@ -1208,7 +1188,7 @@ and so we use the d_obj
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{End of the sentence}
+    \item  \underline{End of the sentence}
 \end{itemize}
 During the process, we delete the word that we determinate the nature. At the end, if we still have some words, we try to create with them other nominal groups. There is some words that we need to delete during this process
 
@@ -1222,7 +1202,7 @@ complement.
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Change subsentence to relative}
+    \item  \underline{Change subsentence to relative}
 \end{itemize}
 For some adverbials, the interpretation can be easier if we change them into relative.
 
@@ -1236,7 +1216,7 @@ group
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Imperative}
+    \item  \underline{Imperative}
 \end{itemize}
 If the sentence doesn’t start with a nominal group, it is an imperative one. So for plural it is compulsory to add the determinant to find the nominal group. Also when the sentence starts with an adjective, we add "the".
 
@@ -1257,7 +1237,7 @@ But if the sentence starts directly with a noun (not plural), the program cannot
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Forcing question}
+    \item  \underline{Forcing question}
 \end{itemize}
 A sentence may appear in a declarative but ends with a question mark. In this case, we force the query and retrieve a yes or no question instead of statement.
 
@@ -1269,7 +1249,7 @@ A sentence may appear in a declarative but ends with a question mark. In this ca
 \normalsize
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Demonstrative pronoun}
+    \item  \underline{Demonstrative pronoun}
 \end{itemize}
 In English, we have some demonstrative pronouns; they can be used as pronoun or as determinants. We have therefore reduced their scope of use. Indeed, a demonstrative pronoun cannot be followed only by the verb of state “be”.
 
@@ -1286,44 +1266,44 @@ In English, we have some demonstrative pronouns; they can be used as pronoun or 
 For a question, it requires a subject inversion. To find if it is a demonstrative pronoun and not a determinant, we need to know if the item that follows is neither a verb in the present progressive or passive present, nor a word related to the verb.
 
 
-\dokutitleleveltwo{Main Rules}
+\section{Main Rules}
 \label{a29295e0e06fd34b31fb0a5367730e7f}%% main_rules
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Majuscule}
+    \item  \underline{Capital letters}
 \end{itemize}
 If the sentence is an imperative one, we have to put the verb with a lower case. Verb with upper case is allowed if we know it (in the list of thematic roles). All proper name must be with capitol letter otherwise we don’t parse it as a nominal group.
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Punctuation}
+    \item  \underline{Punctuation}
 \end{itemize}
 If there are many sentences in the utterance, the user must put punctuations to separate them. For subsentence, the user must put a comma at its end.
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Adjective/noun}
+    \item  \underline{Adjective/noun}
 \end{itemize}
 During the parsing, we don’t use a dictionary. So every word has just one function. If the word is an adjective, it cannot be noun. For example wine is a noun (the wine), but we can use it as an adjective (the wine glass). So during the parsing, wine is all time a noun and “the wine glass” cannot be parsed.
 
 
 \begin{itemize}
-\dokuitem  \dokuunderline{Determiner}
+    \item  \underline{Determiner}
 \end{itemize}
 Nominal groups are found with the determinant. In some case, the parser adds a determinant automatically (Cf \hyperref[0e76170b5e24f80d8e04eca241527e68]{Main process})
 
 
-\dokutitlelevelone{Reference grounding}
+\chapter{Reference grounding}
 \label{d0c18356358d3557c631fba761c15653}%% reference_grounding
 
-\dokutitleleveltwo{Resolution}
+\section{Resolution}
 \label{b7e164b34ff76b1cda93a058604190da}%% resolution
 The purpose of this module is to produce a resolved sentence that is to accurately identify each element involved in a sentence, by affecting them an existing and unique reference in the ontology.
-Let's suppose we are processing the natural language input \dokuitalic{the red cube is on the blue table}. Before committing this information in the ontology, we first try to uniquely identify \dokuitalic{the red cube} (1) and \dokuitalic{the blue table} (2).
-To do so, we build a set of matching RDF\dokufootnote{Resource Description Framework}/OWL statements in order to query the ontology. 
-Assuming that there is only one \dokuitalic{red cube} in the ontology, we should retrieve its unique identifier, which is what we are looking for.
+Let's suppose we are processing the natural language input \textsl{the red cube is on the blue table}. Before committing this information in the ontology, we first try to uniquely identify \textsl{the red cube} (1) and \textsl{the blue table} (2).
+To do so, we build a set of matching RDF\footnote{Resource Description Framework}/OWL statements in order to query the ontology. 
+Assuming that there is only one \textsl{red cube} in the ontology, we should retrieve its unique identifier, which is what we are looking for.
 
-Let's consider the example below, \dokumonospace{?concept} is the identifier to retrieve and to affect to the nominal group being processed.    
+Let's consider the example below, \texttt{?concept} is the identifier to retrieve and to affect to the nominal group being processed.    
 However, if there is more than one red cube, then we need to retrieve the accurate identifier by the process of discrimination (Cf. \hyperref[974418acf6ac4871b739b9591436865a]{Discrimination}). 
 
 E.g.:  "the red cube"
@@ -1340,10 +1320,10 @@ The resolution of reference to the speaker, recipient or anaphora is different. 
  If we find a personal pronoun such as "you", the nominal group is identified with the recipient identifier; finally when anaphora such as 'it' or 'one' occur, we attempt to retrieve the matching object. (Cf. Anaphora resolution)
 
 
-Action verbs are also resolved, however differently from the nominal group resolution as, we do not build a set of RDF\dokufootmark{1} statements to query the ontology, but instead, we look up their matching synonyms (thematic roles) in the shared files in order to retrieve their reference in the ontology. In the sentence \dokuitalic{"I take the bottle"}, the action verb \dokuitalic{"take"} is referenced by \dokuitalic{"Get"}. (Cf: thematic{\textunderscore}roles)
+Action verbs are also resolved, however differently from the nominal group resolution as, we do not build a set of RDF statements to query the ontology, but instead, we look up their matching synonyms (thematic roles) in the shared files in order to retrieve their reference in the ontology. In the sentence \textsl{"I take the bottle"}, the action verb \textsl{"take"} is referenced by \textsl{"Get"}. (Cf: thematic{\textunderscore}roles)
 
 
-\dokutitleleveltree{Adjectives ONLY approach}
+\subsection{Adjectives ONLY approach}
 \label{7ab02d5628e7f210c5eb8e862e7ddc56}%% adjectives_only_approach
 
 Let's consider the following example:
@@ -1367,7 +1347,7 @@ In doing so, we can easily derive the statements:
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{Quantifier approach}
+\subsection{Quantifier approach}
 \label{3c48ef2a7bfacf5e512a249e797564d3}%% quantifier_approach
 
 We have implemented some quantifiers that may be used to assume that a nominal group is resolved.
@@ -1414,7 +1394,7 @@ Doing this allows us to create class grounding. When both hold the definite quan
 \normalsize
 
 \begin{itemize}
-\dokuitem  Problem:
+    \item  Problem:
 \end{itemize}
 
 The quantifier approach is useful only if we process sentence with the state verbs (e.g: to be).
@@ -1435,15 +1415,15 @@ The quantifier approach is useful only if we process sentence with the state ver
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{Demonstratives determiners approach}
+\subsection{Demonstratives determiners approach}
 \label{b4ad6f4ec31665f1d879aeafb5ba415e}%% demonstratives_determiners_approach
-Let's suppose we want to want to say something similar to this: \dokuitalic{" This is on the shelf"} or \dokuitalic{"this is green"}.
+Let's suppose we want to want to say something similar to this: \textsl{" This is on the shelf"} or \textsl{"this is green"}.
 Processing demonstrative determiners such as "this" assumes, there exists in the ontology a statement such as '[ACHILLE focusesOn A{\textunderscore}CUBE]’, where the "ACHILLE"
 is to mention the current speaker and 'A{\textunderscore}CUBE' the reference of the concept that is being pointed by the current speaker.
 Therefore, any occurrence of the determiner "this" affects to its parent nominal group the identifier 'A{\textunderscore}CUBE'.
 
 
-\dokutitlelevelfour{No focus?}
+\subsubsection{No focus?}
 What if there is nothing pointed by the current speaker? The resolution of the parent nominal group will involves either anaphora matching or discrimination.
 
 Let's consider the example below on "Take this one!" or "Take this!".
@@ -1462,7 +1442,7 @@ object
 \end{verbatimtab}
 \normalsize
 
-However, if instead of "take this one" , the \dokuitalic{Human} says: "Take this bottle". Resolving the nominal group involves discrimination. 
+However, if instead of "take this one" , the \textsl{Human} says: "Take this bottle". Resolving the nominal group involves discrimination. 
 
 
 \lstset{language=python}
@@ -1502,7 +1482,7 @@ that is to be resolved.
 
 \end{lstlisting}
 
-\dokutitleleveltree{Occurrence of the words 'OTHER'}
+\subsection{Occurrence of the words 'OTHER'}
 \label{b7ebf691f8433bd42593d3ebb2d2c14a}%% occurrence_of_the_words_other
 
 Let's consider the dialogue below with an occurrence of the word 'other'. Processing "give me the other one" or "Give me the other bottle" consists in determining a possible bottle that has been stated earlier in the conversation, and looking up through the ontology bottles different from that one.
@@ -1541,31 +1521,31 @@ candidates[0])
 
 \end{lstlisting}
 
-\dokutitleleveltree{Handling Unidentified Anaphora error}
+\subsection{Handling Unidentified Anaphora error}
 \label{e79def79eebc0ce87924efaa796970ff}%% handling_unidentified_anaphora_error
 
 \begin{itemize}
-\dokuitem  Intercepting the Unidentified Anaphora error
-\dokuitem  if there exist a current object possibly after human confirmation, filling in the nominal group with an anaphoric word with it
-\dokuitem  Going to discrimination
+    \item  Intercepting the Unidentified Anaphora error
+    \item  if there exist a current object possibly after human confirmation, filling in the nominal group with an anaphoric word with it
+    \item  Going to discrimination
 \end{itemize}
 
 Cf \hyperref[4873f0687cc3361050cff094f296df2d]{Anaphora matching}
 
 
-\dokutitleleveltree{Handling Insufficient input error}
+\subsection{Handling Insufficient input error}
 \label{a9b6979d4ccc758341445731028f7332}%% handling_insufficient_input_error
 
 \begin{itemize}
-\dokuitem  Retrieving the nominal group with insufficient information
-\dokuitem  Replacing it with the merged nominal group
-\dokuitem  Going to discrimination
+    \item  Retrieving the nominal group with insufficient information
+    \item  Replacing it with the merged nominal group
+    \item  Going to discrimination
 \end{itemize}
 
 Cf: Discrimination
 
 
-\dokutitleleveltwo{Anaphora Matching}
+\section{Anaphora Matching}
 \label{4873f0687cc3361050cff094f296df2d}%% anaphora_matching
 
 Anaphora processing consists in replacing the anaphoric word that is to resolve (Cf. \hyperref[b7e164b34ff76b1cda93a058604190da]{Resolution}) with a concept that has been mentioned earlier in the conversation. To do so, we collect the conversation history of the sentences that have been successfully processed in the Dialogs module.
@@ -1641,7 +1621,7 @@ The human answer presents three possible aspects.
 
 
 \begin{itemize}
-\dokuitem  If it is an agreement from the robot’s question the questions-and-answers loop breaks. Thus, the anaphora is identified.
+    \item  If it is an agreement from the robot’s question the questions-and-answers loop breaks. Thus, the anaphora is identified.
 \end{itemize}
 
 \small
@@ -1651,7 +1631,7 @@ The human answer presents three possible aspects.
 \normalsize
 
 \begin{itemize}
-\dokuitem  If it is a disagreement and the human answer possibly holds the nominal group to match the anaphora. The Merge process is then called to build a new sentence that will carry on through the Dialogs module (Cf. \hyperref[65464c31b2e6ac04da1fcaa37c9bd9c7]{Merge}).
+    \item  If it is a disagreement and the human answer possibly holds the nominal group to match the anaphora. The Merge process is then called to build a new sentence that will carry on through the Dialogs module (Cf. \hyperref[65464c31b2e6ac04da1fcaa37c9bd9c7]{Merge}).
 \end{itemize}
 
 \small
@@ -1661,7 +1641,7 @@ The human answer presents three possible aspects.
 \normalsize
 
 \begin{itemize}
-\dokuitem  If it is a disagreement and the human answer does not hold enough information to match the anaphora, the questions-and-answers loop carries on with the next element of the list and the robot’s question for human confirmation.
+    \item  If it is a disagreement and the human answer does not hold enough information to match the anaphora, the questions-and-answers loop carries on with the next element of the list and the robot’s question for human confirmation.
 \end{itemize}
 
     [Human] – No.
@@ -1686,7 +1666,7 @@ The human answer presents three possible aspects.
 
 \end{lstlisting}
 
-\dokutitleleveltwo{Discrimination}
+\section{Discrimination}
 \label{974418acf6ac4871b739b9591436865a}%% discrimination
 
 The discrimination routine consists in retrieving a nominal group identifier from the ontology given its description. 
@@ -1725,7 +1705,7 @@ When several concepts happen to hold similar but not equivalent descriptions, it
 
 \end{lstlisting}
 
-\dokutitleleveltree{Merge}
+\subsection{Merge}
 \label{65464c31b2e6ac04da1fcaa37c9bd9c7}%% merge
 
 The Merge routine consists in appending information to the nominal group that is being processed and occurs after a failure in the discrimination process (Cf.\hyperref[974418acf6ac4871b739b9591436865a]{Discrimination}).
@@ -1734,7 +1714,7 @@ It takes into consideration the insufficient input error status – either ‘�
 
 
 \begin{itemize}
-\dokuitem  In case of ‘’SUCCES’’
+    \item  In case of ‘’SUCCES’’
 \end{itemize}
 The discrimination has retrieved several concepts matching the description of nominal group that is being processed. Further information is needed to accurately identify this last one. Therefore, the user is expected to enter a new utterance.
 E.g.: 
@@ -1747,7 +1727,7 @@ Here, the unresolved nominal group -‘the bottle’ - is merged with more infor
 
 
 \begin{itemize}
-\dokuitem  In case of ‘’FAILURE’’
+    \item  In case of ‘’FAILURE’’
 \end{itemize}
 The discrimination has not retrieved any concept matching the nominal group description. Either, the concept does not exist or the entered utterance is mistaken. The human is expected to enter new information that is to replace the current one.
 
@@ -1796,7 +1776,7 @@ When applying those rules, the state of the utterance B is also to be taken into
 
 
 \begin{itemize}
-\dokuitem  In case of an affirmative sentence, the merging process goes through each nominal group and output the merged one, once the whole sentence has been visited. Attributes holding relative or conjunctive subordinate clauses are processed recursively.
+    \item  In case of an affirmative sentence, the merging process goes through each nominal group and output the merged one, once the whole sentence has been visited. Attributes holding relative or conjunctive subordinate clauses are processed recursively.
 \end{itemize}
 The nominal group that is to be merged will be computed according to the rules mentioned below.
 
@@ -1811,7 +1791,7 @@ Eg:
 \end{verbatimtab}
 \normalsize
 
-After parsing, \dokuitalic{bottle} is a verb in an imperative sentence. After the change, “bottle” becomes the subject in a Statement sentence.
+After parsing, \textsl{bottle} is a verb in an imperative sentence. After the change, “bottle” becomes the subject in a Statement sentence.
 
 If the noun phrase starts with a capital letter:
 
@@ -1838,20 +1818,20 @@ Here we have no merge because the data type of the sentence is “disagree”
 
 
 \begin{itemize}
-\dokuitem  In case of a negative sentence, the insufficient input error status holds the value ‘FAILURE’ – if not, it is changed so. If the utterance B hold both a verbal structure, nominal groups that are contained in it are processed only if their conjunctive attribute is assigned the value ‘’BUT’’.
+    \item  In case of a negative sentence, the insufficient input error status holds the value ‘FAILURE’ – if not, it is changed so. If the utterance B hold both a verbal structure, nominal groups that are contained in it are processed only if their conjunctive attribute is assigned the value ‘’BUT’’.
 \end{itemize}
 
-\dokutitlelevelone{Outputs of the Dialogs module}
+\chapter{Outputs of the Dialogs module}
 \label{576053c82466d3c58479c2551469261a}%% outputs_of_the_dialog_module
 
-\dokutitleleveltwo{Statement builder}
+\section{Statement builder}
 \label{96858fc1845b81e4956d78bc03e34978}%% statement_builder
-This module aims to build RDF\dokufootnote{Resource Description Framework}/OWL statements corresponding to the sentence that is being processed. 
+This module aims to build RDF\footnote{Resource Description Framework}/OWL statements corresponding to the sentence that is being processed. 
 Let's notice that, statements are created either for the resolution of sentences or for querying or committing the ontology.
 Here, we describe the latter case, and explain what feature of the sentence can be fully processed.
 
 
-\dokutitleleveltree{Simple sentences}
+\subsection{Simple sentences}
 \label{83df2a31577b0939e5c2d716b7b579fd}%% simple_sentences
 
 Let's assume there exists a unique agent labelled 'Danny' in the ontology with the reference 'DANNY'; also, let's assume there is a only one blue car with the reference 'blue{\textunderscore}car'. Therefore we create the following statements:
@@ -1872,7 +1852,7 @@ Let's assume there exists a unique agent labelled 'Danny' in the ontology with t
 \normalsize
 
 \begin{itemize}
-\dokuitem  Inconsistency:
+    \item  Inconsistency:
 \end{itemize}
 What happens if we say "the blue car is red"; that is to generate [blue{\textunderscore}car hasColor red] ?
 What if we say "this cylinder is green" whereas the current speaker is pointing a cube; that is to generate such statements [CUBE rdf:type Cylinder]?
@@ -1882,7 +1862,7 @@ Leading the ontology to an inconsistency state occurs every time we try to commi
 In this project, we use the methods "safeAdd" and "safeAddForAgent" to overcome this problem. (Cf. Oro-server).
 
 
-\dokutitleleveltree{Relative sentence processing}
+\subsection{Relative sentence processing}
 \label{e453b97231b3979c4f8435dc7227a770}%% relative_sentence_processing
 There are two ways of processing the relative, which are derived by the subject of the sentence, as it may also be the subject of the relative:
 
@@ -1910,7 +1890,7 @@ boss".
 Processing this case involves checking if the subject equals any of the object in the relative sentence, in order to keep track of the subject's reference.
 
 
-\dokutitleleveltree{Verb processing}
+\subsection{Verb processing}
 \label{d579d8cc3406c0556913bbaac7ee85e6}%% verb_processing
 In most cases, processing a verb consists into generating a reference for a situation, that is performed by an agent and involves an object, regarding a circumstance that could represent a temporal or spatial aspect, or even the fact of an agent receiving something.
 
@@ -1929,17 +1909,17 @@ is to describe, the current speaker, the car of the current speaker and the city
 \end{verbatimtab}
 \normalsize
 
-\dokutitlelevelfour{State verbs (E.g: to be, to become)}
+\subsubsection{State verbs (E.g: to be, to become)}
 
 In the case of state verbs, we do not describe a situation, but the subject of the sentence. This will consist in either class grounding (cf Quantifier approach) or features description.
 
 
-\dokutitlelevelfour{Thematic roles}
+\subsubsection{Thematic roles}
 
 Cf /share/dialogs/thematic{\textunderscore}roles
 
 
-\dokutitlelevelfour{Goal verb}
+\subsubsection{Goal verb}
 
 Goal verbs are used to express the speaker's desire. 
 
@@ -1955,7 +1935,7 @@ Goal verbs are used to express the speaker's desire.
 \end{verbatimtab}
 \normalsize
 
-\dokutitlelevelfour{Action verbs with passive behaviours (E.g: to see. to hear, to reach, to know)}
+\subsubsection{Action verbs with passive behaviours (E.g: to see. to hear, to reach, to know)}
 
 \small
 \begin{verbatimtab}
@@ -1965,7 +1945,7 @@ Goal verbs are used to express the speaker's desire.
 \end{verbatimtab}
 \normalsize
 
-\dokutitlelevelfive{To know}
+\paragraph{To know}
 
 For the case of 'to know', we first create a set of statements such as '[MYSELF knows CONCEPT, \ldots{}]', then we update or query the ontology on the 'CONCEPT' for an agent that is supposed to be MYSELF
 
@@ -1977,7 +1957,7 @@ For the case of 'to know', we first create a set of statements such as '[MYSELF 
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{Negative sentence approach}
+\subsection{Negative sentence approach}
 \label{51e3775766a7025963abe3551cc8889c}%% negative_sentence_approach
 This approach consists in committing a negative assertion, without leading the ontology into an inconsistent state. Three forms of negations can be pointed out.
 The negation of the type (E.g: "rdf:type" or "rdfs:subclassOf" ), the negation of the property (E.g: "hasFeature") and the negation of actions. The latter may bring numbers of ambiguity .
@@ -1985,7 +1965,7 @@ Let's consider all the negation with the following examples:
 
 
 
-\dokutitlelevelfour{Negation of the type}
+\subsubsection{Negation of the type}
 
 \small
 \begin{verbatimtab}
@@ -2005,7 +1985,7 @@ easily all the Complement types added in the ontology.
 \end{verbatimtab}
 \normalsize
 
-\dokutitlelevelfour{Negation of the predicate (object{\textunderscore}property)}
+\subsubsection{Negation of the predicate (object{\textunderscore}property)}
 
 \small
 \begin{verbatimtab}
@@ -2023,7 +2003,7 @@ easily all the Complement types added in the ontology.
 \end{verbatimtab}
 \normalsize
 
-\dokutitlelevelfour{Negation of actions}
+\subsubsection{Negation of actions}
 
 \small
 \begin{verbatimtab}
@@ -2047,7 +2027,7 @@ were dealing with an
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{verb tense approach}
+\subsection{verb tense approach}
 \label{08641b0199dbb907cbef92fe4bff9f19}%% verb_tense_approach
 This approach aims to specify whether an action occurs in the past or in the present. Therefore, we create the object property 'eventOccursIn' and bind it with the flag PAST or FUTUR. The present tenses are assumed as a default case; there is nothing to do.
 
@@ -2067,7 +2047,7 @@ This approach aims to specify whether an action occurs in the past or in the pre
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{Adverb modifying the verb - processing approach}
+\subsection{Adverb modifying the verb - processing approach}
 \label{6b19ff9faa8e1c3a849daa76f49f7353}%% adverb_modifying_the_verb_-_processing_approach
 
 The purpose of this approach is state the way the action is undertaken, which may be slowly, carefully, quickly, or so on.
@@ -2087,7 +2067,7 @@ Assuming that this type information is taken in charge by the supervision module
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltree{Adverb modifying the sentence - processing approach}
+\subsection{Adverb modifying the sentence - processing approach}
 \label{c09cf52af4b6af491e8452be15d2b9d4}%% adverb_modifying_the_sentence_-_processing_approach
 
 \small
@@ -2097,17 +2077,17 @@ Assuming that this type information is taken in charge by the supervision module
 \end{verbatimtab}
 \normalsize
 
-\dokutitleleveltwo{Question handler}
+\section{Question handler}
 \label{a4cdd8fe503540d93470f621230c7afc}%% question_handler
 
 The purpose of this module is to query the ontology regarding the question's aim and type.
 
 
-\dokutitleleveltree{Wh-question}
+\subsection{Wh-question}
 \label{9d6af810a2fa23183549f6d43eac05eb}%% wh-question
 
 Processing a Wh-Question consists in, at the first step, building statements based on the sentence's structure. 
-The second step determines the \dokuitalic{query{\textunderscore}on{\textunderscore}field} parameter, then orientates the statemenent set according to the question's aim. 
+The second step determines the \textsl{query{\textunderscore}on{\textunderscore}field} parameter, then orientates the statemenent set according to the question's aim. 
 Finally, the resulting statements are used to query the ontology.
 
 Whichever its data type, a sentence is always held in the same data structure - (Cf: \hyperref[c8f6850ec2ec3fb32f203c1f4e3c2fd2]{Data structure}).
@@ -2132,7 +2112,7 @@ Let's consider the following example: "who gave you the red cup?"
      
 \end{verbatimtab}
 \normalsize
-Regarding the \dokuitalic{Parsed Sentence} structure, the example is to answer the subject, we then need to extend the statement set with
+Regarding the \textsl{Parsed Sentence} structure, the example is to answer the subject, we then need to extend the statement set with
 
 
 \small
@@ -2141,10 +2121,10 @@ Regarding the \dokuitalic{Parsed Sentence} structure, the example is to answer t
 \end{verbatimtab}
 \normalsize
 
-where \dokumonospace{"?CONCEPT"} is the identifier of the subject, which the answer that should be provided by the ontology.
+where \texttt{"?CONCEPT"} is the identifier of the subject, which the answer that should be provided by the ontology.
 
 
-The second step consisting in determining the part of the Sentence structure that is to be answered and how to extend statements has been implemented by the use of a map that takes into consideration the \dokumonospace{aim} attribute, the verb and the \dokumonospace{query{\textunderscore}on{\textunderscore}filed} parameter.
+The second step consisting in determining the part of the Sentence structure that is to be answered and how to extend statements has been implemented by the use of a map that takes into consideration the \texttt{aim} attribute, the verb and the \texttt{query{\textunderscore}on{\textunderscore}filed} parameter.
 
 Depending on the verb, whether it is of thematicRole type, an action verb or a state verb, an object property is specified based on, if the answer is to complete the direct object or indirect complement, if it is to determine the reception of object by an agent, an action occuring at spatial or temporal concept, etc\ldots{}
 
@@ -2152,27 +2132,27 @@ However, let's state a couple of remarks regarding questions starting with "WHAT
 
 
 \begin{itemize}
-\dokuitem  There is as many value for the \dokumonospace{aim} attribute as concept in the world, making it impossible to generate a complete map.
+    \item  There is as many value for the \texttt{aim} attribute as concept in the world, making it impossible to generate a complete map.
 \end{itemize}
- For instance in "What color do you prefer?" and "what buidling is next to the Eiffel Tower?", the \dokumonospace{aim} attribute respectively holds the value "color" and  "building".
+ For instance in "What color do you prefer?" and "what buidling is next to the Eiffel Tower?", the \texttt{aim} attribute respectively holds the value "color" and  "building".
 
 
 
 \begin{itemize}
-\dokuitem  When the \dokumonospace{aim} attribute refers to concept's features such as "color", "size", \ldots{}  the extension of the statements would consists in generating a token similar to \dokumonospace{[RED{\textunderscore}CUP hasFeature ?CONCEPT]}. For the case of non-feature such as "Building", "artifact", "object",\ldots{} we generate a concept descriptor such \dokumonospace{[?CONCEPT rdf:type Building]}
+    \item  When the \texttt{aim} attribute refers to concept's features such as "color", "size", \ldots{}  the extension of the statements would consists in generating a token similar to \texttt{[RED{\textunderscore}CUP hasFeature ?CONCEPT]}. For the case of non-feature such as "Building", "artifact", "object",\ldots{} we generate a concept descriptor such \texttt{[?CONCEPT rdf:type Building]}
 \end{itemize}
 The Question Handler module is however not complete. It is possibile to handle question starting with "What", "Which" and "Who". However,  several types such as those started with "Whom", "Whose" ,"Why", "When", "How" are not implemented yet.
 
 
-\dokutitlelevelfour{Query{\textunderscore}on{\textunderscore}field}
+\subsubsection{Query{\textunderscore}on{\textunderscore}field}
 
 This field is to determine the part of the sentence structure that is to modify with the query answer
-Three values are presented in Question Handler that are \dokuitalic{QUERY{\textunderscore}ON{\textunderscore}DIRECT{\textunderscore}OBJ}, \dokuitalic{QUERY{\textunderscore}ON{\textunderscore}INDIRECT{\textunderscore}OBJ} and the default value \dokuitalic{None}.
+Three values are presented in Question Handler that are \textsl{QUERY{\textunderscore}ON{\textunderscore}DIRECT{\textunderscore}OBJ}, \textsl{QUERY{\textunderscore}ON{\textunderscore}INDIRECT{\textunderscore}OBJ} and the default value \textsl{None}.
 For instance, if we have to process "Where is the cube?", the question can be turned into "The cube is on xxx " where, the answer 'xxx' is to fill the indirect complement of the sentence. 
-Therefore, \dokumonospace{query{\textunderscore}on{\textunderscore}field} is assigned the value \dokumonospace{QUERY{\textunderscore}ON{\textunderscore}INDIRECT{\textunderscore}OBJ}
+Therefore, \texttt{query{\textunderscore}on{\textunderscore}field} is assigned the value \texttt{QUERY{\textunderscore}ON{\textunderscore}INDIRECT{\textunderscore}OBJ}
 
 
-\dokutitleleveltree{Yes-No-Question}
+\subsection{Yes-No-Question}
 \label{e6969eb2ee1774772084bddc0430fbd3}%% yes-no-question
 Processing the Yes-No-questions solely consists in building the corresponding statements to the data structure of the Sentence;
 then checking their existence in the ontology. 
@@ -2194,24 +2174,24 @@ the fact is false, as it may be True, but not existing in the Robot's ontology m
 
 
 \begin{itemize}
-\dokuitem  Case of Can-You-do-something?
+    \item  Case of Can-You-do-something?
 \end{itemize}
 Let's suppose the user says "Jido, can you give me this cube?". 
 After parsing this sentence, it appears to be a Yes-No-Question. It could means for us to either verify Jido's ability of giving a certain cube or generate the user's desire of receiving it.
-The later case is the one that has been implemented when we deal with such Yes-No-Questions - those holding the modal verb \dokuitalic{can} and a default action verb \hyperref[d579d8cc3406c0556913bbaac7ee85e6]{Verb processing}.
+The later case is the one that has been implemented when we deal with such Yes-No-Questions - those holding the modal verb \textsl{can} and a default action verb \hyperref[d579d8cc3406c0556913bbaac7ee85e6]{Verb processing}.
 
 
-\dokutitleleveltwo{Verbalization}
+\section{Verbalization}
 \label{8f5fecd7d65dd4b39822e786e6aa17f8}%% verbalization
-The verbalization is to read information sent over the \dokuitalic{Sentence} structure and assemble them following a precise order given by the grammar rules to obtain a correct sentence as output.
+The verbalization is to read information sent over the \textsl{Sentence} structure and assemble them following a precise order given by the grammar rules to obtain a correct sentence as output.
 
 
-\dokutitleleveltree{Sentence type of verbalization}
+\subsection{Sentence type of verbalization}
 \label{3932b1b4e5441078c313fdb09ac327bd}%% sentence_type_of_verbalization
 Thanks to data{\textunderscore}type, we can find the global form of the sentence (Cf \hyperref[1cae782fdfad8b38f1b3641092175803]{Sentence type}). Except for questions with aim as “people” are always built with “who”. For “how mush” and “haw many”, we will have “how mush”. “what kind” and “what type”, we will have “what kind”.
 
 
-\dokutitleleveltree{The transformation which are always done}
+\subsection{The transformation which are always done}
 \label{bb9df422d8d164804928d2b3ad4898ec}%% the_transformation_which_are_always_done
 For all these cases, we can limit the processing. We have just to add some conditions.
 
@@ -2219,28 +2199,28 @@ Some contractions are always done.
 
 
 \begin{itemize}
-\dokuitem  What is ? What's
-\dokuitem  He is ? He's
-\dokuitem  I would ? I'd
-\dokuitem  There are ? There're
-\dokuitem  \ldots{}
+    \item  What is ? What's
+    \item  He is ? He's
+    \item  I would ? I'd
+    \item  There are ? There're
+    \item  \ldots{}
 \end{itemize}
 
 Possession case is all time processed
 
 
 \begin{itemize}
-\dokuitem  the bottle of Jido ? Jido's bottle
-\dokuitem  the bottle of me ? me's bottle
+    \item  the bottle of Jido ? Jido's bottle
+    \item  the bottle of me ? me's bottle
 \end{itemize}
 
 There are many other processes which used to have a proper and correct sentence (like the inversion of the preposition\ldots{}) 
 
 
-\dokutitlelevelone{Examples}
+\chapter{Examples}
 \label{bfebe34154a0dfd9fc7b447fc9ed74e9}%% examples
 
-\dokutitleleveltree{Debug output of a complete execution}
+\section{Debug output of a complete execution}
 \label{0097f2f6e11fc0ff7741d98d8bff8634}%% debug_output_of_a_complete_execution
 
 The following example shows a complete execution of an imperative sentence.
@@ -2335,15 +2315,764 @@ E.g: "put the red cup next to the orange bottle"
 
 \end{lstlisting}
 
-\dokutitleleveltwo{User study}
+\chapter{User studies}
 \label{8e39c880b382a46f3aac08dd30b0e029}%% user_study
 
-\hyperref[bec5cbe6da06ffa747e41a290292d554]{Details of Dialogs user study}
+This chapter presents several longer dialogues between a human and the robot. The user was sitting in front of a table with several objects on it, and was ask to interacts through a chat interface (Jabber) with the robot.
+
+\textbf{These studies have been conducted in \textit{Wizard of Oz}}: answers were manually sent by one of the \textsc{Dialogs} developer, not the robot itself.
+
+Experimental results were \textit{a posteriori} processed by the parser (and the parser alone) to check which inputs would be parsed into a correct sentence structure.
+
+\section{Relation between speakers}
+
+\subsection{First dialog with Mahdi}
+
+\begin{dialog}
+    \chatN{user} & hello Jido & ok \\
+    \chatN{Jido} & hello & \\
+    \chatN{user} & what are you doing & ok \\
+    \chatN{Jido} & I am doing nothing &  \\
+    \chatN{user} & ok can you tell me what you see on the table & x \\
+    \chatfix{ok, can you tell me what you see on the table} \\
+    \chatN{Jido} & I see the blue pen that is next to the black object &  \\
+    \chatN{user} & what is that object? & ok \\
+    \chatN{Jido} & that object? what do you mean? &  \\
+    \chatN{user} & the black object & ok \\
+    \chatN{Jido} & the black object is the black object that is on the green table &  \\
+    \chatN{user} & ok, this object is a mouse & ok \\
+    \chatN{Jido} & do you mean the black object that is on the green table? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & now, I will write a dialog in 5 minutes, so can you give me the pen & ok \\
+    \chatN{Jido} & yes &  \\
+\end{dialog}
+
+\subsection{Second dialog with Patrick}
+
+\begin{dialog}
+    \chatN{user} & hi & ok \\
+    \chatN{Jido} & hello . &  \\
+    \chatN{user} & what is your name? & ok \\
+    \chatN{Jido} & my name is Jido . &  \\
+    \chatN{user} & ok ok. and you are a robot of the Laas? & ok \\
+    \chatN{Jido} & yes. I am a robot of the laas . &  \\
+    \chatN{user} & do you know Mahdi. he is my collegue & ok \\
+    \chatN{Jido} & yes I know Mahdi. &  \\
+    \chatN{Jido} & Do you mean Mahdi? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & did you see him last 5 minutes & ok \\
+    \chatN{Jido} & no . &  \\
+    \chatN{Jido} & I did not see him . &  \\
+    \chatN{user} & who is the last person who talk to you? & ok \\
+    \chatN{Jido} & the last person I talked to is you . &  \\
+    \chatN{user} & and before me? & ok \\
+    \chatN{Jido} & I don't know . &  \\
+    \chatN{user} & Learn that this person is mahdi & x \\
+    \chatfix{learn that this person is Mahdi} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & did he start his dialog? & ok \\
+    \chatN{Jido} & yes he did . &  \\
+    \chatN{user} & ok & ok \\
+    \chatN{user} & when he finishes, tell him that I want to see him & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & thanks goodbye & x \\
+    \chatfix{thanks, goodbye} \\
+    \chatN{Jido} & Goodbye. & \\
+\end{dialog}
 
 
-\dokutitleleveltwo{Roman scenario}
-\label{951c0dd2747b87c0096d4db85432a384}%% roman_scenario
+\subsection{Third dialog with Mahdi}
 
-\hyperref[2d269a2773f7ccddb56cd5741a52babe]{Scenario demo ROMAN}
+\begin{dialog}
+    \chatN{user} & good afternoon Jido & ok \\
+    \chatN{Jido} & hello . &  \\
+    \chatN{user} & I think that Patrick want to see me? did you see him? & ok \\
+    \chatN{Jido} & Ok. No. I did not see Patrick &  \\
+    \chatN{user} & ah ok. & ok \\
+    \chatN{user} & this is your pen & ok \\
+    \chatN{Jido} & ok . &  \\
+    \chatN{user} & you can take it & ok \\
+    \chatN{Jido} & ok . &  \\
+    \chatN{Jido} & do you want to see Mahdi ? &  \\
+    \chatN{user} & no I'am mahdi & x \\
+    \chatfix{no, I’m Mahdi} \\
+    \chatN{user} & do you know what i have written? & ok \\
+    \chatN{Jido} & no. I don't know what you have written. what is it? &  \\
+    \chatN{user} & I finish the dialog and I check many problems & ok \\
+    \chatN{Jido} & ok. what are problems? &  \\
+    \chatN{user} & the anaphora is not good & ok \\
+    \chatN{Jido} & the anaphora? what do you mean ? &  \\
+    \chatN{user} & It is a rule of interpretation. it allows a relation between the dialog and the current sentence & ok \\
+    \chatN{Jido} & do you mean the anaphora? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{Jido} & what is sentence ? and dialog? &  \\
+    \chatN{Jido} & and interpretation ? &  \\
+    \chatN{user} & sentence is a set of a word & ok \\
+    \chatN{Jido} & ok . &  \\
+    \chatN{user} & to have a dialog, we need more than 1 protagonist. and in a dialog, there is an interaction between them & ok \\
+    \chatN{user} & the interpretation is to find a defenition or a rule for something & ok \\
+    \chatN{Jido} & ok . I am sorry . I cannot process this entry due to its difficult structure for my dialog modules. &  \\
+    \chatN{Jido} & I have learnd that user wants to see mahdi. &  \\
+    \chatN{user} & who is user? & ok \\
+    \chatN{Jido} & user is user &  \\
+    \chatN{user} & ok I think that I know who is he & x \\
+    \chatfix{ok, I think that I know who is he } \\
+    \chatN{user} & he is Patrick & ok \\
+    \chatN{Jido} & ok . &  \\
+    \chatN{user} & so I want to go & ok \\
+    \chatN{Jido} & where do you want to go? &  \\
+    \chatN{user} & I will go to see Patruck & ok \\
+    \chatN{Jido} & who is Patruck ? &  \\
+    \chatN{user} & sorry Patrick & x \\
+    \chatfix{sorry, Patrick} \\
+    \chatN{Jido} & Do you mean you will go to see Patrick? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & ok . &  \\
+    \chatN{user} & ok see you & x \\
+    \chatfix{ok, see you} \\
+    \chatN{Jido} & bye . Hope we talk soon . & \\
+\end{dialog}
+
+
+\section{Spy Game}
+
+The \textit{Spy Game} is usually played with two children: one think of an object without telling it, and the other one must guess which one by asking yes/no questions.
+
+\begin{dialog}
+    \chatN{user} & hello jido & ok \\
+    \chatN{Jido} & hello &  \\
+    \chatN{user} & what do you want to do? & ok \\
+    \chatN{Jido} & I don't know if I want or not &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & maybe play to a game & ok \\
+    \chatN{Jido} & ok. What is maybe? &  \\
+    \chatN{user} & can, sorry & x \\
+    \chatfix{sorry, can} \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & to you propose which game & x \\
+    \chatfix{do you propose which game} \\
+    \chatN{user} & are you ready? & ok \\
+    \chatN{Jido} & Yes. &  \\
+    \chatN{user} & do you want to choose the game? & ok \\
+    \chatN{Jido} & I don't know if I want or not. &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & yes, I want & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & explain me the rules & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{Jido} & rules of what? &  \\
+    \chatN{user} & explain me the rules of the spy game & ok \\
+    \chatN{user} & please & ok \\
+    \chatN{Jido} & Spygame is a logic game involving two players. It is played with a set of objects that holds several similar features. The object of the game is to guess the opponent's choice of object, while pointing questioning about the object features. The winner is the player who manage to guess the opponent's choic of object in the smallest number of trials &  \\
+    \chatN{user} & i see, i am ready to start & x \\
+    \chatfix{i see. i am ready to start} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & Choose and object to start &  \\
+    \chatN{user} & done & ok \\
+    \chatN{Jido} & is it a bottle or a cup? &  \\
+    \chatN{user} & my object is a bottle & ok \\
+    \chatN{Jido} & is it green? &  \\
+    \chatN{user} & no, sorry & ok \\
+    \chatN{Jido} & is it blue? &  \\
+    \chatN{user} & try again & ok \\
+    \chatN{Jido} & do you mean? another object? &  \\
+    \chatN{user} & it is not blue & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & is it orange? &  \\
+    \chatN{user} & no & ok \\
+    \chatN{Jido} & it is the gray bottle &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & I achieved it in \$ trials &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & can you give me it? & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & thanks & ok \\
+    \chatN{Jido} & you are welcome &  \\
+    \chatN{user} & can you give me another one? & ok \\
+    \chatN{Jido} & yes. which one? &  \\
+    \chatN{user} & does not matter & x \\
+    \chatfix{it does not matter} \\
+    \chatN{Jido} & matter? what do you mean? &  \\
+    \chatN{user} & anyone &  \\
+    \chatN{Jido} & do you mean the blue or the orange or the green bottle? &  \\
+    \chatN{user} & the orange one & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & thanks & ok \\
+    \chatN{Jido} & you are welcome. &  \\
+    \chatN{user} & do you want to play again? & ok \\
+    \chatN{Jido} & the spygame process is still running. I picked an object. Will you guess it? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & I don't know if I want or not. &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & i want & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & is the object orange? & ok \\
+    \chatN{Jido} & no. &  \\
+    \chatN{Jido} & try again &  \\
+    \chatN{user} & is it blue? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & is it the blue bottle? & ok \\
+    \chatN{Jido} & no. &  \\
+    \chatN{Jido} & try again &  \\
+    \chatN{user} & i think it is the blue cup & ok \\
+    \chatN{Jido} & yes congratulation! &  \\
+    \chatN{user} & thanks & ok \\
+    \chatN{Jido} & you achieved the game in 4 trails &  \\
+    \chatN{user} & can you put it into the ravish & ok \\
+    \chatN{Jido} & the ravish? what do you mean? &  \\
+    \chatN{user} & can you put it into the trash bin & x \\
+    \chatfix{can you put it into the trashbin} \\
+    \chatN{Jido} & do you mean the trashbin? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & can you recover the cup? & ok \\
+    \chatN{Jido} & recover? do you mean take? &  \\
+    \chatN{user} & take it again, please & ok \\
+    \chatN{Jido} & do you mean the blue cup? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & can you throw it away? & ok \\
+    \chatN{Jido} & Do you mean the blue cup? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & did you enjoyed the game? & ok \\
+    \chatN{Jido} & enjoy? do you mean throw away? &  \\
+    \chatN{user} & no & ok \\
+    \chatN{Jido} & enjoy? do you mean take? &  \\
+    \chatN{user} & do yow know me? & x \\
+    \chatfix{do you know me?} \\
+    \chatN{Jido} & enjoy? do you mean know? &  \\
+    \chatN{user} & no, forget it & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & nice to meet you & ok \\
+    \chatN{Jido} & the spygame process has been activated. Do you want to play? &  \\
+    \chatN{user} & no, thanks & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & i must go & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & where am i & ok \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{user} & i am in the green room & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & where am i? & ok \\
+    \chatN{Jido} & you are in the green room &  \\
+    \chatN{Jido} & what is room? &  \\
+    \chatN{Jido} & I gathered this information: You must go. is it confirmed? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{user} & bye bye & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{Jido} & bye & \\
+\end{dialog}
+
+\section{Cleaning the table}
+
+\subsection{First user}
+
+\begin{dialog}
+    \chatN{user} & Hey Jido! & ok \\
+    \chatN{Jido} & hello &  \\
+    \chatN{user} & Let's clean the table & x \\
+    \chatfix{let's clean the table} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Pick up the papers, and throw them to trashbin & x \\
+    \chatfix{Pick up the papers, and throw them to the trashbin} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & I will arrange the bottles & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Give me the lotr\_tape & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Now put the cups to the blue box & ok \\
+    \chatN{Jido} & which blue box? the big or the small one? &  \\
+    \chatN{user} & the small one & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & wait & ok \\
+    \chatN{user} & take the pens & ok \\
+    \chatN{user} & give me those cups & ok \\
+    \chatN{Jido} & which pen? the red, the balc or the blue one? &  \\
+    \chatN{user} & all the pens & ok \\
+    \chatN{Jido} & those cups? what do you mean? &  \\
+    \chatN{user} & forget the cups & ok \\
+    \chatN{user} & put the pens to the red box & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & which pen? &  \\
+    \chatN{user} & Where is the red cup? & ok \\
+    \chatN{Jido} & on the table &  \\
+    \chatN{user} & Can you take it? & ok \\
+    \chatN{Jido} & no. I cannot reach it &  \\
+    \chatN{user} & OK, I will give it to you & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & thow it to the red box & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & good boy & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Bye Jido & ok \\
+    \chatN{Jido} & bye & \\
+\end{dialog}
+
+\subsection{Second user}
+
+\begin{dialog}
+    \chatN{user} & where is the trashbin & ok \\
+    \chatN{Jido} & the trashbin is at the left &  \\
+    \chatN{user} & at the left of what? & ok \\
+    \chatN{Jido} & the left of what ?what do you mean? &  \\
+    \chatN{user} & I mean at the left of me or you &  \\
+    \wontparse \\
+    \chatN{Jido} & do you mean at the left of me? the trashbin? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & yes. the trashbin is at my left &  \\
+    \chatN{user} & ok & ok \\
+    \chatN{user} & thanks & ok \\
+    \chatN{Jido} & You are welcome &  \\
+    \chatN{user} & could I reach the trashbin & ok \\
+    \chatN{Jido} & I don't know if you could or not. &  \\
+    \chatN{user} & could you please put cassette jidoi in the trashbin & x \\
+    \chatfix{could you please put cassette\_jidoi in the trashbin} \\
+    \chatN{Jido} & casette jidoi? what do you mean? &  \\
+    \chatN{user} & JIDO-E Tape & x \\
+    \chatfix{JIDO-E\_Tape} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & I cannot reach it &  \\
+    \chatN{user} & ok, I will do it for you & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & could you put red paper in red box & ok \\
+    \chatN{Jido} & I cannot reach it &  \\
+    \chatN{user} & i will give it to you & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & could you give me the orange bottle & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & great & ok \\
+    \chatN{Jido} & Alright &  \\
+    \chatN{user} & can you write a letter for me & ok \\
+    \chatN{Jido} & I don't know if I can or not &  \\
+    \chatN{user} & no problem i will do it myself. could you pass me the pen & x \\
+    \chatfix{no problem. i will do it by myself. could you pass me the pen} \\
+    \chatN{Jido} & ok. which pen? &  \\
+    \chatN{user} & the black one & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & also pass me some papers, please & ok \\
+    \chatN{Jido} & the process Cleaning the table has been activated. Do you want to do it? &  \\
+    \chatN{user} & no, give me some white papers & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{Jido} & which papers? &  \\
+    \chatN{user} & white one & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & do you remember which pen you gave me. I will need the blue one now & ok \\
+    \chatN{Jido} & Remember? is it like give? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & I gave you the orange box and the white paper &  \\
+    \chatN{user} & you did not give me the orange box but the orange bottle & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & you also forgot that you gave a black pen & ok \\
+    \chatN{Jido} & forget? is it like give? &  \\
+    \chatN{user} & ah! I need a drink. could you please fetch me orange cup & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & please, I am leaving. can you arrange table for me, put the left over orange bottle in the fridge and rest in trashbin &  \\
+    \wontparse \\
+    \chatN{Jido} & ok. what are over, fridge and rest? &  \\
+    \chatN{user} & orange bottle in the fridge, and wash the orange cup, and put it in the kitchen & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & also don't forget to clean the table & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & put blue bottles in the blue bx & ok \\
+    \chatN{Jido} & bx? what do you mean? &  \\
+    \chatN{user} & blue box & ok \\
+    \chatN{Jido} & do you mean the big or the small one? &  \\
+    \chatN{user} & on your left & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{Jido} & I cqannot reach it &  \\
+    \chatN{user} & ok, put it in the blue box on my left & ok \\
+    \chatN{Jido} & do you mean the red or the blue one? &  \\
+    \chatN{user} & the blue bottles in the blue box on our right & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & dump the green bottle on our right & ok \\
+    \chatN{Jido} & dump? is it like take? &  \\
+    \chatN{user} & throw the green bottle in the blue box on our right & ok \\
+    \chatN{Jido} & ok & \\
+\end{dialog}
+
+\subsection{Third user}
+
+\begin{dialog}
+    \chatN{user} & Hello robot. & ok \\
+    \chatN{Jido} & hello &  \\
+    \chatN{user} & Let's clean this table & x \\
+    \chatfix{let's clean this table} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & I start. & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Have you seen what I have done ? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & Good. & ok \\
+    \chatN{Jido} & good. &  \\
+    \chatN{user} & Now, I will continue. & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & Can you tell me what I have done ? & ok \\
+    \chatN{Jido} & you put the blue bottle in the smal blue box &  \\
+    \chatN{user} & Ans what else ? & x \\
+    \chatfix{And what else ?} \\
+    \chatN{Jido} & the orange bottle is in the big blue box &  \\
+    \chatN{user} & OK. Now, Cazn you give me the videotape ? & x \\
+    \chatfix{OK. Now, can you give me the videotape ?} \\
+    \chatN{Jido} & ok. which videotape? &  \\
+    \chatN{user} & The one that's near you & ok \\
+    \chatN{Jido} & ok. &  \\
+    \chatN{user} & thanks & ok \\
+    \chatN{Jido} & you are welcome &  \\
+    \chatN{user} & Now, please throw the paper sheets. & x \\
+    \chatfix{Now, please, throw the paper\_sheets.} \\
+    \chatN{Jido} & papaer? what do you mean? &  \\
+    \chatN{user} & sorry.. I repeat. Throw the paper\_sheets please. & x \\
+    \chatfix{sorry.. I repeat. throw the paper\_sheets please.} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & I cannot reach the red paper &  \\
+    \chatN{user} & Good & ok \\
+    \chatN{Jido} & good &  \\
+    \chatN{user} & Now, throw the red glass in the small blue trashbin & ok \\
+    \chatN{Jido} & the small blue trashbin? what do you mean? &  \\
+    \chatN{user} & I mean the small blue box & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & very good. Now look. & ok \\
+    \chatN{Jido} & Very good &  \\
+    \chatN{user} & Throw the videotape. & x \\
+    \chatfix{throw the videotape.} \\
+    \chatN{Jido} & Which one? &  \\
+    \chatN{user} & How many videotapes do you see ? & ok \\
+    \chatN{Jido} & I see one videotape &  \\
+    \chatN{user} & Then throw it. & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Can you reach the bottles ? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & Throw one of them. & x \\
+    \chatfix{throw one of them.} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Good. & ok \\
+    \chatN{Jido} & good &  \\
+    \chatN{user} & Now, it's my turn. & ok \\
+    \chatN{user} & I will throw one bottle. & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Now can you do anything to help me clean the table ? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & What can you do ? & ok \\
+    \chatN{Jido} & the orange bottle is on the table &  \\
+    \chatN{user} & So ? &  \\
+    \wontparse \\
+    \chatN{Jido} & So? what do you mean? &  \\
+    \chatN{user} & I have thrown the last videotape. & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Is there something on the table ? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & Please, be more expolicit. & ok \\
+    \chatN{Jido} & expolicit? what do you mean? &  \\
+    \chatN{user} & I repeat. Please, be more explicit. & ok \\
+    \chatN{Jido} & explicit? what do you mean? &  \\
+    \chatN{user} & OK. f/Forget it. & x \\
+    \chatfix{OK. Forget it.} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Please, throw the last bottle. & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Are we done ? & ok \\
+    \chatN{Jido} & no &  \\
+    \chatN{Jido} & the red paper is on the table &  \\
+    \chatN{user} & You are right. &  \\
+    \wontparse \\
+    \chatN{Jido} & I am right &  \\
+    \chatN{user} & I will give it to you. & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Now, What you do ? & x \\
+    \chatfix{Now, What do you do ?} \\
+    \chatN{Jido} & I don't know. &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & Can you clean the table ? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & Then do it. & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Perfect & ok \\
+    \chatN{user} & Good bye. & ok \\
+    \chatN{Jido} & Bye & \\
+\end{dialog}
+
+
+\section{Context}
+This dialogue is very difficult for parsing and for interpretation so we don't try tests with it
+
+\begin{dialog}
+    \chatN{user} & hello  &  \\
+    \chatN{Jido} & hello &  \\
+    \chatN{user} & how are you ?  &  \\
+    \chatN{Jido} & I am jido &  \\
+    \chatN{user} & what's your family name ?  &  \\
+    \chatN{Jido} & My family name is Jido &  \\
+    \chatN{user} & ok, so what's your firstname ?  &  \\
+    \chatN{Jido} & my firstname is Jido &  \\
+    \chatN{user} & so you are Jido Jido right ? &  \\
+    \chatN{Jido} & yes. I am Jido &  \\
+    \chatN{user} & what are you doing ?  &  \\
+    \chatN{Jido} & I am seeing the Lord of Robots videotape, the Jido.e videotape, the blue bottle, the orange bottle, the green bottle, the gray bottle, the green table, the trashbin, the red box, the big blue box, the small blue box, the blue wineglass, the orange cup, the red cup, the red pen, the blue pen, the black pen, the red paper, the blue paper, the green paper, some papers and you. I am talking to user. I am listening to user. I am not playing the spygame. &  \\
+    \chatN{user} & do you have friends ?  &  \\
+    \chatN{Jido} & no. &  \\
+    \chatN{user} & That must be sad.. &  \\
+    \chatN{Jido} & that? do you mean friends? &  \\
+    \chatN{user} & No, to be alone is sad &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & yes. &  \\
+    \chatN{user} & great  &  \\
+    \chatN{Jido} & great. &  \\
+    \chatN{user} & What do you know about him ?  &  \\
+    \chatN{Jido} & Mahdi is Mahdi &  \\
+    \chatN{Jido} & Mahdi is small &  \\
+    \chatN{user} & what else ?  &  \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & Is he nice ? &  \\
+    \chatN{Jido} & I don't know if he is or not &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & So you do not really know him, do you ? &  \\
+    \chatN{Jido} & no. &  \\
+    \chatN{user} & But you told me earlier that you knew him ! &  \\
+    \chatN{Jido} & yes. &  \\
+    \chatN{user} & ok ok  &  \\
+    \chatN{Jido} & ok ok &  \\
+    \chatN{user} & How old are you ?  &  \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & doesn't matter &  \\
+    \chatN{user} & Where do you live ?  &  \\
+    \chatN{Jido} & live? is it like go? &  \\
+    \chatN{user} & not really. Where are you ? &  \\
+    \chatN{Jido} & I am at the LAAS &  \\
+    \chatN{user} & Where is the LAAS ?  &  \\
+    \chatN{Jido} & at Toulouse &  \\
+    \chatN{user} & Where is Toulouse ?  &  \\
+    \chatN{Jido} & at France &  \\
+    \chatN{user} & ok, and where is France ?  &  \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & qnd you? &  \\
+    \chatN{user} & France is in Europe  &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Where are you working in LAAS ? In which room ? &  \\
+    \chatN{Jido} & I don't know if I work or not &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & Don't know either &  \\
+    \chatN{user} & Do you smoke ?  &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & I don't know if I smoke or not &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & I don't smoke  &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & I think you don't smoke  &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Have you ever been happy ? &  \\
+    \chatN{Jido} & yes. &  \\
+    \chatN{user} & When ?? &  \\
+    \chatN{Jido} & on 2010 &  \\
+    \chatN{user} & and before ? &  \\
+    \chatN{Jido} & before? what do you mean? &  \\
+    \chatN{user} & before 2010, have you been happy ? &  \\
+    \chatN{Jido} & yes. &  \\
+    \chatN{user} & when ? &  \\
+    \chatN{Jido} & on 2009-06-1-10:23:25 &  \\
+    \chatN{user} & why ? &  \\
+    \chatN{Jido} & why? what do you mean? &  \\
+    \chatN{user} & what did you do this day ?  &  \\
+    \chatN{Jido} & I was seeing the Lord of Robots videotape, the Jido.e videotape, the blue bottle, the orange bottle, the green bottle, the gray bottle, the green table, the trashbin, the red box, the big blue box, the small blue box, the blue wineglass, the orange cup, the red cup, the red pen, the blue pen, the black pen, the red paper, the blue paper, the green paper, some papers and you. I am talking to user. I am listening to user. I am not playing the spygame. &  \\
+    \chatN{user} & Do you know that you're a robot ? &  \\
+    \chatN{Jido} & yes. &  \\
+    \chatN{user} & How do you live whith that ? &  \\
+    \chatN{Jido} & live? is it like go? &  \\
+    \chatN{user} & Do you meet humans ?  &  \\
+    \chatN{Jido} & yes. &  \\
+    \chatN{user} & Who is the last human that you've met ?  &  \\
+    \chatN{Jido} & I met user &  \\
+    \chatN{user} & and before ? &  \\
+    \chatN{Jido} & I met Mahdi &  \\
+    \chatN{user} & How do you know he is human ? &  \\
+    \chatN{Jido} & He? do you mean Mahdi? &  \\
+    \chatN{user} & yes &  \\
+    \chatN{Jido} & He is a human and an agent and small &  \\
+    \chatN{user} & how do you know that ? &  \\
+    \chatN{Jido} & that? do you mean human? &  \\
+    \chatN{user} & Have you ever travelled ? &  \\
+    \chatN{Jido} & travel? is like go? &  \\
+    \chatN{user} & Have you ever been in Morocco ? &  \\
+    \chatN{Jido} & no &  \\
+    \chatN{user} & You should &  \\
+    \chatN{Jido} & should? what do you mean? &  \\
+    \chatN{user} & It is great ! &  \\
+    \chatN{Jido} & great &  \\
+    \chatN{user} & You should go to Morocco &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Give me a beer please &  \\
+    \chatN{Jido} & a beer? I don't know what you mean &  \\
+    \chatN{user} & It's a kind of drink for adults &  \\
+    \chatN{user} & Do you want one ? &  \\
+    \chatN{Jido} & ok. what are drink and adult? &  \\
+    \chatN{Jido} & I don't know if I want or not &  \\
+    \chatN{user} & An adult is a human who has more than 18 years &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Do you prefer girls or boys ? &  \\
+    \chatN{Jido} & I don't know if I prefer or not &  \\
+    \chatN{user} & you prefer girls &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Do you prefer girls or boys ? &  \\
+    \chatN{Jido} & I prefer some girls &  \\
+    \chatN{user} & No, you prefer boys  &  \\
+    \chatN{Jido} & No. I prefer some girls &  \\
+    \chatN{user} & Are you sure ? &  \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & Learn that you prefer boys &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Do you prefer boys or girls ? &  \\
+    \chatN{Jido} & I prefer some girls or some boys &  \\
+    \chatN{user} & Learn that you prefer girls &  \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & Do you prefer girls or boys ? &  \\
+    \chatN{Jido} & I prefer some girls and some boys &  \\
+    \chatN{user} & well &  \\
+    \chatN{Jido} & well &  \\
+    \chatN{user} & What do you plan to do this we ? &  \\
+    \chatN{Jido} & I don't know if I plan or not &  \\
+    \chatN{user} & I have to go. Nice to meet you &  \\
+    \chatN{user} & See you later &  \\
+    \chatN{Jido} & Nice to meet you &  \\
+    \chatN{Jido} & see you later & \\
+\end{dialog}
+
+\section{Other}
+
+\begin{dialog}
+    \chatN{user} & hi & ok \\
+    \chatN{Jido} & hello &  \\
+    \chatN{user} & how are you jido? & x \\
+    \chatfix{how are you Jido?} \\
+    \chatN{Jido} & I am Jido &  \\
+    \chatN{user} & your batteries are well charged? & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & can you put the red paper in the red box & ok \\
+    \chatN{Jido} & I cannot reach it &  \\
+    \chatN{user} & which paper can you reach? & ok \\
+    \chatN{Jido} & the green paper &  \\
+    \chatN{user} & so put it on the blue box & ok \\
+    \chatN{Jido} & which blue box? &  \\
+    \chatN{user} & the big one & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & can you see some bottles on the table? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & which color are they? & ok \\
+    \chatN{Jido} & the blue bottle, the orange bottle, the green bottle, the gray bottle, the green table &  \\
+    \chatN{user} & what is the position of the green bottle & ok \\
+    \chatN{Jido} & position? what do you mean? &  \\
+    \chatN{user} & which cup is the most longer? & x \\
+    \chatfix{which cup is the longest?} \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & can you see the white paper? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & there is another paper on it? &  \\
+    \chatN{Jido} & the process cleaning the table has been activated. Will you do it? &  \\
+    \chatN{Jido} & do you mean another paper on the white paper? &  \\
+    \chatN{user} & yes & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & can you see the blue paper? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & is it on your left? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & the red box is on your left or on you right? & ok \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & the red box is on your left & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & where is the red box? & ok \\
+    \chatN{Jido} & the red box is at my left &  \\
+    \chatN{user} & no, the red box is on your right & ok \\
+    \chatN{Jido} & no. the red box is at my left &  \\
+    \chatN{user} & do you have a tape for me? & ok \\
+    \chatN{Jido} & no &  \\
+    \chatN{user} & where can I find tapes? & ok \\
+    \chatN{Jido} & i don't know &  \\
+    \chatN{Jido} & and you &  \\
+    \chatN{user} & I don't know & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & do you know something about movies? & ok \\
+    \chatN{user} & who have the tapes? & ok \\
+    \chatN{Jido} & Patrick has the tapes &  \\
+    \chatN{user} & which tape he has? & ok \\
+    \chatN{Jido} & LOR and Jido-e &  \\
+    \chatN{user} & what is it about LOR? & ok \\
+    \chatN{Jido} & The Lord of the Robots film trilogy consists of three fantasy-adventure films: The Fellowship of the Robot, The Two Towers and The Return of the Humanoids. The trilogy is based on the three-volume book The Lord of the Robots by S. Lemaignan. Set in the fictional world of Middle-earth, the three films follow the hobbit Jido as he and a Fellowship embark on a quest to destroy the One Robot, and thus ensure the destruction of its maker, the Dark Lord Python. The Fellowship becomes divided and Jido continues the quest together with his loyal companion Hrp2 and the treacherous Gollum. Meanwhile, the wizard Mahdi and Aragorn, heir in exile to the throne of Gondor, unite and rally the Free Peoples of Middle-earth, who are ultimately victorious in the War of the Robot. &  \\
+    \chatN{user} & who is the main actor? & ok \\
+    \chatN{Jido} & Jido &  \\
+    \chatN{user} & you are an actor? & ok \\
+    \chatN{Jido} & gollum, jido ,the Dark Lord Python &  \\
+    \chatN{user} & did you play in another film? & ok \\
+    \chatN{Jido} & yes &  \\
+    \chatN{user} & which one? & ok \\
+    \chatN{Jido} & Jido-e &  \\
+    \chatN{user} & is this movie great? & ok \\
+    \chatN{Jido} & I don't know if it great or not &  \\
+    \chatN{user} & and what do you know? & ok \\
+    \chatN{Jido} & I know the Lord of Robots videotape, the Jido.e videotape, the blue bottle, the orange bottle, the green bottle, the gray bottle, the green table, the trashbin, the red box, the big blue box, the small blue box, the blue wineglass, the orange cup, the red cup, the red pen, the blue pen, the black pen, the red paper, the blue paper, the green paper, some papers and you. &  \\
+    \chatN{user} & I know your name & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & what is my name? & ok \\
+    \chatN{Jido} & user &  \\
+    \chatN{user} & and the last name of P/Patrick & ok \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & P/patoch & x \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & what is the last name of patrick? & x \\
+    \chatfix{what is the last name of Patrick?} \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & the surname of patrick is patoch & x \\
+    \chatfix{the surname of Patrick is Patoch} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & who is patoch? & x \\
+    \chatfix{who is Patoch?} \\
+    \chatN{Jido} & patoch is patoch and patrick &  \\
+    \chatN{user} & where is brian? & x \\
+    \chatfix{where is Brian?} \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & brian is in the kitchen & x \\
+    \chatfix{Brian is in the kitchen} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & where is patoch? & x \\
+    \chatfix{where is Patoch?} \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & patrick is in the kitchen & x \\
+    \chatfix{Patrick is in the kitchen} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & where is patoch? & x \\
+    \chatfix{where is Patoch?} \\
+    \chatN{Jido} & patoch is in the kitchen &  \\
+    \chatN{user} & who is in the kitchen? & ok \\
+    \chatN{Jido} & Patoch, Brian and Patrick &  \\
+    \chatN{user} & are Patoch and Patrick the same person? & ok \\
+    \chatN{Jido} & I don't know &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & I have to go Jido & x \\
+    \chatfix{I have to go. Jido} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{Jido} & the process cleaning the table has been activated. Will you do it? &  \\
+    \chatN{user} & what will you do this afternoon? & x \\
+    \chatfix{what will you do in this afternoon?} \\
+    \chatN{Jido} & I don't know  &  \\
+    \chatN{Jido} & and you? &  \\
+    \chatN{user} & I don't know & ok \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & this afternoon you will see Jeremy & x \\
+    \chatfix{in this afternoon you will see Jeremy} \\
+    \chatN{Jido} & ok &  \\
+    \chatN{user} & bye jido & x \\
+    \chatfix{bye Jido} \\
+    \chatN{Jido} & bye & \\
+\end{dialog}
 
 \end{document}
