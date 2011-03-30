@@ -6,8 +6,8 @@ import sys
 from sentence_atoms import *
 from helpers import colored_print
 
-OUTPUT_MODE = 'css'
-#OUTPUT_MODE = 'color'
+#OUTPUT_MODE = 'css'
+OUTPUT_MODE = 'color'
 
 def color_printer(text, atom):
     if atom == NOMINAL_GROUP:
@@ -22,6 +22,8 @@ def color_printer(text, atom):
         return "(aim: " + text + ")\n"
     if atom == SENTENCE_TYPE:
         return colored_print(">>" + text.upper(), 'bold')
+    if atom == AGRAMMATICAL_SENTENCE:
+        return colored_print(">> The sentence does not appear to be grammatically valid! <<", 'red') + text
     if atom == ADVERBIAL:
         return level_marker() + "Adverbials: " + colored_print(text, 'yellow') + "\n"
     if atom == VERBAL_ADVERBIAL:
@@ -60,6 +62,8 @@ def css_printer(text, atom):
         return "<br/><span class='" + atom.lower() + "'>" + text + "</span> "
     if atom == AFFIRMATIVE:
         return text
+    if atom == AGRAMMATICAL_SENTENCE:
+        return "\n<div class='sentence invalid_grammar'>\n" + text + "\n</div>\n"
     else:
         stderr.writeln("Error: " + text + "has no grammatical category!") 
         return text
