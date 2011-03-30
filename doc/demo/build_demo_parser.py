@@ -46,6 +46,7 @@ print """
 
     <body>
     <h1> DIALOGS parser</h1>
+    Colours: <span class="determiner">determiner</span> <span class="adjective">adjective</span>  <span class="noun">noun</span> <span class="verb">verb</span> <span class="adverbial">adverbial</span> <span class="preposition">preposition</span>
 """
 
 
@@ -56,7 +57,7 @@ utterances=["The bottle is on the table. The bottle is blue. the bottle is Blue"
     "You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? shall I go", \
     "Isn't he doing his homework and his game now? Can't he take this bottle. good afternoon", \
     "Don't quickly give me the blue bottle. I wanna play with my guitar. I'd like to go to the cinema.", \
-    "the man, who talks, has a new car. I play the guitar, that I bought yesterday,.", \
+    "the man who talks, has a new car. I play the guitar, that I bought yesterday.", \
     "don't quickly give me the bottle which is on the table, and the glass which I cleaned yesterday, at my left", \
     "The bottle that I bought from the store which is in the shopping center, , is yours.", \
     "When won't the planning session take place? when must you take the bus", \
@@ -120,7 +121,9 @@ utterances=["The bottle is on the table. The bottle is blue. the bottle is Blue"
     "the bottle on the table, is blue. where is this tape", \
     "the bottle of Jido which is blue, is on the table. I do my homework before he comes", \
     "before he comes, I do my homework. I have played foot since I was a young boy.", \
-    "They haven't played tennis since 1987. give me the glass the paper and the bottle."]
+    "They haven't played tennis since 1987. give me the glass the paper and the bottle.", \
+    "Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo",
+    "James, while John had had \"had\", had had \"had had\"; \"had had\" had had a better effect on the teacher"]
 
 
 for s in utterances:
@@ -129,7 +132,6 @@ for s in utterances:
     print("<h2>" + s + "</h2>")
     for p in parsed:
         print(str(p))
-
 
 print """
     </body>

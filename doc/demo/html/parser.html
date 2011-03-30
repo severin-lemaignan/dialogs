@@ -42,6 +42,7 @@
 
     <body>
     <h1> DIALOGS parser</h1>
+    Colours: <span class="determiner">determiner</span> <span class="adjective">adjective</span>  <span class="noun">noun</span> <span class="verb">verb</span> <span class="adverbial">adverbial</span> <span class="preposition">preposition</span>
 
 <h2>The bottle is on the table. The bottle is blue. the bottle is Blue</h2>
 
@@ -816,14 +817,31 @@
 
 </div>
 
-<h2>the man, who talks, has a new car. I play the guitar, that I bought yesterday,.</h2>
+<h2>the man who talks, has a new car. I play the guitar, that I bought yesterday.</h2>
 
 <div class='sentence'>
-<span class='sentence_type'>interjection</span> 
+<span class='sentence_type'>statement</span> 
 <div class='subject'>
 
 	<div class='nominal_group'>
 	<span class='determiner'>the</span> <span class='noun'>man</span> 
+	<div class='relative'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>relative</span> <span class='sentence_aim'>who</span> 
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>talk</span> <span class='tense'>present simple</span> 
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
 	</div>
 	
 
@@ -832,21 +850,7 @@
 	<div class='verbal_group'>
 	
 	<div class='not_resolved'>
-	<span class='verb'></span> <span class='tense'>present simple</span> 
-	</div>
-	
-	</div>
-	
-
-</div>
-
-
-<div class='sentence'>
-<span class='sentence_type'>w_question</span> <span class='sentence_aim'>people</span> 
-	<div class='verbal_group'>
-	
-	<div class='not_resolved'>
-	<span class='verb'>;</span> <span class='tense'>present simple</span> 	
+	<span class='verb'>have</span> <span class='tense'>present simple</span> 	
 	<div class='direct_object'>
 	
 		<div class='nominal_group'>
@@ -855,15 +859,6 @@
 		
 	</div>
 	
-		<br/><span class='preposition'></span> 
-		<div class='indirect_object'>
-		
-			<div class='nominal_group'>
-			<span class='quantifier'>ALL</span> <span class='noun'>ha</span> 
-			</div>
-			
-		</div>
-		
 	
 	</div>
 	
@@ -2920,7 +2915,7 @@
 
 <h2>this is a bottle. There is a bottle on the table</h2>
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>statement</span> 
 <div class='subject'>
 
@@ -4070,7 +4065,7 @@
 </div>
 
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>w_question</span> <span class='sentence_aim'>good</span> 
 <div class='subject'>
 
@@ -4094,7 +4089,7 @@
 
 <h2>Patrick, the bottle is on the table. give it to me</h2>
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>interjection</span> 
 <div class='subject'>
 
@@ -4191,7 +4186,7 @@
 
 <h2>Jido, give me the bottle. Jido, Patrick and you will go to the cinema. Jido, Patrick and you, give me the bottle</h2>
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>interjection</span> 
 <div class='subject'>
 
@@ -4287,7 +4282,7 @@
 </div>
 
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>interjection</span> 
 <div class='subject'>
 
@@ -4556,7 +4551,7 @@
 </div>
 
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>statement</span> 
 <div class='subject'>
 
@@ -4726,7 +4721,7 @@
 
 <h2>Jido, tell me where you go. Goodbye. Bye. there is nothing. it is another one.</h2>
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>interjection</span> 
 <div class='subject'>
 
@@ -4914,7 +4909,7 @@
 </div>
 
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>statement</span> 
 <div class='subject'>
 
@@ -5863,7 +5858,7 @@
 </div>
 
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>statement</span> 
 <div class='subject'>
 
@@ -6924,7 +6919,7 @@
 </div>
 
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'></span> 
 	<div class='verbal_group'>
 	
@@ -7194,7 +7189,7 @@
 
 <h2>the left of what? Jido, what do you do? throw one of them. Very good</h2>
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>statement</span> 
 <div class='subject'>
 
@@ -7225,7 +7220,7 @@
 </div>
 
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>interjection</span> 
 <div class='subject'>
 
@@ -7271,7 +7266,7 @@
 </div>
 
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>imperative</span> 
 <div class='subject'>
 
@@ -7653,7 +7648,7 @@
 
 <h2>They haven't played tennis since 1987. give me the glass the paper and the bottle.</h2>
 
-<div class='sentence'>
+<div class='sentence invalid_grammar'>
 <span class='sentence_type'>statement</span> 
 <div class='subject'>
 
@@ -7739,6 +7734,256 @@
 			
 		</div>
 		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo</h2>
+
+<div class='sentence'>
+<span class='sentence_type'>statement</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='noun'>Buffalo</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>buffalo</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>buffalo</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>Buffalo</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>Buffalo</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>buffalo</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>buffalo</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>buffalo</span> 
+			</div>
+			
+		</div>
+		
+	
+	</div>
+	
+	</div>
+	
+
+</div>
+
+<h2>James, while John had had "had", had had "had had"; "had had" had had a better effect on the teacher</h2>
+
+<div class='sentence invalid_grammar'>
+<span class='sentence_type'>interjection</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>ALL</span> <span class='noun'>jame</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'></span> <span class='tense'>present simple</span> 
+	</div>
+	
+	</div>
+	
+
+</div>
+
+
+<div class='sentence'>
+<span class='sentence_type'>imperative</span> 
+<div class='subject'>
+
+	<div class='nominal_group'>
+	<span class='quantifier'>ALL</span> <span class='noun'>jame</span> 
+	</div>
+	
+
+</div>
+
+	<div class='verbal_group'>
+	
+	<div class='not_resolved'>
+	<span class='verb'>had</span> <span class='tense'>present simple</span> 	
+	<div class='direct_object'>
+	
+		<div class='nominal_group'>
+		<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>had</span> 
+		</div>
+		
+	</div>
+	
+		<br/><span class='preposition'>on</span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='determiner'>the</span> <span class='noun'>teacher</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='adjective'>better</span> <span class='noun'>effect</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>had</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>"had</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>had"</span> 
+			</div>
+			
+		</div>
+		
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>"had</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>had"</span> 
+			</div>
+			
+		</div>
+		
+		<br/><span class='preposition'></span> 
+		<div class='indirect_object'>
+		
+			<div class='nominal_group'>
+			<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>had</span> 
+			</div>
+			
+		</div>
+		
+		
+	<div class='sub_sentence'>
+	
+		<div class='sentence'>
+		<span class='sentence_type'>subsentence+statement</span> <span class='sentence_aim'>while</span> 
+		<div class='subject'>
+		
+			<div class='nominal_group'>
+			<span class='noun'>John</span> 
+			</div>
+			
+		
+		</div>
+		
+			<div class='verbal_group'>
+			
+			<div class='not_resolved'>
+			<span class='verb'>have</span> <span class='tense'>past perfect</span> 	
+			<div class='direct_object'>
+			
+				<div class='nominal_group'>
+				<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>"had"</span> 
+				</div>
+				
+			</div>
+			
+				<br/><span class='preposition'></span> 
+				<div class='indirect_object'>
+				
+					<div class='nominal_group'>
+					<span class='quantifier'>SOME</span> <span class='determiner'>a</span> <span class='noun'>had</span> 
+					</div>
+					
+				</div>
+				
+			
+			</div>
+			
+			</div>
+			
+		
+		</div>
+		
+	</div>
+	
 	
 	</div>
 	
