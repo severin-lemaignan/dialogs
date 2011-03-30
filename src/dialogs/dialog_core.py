@@ -1,27 +1,21 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
-import sys
 import logging
-
-from threading import Thread
+import sys
 from Queue import Queue, Empty
 from collections import deque
-
-
-from helpers.helpers import colored_print, wait_for_keypress
+from threading import Thread
 
 from dialog_exceptions import *
-
 from dialogs.sentence import *
-
-from speaker_identification import SpeakerIdentifier
-from parsing.parser import Parser
-
-from interpretation.resolution import Resolver
-from interpretation.content_analysis import ContentAnalyser
+from helpers.helpers import colored_print, wait_for_keypress
 from interpretation.anaphora_matching import replacement
+from interpretation.content_analysis import ContentAnalyser
+from interpretation.resolution import Resolver
+from parsing.parser import Parser
+from speaker_identification import SpeakerIdentifier
 from verbalization.verbalization import Verbalizer
+
 
 class Dialog(Thread):
     """The main Dialog class.
@@ -86,10 +80,10 @@ class Dialog(Thread):
         #last utterance outputed to user. This is a tuple containing both the
         # Sentence object and the verbalized version. For testing purposes.
         self.last_sentence = (None, None)
-    
+
     def run(self):
         while self.go_on:
-                  
+
             try:               
                 input = self._nl_input_queue.get(block = False).strip()
                 self._logger.info(colored_print("\n-------[       NL INPUT      ]-------\n", 'green'))

@@ -23,6 +23,7 @@
     sentences_analyzer : is the basic function of parsing                         
 """
 from dialogs.sentence import *
+from dialogs.sentence_types import *
 from dialogs.resources_manager import ResourcePool
 import analyse_nominal_group
 import analyse_nominal_structure
@@ -53,7 +54,7 @@ def dispatching(sentence):
         
         #For ending dialogue
         if sentence[0].endswith('bye'):
-            return [Sentence(Sentence.end, '', [], [])]
+            return [Sentence(END, '', [], [])]
         
         #When others
         for x in frt_wd:
@@ -63,7 +64,7 @@ def dispatching(sentence):
 
                 #For
                 if x[1] == '1':
-                    return [Sentence(Sentence.start, '', [], [])]
+                    return [Sentence(START, '', [], [])]
                 
                 #It's a w_question or subsentence
                 if x[1] == '2':
@@ -76,11 +77,11 @@ def dispatching(sentence):
                     #For 'when'
                     if x[2]=='1':
                         #If we remove the first word => it becomes like y_n_question
-                        return [y_n_ques(Sentence.w_question, 'date', sentence[1:])]
+                        return [y_n_ques(W_QUESTION, 'date', sentence[1:])]
 
                     #For 'where'
                     elif x[2]=='2':
-                        return [w_quest_where(Sentence.w_question, 'place', sentence)]
+                        return [w_quest_where(W_QUESTION, 'place', sentence)]
                     
                     #For 'what'
                     elif x[2]=='3':
@@ -91,46 +92,46 @@ def dispatching(sentence):
 
                         #For other type of 'what' question
                         else:
-                            return [w_quest_what(Sentence.w_question, sentence)]
+                            return [w_quest_what(W_QUESTION, sentence)]
 
                     #For 'how'
                     elif x[2]=='4':
 
                         if sentence[1]=='many' or sentence[1]=='much' :
-                            return [w_quest_quant(Sentence.w_question, 'quantity', sentence)]
+                            return [w_quest_quant(W_QUESTION, 'quantity', sentence)]
                         
                         elif sentence[1]=='about':
                             #We replace 'about' by 'is' to have a y_n_question
                             sentence[1]='is'
-                            return [y_n_ques(Sentence.w_question, 'invitation', sentence[1:])]
+                            return [y_n_ques(W_QUESTION, 'invitation', sentence[1:])]
 
                         #For other type of 'how' question
                         else:
-                            return [w_quest_how(Sentence.w_question, sentence)]
+                            return [w_quest_how(W_QUESTION, sentence)]
 
                     #For 'why'
                     elif x[2]=='5':
-                        return [y_n_ques(Sentence.w_question, 'reason', sentence[1:])]
+                        return [y_n_ques(W_QUESTION, 'reason', sentence[1:])]
 
                     #For 'whose'
                     elif x[2]=='6':
-                        return [w_quest_whose(Sentence.w_question, 'owner', sentence)]
+                        return [w_quest_whose(W_QUESTION, 'owner', sentence)]
 
                     #For 'who'
                     elif x[2]=='7':
-                        return [y_n_ques(Sentence.w_question, 'people', sentence[1:])]
+                        return [y_n_ques(W_QUESTION, 'people', sentence[1:])]
 
                     #For 'which'
                     elif x[2]=='8':
-                        return [w_quest_which(Sentence.w_question, 'choice', sentence[1:])]
+                        return [w_quest_which(W_QUESTION, 'choice', sentence[1:])]
                     
                     #For 'to whom'
                     elif x[2]=='9':
-                        return [w_quest_whom(Sentence.w_question, 'people', sentence[1:])]
+                        return [w_quest_whom(W_QUESTION, 'people', sentence[1:])]
 
                 #It's a y_n_question
                 elif x[1] == '3':
-                    return [y_n_ques(Sentence.yes_no_question, '', sentence)]
+                    return [y_n_ques(YES_NO_QUESTION, '', sentence)]
 
                 #It's a conditional sentence
                 elif x[1]=='4':
@@ -138,15 +139,15 @@ def dispatching(sentence):
 
                 #Agree
                 elif x[1]=='5':
-                    return separ_sentence(sentence, Sentence.agree)
+                    return separ_sentence(sentence, AGREEMENT)
                     
                 #Disagree
                 elif x[1]=='6':
-                    return separ_sentence(sentence, Sentence.disagree)
+                    return separ_sentence(sentence, DISAGREEMENT)
 
                 #Gratulation
                 elif x[1]=='7':
-                    return separ_sentence(sentence, Sentence.gratulation)
+                    return separ_sentence(sentence, GRATULATION)
                 
                 #Interjunction
                 elif x[1]=='8':
@@ -171,8 +172,8 @@ def separ_sentence(sentence, data_type):
     """
     
     #If we have good followed by another word it can be start
-    if data_type==Sentence.agree and len(sentence)>1 and (sentence[1]=='morning' or sentence[1]=='evening' or sentence[1]=='afternoon'):
-        sentences=[Sentence(Sentence.start, '', [], [])]
+    if data_type==AGREEMENT and len(sentence)>1 and (sentence[1]=='morning' or sentence[1]=='evening' or sentence[1]=='afternoon'):
+        sentences=[Sentence(START, '', [], [])]
     else:
         #init
         sentences=[Sentence(data_type, '', [], [])]
@@ -203,23 +204,23 @@ def exclama_sentence(sentence):
     for i in frt_wd:
         if i[0]==sentence[0]:
             if i[1]=='0':
-                analysis=Sentence(Sentence.interjection, '', [], [])
+                analysis=Sentence(INTERJECTION, '', [], [])
                 #We recover the subject
                 sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 1)
                 return analysis
             elif i[1]=='2':
                 #It is an exclamation sentence
-                analysis=Sentence(Sentence.exclamation, '', [], [])
+                analysis=Sentence(EXCLAMATION, '', [], [])
                 #We recover the subject
                 sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
                 return analysis
     
     #If we have an imperative it can be forced
-    analysis=other_sentence(Sentence.interjection, '', sentence)
-    if analysis.data_type==Sentence.interjection and (analysis.sv[0].vrb_main==[] or analysis.sv[0].vrb_main[0] in ['!','?','.']):
+    analysis=other_sentence(INTERJECTION, '', sentence)
+    if analysis.data_type==INTERJECTION and (analysis.sv[0].vrb_main==[] or analysis.sv[0].vrb_main[0] in ['!','?','.']):
         pass
     else:
-        analysis.data_type=Sentence.statement
+        analysis.data_type=STATEMENT
     return analysis
 
 
@@ -246,7 +247,7 @@ def w_quest_class(sentence):
     Input=sentence                                       Output=class Sentence   
     """
     
-    analysis=y_n_ques(Sentence.w_question, 'classification'+'+'+sentence[4],sentence[5:])
+    analysis=y_n_ques(W_QUESTION, 'classification'+'+'+sentence[4],sentence[5:])
     if analysis.sn!=[]:
         #The direct object must be empty
         if analysis.sv[0].d_obj!=[]:
@@ -395,7 +396,7 @@ def stc_start_subsentence(sentence):
             
             #We perform the 2 processing
             if sentence.index(i)!=len(sentence)-1:
-                analysis=other_sentence(Sentence.statement, '', sentence[sentence.index(i)+1:])
+                analysis=other_sentence(STATEMENT, '', sentence[sentence.index(i)+1:])
             else:
                 vg=Verbal_Group([], [],'', [], [], [], [] ,Verbal_Group.affirmative,[])
                 analysis=Sentence('', '', [], [vg])
@@ -404,7 +405,7 @@ def stc_start_subsentence(sentence):
     #We process the subsentence 
     analysis.sv[0].vrb_sub_sentence=analysis.sv[0].vrb_sub_sentence+dispatching(subsentence)
     if analysis.sv[0].vrb_sub_sentence!=[]:
-        analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type=Sentence.subsentence+'+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
+        analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type=SUBSENTENCE+'+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
         if sentence[0][0]==':':
             analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0][1:]
         else:
@@ -500,7 +501,7 @@ def y_n_ques(type, request, sentence):
         sentence=[sentence[0]]+sentence[2:]
     
     #In this case we have an imperative sentence
-    elif analyse_nominal_group.find_sn_pos(sentence, 1)==[] and type!=Sentence.w_question:
+    elif analyse_nominal_group.find_sn_pos(sentence, 1)==[] and type!=W_QUESTION:
         #We have to reput the 'not'
         if vg.state==Verbal_Group.negative:
             sentence=sentence[:1]+['not']+sentence[1:]
@@ -647,10 +648,10 @@ def other_sentence(type, request, sentence):
     
     #We search the subject
     sbj=analyse_nominal_group.find_sn_pos(sentence, 0)
-    if sbj!=[] or type==Sentence.relative:
+    if sbj!=[] or type==RELATIVE:
         #If we haven't a data type => it is a statement
         if type=='':
-            analysis.data_type=Sentence.statement
+            analysis.data_type=STATEMENT
 
         
         #We have to separate the case using these, this or there
@@ -721,7 +722,7 @@ def other_sentence(type, request, sentence):
     #This is a imperative form
     else:
         #re-init
-        analysis.data_type=Sentence.imperative
+        analysis.data_type=IMPERATIVE
         vg.vrb_tense='present simple'
         
         if sentence[0] in proposal_list:
@@ -746,7 +747,7 @@ def other_sentence(type, request, sentence):
         sentence= sentence[sentence.index(verb[0])+len(verb_main):]
     
     if sentence!=[] and sentence[len(sentence)-1]=='?':
-        analysis.data_type=Sentence.yes_no_question
+        analysis.data_type=YES_NO_QUESTION
         
     #We recover the conjunctive subsentence
     sentence=analyse_verbal_structure.process_conjunctive_sub(sentence, vg)
@@ -822,10 +823,10 @@ def sentences_analyzer(sentences):
     #Add some information if there is an interjection
     while y < len(class_sentence_list):
         #If there is an interjection we have to take the nominal group
-        if class_sentence_list[y].data_type==Sentence.interjection:
+        if class_sentence_list[y].data_type==INTERJECTION:
             nom_gr=class_sentence_list[y].sn
         #If there is an imperative sentence, we put the nominal group of interjection in the subject
-        if nom_gr!=[] and class_sentence_list[y].data_type==Sentence.imperative:
+        if nom_gr!=[] and class_sentence_list[y].data_type==IMPERATIVE:
             class_sentence_list[y].sn=class_sentence_list[y].sn+nom_gr
         y=y+1
     
@@ -839,12 +840,12 @@ def sentences_analyzer(sentences):
         #If sentence is empty, we take off the verb
         if k.sv!=[] and (k.sv[0].vrb_main==['.'] or k.sv[0].vrb_main==['?'] or k.sv[0].vrb_main==['!']):
             k.sv[0].vrb_main=[]
-            if k.data_type==Sentence.imperative:
-                k.data_type=Sentence.statement
+            if k.data_type==IMPERATIVE:
+                k.data_type=STATEMENT
             
         #If we have imperative with verb 'see' => end
-        if k.data_type==Sentence.imperative and k.sv[0].vrb_main==['see'] and k.sv[0].d_obj[0].noun==['you']:
-            k.data_type=Sentence.end
+        if k.data_type==IMPERATIVE and k.sv[0].vrb_main==['see'] and k.sv[0].d_obj[0].noun==['you']:
+            k.data_type=END
             k.aim=''
             k.sv=[]
             k.sn=[]

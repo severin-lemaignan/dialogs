@@ -40,7 +40,7 @@ class Resolver:
     
     def references_resolution(self, sentence, current_speaker, uae_object, uae_object_with_more_info, uae_object_list):
         #Skipping processing of sentences that are neither questions nor statements
-        if not sentence.data_type in [Sentence.w_question, Sentence.yes_no_question, Sentence.statement, Sentence.imperative]:
+        if not sentence.data_type in [W_QUESTION, YES_NO_QUESTION, STATEMENT, IMPERATIVE]:
             return sentence
         
         # Current object replacement with uae object
@@ -285,7 +285,7 @@ class Resolver:
 
         logger.info(colored_print("-> Resolving noun phrases", 'green'))
         
-        if not sentence.data_type in [Sentence.w_question, Sentence.yes_no_question, Sentence.statement, Sentence.imperative]:
+        if not sentence.data_type in [W_QUESTION, YES_NO_QUESTION, STATEMENT, IMPERATIVE]:
             return sentence
         
         #Nominal group replacement possibly after uie_object and uie_object_with_more_info are sent from Dialog to resolve missing content
@@ -345,7 +345,7 @@ class Resolver:
         
         #   Features to ignore from discrimination
         features = []
-        if self._current_sentence.data_type in [Sentence.w_question, Sentence.yes_no_question]:
+        if self._current_sentence.data_type in [W_QUESTION, YES_NO_QUESTION]:
             if self._current_sentence.aim in ResourcePool().adjectives_ontology_classes:
                 # feature =["hasColor"]
                 features = ["has" + self._current_sentence.aim.capitalize()]
@@ -460,7 +460,7 @@ class Resolver:
         
         logger.info(colored_print("-> Resolving verbal groups", 'green'))
         
-        if not sentence.data_type in [Sentence.w_question, Sentence.yes_no_question, Sentence.statement, Sentence.imperative]:
+        if not sentence.data_type in [W_QUESTION, YES_NO_QUESTION, STATEMENT, IMPERATIVE]:
             return sentence
         
         for sv in sentence.sv:

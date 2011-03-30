@@ -54,7 +54,7 @@ class QuestionHandler:
         logger.info(level_marker(level=2, color="yellow") + "Generated statements based on the sentence components: " + colored_print(str(self._statements), None, "magenta"))
         
         #Case the question is a y_n_question : check the fact in the ontology
-        if sentence.data_type == Sentence.yes_no_question:
+        if sentence.data_type == YES_NO_QUESTION:
             self._statements = self._set_situation_id(self._statements)
             logger.info(level_marker(level=2, color="yellow") + "Generated statements for this question: " + colored_print(str(self._statements), None, "magenta"))
             #Processing :Do you know something?
@@ -84,7 +84,7 @@ class QuestionHandler:
                     pass
                 
         #Case the question is a w_question : find the concept the concept that answers the question
-        if sentence.data_type == Sentence.w_question:
+        if sentence.data_type == W_QUESTION:
             #
             self._query_on_field = self._set_query_on_field(sentence)
             statements_with_bound_tokens =  self._remove_statements_with_no_unbound_tokens(self._statements)

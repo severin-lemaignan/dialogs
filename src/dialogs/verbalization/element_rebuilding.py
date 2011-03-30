@@ -151,7 +151,7 @@ def conjugate_vrb(tense, verb, sn, type, aim):
             sn[0].noun=[aim[15:]]
             
     if sn==[]:
-        if type==Sentence.imperative:
+        if type==IMPERATIVE:
             #If no subject, we use the third person of plural
             sn=[Nominal_Group([],['they'],[],[],[])]
         else:

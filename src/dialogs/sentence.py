@@ -2,6 +2,7 @@
 
 import logging
 
+from sentence_types import *
 
 from helpers.sentence_atoms import *
 from helpers.printers import pprint, level_marker
@@ -16,23 +17,6 @@ class Sentence:
     sv : a verbal structure typed into a Verbal_Group
     aim : is used for retrieveing the aim of a question
     """
-    
-    #List of data types
-    statement = "statement"
-    imperative = "imperative"
-    interjection = "interjection"
-    gratulation = "gratulation"
-    agree = "agree"
-    disagree = "disagree"
-    exclamation = "exclamation"
-    w_question = "w_question"
-    yes_no_question = "yes_no_question"
-    subsentence = "subsentence"
-    relative = "relative"
-    start = "start"
-    end = "end"
-    
-
     def __init__(
         self,
         data_type,
@@ -85,7 +69,10 @@ class Sentence:
         
         #res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
 
-        res = pprint(res, SENTENCE)
+        if self.isvalid():
+            res = pprint(res, SENTENCE)
+        else:
+            res = pprint(res, AGRAMMATICAL_SENTENCE)
         return res
     
     def flatten(self):
@@ -96,13 +83,13 @@ class Sentence:
     
     def isaborting(self):
         #Forget it
-        if self.data_type == "imperative" \
+        if self.data_type == IMPERATIVE \
             and "forget" in [verb for sv in self.sv for verb in sv.vrb_main]\
             and "affirmative" in [sv.state for sv in self.sv]:
             return True
             
         #[it] doesn't matter'
-        if self.data_type == "statement"  \
+        if self.data_type == STATEMENT  \
             and "matter" in [verb for sv in self.sv for verb in sv.vrb_main]\
             and "negative" in [sv.state for sv in self.sv]:
             return True
@@ -111,7 +98,7 @@ class Sentence:
     
     def islearning(self):
         #Learn that
-        if  self.data_type == "imperative"\
+        if  self.data_type == IMPERATIVE\
             and "learn" in [verb for sv in self.sv for verb in sv.vrb_main]\
             and "affirmative" in [sv.state for sv in self.sv]:
             return True
@@ -163,9 +150,9 @@ class Nominal_Group:
         """ Check this nominal group is valid.
 
         This currently means:
-            - it has a non-null noun
+            - it has either non-null adjective or non-null nouns or both 
         """
-        return True if self.noun else False
+        return True if (self.noun or self.adj) else False
 
     def __str__(self):
         
@@ -589,11 +576,11 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
     """
 
     for i in utterance:
-        if i.data_type==Sentence.imperative:
-            i.data_type=Sentence.statement
+        if i.data_type==IMPERATIVE:
+            i.data_type=STATEMENT
             i.sn=[Nominal_Group(['the'],i.sv[0].vrb_main,[],[],[])]
 
-        if i.data_type==Sentence.statement or i.data_type.startswith(Sentence.subsentence) :
+        if i.data_type==STATEMENT or i.data_type.startswith(SUBSENTENCE) :
             if i.sv[0].state==Verbal_Group.affirmative:
 
                 #We can have just the subject

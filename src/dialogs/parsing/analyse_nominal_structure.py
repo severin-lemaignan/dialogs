@@ -134,7 +134,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr,conjunction):
         if phrase[begin_pos_rel]!='where':
             relative_phrase=analyse_nominal_group.complete_relative(relative_phrase,nom_gr)
         
-        relative = relative+[analyse_sentence.other_sentence(Sentence.relative,phrase[begin_pos_rel],relative_phrase)]
+        relative = relative+[analyse_sentence.other_sentence(RELATIVE,phrase[begin_pos_rel],relative_phrase)]
 
     #If there is a nom_gr_compl, we must make a recursive process for embedded complement
     if nom_gr_compl!=[]:

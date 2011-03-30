@@ -31,24 +31,24 @@ class ContentAnalyser:
         
         sentence = self.pre_analyse_content(sentence)
         
-        if sentence.data_type == [Sentence.interjection, Sentence.exclamation]:
+        if sentence.data_type == [INTERJECTION, EXCLAMATION]:
             pass
         
-        if sentence.data_type in [Sentence.start, Sentence.end]:
+        if sentence.data_type in [START, END]:
             self.output_sentence.append(sentence)
            
-        if sentence.data_type == Sentence.gratulation:
+        if sentence.data_type == GRATULATION:
             self.output_sentence.extend(self.sfactory.create_gratulation_reply())
         
-        if sentence.data_type in [Sentence.agree, Sentence.disagree]:
+        if sentence.data_type in [AGREEMENT, DISAGREEMENT]:
             self.output_sentence.extend(self.sfactory.create_agree_reply())
             
-        if sentence.data_type in [Sentence.imperative, Sentence.statement]:
-            logger.debug(colored_print("Processing the content of " +  ("an imperative sentence" if sentence.data_type == Sentence.imperative else "a statement "), "magenta"))
+        if sentence.data_type in [IMPERATIVE, STATEMENT]:
+            logger.debug(colored_print("Processing the content of " +  ("an imperative sentence" if sentence.data_type == IMPERATIVE else "a statement "), "magenta"))
             return self.process_sentence(sentence, current_speaker)
         
-        if sentence.data_type in [Sentence.w_question, Sentence.yes_no_question]:
-            logger.debug(colored_print("Processing the content of " +  ("a W question " if sentence.data_type == Sentence.w_question else "a YES/NO question"), "magenta"))
+        if sentence.data_type in [W_QUESTION, YES_NO_QUESTION]:
+            logger.debug(colored_print("Processing the content of " +  ("a W question " if sentence.data_type == W_QUESTION else "a YES/NO question"), "magenta"))
             return self.process_question(sentence, current_speaker)
         
         
@@ -88,13 +88,13 @@ class ContentAnalyser:
         else:
             logger.info(level_marker(level=2, color="yellow") + "Couldn't find anything!")
             
-        if sentence.data_type == Sentence.w_question:
+        if sentence.data_type == W_QUESTION:
             self.output_sentence.extend(self.sfactory.create_w_question_answer(sentence, 
                                                                                     answer,
                                                                                     self.question_handler._current_speaker,
                                                                                     self.question_handler.get_query_on_field()))
         
-        if sentence.data_type == Sentence.yes_no_question:
+        if sentence.data_type == YES_NO_QUESTION:
             self.output_sentence.extend(self.sfactory.create_yes_no_answer(sentence, answer))
         
         return self.question_handler._statements
@@ -106,7 +106,7 @@ class ContentAnalyser:
     def pre_analyse_content(self, sentence):
         """ this method analyse the content of a sentence ang give it another processing purpose.
             E.g: Can you give me the bottle?
-            The sentence above is of Sentence.yes_no_question type but should actually be processed as an order in which the current speaker
+            The sentence above is of YES_NO_QUESTION type but should actually be processed as an order in which the current speaker
             desires 'the bottle'. 
             Therefore, we turn it into 'give me the bottle'.
         """
@@ -115,7 +115,7 @@ class ContentAnalyser:
         #   -OUTPUT: Imperative + action verb
         #   
         
-        if sentence.data_type == Sentence.yes_no_question:
+        if sentence.data_type == YES_NO_QUESTION:
             for sv in sentence.sv:
                 for verb in sv.vrb_main:
                     if 'can+' in verb:
@@ -127,7 +127,7 @@ class ContentAnalyser:
                             logger.debug(colored_print("Interpreting the <can + action verb> sequence as a desire.\nApplying transformation:", "magenta"))
                         
                             sv.vrb_main[sv.vrb_main.index(verb)] = verb.lstrip('can+')
-                            sentence.data_type = Sentence.imperative
+                            sentence.data_type = IMPERATIVE
                             
                             logger.debug(str(sentence))
                             

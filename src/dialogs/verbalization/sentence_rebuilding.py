@@ -43,11 +43,11 @@ def statement(analysis):
     phrase=other_functions.eliminate_redundancy(phrase)
     
     #If it is a relative form
-    if analysis.data_type==Sentence.relative or analysis.data_type.startswith(Sentence.subsentence):
+    if analysis.data_type==RELATIVE or analysis.data_type.startswith(SUBSENTENCE):
         if phrase[len(phrase)-1][len(phrase[len(phrase)-1])-1]!=',':
             phrase[len(phrase)-1]=phrase[len(phrase)-1]+','
         return phrase
-    if analysis.data_type==Sentence.w_question:
+    if analysis.data_type==W_QUESTION:
         return phrase+['?']
     
     #To take of all not useless comma
@@ -77,7 +77,7 @@ def imperative(analysis):
     #Eliminate redundancies if there are
     phrase=other_functions.eliminate_redundancy(phrase)
     
-    if analysis.data_type==Sentence.relative:
+    if analysis.data_type==RELATIVE:
         if phrase[len(phrase)-1][len(phrase[len(phrase)-1])-1]!=',':
             phrase[len(phrase)-1]=phrase[len(phrase)-1]+','
         return phrase

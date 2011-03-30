@@ -45,39 +45,39 @@ def dispatching(analysis):
     """
     
     #For interjection
-    if analysis.data_type==Sentence.interjection:
+    if analysis.data_type==INTERJECTION:
         return  sentence_rebuilding.statement(analysis)
     
     #For statement
-    if analysis.data_type==Sentence.statement:
+    if analysis.data_type==STATEMENT:
         return sentence_rebuilding.statement(analysis)
 
     #For imperative
-    elif analysis.data_type==Sentence.imperative:
+    elif analysis.data_type==IMPERATIVE:
         return sentence_rebuilding.imperative(analysis)
 
     #For yes no question
-    elif analysis.data_type==Sentence.yes_no_question:
+    elif analysis.data_type==YES_NO_QUESTION:
         return sentence_rebuilding.y_o_question(analysis)
 
     #For start
-    elif analysis.data_type==Sentence.start:
+    elif analysis.data_type==START:
         return ['hello','.']
     
     #For end
-    elif analysis.data_type==Sentence.end:
+    elif analysis.data_type==END:
         return ['goodbye','.']
 
     #For agree
-    elif analysis.data_type==Sentence.agree:
+    elif analysis.data_type==AGREEMENT:
         return ['OK','.'] if not analysis.aim else [analysis.aim, '.']
 
     #For disagree
-    elif analysis.data_type==Sentence.disagree:
+    elif analysis.data_type==DISAGREEMENT:
         return ['No, sorry','.'] if not analysis.aim else [analysis.aim, '.']
 
     #For w_question
-    elif analysis.data_type==Sentence.w_question:
+    elif analysis.data_type==W_QUESTION:
         for x in wques_rules:
             if x[0]==analysis.aim:
                 return x[1]+sentence_rebuilding.y_o_question(analysis)
@@ -489,10 +489,10 @@ def verbalising(class_list):
     
     #converting all classes sentence
     while i < len(class_list):
-        if class_list[i].data_type==Sentence.interjection:
+        if class_list[i].data_type==INTERJECTION:
             flag=1
         
-        if flag==1 and class_list[i].data_type==Sentence.imperative:
+        if flag==1 and class_list[i].data_type==IMPERATIVE:
             class_list[i].sn=[]
         
         sentence = dispatching(class_list[i])
@@ -508,7 +508,7 @@ def verbalising(class_list):
         sentence=a_which_process(sentence)
         sentence=move_prep(sentence)
         
-        if i>0 and class_list[i-1].data_type==Sentence.interjection:
+        if i>0 and class_list[i-1].data_type==INTERJECTION:
             utterance=utterance[:len(utterance)-2]+', '
         else:    
             #To have the upper case

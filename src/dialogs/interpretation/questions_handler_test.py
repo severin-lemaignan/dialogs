@@ -102,7 +102,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_1_where_question(self):
         logger.info("\n*************  test_1_where_question ******************")
         logger.info("Where is the blue cube?")
-        sentence = Sentence(Sentence.w_question, "place", 
+        sentence = Sentence(W_QUESTION, "place", 
                              [Nominal_Group(['the'],
                                             ['cube'],
                                             [['blue',[]]],
@@ -123,7 +123,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_2_where_question(self):
         logger.info("\n*************  test_2_where_question ******************")
         logger.info("Where is the small cube?")
-        sentence = Sentence(Sentence.w_question, "place", 
+        sentence = Sentence(W_QUESTION, "place", 
                              [Nominal_Group(['the'],
                                             ['cube'],
                                             [['small',[]]],
@@ -146,7 +146,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_3_what_question(self):
         logger.info("\n*************  test_3_what_question ******************")
         logger.info("What do you see?")
-        sentence = Sentence(Sentence.w_question, "thing", 
+        sentence = Sentence(W_QUESTION, "thing", 
                              [Nominal_Group([],
                                             ['you'],
                                             [],
@@ -168,7 +168,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_8_what_question(self):
         logger.info("\n*************  test_8_what_question ******************")
         logger.info("what is blue?")
-        sentence = Sentence(Sentence.w_question, "thing", 
+        sentence = Sentence(W_QUESTION, "thing", 
                              [],                                         
                              [Verbal_Group(['be'],
                                            [],
@@ -189,7 +189,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_9_what_question_this(self):
         logger.info("\n*************  test_9_what_question_this ******************")
         logger.info("what is this?")
-        sentence = Sentence(Sentence.w_question, "thing", 
+        sentence = Sentence(W_QUESTION, "thing", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -210,7 +210,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_10_what_question(self):
         logger.info("\n*************  test_10_w_question ******************")
         logger.info("what object is blue?")
-        sentence = Sentence(Sentence.w_question, "object", 
+        sentence = Sentence(W_QUESTION, "object", 
                              [],                                         
                              [Verbal_Group(['be'],
                                            [],
@@ -231,7 +231,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_11_what_question(self):
         logger.info("\n*************  test_11_w_question ******************")
         logger.info("what size is this?")
-        sentence = Sentence(Sentence.w_question, "size", 
+        sentence = Sentence(W_QUESTION, "size", 
                              [Nominal_Group(['this'],
                                             [],
                                             [],
@@ -252,7 +252,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_12_what_question(self):
         logger.info("\n*************  test_12_what_question ******************")
         logger.info("what color is the blue_cube?")
-        sentence = Sentence(Sentence.w_question, "color", 
+        sentence = Sentence(W_QUESTION, "color", 
                              [Nominal_Group(['the'],
                                             ['blue_cube'],
                                             [],
@@ -273,7 +273,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_13_who_question(self):
         logger.info("\n*************  test_13_who_question ******************")
         logger.info("who is the SPEAKER?")
-        sentence = Sentence(Sentence.w_question, "people", 
+        sentence = Sentence(W_QUESTION, "people", 
                              [Nominal_Group(['the'],
                                             ['SPEAKER'],
                                             [],
@@ -294,7 +294,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_14_who_question(self):
         logger.info("\n*************  test_14_who_question ******************")
         logger.info("who sees Patrick?")
-        sentence = Sentence(Sentence.w_question, "people", 
+        sentence = Sentence(W_QUESTION, "people", 
                              [],                                         
                              [Verbal_Group(['see'],
                                            [],
@@ -317,7 +317,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_15_who_question(self):
         logger.info("\n*************  test_15_who_question ******************")
         logger.info("who does Danny give the small cube?")
-        sentence = Sentence(Sentence.w_question, "people", 
+        sentence = Sentence(W_QUESTION, "people", 
                              [Nominal_Group([],
                                             ['Danny'],
                                             [],
@@ -343,7 +343,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_4_y_n_question(self):
         logger.info("\n*************  test_4_y_n_question action verb******************")
         logger.info("Did you get the blue cube?")
-        sentence = Sentence(Sentence.yes_no_question, "", 
+        sentence = Sentence(YES_NO_QUESTION, "", 
                              [Nominal_Group([],
                                             ['you'],
                                             [''],
@@ -369,7 +369,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_5_y_n_question(self):
         logger.info("\n*************  test_5_y_n_question verb to be followed by complement******************")
         logger.info("Is the blue cube on the table1?")
-        sentence = Sentence(Sentence.yes_no_question, "", 
+        sentence = Sentence(YES_NO_QUESTION, "", 
                              [Nominal_Group(['the'],
                                             ['cube'],
                                             [['blue',[]]],
@@ -396,7 +396,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_6_y_n_question(self):
         logger.info("\n*************  test_6_y_n_question ******************")
         logger.info("Is the small cube blue?")
-        sentence = Sentence(Sentence.yes_no_question, "", 
+        sentence = Sentence(YES_NO_QUESTION, "", 
                              [Nominal_Group(['the'],
                                             ['cube'],
                                             [['small',[]]],
@@ -422,7 +422,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_7_y_n_question(self):
         logger.info("\n*************  test_7_y_n_question verb to be ******************")
         logger.info("Is my cube on the table1?")
-        sentence = Sentence(Sentence.yes_no_question, "", 
+        sentence = Sentence(YES_NO_QUESTION, "", 
                              [Nominal_Group(['my'],
                                             ['cube'],
                                             [],
@@ -448,7 +448,7 @@ class TestQuestionHandler(unittest.TestCase):
     def test_9_how_question(self):
         logger.info("\n*************  test_9_how_question ******************")
         logger.info("How is my car?")
-        sentence = Sentence(Sentence.w_question, "manner", 
+        sentence = Sentence(W_QUESTION, "manner", 
                              [Nominal_Group(['my'],
                                             ['cube'],
                                             [],
@@ -483,11 +483,11 @@ class TestQuestionHandler(unittest.TestCase):
         
         self.qhandler.clear_statements()
         
-        if sentence.data_type == Sentence.w_question:
+        if sentence.data_type == W_QUESTION:
             self.assertTrue(expected_result in val[1] for val in res)
                  # res may be a list of several IDs that match the question. Here the result succeed if the expected one is among them
         
-        if sentence.data_type == Sentence.yes_no_question:
+        if sentence.data_type == YES_NO_QUESTION:
             self.assertEquals(expected_result, res)
 
 

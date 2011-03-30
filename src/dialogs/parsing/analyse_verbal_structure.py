@@ -429,15 +429,15 @@ def process_subsentence(phrase,vg):
                     if w!='which':
                         #We perform processing
                         vg.vrb_sub_sentence=vg.vrb_sub_sentence+analyse_sentence.dispatching(subsentence)
-                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=Sentence.subsentence+'+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=SUBSENTENCE+'+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
                         if w[0]==':':
                             vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w[1:]
                         else:
                             vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
                     else:
                         #Exception for which
-                        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.w_quest_which(Sentence.w_question, 'choice', ['the']+subsentence)]
-                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=Sentence.subsentence+'+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
+                        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.w_quest_which(W_QUESTION, 'choice', ['the']+subsentence)]
+                        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=SUBSENTENCE+'+'+vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type
                         vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].aim=w
                     
                     #If 'but' is between 2 nominal group and not before subsentence
@@ -485,7 +485,7 @@ def process_conjunctive_sub(phrase,vg):
         subsentence=other_functions.recover_scd_verb_sub(subsentence)
         
         #We perform processing
-        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence(Sentence.subsentence, 'that' ,subsentence)]
+        vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence(SUBSENTENCE, 'that' ,subsentence)]
         vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type+'+statement'
         
         #We delete the subsentence
@@ -650,7 +650,7 @@ def refine_subsentence(vg):
         if vg.vrb_sub_sentence[i].aim=='what':
             #We have to make some changers
             vg.vrb_sub_sentence[i].aim='that'
-            vg.vrb_sub_sentence[i].data_type=Sentence.relative
+            vg.vrb_sub_sentence[i].data_type=RELATIVE
             #We add nominal group in relative as direct object
             vg.vrb_sub_sentence[i].sv[0].d_obj=vg.vrb_sub_sentence[i].sv[0].d_obj+[Nominal_Group(['the'],['thing'],[],[],[])]
             #We create a nominal group
@@ -662,7 +662,7 @@ def refine_subsentence(vg):
             
         if i>=0 and vg.vrb_sub_sentence[i].aim=='where':
             #We have to make some changers
-            vg.vrb_sub_sentence[i].data_type=Sentence.relative
+            vg.vrb_sub_sentence[i].data_type=RELATIVE
             #We create a nominal group
             gn=Nominal_Group(['the'],['location'],[],[],[vg.vrb_sub_sentence[i]])
             #We add the relative and the nominal group into the sentence

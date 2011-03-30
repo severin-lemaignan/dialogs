@@ -15,12 +15,12 @@ class SentenceFactory:
         """
         nominal_groupL = [Nominal_Group([],[],[[val.lower(),[]]],[],[]) for val in values]
         
-        sentence = [Sentence(Sentence.w_question, 'choice', 
+        sentence = [Sentence(W_QUESTION, 'choice', 
                         [Nominal_Group([],[feature],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
                             [Nominal_Group(['the'],[obj_name.lower()],[],[],[])], 
                             [], [], [] ,Verbal_Group.affirmative,[])]),
-                    Sentence(Sentence.statement, '',nominal_groupL,[])]
+                    Sentence(STATEMENT, '',nominal_groupL,[])]
         
                             
         for i in range(len(values)-1):
@@ -35,11 +35,11 @@ class SentenceFactory:
         indirect_complL = [Indirect_Complement([feature],[Nominal_Group(['the'],[val],[],[],[])]) \
                             for val in values]
                             
-        sentence = [Sentence(Sentence.w_question, 'place',
+        sentence = [Sentence(W_QUESTION, 'place',
                         [Nominal_Group(['the'],[obj_name],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
                         [], [], [], [] ,Verbal_Group.affirmative,[])]),
-                    Sentence(Sentence.yes_no_question, '', [], 
+                    Sentence(YES_NO_QUESTION, '', [], 
                         [Verbal_Group([], [],'', 
                             [], indirect_complL, [], [] ,Verbal_Group.affirmative,[])])]
                 
@@ -71,7 +71,7 @@ class SentenceFactory:
                 
                 indirect_complL.append(Indirect_Complement([prep],[Nominal_Group([],[det],[],[],[])]))
 
-        sentence = [Sentence(Sentence.yes_no_question, '', 
+        sentence = [Sentence(YES_NO_QUESTION, '', 
                         [Nominal_Group([],['it'],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
                             [], indirect_complL, [], [] ,Verbal_Group.affirmative,[])])]
@@ -86,8 +86,8 @@ class SentenceFactory:
             "The bottle? What do you mean?"
         """
         
-        sentence = [Sentence(Sentence.yes_no_question, '', [object], []),
-                    Sentence(Sentence.w_question, 'thing', 
+        sentence = [Sentence(YES_NO_QUESTION, '', [object], []),
+                    Sentence(W_QUESTION, 'thing', 
                         [Nominal_Group([],['you'],[],[],[])], 
                         [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,Verbal_Group.affirmative,[])])]
         return sentence
@@ -104,7 +104,7 @@ class SentenceFactory:
             object.noun_cmpl = []
             object.relative = []
             
-        return [Sentence(Sentence.yes_no_question, '', 
+        return [Sentence(YES_NO_QUESTION, '', 
                     [Nominal_Group([],['you'],[],[],[])], 
                     [Verbal_Group(['mean'], [],'present simple', [object], [], [], [] ,Verbal_Group.affirmative,[])])]
         
@@ -113,7 +113,7 @@ class SentenceFactory:
         """ Creates sentences of type: 
             "bottles are objects? What is a bottle?"
         """
-        sentence = [object, Sentence(Sentence.w_question, 'thing', 
+        sentence = [object, Sentence(W_QUESTION, 'thing', 
                         [], [Verbal_Group(['be'], [],'present simple', [], [], [], [] ,Verbal_Group.affirmative,[])])]
                         
         for obj in objectL:
@@ -142,11 +142,11 @@ class SentenceFactory:
         
         #Return. I am sorry. I don't know
         if not w_answer:
-            return[Sentence(Sentence.statement,"",
+            return[Sentence(STATEMENT,"",
                             [Nominal_Group([], ['I'], [], [], [])],
                             [Verbal_Group(['be'],[], "present simple", 
                                 [Nominal_Group([], [], [['sorry',[]]], [], [])],[],[],[],"affirmative", [])]),
-                    Sentence(Sentence.statement,"",
+                    Sentence(STATEMENT,"",
                             [Nominal_Group([], ['I'], [], [], [])],
                             [Verbal_Group(['have'],[], "present simple", 
                                 [Nominal_Group(['no'], ['answer'], [], [], [])], [], [],[],"affirmative", [])])]
@@ -210,7 +210,7 @@ class SentenceFactory:
         
         #Sentence holding the answer
         # work on a new sentence, so that changes made here do not affect the original w_question
-        sentence = Sentence(Sentence.statement,
+        sentence = Sentence(STATEMENT,
                             w_question.aim,
                             w_question.sn,
                             w_question.sv)
@@ -440,19 +440,19 @@ class SentenceFactory:
     def create_yes_no_answer(self, yes_no_question, answer):
         
         sentence = self.reverse_personal_pronoun(yes_no_question)
-        sentence.data_type = Sentence.statement
+        sentence.data_type = STATEMENT
         
         if answer:
-            return [Sentence(Sentence.agree,
+            return [Sentence(AGREEMENT,
                                 "yes", 
                                 [],
                                 []),
                     sentence]
         
         else:
-            sentence.data_type = Sentence.subsentence
+            sentence.data_type = SUBSENTENCE
             sentence.aim = "if"
-            return [Sentence(Sentence.statement,
+            return [Sentence(STATEMENT,
                                 "",
                                 [Nominal_Group([],['I'],[],[],[])],
                                 [Verbal_Group(['know'],[], "present simple", [],[],[],[], "negative", [sentence])])]
@@ -462,10 +462,10 @@ class SentenceFactory:
         """ Create a reply to gratualtion
             E.g: You are welcome.
         """
-        return [Sentence(Sentence.statement, "", 
+        return [Sentence(STATEMENT, "", 
                         [Nominal_Group([],['you'],[], [],[])],
                         [Verbal_Group(['be'], [], "present simple",
                                     [Nominal_Group([],[],[['welcome',[]]], [],[])],[],[],[],"affirmative", [])])]
     
     def create_agree_reply(self):
-        return [Sentence(Sentence.agree, "alright", [], [])]
+        return [Sentence(AGREEMENT, "alright", [], [])]

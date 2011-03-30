@@ -226,7 +226,7 @@ class Discrimination():
             return 'UNKNOWN_CONCEPT'
             
         if not objL:
-            questions = [Sentence(Sentence.imperative, '', 
+            questions = [Sentence(IMPERATIVE, '', 
                         [], 
                         [Verbal_Group(['give'], [],'present simple', 
                         [Nominal_Group([],['information'],[['new',[]]],[],[])], 
@@ -287,7 +287,7 @@ class Discrimination():
                 #return questions
                     
             else:
-                questions = [Sentence(Sentence.imperative, '', [], 
+                questions = [Sentence(IMPERATIVE, '', [], 
                             [Verbal_Group(['give'], [],'present simple', 
                             [Nominal_Group([],['information'],[['more',[]]],[],[])], 
                             [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),

@@ -583,9 +583,9 @@ class VerbalGroupStatementBuilder:
         self._process_on_learning_new_concept = True
 
     def set_attribute_on_data_type(self, sentence):
-        if sentence.data_type == Sentence.imperative:
+        if sentence.data_type == IMPERATIVE:
             self._process_on_imperative = True
-        if sentence.data_type in [Sentence.yes_no_question, Sentence.w_question]:
+        if sentence.data_type in [YES_NO_QUESTION, W_QUESTION]:
             self._process_on_question = True
         
         self._process_on_resolved_sentence = sentence.resolved()
