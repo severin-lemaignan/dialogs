@@ -14,16 +14,18 @@ def color_printer(text, atom):
         return level_marker() + colored_print('Nominal group:\n\t', 'bold') + text
     if atom == VERBAL_GROUP:
         return level_marker() + colored_print('Verbal group:\n\t', 'bold') + text
-    if atom in [INDIRECT_OBJECT, DIRECT_OBJECT, RELATIVE, SUB_SENTENCE, SECONDARY_VERBAL_GROUP]:
+    if atom in [INDIRECT_OBJECT, DIRECT_OBJECT, RELATIVE_GRP, SUB_SENTENCE, SECONDARY_VERBAL_GROUP]:
         return level_marker() + atom.lower().replace("_", " ") + '\n\t' + text + "\n"
     if atom == NOUN_CMPLT:
         return level_marker() + '[OF] \n\t' + text + "\n"
     if atom == SENTENCE_AIM:
-        return "(aim: " + text + ")\n"
+        if not text:
+            return "\n"
+        return " (aim: " + text + ")\n"
     if atom == SENTENCE_TYPE:
         return colored_print(">>" + text.upper(), 'bold')
     if atom == AGRAMMATICAL_SENTENCE:
-        return colored_print(">> The sentence does not appear to be grammatically valid! <<", 'red') + text
+        return colored_print(">> The sentence does not appear to be grammatically valid! <<\n", 'red') + text
     if atom == ADVERBIAL:
         return level_marker() + "Adverbials: " + colored_print(text, 'yellow') + "\n"
     if atom == VERBAL_ADVERBIAL:
@@ -45,7 +47,7 @@ def color_printer(text, atom):
     if atom == ID:
         return colored_print(text, 'white', 'blue') + '\n'
     if atom == NEGATIVE:
-        return level_marker() + colored_print('NEGATION', 'red') + text
+        return level_marker() + colored_print('NEGATION', 'red') + " " + text
     if atom == RESOLVED:
         return text + level_marker() + colored_print('>resolved<', 'green')
     if atom == NOT_RESOLVED:
@@ -54,7 +56,7 @@ def color_printer(text, atom):
         return text
 
 def css_printer(text, atom):
-    if atom in [SENTENCE, SUBJECT, NOMINAL_GROUP, VERBAL_GROUP, SECONDARY_VERBAL_GROUP, SUB_SENTENCE, DIRECT_OBJECT, INDIRECT_OBJECT, RESOLVED, NOT_RESOLVED, RELATIVE, NOUN_CMPLT, NEGATIVE]:
+    if atom in [SENTENCE, SUBJECT, NOMINAL_GROUP, VERBAL_GROUP, SECONDARY_VERBAL_GROUP, SUB_SENTENCE, DIRECT_OBJECT, INDIRECT_OBJECT, RESOLVED, NOT_RESOLVED, RELATIVE_GRP, NOUN_CMPLT, NEGATIVE]:
         return "\n<div class='" + atom.lower() + "'>\n" + text + "\n</div>\n"
     if atom in [SENTENCE_AIM, SENTENCE_TYPE, TENSE, VERB, QUANTIFIER, CONJUNCTION, DIGIT, DETERMINER, NOUN, ADJECTIVE, ADJECTIVE_QUALIFIER, VERBAL_ADVERBIAL, ID]:
         return "<span class='" + atom.lower() + "'>" + text + "</span> "

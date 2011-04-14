@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
- Created by Chouayakh Mahdi 
- 06/07/2010  
+ Created by Chouayakh Mahdi
+ 06/07/2010
  The package contains the parser unit tests + functions to perform test
- It is more used for the subject 
+ It is more used for the subject
  Functions:
     compare_nominal_group : to compare 2 nominal groups
     compare_icompl : to compare 2 indirect complements
@@ -27,13 +27,13 @@ import analyse_sentence
 
 def compare_nominal_group(ng,rslt_ng):
     """
-    Function to compare 2 nominal groups                                            
+    Function to compare 2 nominal groups
     """
 
     #init
     i=0
     j=0
-    
+
     if len(ng)!=len(rslt_ng):
         return 1
     else:
@@ -64,13 +64,11 @@ def compare_nominal_group(ng,rslt_ng):
                 return 1
             i=i+1
         return 0
-    
-    
-  
+
 def compare_icompl(icompl, rslt_icompl):
     """
-    Function to compare 2 indirect complements                                      
-    """  
+    Function to compare 2 indirect complements
+    """
 
     #init
     i=0
@@ -90,8 +88,8 @@ def compare_icompl(icompl, rslt_icompl):
 
 def compare_vs(vs, rslt_vs):
     """
-    Function to compare 2 verbal structures                                          
-    """ 
+    Function to compare 2 verbal structures
+    """
 
     #init
     i=0
@@ -134,8 +132,8 @@ def compare_vs(vs, rslt_vs):
    
 def compare_sentence(stc, stc_rslt):
     """
-    Function to compare 2 sentences                                                  
-    """  
+    Function to compare 2 sentences
+    """
     if stc.data_type!=stc_rslt.data_type or stc.aim!=stc_rslt.aim:
         return False
     if compare_nominal_group(stc.sn,stc_rslt.sn)==1:
@@ -149,8 +147,8 @@ def compare_sentence(stc, stc_rslt):
 
 def compare_utterance(utterance, rslt_utterance, sentence_list):
     """
-    Function to compare 2 replies                                                    
-    """ 
+    Function to compare 2 replies
+    """
 
     #init
     i=0
@@ -172,9 +170,12 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
                     print z['object']
                     print (str(z['nom_gr'][0]))
             
-            ok = compare_sentence(utterance[i], rslt_utterance[i])
+            #ok = compare_sentence(utterance[i], rslt_utterance[i])
+            ok = (str(utterance[i]) == str(rslt_utterance[i]))
             if not ok:
                 print "Parsing result for this sentence is not what was expected."
+                print "Expected result:"
+                print str(rslt_utterance[i])
                 print "Diff:"
                 diff = unified_diff(str(utterance[i]).splitlines(1),
                              str(rslt_utterance[i]).splitlines(1),
@@ -1374,7 +1375,7 @@ class TestParsing(unittest.TestCase):
                 [Verbal_Group(['be'], [],'present simple',
                     [],
                     [Indirect_Complement(['next+to'],[Nominal_Group(['the'],['table'],[],[],[])]),
-                     Indirect_Complement(['at'],[Nominal_Group(['the'],['front'],[],[Nominal_Group(['the'],['kitchen'],[],[],[])],[])])],
+                     Indirect_Complement(['in+front+of'],[Nominal_Group(['the'],['kitchen'],[],[],[])])],
                     [], [] ,Verbal_Group.affirmative,[])])]
         
         result_test=compare_utterance(class_list,rslt,sentence_list)

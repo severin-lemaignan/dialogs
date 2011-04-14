@@ -1,6 +1,6 @@
 
 # Sentence-related classes
-# (used to print out a sentence)
+# (used ONLY to print out a sentence)
 
 VERB = "VERB"
 TENSE = "TENSE"
@@ -27,7 +27,7 @@ SECONDARY_VERBAL_GROUP = "SECONDARY_VERBAL_GROUP"
 NOMINAL_GROUP = "NOMINAL_GROUP"
 DIRECT_OBJECT = "DIRECT_OBJECT"
 INDIRECT_OBJECT = "INDIRECT_OBJECT"
-RELATIVE = "RELATIVE"
+RELATIVE_GRP = "RELATIVE"
 NOUN_CMPLT = "NOUN_CMPLT"
 SENTENCE = "SENTENCE"
 AGRAMMATICAL_SENTENCE = "AGRAMMATICAL_SENTENCE" # Sentence that could not be successfully parsed

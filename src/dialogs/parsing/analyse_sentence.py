@@ -648,10 +648,11 @@ def other_sentence(type, request, sentence):
     
     #We search the subject
     sbj=analyse_nominal_group.find_sn_pos(sentence, 0)
-    if sbj!=[] or type==RELATIVE:
+
+    if sbj != [] or type == RELATIVE:
         #If we haven't a data type => it is a statement
         if type=='':
-            analysis.data_type=STATEMENT
+            analysis.data_type = STATEMENT
 
         
         #We have to separate the case using these, this or there

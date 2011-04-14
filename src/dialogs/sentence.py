@@ -55,8 +55,7 @@ class Sentence:
     
     def __str__(self):
         res = level_marker() + pprint(self.data_type, SENTENCE_TYPE)
-        if self.aim:
-            res += pprint(self.aim, SENTENCE_AIM)
+        res += pprint(self.aim, SENTENCE_AIM) # 'aim' may be None
         
         if self.sn:
             sn = ""
@@ -190,7 +189,7 @@ class Nominal_Group:
             
             if self.relative:
                 for rel in self.relative:
-                    res += pprint(str(rel).replace("\n", "\n\t"), RELATIVE)
+                    res += pprint(str(rel).replace("\n", "\n\t"), RELATIVE_GRP)
         
         return pprint(res, NOMINAL_GROUP)
     
