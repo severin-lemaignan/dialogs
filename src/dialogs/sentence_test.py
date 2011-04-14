@@ -4,13 +4,28 @@
 import logging
 logger = logging.getLogger("dialog")
 import unittest
+from difflib import unified_diff
 
 from dialogs.sentence import *
 from parsing import preprocessing
 from parsing import analyse_sentence
 from parsing import parser
 
-from parsing.parser_test import compare_nominal_group
+def is_equal(grp1, grp2):
+    ok = (str(grp1) == str(grp2))
+    if not ok:
+        print "Groups are different."
+        print "Diff:"
+        diff = unified_diff(str(grp1).splitlines(1),
+                     str(grp2).splitlines(1),
+                     fromfile="what I got",
+                     tofile="what I expected",
+                     n=1)
+        print ''.join(diff),
+        print "\033[0m" #reset the ANSI colors, if any
+        return False 
+    else:
+        return True 
 
 class TestSentence(unittest.TestCase):
     def test_sentence(self):
@@ -140,8 +155,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
     
     def test_02(self):
 
@@ -167,8 +181,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
 
     def test_03(self):
@@ -194,8 +207,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[['big',['very']],['blue',['too']]],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_04(self):
         logger.info('\n######################## test 1.4 ##############################')
@@ -220,8 +232,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[['blue',[]]],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_05(self):
         logger.info('\n######################## test 1.5 ##############################')
@@ -237,7 +248,7 @@ class TestRemerge(unittest.TestCase):
         flag='SUCCESS'
         
         nom_gr_struc=Nominal_Group(['the'],['bottle'],[],[],[])
-        logger.info('the nominal group of the last out put')
+        logger.info('the nominal group of the last output')
         logger.info(str(nom_gr_struc))
         
         nom_gr_struc=nominal_group_remerge(class_list, flag , nom_gr_struc)
@@ -251,8 +262,7 @@ class TestRemerge(unittest.TestCase):
                             [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                             [], [] ,'affirmative',[])])])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_06(self):    
         logger.info('\n######################## test 1.6 ##############################')
@@ -282,8 +292,7 @@ class TestRemerge(unittest.TestCase):
                             [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
                             [], [] ,'affirmative',[])])])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
     
     def test_07(self):
         logger.info('\n######################## test 1.7 ##############################')
@@ -308,8 +317,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[['green',[]]],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
     
     def test_08(self):    
         logger.info('\n######################## test 1.8 ##############################')
@@ -334,8 +342,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[['green',[]]],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_09(self):
         logger.info('\n######################## test 1.9 ##############################')
@@ -360,8 +367,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[['dark',['too']]],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
     
     def test_10(self):
         logger.info('\n######################## test 1.10 ##############################')
@@ -386,8 +392,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['this'],['plush'],[],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_11(self):
         logger.info('\n######################## test 1.11 ##############################')
@@ -417,8 +422,7 @@ class TestRemerge(unittest.TestCase):
                             [],
                             [], ['yesterday'] ,'affirmative',[])])])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
     
     def test_12(self):    
         logger.info('\n######################## test 1.12 ##############################')
@@ -448,8 +452,7 @@ class TestRemerge(unittest.TestCase):
                             [],
                             [], ['yesterday'] ,'affirmative',[])])])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_13(self):    
         logger.info('\n######################## test 1.13 ##############################')
@@ -474,8 +477,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group([],['Jido'],[],[],[])],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_14(self):    
         logger.info('\n######################## test 1.14 ##############################')
@@ -500,8 +502,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group([],['Jido'],[],[],[])],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
     
     def test_15(self):
         logger.info('\n######################## test 1.15 ##############################')
@@ -526,8 +527,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[['best',[]]],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_16(self):
         logger.info('\n######################## test 1.16 ##############################')
@@ -551,8 +551,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group([],['Jido'],[],[],[])],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
 
     def test_17(self):
         logger.info('\n######################## test 1.17 ##############################')
@@ -576,8 +575,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[['red',[]]],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
 
     def test_18(self):
         logger.info('\n######################## test 1.18 ##############################')
@@ -606,8 +604,7 @@ class TestRemerge(unittest.TestCase):
                             [Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
                             [], [] ,'affirmative',[])])])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_19(self):    
         logger.info('\n######################## test 1.19 ##############################')
@@ -641,8 +638,7 @@ class TestRemerge(unittest.TestCase):
                             [Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
                             [], [] ,'affirmative',[])])])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)    
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_20(self):    
         logger.info('\n######################## test 1.20 ##############################')
@@ -666,8 +662,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[['red',[]]],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_21(self):
         logger.info('\n######################## test 1.21 ##############################')
@@ -691,8 +686,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_22(self):
         logger.info('\n######################## test 1.22 ##############################')
@@ -716,8 +710,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[],[Nominal_Group(['my'],['brother'],[],[],[])],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
     
     def test_23(self):
         logger.info('\n######################## test 1.23 ##############################')
@@ -746,8 +739,7 @@ class TestRemerge(unittest.TestCase):
                             [Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
                             [], [] ,'affirmative',[])])])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
 
     def test_24(self):
         logger.info('\n######################## test 1.24 ##############################')
@@ -781,8 +773,7 @@ class TestRemerge(unittest.TestCase):
                             [Indirect_Complement(['on'],[Nominal_Group(['the'],['shelf'],[],[],[])])],
                             [], [] ,'affirmative',[])])])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0) 
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
     def test_25(self):
         logger.info('\n######################## test 1.25 ##############################')
@@ -806,8 +797,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['bottle'],[],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
 
     def test_26(self):
         logger.info('\n######################## test 1.26 ##############################')
@@ -831,8 +821,7 @@ class TestRemerge(unittest.TestCase):
         
         rslt=Nominal_Group(['the'],['shelf'],[],[],[])
         
-        result_test=compare_nominal_group([nom_gr_struc],[rslt])
-        self.assertEquals(result_test, 0)
+        self.assertTrue(is_equal(nom_gr_struc, rslt))
         
 def test_suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSentence)
