@@ -18,6 +18,7 @@
 
 import unittest
 import logging
+from difflib import unified_diff
 
 from dialogs.sentence import *
 import preprocessing
@@ -136,13 +137,13 @@ def compare_sentence(stc, stc_rslt):
     Function to compare 2 sentences                                                  
     """  
     if stc.data_type!=stc_rslt.data_type or stc.aim!=stc_rslt.aim:
-        return 1
+        return False
     if compare_nominal_group(stc.sn,stc_rslt.sn)==1:
-        return 1
+        return False
     if compare_vs(stc.sv, stc_rslt.sv)==1:
-        return 1
+        return False
 
-    return 0
+    return True
 
 
 
@@ -171,12 +172,19 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
                     print z['object']
                     print (str(z['nom_gr'][0]))
             
-            flag=compare_sentence(utterance[i], rslt_utterance[i])
-            if flag==1:
-                print "There is a problem with parsing this sentence"
-                print ''
+            ok = compare_sentence(utterance[i], rslt_utterance[i])
+            if not ok:
+                print "Parsing result for this sentence is not what was expected."
+                print "Diff:"
+                diff = unified_diff(str(utterance[i]).splitlines(1),
+                             str(rslt_utterance[i]).splitlines(1),
+                             fromfile="what I got",
+                             tofile="what I expected",
+                             n=1)
+                print ''.join(diff),
+                print "\033[0m" #reset the ANSI colors, if any
                 return 1
-            elif flag==0:
+            else:
                 print "############### Parsing is OK ###############"
                 print ''
             

@@ -78,9 +78,8 @@ def pprint(text, atom):
 def level_marker(level=1, symbol='|', color='red'):
     """Insert 'symbol' at the beginning of the current line
     """
-    if OUTPUT_MODE == "color":
-        return '\033[s\033[' + str(level) + 'G' + colored_print(symbol, color) + "\033[u\033[" + str(len(symbol) + 1) + "C"
-    else:
-        return ""
-
+    #if OUTPUT_MODE == "color":
+    #    return '\033[s\033[' + str(level) + 'G' + colored_print(symbol, color) + "\033[u\033[" + str(len(symbol) + 1) + "C"
+    #else:
+    return ""
 
