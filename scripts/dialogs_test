@@ -18,6 +18,7 @@ loaded with commonsense.oro.owl.
 Usage:
 dialogs_test [OPTIONS] TEST_SUITE
   -h, --help               Displays this message and exits
+  -f, --failfast           Stops at first failure or error
   -l, --log=[file|stdout]  Where to log: file (in """ + LOG_FILENAME + """) 
                            or stdout (default).
   
@@ -64,8 +65,10 @@ if len(sys.argv[1:]) == 0:
 log_handler = logging.StreamHandler()
 formatter = logging.Formatter("%(message)s")
 
+failfast = False
+
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'hl:', ['help', 'log='])
+    optlist, args = getopt.getopt(sys.argv[1:], 'hfl:', ['help', 'failfast', 'log='])
 except getopt.GetoptError, err:
     # print help information and exit:
     print str(err) # will print something like "option -a not recognized"
@@ -76,6 +79,9 @@ for o, a in optlist:
     if o in ("-h", "--help"):
         usage()
         sys.exit(0)
+    if o in ("-f", "--failfast"):
+        print("Failfast mode enabled.")
+        failfast = True
     elif o in ("-l", "--log"):
         if a == "file":
             print("The output of the unit-tests will be saved in " + LOG_FILENAME)
@@ -123,42 +129,51 @@ def check_results(res, expected):
                 expected.remove(e)
     return expected == res
 
+def getTestRunner(failsafe, verbosity = 2):
+    if sys.version_info >= (2,7,0):
+        return unittest.TextTestRunner(verbosity=2, failfast = failfast)
+    else:
+        if failsafe:
+            print ("Running Python < 2.7. Failsafe mode not possible.")
+        #failsafe not handled
+        return unittest.TextTestRunner(verbosity=2)
 
 results = {}
 
 if 'parser' in args or 'all' in args:
     suite = parser.test_suite()
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    result = getTestRunner(failfast).run(suite)
     results['parser'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
 
 if 'sentence' in args or 'all' in args:
     suite = sentence.test_suite()
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    result = getTestRunner(failfast).run(suite)
     results['sentence'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
 
 if 'verbalization' in args or 'all' in args:
     suite = verbalization.test_suite()
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    result = getTestRunner(failfast).run(suite)
     results['verbalization'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
 
 if 'statements' in args or 'all' in args:
     suite = statements_builder.test_suite()
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    result = getTestRunner(failfast).run(suite)
     results['statements'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
     
 if 'discrimination' in args or 'all' in args:
     suite = discrimination.test_suite()
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    result = getTestRunner(failfast).run(suite)
     results['discrimination'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
     
 if 'questions' in args or 'all' in args:
     suite = questions_handler.test_suite()
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+
+    result = getTestRunner(failfast).run(suite)
     results['questions'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
 
 if 'sc_moving' in args or 'all_scenarii' in args:
     suite = scenario_moving.test_suite()
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    result = getTestRunner(failfast).run(suite)
     results['scenario: moving'] = (suite.countTestCases(), result.testsRun, len(result.failures) , len(result.errors), result.testsRun - len(result.failures) - len(result.errors))
 
 total = (0,0,0,0,0)
