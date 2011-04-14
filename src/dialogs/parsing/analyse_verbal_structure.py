@@ -26,7 +26,7 @@
     refine_indirect_complement : to put indirect complements with same proposal together
     refine_subsentence : to transform some subsentence to relative
     process_compare : to process the compare
-    imperative_stc : to return the possibility to have an imperative
+    can_be_imperative : to return the possibility to have an imperative
 """
 from dialogs.resources_manager import ResourcePool
 from dialogs.sentence import *
@@ -752,16 +752,17 @@ def process_compare(sentence,vg):
 
 
 
-def imperative_stc(sentence):
+def can_be_imperative(sentence):
     """
     This function return the possibility to have an imperative
-    Input=sentence        Output=0 can be imperative and 1 no      
+    Input=sentence        Output=0 can be imperative and 1 no
     """
     
     if sentence==[]:
-        return 1
-    if sentence[0] in ResourcePool().adverbs+proposal_list:
-        return 1
+        return False
+    if sentence[0] in ResourcePool().adverbs + proposal_list:
+        return False
     if sentence[0]=='.' or sentence[0]=='?' or sentence[0]=='!':
-        return 1
-    return 0
+        return False
+
+    return True

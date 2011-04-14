@@ -524,7 +524,7 @@ def y_n_ques(type, request, sentence):
         #We recover the subject
         sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
     
-    if aux=='do' and analyse_verbal_structure.imperative_stc(sentence)==1:
+    if aux=='do' and not analyse_verbal_structure.can_be_imperative(sentence):
         return other_sentence('', '', stc)
     
     #If there is one element => it is an auxiliary => verb 'be'
