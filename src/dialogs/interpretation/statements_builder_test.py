@@ -1382,6 +1382,8 @@ class TestStatementBuilder(unittest.TestCase):
         self.adder._statements_to_remove = self.stmt._statements_to_remove
         res = self.adder.process()
         
+        if display_statement_result:
+            print("Created statements:\n" + str(res))
         #Assert result
         self.assertTrue(check_results(res, expected_result))
         
