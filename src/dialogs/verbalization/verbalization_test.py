@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
- Created by Chouayakh Mahdi  
- 08/07/2010                                                                       
- The package contains functions to perform test                                   
- It is more used for the subject                                                  
- Functions:                                                                       
-    unit_tests : to perform unit tests                                            
+ Created by Chouayakh Mahdi
+ 08/07/2010
+ The package contains functions to perform test
+ It is more used for the subject
+ Functions:
+    unit_tests : to perform unit tests
 """
 
 import unittest
@@ -1877,10 +1877,10 @@ class TestVerbalization(unittest.TestCase):
         logger.info('\n######################## test 1.57 ##############################')
         logger.info('#################################################################\n')
         
-        original_utterance="The evil tyrant is in the laboratory. I don't know what you're talking about."
+        original_utterance="The evil tyran is in the laboratory. I don't know what you're talking about."
         
         sentences=[Sentence(STATEMENT, '', 
-                [Nominal_Group(['the'],['tyrant'],[['evil',[]]],[],[])], 
+                [Nominal_Group(['the'],['tyran'],[['evil',[]]],[],[])], 
                 [Verbal_Group(['be'], [],'present simple', 
                     [], 
                     [Indirect_Complement(['in'],[Nominal_Group(['the'],['laboratory'],[],[],[])])],
@@ -2189,7 +2189,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="tell me what to do. No, I can not reach it."
+        original_utterance="Tell me what to do. No, I can not reach it."
         
         sentences=[Sentence(IMPERATIVE, '', 
                 [], 
@@ -2228,7 +2228,7 @@ class TestVerbalization(unittest.TestCase):
         print '#################################################################'
         print ''
         
-        original_utterance="I'll come back on Monday. I'll play with guitar. I'll play football"
+        original_utterance="I'll come back on Monday. I'll play with a guitar. I'll play football."
         
         sentences=[Sentence(STATEMENT, '', 
                 [Nominal_Group([],['I'],[],[],[])], 
@@ -2245,7 +2245,7 @@ class TestVerbalization(unittest.TestCase):
             Sentence(STATEMENT, '', 
                 [Nominal_Group([],['I'],[],[],[])], 
                 [Verbal_Group(['play'], [],'future simple', 
-                    [Nominal_Group(['a'],['football'],[],[],[])], 
+                    [Nominal_Group([],['football'],[],[],[])], 
                     [],
                     [], [] ,Verbal_Group.affirmative,[])])]
         

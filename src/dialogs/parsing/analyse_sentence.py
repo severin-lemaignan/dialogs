@@ -746,8 +746,8 @@ def other_sentence(type, request, sentence):
         
         #We delete the verb
         sentence= sentence[sentence.index(verb[0])+len(verb_main):]
-    
-    if sentence!=[] and sentence[len(sentence)-1]=='?':
+   
+    if sentence and sentence[-1] == '?':
         analysis.data_type=YES_NO_QUESTION
         
     #We recover the conjunctive subsentence
@@ -803,9 +803,9 @@ def other_sentence(type, request, sentence):
 
 def sentences_analyzer(sentences):
     """
-    This function is the basic function of parsing                                   
-    Input=list of sentences and beginning sentence list                              
-    Output=list of class Sentence                                                    
+    This function is the basic function of parsing
+    Input=list of sentences and beginning sentence list
+    Output=list of class Sentence
     """
 
     #init
@@ -817,8 +817,8 @@ def sentences_analyzer(sentences):
     for i in sentences:
         if i!=[]:
             #We have to add punctuation if there is not
-            if i[len(i)-1]!='.' and i[len(i)-1]!='?' and i[len(i)-1]!='!':
-                i=i+['.']
+            if i[-1] not in ['.', '?', '!']:
+                i = i + ['.']
             class_sentence_list=class_sentence_list+dispatching(i)
     
     #Add some information if there is an interjection

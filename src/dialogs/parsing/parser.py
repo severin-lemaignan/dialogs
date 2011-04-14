@@ -26,6 +26,10 @@ class Parser:
 
     def parse(self, preprocessed_sentences, active_sentence = None):
 
+        # If the user pass a simple string, preprocess it first.
+        if isinstance(preprocessed_sentences, basestring):
+            preprocessed_sentences = self.preprocess(preprocessed_sentences)
+
         #Return active_sentence if not empty, possibly send from Dialog.
         if active_sentence:
             return active_sentence
