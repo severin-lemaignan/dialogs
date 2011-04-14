@@ -123,7 +123,7 @@ class TestStatementBuilder(unittest.TestCase):
         #
     """
     
-    def test_1(self):
+    def test_01(self):
         logger.info("\n**** Test 1  *** ")
         logger.info("Danny drives the blue car")
         sentence = Sentence(STATEMENT, "", 
@@ -201,7 +201,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.process(sentence, expected_result, display_statement_result = True)
        
     
-    def test_1_goal_verb(self):
+    def test_01_goal_verb(self):
         logger.info("\n**** Test 1  *** ")
         logger.info("Danny wants the blue car")
         sentence = Sentence(STATEMENT, "", 
@@ -261,7 +261,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.process(sentence, expected_result, display_statement_result = True)
     
     
-    def test_2(self):
+    def test_02(self):
         logger.info("\n**** Test 2  *** ")
         logger.info("my car is blue")
         sentence = Sentence(STATEMENT, "", 
@@ -287,7 +287,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.process(sentence, expected_result, display_statement_result = True)
         
     
-    def test_3_quantifier_one_some(self):
+    def test_03_quantifier_one_some(self):
         logger.info("\n**** test_3_quantifier_one_some *** ")
         logger.info("Jido is a robot")
         sentence = Sentence(STATEMENT, "", 
@@ -312,7 +312,7 @@ class TestStatementBuilder(unittest.TestCase):
         self.process(sentence, expected_result, display_statement_result = True)
         
     
-    def test_4(self):
+    def test_04(self):
         logger.info("\n**** Test 4  *** ")
         logger.info("the man that I saw , has a small car")
         relative4 = Sentence(STATEMENT, "", 
@@ -357,7 +357,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_result, display_statement_result = True)
         
     
-    def test_5(self):
+    def test_05(self):
         logger.info("\n**** Test 5  *** ")
         logger.info("the man that talks , has a small car")
         relative5 = Sentence(STATEMENT, "", 
@@ -398,7 +398,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_result, display_statement_result = True)
             
     
-    def test_6(self):
+    def test_06(self):
         
         logger.info("\n**** Test 6  *** ")
         logger.info("I gave you the car of the brother of Danny")   
@@ -443,7 +443,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
-    def test_7(self):
+    def test_07(self):
         
         logger.info("\n**** Test 7  *** ")
         logger.info("I went to Toulouse")
@@ -468,7 +468,7 @@ class TestStatementBuilder(unittest.TestCase):
                           '* eventOccurs PAST']
         return self.process(sentence, expected_result, display_statement_result = True)
     
-    def test_8(self):
+    def test_08(self):
         logger.info("\n**** Test 8  *** ")
         logger.info("put the green bottle in the blue car")
         sentence = Sentence(IMPERATIVE, "", 
@@ -493,7 +493,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_result, display_statement_result = True)
     
     
-    def test_8_relative(self):
+    def test_08_relative(self):
         logger.info("\n**** Test 8 relative *** ")
         logger.info("show me the bottle that is in the twingo")
         relative8 = Sentence(STATEMENT, "", 
@@ -533,7 +533,7 @@ class TestStatementBuilder(unittest.TestCase):
 
         return self.process(sentence, expected_result, display_statement_result = True)
 
-    def test_9_this(self):
+    def test_09_this(self):
         
         logger.info("\n**** test_9_this  *** ")
         logger.info("this is a blue cube")
@@ -566,7 +566,7 @@ class TestStatementBuilder(unittest.TestCase):
         return self.process(sentence, expected_result, display_statement_result = True)
     
    
-    def test_9_this_my(self):
+    def test_09_this_my(self):
         
         logger.info("\n**** test_9_this_my  *** ")
         logger.info("this is my cube")
