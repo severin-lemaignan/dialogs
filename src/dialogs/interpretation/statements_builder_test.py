@@ -9,7 +9,7 @@ import inspect
 import unittest
 from dialogs.resources_manager import ResourcePool
 
-from dialogs.helpers import check_results, get_console_handler, get_file_handler
+from dialogs.helpers.helpers import check_results, get_console_handler, get_file_handler
 
 
 from dialogs.dialog_core import Dialog

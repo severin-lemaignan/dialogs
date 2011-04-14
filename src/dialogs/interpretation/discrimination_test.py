@@ -13,7 +13,7 @@ from discrimination import Discrimination
 from dialogs.verbalization.verbalization import Verbalizer
 from dialogs.dialog_exceptions import *
 
-from dialogs.helpers import check_results, get_console_handler, get_file_handler
+from dialogs.helpers.helpers import check_results, get_console_handler, get_file_handler
 
 def check_results(res, expected):
     def check_triplets(tr , te):
