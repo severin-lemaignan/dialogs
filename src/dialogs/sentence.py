@@ -590,7 +590,7 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
                     return nominal_group_structure
 
                 for k in i.sn:
-                    if ispronoun(k.noun[0]):
+                    if not ispronoun(k.noun[0]):
                         concat_gn(nominal_group_structure, k, flag)
                 #We finish the process with the verbal part
                 for v in i.sv:
@@ -601,7 +601,7 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
                 flag='FAILURE'
 
                 for k in i.sn:
-                    if ispronoun(k.noun[0]):
+                    if not ispronoun(k.noun[0]):
                         concat_gn(nominal_group_structure, k, flag)
                 #We finish the process with the verbal par
                 for v in i.sv:
