@@ -3,7 +3,7 @@
 
 import sys
 import logging
-logger = logging.getLogger('dialog')
+logger = logging.getLogger('dialogs')
 
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 

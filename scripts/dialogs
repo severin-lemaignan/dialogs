@@ -38,7 +38,7 @@ def unit_tests():
     print("Please run the 'dialogs_test' Python script.")
 
 
-logger = logging.getLogger('dialog')
+logger = logging.getLogger('dialogs')
 logger.setLevel(logging.WARNING)
 
 py_logger = logging.getLogger('pyoro')
@@ -46,7 +46,7 @@ py_logger.setLevel(logging.CRITICAL)
 
 
 #hack that tries to find out the current prefix and then the data directory
-DATA_DIR = os.path.abspath(__file__).split('lib')[0].split('src')[0] + '/share/dialog/'
+DATA_DIR = os.path.abspath(__file__).split('lib')[0].split('src')[0] + '/share/dialogs/'
 
 #default for ORO_SERVER
 ORO_HOST = 'test'
@@ -107,7 +107,7 @@ logger.addHandler(log_handler)
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_core import Dialog
 
-logger.info("**** DIALOG module ****")
+logger.info("**** DIALOGS module ****")
 logger.info("v." + DIALOGS_VERSION + "\n")
 
 if speaker and ResourcePool().ontology_server:

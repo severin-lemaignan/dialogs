@@ -30,7 +30,7 @@ class Dialog(Thread):
         Thread.__init__(self)
         
         self.go_on = True
-        self._logger = logging.getLogger('dialog')
+        self._logger = logging.getLogger('dialogs')
         
         self._demo_mode = demo
         
@@ -352,6 +352,6 @@ def unit_tests():
     print("> ./dialog_test")
 
 if __name__ == '__main__':
-    print("Please run the 'dialog' Python script.")
+    print("Please run the 'dialogs' Python script.")
     print
-    print("> dialog")
+    print("> dialogs")

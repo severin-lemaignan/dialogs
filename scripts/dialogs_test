@@ -46,13 +46,13 @@ dialogs_test [OPTIONS] TEST_SUITE
 
 
 # Add the "examples" directory the the Python path.
-EXAMPLES_DIR = os.path.abspath(__file__).split('/bin')[0].split('/scripts')[0] + '/share/examples/dialog'
+EXAMPLES_DIR = os.path.abspath(__file__).split('/bin')[0].split('/scripts')[0] + '/share/examples/dialogs'
 sys.path.append(EXAMPLES_DIR)
 
 LOG_FILENAME = "dialog_test.log"
 
 #Set the loggers
-logger = logging.getLogger('dialog')
+logger = logging.getLogger('dialogs')
 logger.setLevel(logging.DEBUG)
 
 pyoro_logger = logging.getLogger('pyoro')
