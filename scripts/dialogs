@@ -122,7 +122,8 @@ running = True
 while running:
     try:
         data = sys.stdin.readline()
-        dialog.input(data)
+        if data != "":
+            dialog.input(data)
         
     except KeyboardInterrupt:
         logger.info("Leaving now.")

@@ -5,7 +5,7 @@
 import unittest
 import logging
 
-logger = logging.getLogger('dialog')
+logger = logging.getLogger('dialogs')
 
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_core import Dialog
@@ -70,7 +70,7 @@ class TestDiscrimination(unittest.TestCase):
                 ])
             
         except AttributeError: #the ontology server is not started of doesn't know the method
-            raise("The ontology server is not started!")
+            raise(DialogError("The ontology server is not started!"))
 
     def test_01(self):
         logger.info( "Test1: No ambiguity.")

@@ -9,6 +9,7 @@ from dialogs.interpretation.statements_safe_adder  import StatementSafeAdder
 from dialogs.interpretation.questions_handler import QuestionHandler
 from dialogs.sentence_factory import SentenceFactory
 from dialogs.sentence import Sentence
+from dialogs.sentence_types import *
 from dialogs.resources_manager import ResourcePool
 """This module implements ...
 
