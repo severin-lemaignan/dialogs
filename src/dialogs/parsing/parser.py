@@ -1,6 +1,6 @@
 
 import logging
-logger = logging.getLogger("dialog")
+logger = logging.getLogger("dialogs")
 
 import preprocessing
 import analyse_sentence

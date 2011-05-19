@@ -12,7 +12,7 @@
 
 import unittest
 import logging
-logger = logging.getLogger("dialog")
+logger = logging.getLogger("dialogs")
 
 from dialogs.dialog_core import Dialog
 

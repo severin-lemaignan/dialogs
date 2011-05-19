@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-logger = logging.getLogger("dialog")
+logger = logging.getLogger("dialogs")
 import unittest
 from difflib import unified_diff
 
