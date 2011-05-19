@@ -198,16 +198,16 @@ def find_sn (phrase):
 
 
 def find_the_plural(phrase, position):
-    """
-    finds if there is a plural and add 'a'                     
-    Input=sentence and position of nominal group   Output=the position of plural or -1            
+    """ Finds if there is a plural and add 'a'
+
+    Input=sentence and position of nominal group   Output=the position of plural or -1
     """ 
     
-    if len(phrase)-position-1<0:
+    if len(phrase) - position - 1 < 0:
         return -1
     
     #It is a number the word is not a plural
-    if other_functions.number(phrase[position])==1:
+    if other_functions.number(phrase[position]) == 1:
         return -1
     
     #If it is proposal we continue
@@ -227,7 +227,7 @@ def find_the_plural(phrase, position):
         return -1
     
     #we have plural if the noun ends with 's'
-    if find_sn_pos(phrase, position)==[] and phrase[position].endswith('s'):
+    if find_sn_pos(phrase, position) == [] and phrase[position].endswith('s'):
         return position
 
     return -1
@@ -235,24 +235,26 @@ def find_the_plural(phrase, position):
 
 
 def find_plural(phrase):
+    """Adds 'a' for plural
+
+    :param list phrase: sentence
+    :return: sentence
     """
-    adds 'a' for plural                    
-    Input=sentence                                   Output=sentence      
-    """ 
-    
+
     #We find the position of the plural in the phrase
     position=find_the_plural(phrase,0)
-    if position!=-1:
+    if position != -1:
         #If not -1 we have plural without determinant
-        phrase=phrase[:position]+['a']+phrase[position:]
+        phrase = phrase[:position] + ['a'] + phrase[position:]
     return phrase
 
 
 
 def refine_nom_gr(nom_gr):
-    """
-    This function refine the nominal group if there is a mistake                     
-    Input=nominal group                              Output=nominal group            
+    """This function refine the nominal group if there is a mistake
+
+    :param nom_gr: nominal group
+    :return: nominal group
     """
 
     #Case of the end of the sentence

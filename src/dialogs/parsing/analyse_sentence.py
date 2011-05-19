@@ -845,7 +845,10 @@ def sentences_analyzer(sentences):
                 k.data_type=STATEMENT
             
         #If we have imperative with verb 'see' => end
-        if k.data_type==IMPERATIVE and k.sv[0].vrb_main==['see'] and k.sv[0].d_obj[0].noun==['you']:
+        if      k.data_type==IMPERATIVE and \
+                k.sv[0].vrb_main==['see'] and \
+                len(k.sv[0].d_obj) > 0 and \
+                k.sv[0].d_obj[0].noun==['you']:
             k.data_type=END
             k.aim=''
             k.sv=[]
