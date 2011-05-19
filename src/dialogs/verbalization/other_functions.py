@@ -93,36 +93,36 @@ def convert_string(token_list):
     
 
 def plural(word,quantifier,determinant):
+    """Returns 1 if the word is a plural
+
+    Input=list of word
+    Output=flag(0 if singular or 1 if plural)
     """
-    return 1 if the word is a plural                       
-    Input=list of word             Output=flag(0 if singular or 1 if plural)       
-    """
-    
+
     #If the word ends with 's' it is not a special one
     if word.endswith('s'):
         for n in ResourcePool().nouns_end_s:
             if n==word:
                 return 0
         return 1
-    
+
     #If it is a pronoun in plural
     if word=='we' or word=='I' or word=='you' or word=='they':
         return 1
-        
+
     for k in ResourcePool().plural_nouns:
-        if word==k[1]:
+        if word == k[0]:
             return 1
-    
+
     #If the quantifier confirm it
     if quantifier=='SOME' or quantifier=='ALL' or quantifier=='ANY':
         return 1
     if quantifier=='DIGIT' and determinant[0]!='one':
         return 1
-    
+
     #Default case
     return 0
-           
-           
+
 def plural_noun(sn):
     """
     Function return 1 if the nominal group is a plural                      
