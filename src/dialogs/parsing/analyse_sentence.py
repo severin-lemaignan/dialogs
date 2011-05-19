@@ -202,7 +202,7 @@ def exclama_sentence(sentence):
     """
 
     for i in frt_wd:
-        if i[0]==sentence[0]:
+        if i[0] == sentence[0]:
             if i[1]=='0':
                 analysis=Sentence(INTERJECTION, '', [], [])
                 #We recover the subject
@@ -217,7 +217,7 @@ def exclama_sentence(sentence):
     
     #If we have an imperative it can be forced
     analysis=other_sentence(INTERJECTION, '', sentence)
-    if analysis.data_type==INTERJECTION and (analysis.sv[0].vrb_main==[] or analysis.sv[0].vrb_main[0] in ['!','?','.']):
+    if analysis.data_type==INTERJECTION and not analysis.sv:
         pass
     else:
         analysis.data_type=STATEMENT
@@ -648,7 +648,7 @@ def other_sentence(type, request, sentence):
     
     #We search the subject
     sbj=analyse_nominal_group.find_sn_pos(sentence, 0)
-
+    
     if sbj != [] or type == RELATIVE:
         #If we haven't a data type => it is a statement
         if type=='':
@@ -667,58 +667,62 @@ def other_sentence(type, request, sentence):
             #We recover the subject
             sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
         
-        if sentence!=[]:
-            #We have to know if there is a modal
-            if sentence[0] in modal_list:
-                modal=sentence[0]
-                if modal=='can' or modal=='must' or modal=='shall' or modal=='may':
-                    sentence=sentence[1:]
-                    
-            #We must take into account all possible cases to recover the sentence's tense
-            if len(sentence)>1 and sentence[1]=='not':
-                vg.state=Verbal_Group.negative
-    
-                #Before the negative form we have an auxiliary for the negation
-                if sentence[0]=='do' or sentence[0]=='does' or sentence[0]=='did' :
-                    vg.vrb_tense = analyse_verb.find_tense_statement([sentence[0]])
-                    sentence=sentence[2:]
-                    sentence=analyse_verbal_structure.delete_unusable_word(sentence)
-                    sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
+        #End of the sentence? -> nominal sentence
+        if sentence == [] or sentence[0] in ['.', '!', '?']:
+            analysis.sv=[]
+            return analysis
+        
+        #We have to know if there is a modal
+        if sentence[0] in modal_list:
+            modal=sentence[0]
+            if modal=='can' or modal=='must' or modal=='shall' or modal=='may':
+                sentence=sentence[1:]
                 
-                #There is a modal
-                elif modal!=[]:
-                    sentence=[sentence[0]]+sentence[2:]
-                    sentence=analyse_verbal_structure.delete_unusable_word(sentence)
-                    sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
-                    vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
-    
-                else:
-                    #We remove 'not' and find the tense
-                    sentence=sentence[:1]+ sentence[2:]
-                    sentence=analyse_verbal_structure.delete_unusable_word(sentence)
-                    sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
-                    vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
-                
-            #For the affirmative processing
+        #We must take into account all possible cases to recover the sentence's tense
+        if len(sentence)>1 and sentence[1]=='not':
+            vg.state=Verbal_Group.negative
+
+            #Before the negative form we have an auxiliary for the negation
+            if sentence[0]=='do' or sentence[0]=='does' or sentence[0]=='did' :
+                vg.vrb_tense = analyse_verb.find_tense_statement([sentence[0]])
+                sentence=sentence[2:]
+                sentence=analyse_verbal_structure.delete_unusable_word(sentence)
+                sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
+            
+            #There is a modal
+            elif modal!=[]:
+                sentence=[sentence[0]]+sentence[2:]
+                sentence=analyse_verbal_structure.delete_unusable_word(sentence)
+                sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
+                vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
+
             else:
-                if sentence[0]=='not':
-                    vg.state=Verbal_Group.negative
-                    sentence=sentence[1:]
-                
-                sentence=analyse_verbal_structure.delete_unusable_word(sentence)    
+                #We remove 'not' and find the tense
+                sentence=sentence[:1]+ sentence[2:]
+                sentence=analyse_verbal_structure.delete_unusable_word(sentence)
                 sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
                 vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
             
-            verb=analyse_verb.find_verb_statement(sentence, vg.vrb_tense)
-            verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
-            vg.vrb_main=[other_functions.convert_to_string(verb_main)]
+        #For the affirmative processing
+        else:
+            if sentence[0]=='not':
+                vg.state=Verbal_Group.negative
+                sentence=sentence[1:]
             
-            #We delete the verb
-            sentence= sentence[sentence.index(verb[0])+len(verb_main):]
-                
-            #We perform the processing with the modal
-            if modal!=[]:
-                vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
+            sentence=analyse_verbal_structure.delete_unusable_word(sentence)    
+            sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
+            vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
+        
+        verb=analyse_verb.find_verb_statement(sentence, vg.vrb_tense)
+        verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
+        vg.vrb_main=[other_functions.convert_to_string(verb_main)]
+        
+        #We delete the verb
+        sentence= sentence[sentence.index(verb[0])+len(verb_main):]
+            
+        #We perform the processing with the modal
+        if modal!=[]:
+            vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
 
     #This is a imperative form
     else:
@@ -822,14 +826,13 @@ def sentences_analyzer(sentences):
             class_sentence_list=class_sentence_list+dispatching(i)
     
     #Add some information if there is an interjection
-    while y < len(class_sentence_list):
+    for s in class_sentence_list:
         #If there is an interjection we have to take the nominal group
-        if class_sentence_list[y].data_type==INTERJECTION:
-            nom_gr=class_sentence_list[y].sn
+        if s.data_type==INTERJECTION:
+            nom_gr = s.sn
         #If there is an imperative sentence, we put the nominal group of interjection in the subject
-        if nom_gr!=[] and class_sentence_list[y].data_type==IMPERATIVE:
-            class_sentence_list[y].sn=class_sentence_list[y].sn+nom_gr
-        y=y+1
+        if nom_gr != [] and s.data_type == IMPERATIVE:
+            s.sn = s.sn + nom_gr
     
     #To simplify the interpretation, we have to perform some changes
     for k in class_sentence_list:

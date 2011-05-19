@@ -443,8 +443,10 @@ def process_subsentence(phrase,vg):
                     #If 'but' is between 2 nominal group and not before subsentence
                     if w=='but':
                         #If the main verb is not a verb but a part of verbal structure => we have nominal groups
-                        for k in ['.','?','!','']+proposal_list:
-                            if vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
+                        for k in ['.','?','!',''] + proposal_list:
+                            if not vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv \
+                                or \
+                                vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
                                     
                                 #We make changes and return the sentence with but of nominal groups
                                 phrase[phrase.index(w)]=':but'

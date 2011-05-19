@@ -156,7 +156,7 @@ class Nominal_Group:
         This currently means:
             - it has either non-null adjective or non-null nouns or both 
         """
-        if not (self.noun or self.adj):
+        if not self.noun and not self.adj:
             if not self.det and not self.det[0] in ResourcePool().demonstrative_det:
                 return False
 
@@ -458,7 +458,7 @@ def process_verbal_group_part(verbal_group,nominal_group_structure, flag):
     ind_cmpl=i_cmpl(verbal_group.i_cmpl)
     #For indirect complement
     for i in ind_cmpl:
-        if i.prep[0] in ResourcePool().compelement_proposals and verbal_group.vrb_main[0]!='talk':
+        if i.prep[0] in ResourcePool().compelement_proposals and ((not verbal_group) or verbal_group.vrb_main[0] != 'talk'):
             #If it is an adverbial related to the noun, we have to add it like a relative
             rltv=Sentence('relative', 'which',[],[verbal_group])
             nominal_group_structure.relative=nominal_group_structure.relative+[rltv]
@@ -593,10 +593,10 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
             i.sn=[Nominal_Group(['the'],i.sv[0].vrb_main,[],[],[])]
 
         if i.data_type==STATEMENT or i.data_type.startswith(SUBSENTENCE) :
-            if i.sv[0].state==Verbal_Group.affirmative:
+            if not i.sv or i.sv[0].state == Verbal_Group.affirmative:
 
                 #We can have just the subject
-                if i.sv[0].d_obj==[] and i.sv[0].i_cmpl==[] and i.sv[0].sv_sec==[] and i.sv[0].vrb_sub_sentence==[]:
+                if not i.sv:
                     for k in i.sn:
                         concat_gn(nominal_group_structure, k, flag)
                     refine_nominal_group_relative(nominal_group_structure)
@@ -606,8 +606,9 @@ def nominal_group_remerge(utterance, flag , nominal_group_structure):
                     if not ispronoun(k.noun[0]):
                         concat_gn(nominal_group_structure, k, flag)
                 #We finish the process with the verbal part
-                for v in i.sv:
-                    nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)
+                if i.sv:
+                    for v in i.sv:
+                        nominal_group_structure=process_verbal_group_part(v,nominal_group_structure, flag)
 
             elif i.sv[0].state==Verbal_Group.negative:
                 #For all other sentences flag will be FAILURE

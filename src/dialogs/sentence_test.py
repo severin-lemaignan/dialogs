@@ -48,6 +48,12 @@ class TestValidity(unittest.TestCase):
         self.check_valid("Sorry")
     def test_02(self):
         self.check_valid("This is my banana")
+    def test_03(self):
+        self.check_valid("The yellow banana")
+    def test_04(self):
+        self.check_valid("A kind of a thing.")
+    def test_05(self):
+        self.check_valid("Jido!")
 
 class TestSentence(unittest.TestCase):
     def test_sentence(self):

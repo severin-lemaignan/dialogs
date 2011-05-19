@@ -142,7 +142,7 @@ class Resolver:
                 #   we get the ids of all existing apples in the ontology otherwise we generate one
                 
                 logger.debug("Found undefinite quantifier " + nominal_group._quantifier + \
-                            " for " + nominal_group.noun[0] + " and with verb " + verb + \
+                            " for " + nominal_group.noun[0] + ((" and with verb " + verb) if verb else "") + \
                             ". Replacing it by all its instances.")
                             
                 onto_id = []
@@ -601,16 +601,20 @@ class Resolver:
             if sv.vrb_sub_sentence:
                 resolved_vrb = []
                 for vrb in sv.vrb_sub_sentence:
+                    
+                    if vrb.sv:
+                        vrb.sv = self.verbal_phrases_reference_resolution(vrb.sv, 
+                                                                        matcher,
+                                                                        current_speaker, 
+                                                                        current_object)
+                    
                     #sentence sn nominal groups reference resolution
                     if vrb.sn:
                         vrb.sn = self._resolve_groups_references(vrb.sn,
-                                                                vrb.vrb_main[0],
+                                                                vrb.sv[0].vrb_main[0] if vrb.sv else None,
                                                                 matcher, 
                                                                 current_speaker, 
                                                                 current_object)
-
-                    if vrb.sv:
-                        vrb.sv = self.verbal_phrases_reference_resolution(vrb.sv, matcher,current_speaker, current_object)
                     
                     resolved_vrb.append(vrb)
                 
