@@ -222,11 +222,7 @@ class Dialog(Thread):
 
             #Check the sentence is grammatically valid, else go back to the human
             if not s.isvalid():
-                # TODO: not that simple! When asking for more
-                # information, a single 'nominal sentence' is
-                # acceptable.
-                #raise GrammaticalError(s)
-                pass
+                raise GrammaticalError(s)
  
             if s.isaborting():
                 parsed_sentences.remove(s)

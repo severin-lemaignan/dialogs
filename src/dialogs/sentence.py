@@ -32,13 +32,17 @@ class Sentence:
     def isvalid(self):
        """ Checks a sentence is grammatically valid
        """
-       return  reduce( lambda c1,c2: c1 and c2, 
+       sn_valid = True
+       sv_valid = True
+       if self.sn:
+           sn_valid = reduce( lambda c1,c2: c1 and c2, 
                         map(lambda x: x.isvalid(), self.sn), 
-                        True) \
-                and \
-                reduce( lambda c1,c2: c1 and c2, 
+                        True)
+       if self.sv:
+           sv_valid = reduce( lambda c1,c2: c1 and c2, 
                         map(lambda x: x.isvalid(), self.sv), 
                         True)
+       return sn_valid and sv_valid
 
     def resolved(self):
         """returns True when the whole sentence is completely resolved
@@ -151,7 +155,14 @@ class Nominal_Group:
         This currently means:
             - it has either non-null adjective or non-null nouns or both 
         """
-        return True if (self.noun or self.adj) else False
+        if not (self.noun or self.adj):
+            return False
+
+        # We don't accept groups like "give me A BLUE"
+        if self._quantifier in ['SOME','ALL'] and self.adjectives_only():
+            return False
+
+        return True
 
     def __str__(self):
         
@@ -448,9 +459,9 @@ def process_verbal_group_part(verbal_group,nominal_group_structure, flag):
         if i.prep[0] in ResourcePool().compelement_proposals and verbal_group.vrb_main[0]!='talk':
             #If it is an adverbial related to the noun, we have to add it like a relative
             rltv=Sentence('relative', 'which',[],[verbal_group])
-            nominal_group_structure.relative=nominal_group_structure.relative+[rltv] 
+            nominal_group_structure.relative=nominal_group_structure.relative+[rltv]
         else:
-            #Else we process the concatenate with the nominal part of the indirect complement   
+            #Else we concatenate with the nominal part of the indirect complement
             for k in i.gn:
                 concat_gn(nominal_group_structure, k, flag)
     
