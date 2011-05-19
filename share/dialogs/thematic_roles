@@ -26,7 +26,7 @@ actsOnObject Artifact
 put (place) {
 performedBy Agent
 actsOnObject Artifact
-receivedBy [on] Physical_Support
+receivedBy [on] PhysicalSupport
 }
 
 give (bring) {
@@ -37,7 +37,7 @@ receivedBy Agent
 
 show {
 performedBy Agent
-actsOnObject Artifact
+actsOnObject Location 
 [receivedBy Agent]
 }
 
