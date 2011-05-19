@@ -344,6 +344,11 @@ class Dialog(Thread):
         #Finalizing the processing
         self.active_sentence = None
         self._logger.info(colored_print("\n[ NL sentence \"" + nl_input + "\" processed! ]", 'green'))
+
+        if self.last_sentence[0] and self.last_sentence[0][0].data_type == END:
+            # Exit!
+            self.stop()
+
         self.in_interaction = False
         
 
