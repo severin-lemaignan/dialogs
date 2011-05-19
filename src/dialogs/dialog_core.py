@@ -78,7 +78,7 @@ class Dialog(Thread):
         self.last_stmts_set = []
         
         #last utterance outputed to user. This is a tuple containing both the
-        # Sentence object and the verbalized version. For testing purposes.
+        # Sentence object and the verbalized version.
         self.last_sentence = (None, None)
 
     def run(self):
@@ -160,19 +160,21 @@ class Dialog(Thread):
             except Empty:
                 pass
             
-            
     def stop(self):
         while(not self._nl_input_queue.empty()):
             pass
         self.go_on = False
 
     def input(self, input, speaker = None):
+
+        input = input.decode('utf-8').encode('ascii')
+
         if speaker:
             self.current_speaker = speaker
         else:
             self.current_speaker = self._speaker
         
-        self._nl_input_queue.put(input)    
+        self._nl_input_queue.put(input)
         
         
     def test(self, speaker, input, answer = None):

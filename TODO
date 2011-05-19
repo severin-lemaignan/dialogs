@@ -89,6 +89,8 @@ unambiguous descriptions of concepts when answering questions.
     
 [PARTIALLY DONE] Numerals (parsing ok)
 
+Support UTF8
+
 =========
 Interface
 =========
