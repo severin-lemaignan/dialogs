@@ -27,6 +27,28 @@ def is_equal(grp1, grp2):
     else:
         return True 
 
+class TestValidity(unittest.TestCase):
+    """
+    This class groups tests that check if the parser correctly detect grammatically incorrect
+    sentences.
+    """ 
+    
+    def check_invalid(self, utterance):
+        check_valid(utterance, False)
+
+    def check_valid(self, utterance, valid = True):
+
+        sentence_list = preprocessing.process_sentence(utterance)
+        sentences = analyse_sentence.sentences_analyzer(sentence_list)
+
+        for s in sentences:
+            self.assertTrue(s.isvalid() == valid)
+
+    def test_01(self):
+        self.check_valid("Sorry")
+    def test_02(self):
+        self.check_valid("This is my banana")
+
 class TestSentence(unittest.TestCase):
     def test_sentence(self):
         """Tests the creation of several type of Sentence objects.
@@ -824,7 +846,8 @@ class TestRemerge(unittest.TestCase):
         self.assertTrue(is_equal(nom_gr_struc, rslt))
         
 def test_suite():
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestSentence)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestValidity)
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestSentence))
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestRemerge))
     
     return suite
