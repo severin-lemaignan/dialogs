@@ -5,8 +5,11 @@ import sys
 import os
 import getopt
 import logging
+import time
 
 from dialogs.version import DIALOGS_VERSION
+
+GOOGLE_API_KEY= "AIzaSyCjUiaoRKX7BZ6twcQj0yW1Y6ElstWeELA"
 
 def usage():
     print """The LAAS-CNRS 'Dialogs' module (v.""" + DIALOGS_VERSION + """).
@@ -18,7 +21,10 @@ dialog [OPTIONS] [speaker]
   -t, --test			Runs unit-tests
   -d, --debug			Sets verbosity to debug
   -s, --silent			The module won't output anything
+  -p, --process=		Processes the given sentence and exits
   --demo				Start Dialogs in demo mode (insert pause between each steps)
+  --speech				Use speech recognition instead of text input
+  --lang=				If using speech recognition, the input langage (default: en-US)
   --orohost				Host of ORO ontology server
   --oroport				Port of ORO ontology server
 
@@ -55,8 +61,15 @@ ORO_PORT = 6969
 #By default, don't start in demo mode
 demo = False
 
+#By default, use text input
+use_speech = False
+reco = None
+translator = None
+lang = 'en-US'
+single_sentence = None
+
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'htdsv', ['help', 'test', 'debug', 'silent', 'version', 'demo', 'orohost=', 'oroport='])
+    optlist, args = getopt.getopt(sys.argv[1:], 'htdsvp:', ['help', 'test', 'debug', 'silent', 'speech', 'lang=', 'version', 'process=', 'demo', 'orohost=', 'oroport='])
 except getopt.GetoptError, err:
     # print help information and exit:
     print str(err) # will print something like "option -a not recognized"
@@ -77,6 +90,13 @@ for o, a in optlist:
         logger.setLevel(logging.DEBUG)
     elif o in ("-s", "--silent"):
         logger.setLevel(logging.CRITICAL)
+    elif o in ("-p", "--process"):
+        single_sentence = a
+    elif o in ("--speech"):
+        from gspeett import gspeett
+        use_speech = True
+    elif o in ("--lang"):
+        lang = a
     elif o in ("--demo"):
         demo = True
         logger.setLevel(logging.DEBUG)
@@ -118,17 +138,52 @@ dialog = Dialog(speaker, demo = demo)
 
 dialog.start()
 
-running = True
-while running:
-    try:
-        data = sys.stdin.readline()
-        if data != "":
-            dialog.input(data)
+
+if single_sentence:
+    dialog.input(single_sentence)
+    time.sleep(0.1) # Leave some time to dialog to process the input
+    dialog.stop()
+else:
+    
+    if use_speech:
+        reco = gspeett.GoogleVoiceRecognition(lang)
+        if lang != 'en-US':
+            translator = gspeett.GoogleTranslator(GOOGLE_API_KEY, to='en-US')
         
-    except KeyboardInterrupt:
-        logger.info("Leaving now.")
-        running = False
-        dialog.stop()
+    running = True
+    while running:
+        if not dialog.is_alive(): # ...the Dialog thread has been interupted? (for instance, user saying 'Goodbye')
+            break
+        
+        try:
+            
+            if use_speech:
+                if dialog.waiting_for_more_info or not dialog.in_interaction:
+                    res = []
+                    while len(res)==0:
+                        
+                        logger.info("Speak now!")
+                        res = reco.mic()
+                    
+                    if lang != 'en-US':
+                        res = translator.translate(res[0])
+                        logger.info(res)
+                        dialog.input(res)
+                    else:
+                        dialog.input(res[0])
+                    
+            else:
+                data = sys.stdin.readline()
+                if data != "":
+                    dialog.input(data)
+            
+            time.sleep(0.1) # Leave some time to dialog to process the input, in case of 'Goodbye'
+            
+            
+        except KeyboardInterrupt:
+            logger.info("Leaving now.")
+            running = False
+            dialog.stop()
 
 dialog.join()
 
