@@ -157,7 +157,8 @@ class Nominal_Group:
             - it has either non-null adjective or non-null nouns or both 
         """
         if not (self.noun or self.adj):
-            return False
+            if not self.det and not self.det[0] in ResourcePool().demonstrative_det:
+                return False
 
         # We don't accept groups like "give me A BLUE"
         if self._quantifier in ['SOME','ALL'] and self.adjectives_only():
