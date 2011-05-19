@@ -42,6 +42,7 @@ class Sentence:
            sv_valid = reduce( lambda c1,c2: c1 and c2, 
                         map(lambda x: x.isvalid(), self.sv), 
                         True)
+
        return sn_valid and sv_valid
 
     def resolved(self):
@@ -65,7 +66,7 @@ class Sentence:
             sn = ""
             for s in self.sn:
                 sn = str(s).replace("\n", "\n\t") + "\n"
-            res += pprint(sn, SUBJECT)
+                res += pprint(sn, SUBJECT)
         if self.sv:
             for s in self.sv:
                 res += str(s).replace("\n", "\n\t") + "\n"
@@ -191,7 +192,7 @@ class Nominal_Group:
                 res +=  pprint(k[0], ADJECTIVE)
             
             if self.noun:
-                res +=   pprint(" ".join(self.noun), NOUN)
+                res +=   pprint(", ".join(self.noun), NOUN)
             
             
             if self.noun_cmpl:
