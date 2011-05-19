@@ -113,7 +113,9 @@ class StatementBuilder:
                 self._statements_to_remove.extend(vg_stmt_builder._statements)
 
 class NominalGroupStatementBuilder:
-    """ Build statements related to a nominal group"""
+    """ Build statements related to a nominal group
+    """
+    
     def __init__(self, nominal_groups, current_speaker = None):
         #This field keeps record of the nominal group that is being processed
         self._nominal_groups = nominal_groups
@@ -144,19 +146,20 @@ class NominalGroupStatementBuilder:
     
     def process(self):
         """ The following function builds a list of statement from a list of nominal group
-        A NominalGroupStatementBuilder has to be instantiated before"""
+        A NominalGroupStatementBuilder has to be instantiated before
+        """
         
         for ng in self._nominal_groups:
             if not ng.id:
-                ng.id = self.set_nominal_group_id(ng)      
-            
+                ng.id = self.set_nominal_group_id(ng)
+
             self.process_nominal_group(ng, ng.id, None, False)
-                                    
+
         return self._statements
-    
+
     def get_statements(self):
         return self._statements
-    
+
     def set_nominal_group_id(self, ng):
         if ng.id:
             return ng.id
@@ -742,7 +745,8 @@ class VerbalGroupStatementBuilder:
         
         d_obj_stmt_builder = NominalGroupStatementBuilder(d_objects, self._current_speaker)
         
-        #Thematic roles
+        # Retrieve the thematic role of the direct object from the library.
+        # If not defined, use the generic 'involves' predicate.
         try:
             d_obj_role = " " +  ResourcePool().thematic_roles.verbs[verb].roles[0].id + " "
         except  KeyError:
@@ -946,6 +950,7 @@ def get_class_name(noun,conceptL):
     for c in conceptL:
         if 'CLASS' in c: return c[0]
     
+    # Not found in the ontology? Using the capitalized version as class name
     return noun.capitalize()
      
 
