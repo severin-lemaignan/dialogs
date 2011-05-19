@@ -130,10 +130,9 @@ class Dialog(Thread):
                     sys.stdout.flush()
 
                 except DialogError as de:
-                    self._logger.info(colored_print("Error! " + \
-                        "Maybe trying to resolve an anaphora with empty dialog history?", 'magenta'))
+                    self._logger.info(colored_print("Error! " + de.value, 'magenta'))
                     #Output towards human
-                    sys.stdout.write("Sorry, I didn't really understand your last sentence...\n")
+                    sys.stdout.write("Sorry, I got confused... Could you repeat in a different way?\n")
                     sys.stdout.flush()
 
 

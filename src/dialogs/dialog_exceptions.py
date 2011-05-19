@@ -14,7 +14,7 @@ class UnsufficientInputError(DialogError):
     The expected value of the exception is a map containing 5 informations:
      - status: 'SUCCESS' if the discrimination could find candidates but need
             more details, 'FAILURE' if no candidates have been found.
-     - object: the object (for instance, a nomnial group) that was being resolved
+     - object: the object (for instance, a nominal group) that was being resolved
      - object_with_more_info: the object with more information to resolve the one that was being resolved
      - sentence:  if 'object' already holds a nominal group, this holds the sentence that was being resolved.
      - question: a question (as a set of instance of Sentence class) to be asked 

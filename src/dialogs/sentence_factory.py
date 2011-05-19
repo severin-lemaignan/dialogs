@@ -92,6 +92,18 @@ class SentenceFactory:
                         [Verbal_Group(['mean'], [],'present simple', [], [], [], [] ,Verbal_Group.affirmative,[])])]
         return sentence
     
+    def create_no_instance_of(self, object):
+        """ Creates sentences of type: 
+            "I don't know any bottle"
+        """
+        
+        any_object = object
+        any_object.det = ['any']
+        sentence = [Sentence(STATEMENT, 'thing', 
+                        [Nominal_Group([],['I'],[],[],[])], 
+                        [Verbal_Group(['know'], [],'present simple', [object], [], [], [] ,Verbal_Group.negative,[])])]
+        return sentence
+    
     
     def create_do_you_mean_reference(self, object):
         """ Creates sentences: 

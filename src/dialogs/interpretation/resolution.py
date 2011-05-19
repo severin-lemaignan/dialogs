@@ -57,12 +57,24 @@ class Resolver:
         #Anaphoric resolution
         matcher = AnaphoraMatcher()
         
+        
+        # First, resolve the verbal group, since we may need to know the verb to
+        # resolve the subject.
+        # for instance "The girls are human" -> Girl rdfs:subClassOf Human
+        #              "The girls are playing football" -> girl1, girl2 currentlyPerforms PlayFoot
+        if sentence.sv:
+            sentence.sv = self.verbal_phrases_reference_resolution(sentence.sv, 
+                                                                    matcher,
+                                                                    current_speaker, 
+                                                                    self._current_object)
+        
         #sentence sn nominal groups reference resolution
         if sentence.sn:
-            sentence.sn = self._resolve_groups_references(sentence.sn, matcher, current_speaker, self._current_object)
-
-        if sentence.sv:
-            sentence.sv = self.verbal_phrases_reference_resolution(sentence.sv, matcher,current_speaker, self._current_object)
+            sentence.sn = self._resolve_groups_references(sentence.sn, 
+                                                        sentence.sv[0].vrb_main[0] if sentence.sv else None,
+                                                        matcher, 
+                                                        current_speaker, 
+                                                        self._current_object)
 
         return sentence    
     
@@ -86,7 +98,7 @@ class Resolver:
         return current_object
         
         
-    def _resolve_references(self, nominal_group, matcher, current_speaker, current_object):
+    def _resolve_references(self, nominal_group, verb, matcher, current_speaker, current_object):
         
         # Case of a resolved nominal group
         if nominal_group._resolved: 
@@ -96,37 +108,67 @@ class Resolver:
         #   means the nominal group holds an indefinite determiner. 
         #   E.g a robot, every plant, fruits, ...
         if nominal_group._quantifier in ['SOME','ALL']: 
-            # Case of a state verb
-            # id = the class name
-            # E.g: an apple is a fruit
-            #       the id of apple is Apple
-            logger.info("\t Found undefinite quantifier " + nominal_group._quantifier)
+            
             onto = []
+            
             try:
                 onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
+            except IndexError:
+                raise DialogError("We should not have to resolve nominal " + \
+                    "groups with indefinite determiner and only adjectives")
             except AttributeError:
                 pass
             except OroServerError: # The agent does not exist in the ontology
                 pass
             
-            
             class_name =  get_class_name(nominal_group.noun[0], onto)
-            nominal_group.id = class_name
-
-            """
-            # case of an action verbs
-            # id = generated 
-            # E.g: An Apple grows on a tree
-            #   we get the ids of all existing apples in the ontology otherwise we generate one
-            if not verb in ResourcePool().state for verb in [vrb for sv in self.sv for vrb in sv.vrb_main]:
+            
+            if verb and verb in ResourcePool().state:
+                # Case of a state verb
+                # id = the class name
+                # E.g: an apple is a fruit
+                #       the id of apple is Apple
+                logger.debug("Found undefinite quantifier " + nominal_group._quantifier + \
+                            " for " + nominal_group.noun[0] + " and state verb " + verb + \
+                            ". Replacing it by its class.")
+                
+                nominal_group.id = class_name
+                
+            else:
+                # case of an action verbs
+                # id = generated 
+                # E.g: An apple grows on a tree
+                # e.g.: show me the books -> books replaced by all book instance
+                #   we get the ids of all existing apples in the ontology otherwise we generate one
+                
+                logger.debug("Found undefinite quantifier " + nominal_group._quantifier + \
+                            " for " + nominal_group.noun[0] + " and with verb " + verb + \
+                            ". Replacing it by all its instances.")
+                            
                 onto_id = []
                 try:
-                    onto_id = ResourcePool().findForAgent(current_speaker, '?concept', '?concept rdf:type ' + class_name)
-                except AttributeError:
+                    onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type ' + class_name])
+                except OroServerError: # The agent does not exist in the ontology
                     pass
                 
-                if 
-            """
+                if not onto_id:
+                    uie = UnsufficientInputError({'status':'FAILURE'})
+                    
+                    sf = SentenceFactory()
+                    uie.value['question'] = sf.create_no_instance_of(nominal_group)
+                    uie.value['object'] = nominal_group
+                    uie.value['sentence'] = self._current_sentence
+                    uie.value['object_with_more_info'] = None
+                    raise uie
+                
+                elif len(onto_id) == 1:
+                    [nominal_group.id] = onto_id
+                
+                else:
+                    # More than one value!
+                    # Add new nominal group
+                    raise DialogError("ALL quantifier on class with more than one instance not implemented yet!")
+
             nominal_group._resolved = True
             return nominal_group
             
@@ -227,16 +269,16 @@ class Resolver:
                                                                                     current_object)
         return nominal_group
     
-    def _resolve_groups_references(self, array_sn, matcher, current_speaker, current_object):
+    def _resolve_groups_references(self, array_sn, verb, matcher, current_speaker, current_object):
         """This attempts to resolve every single nominal group held in a nominal group list"""
         resolved_sn = []
         for ng in array_sn:
             if self._current_sentence.islearning():
-                ng.noun_cmpl = self._resolve_groups_references(ng.noun_cmpl, matcher, current_speaker, None) if ng.noun_cmpl else []
+                ng.noun_cmpl = self._resolve_groups_references(ng.noun_cmpl, verb, matcher, current_speaker, None) if ng.noun_cmpl else []
                 #resolved_relative = [self.references_resolution(relative, current_speaker, None, None, None) for relative in ng.relative]
                 #ng.relative = resolved_relative
                 
-            resolved_sn.append(self._resolve_references(ng, matcher, current_speaker, current_object))
+            resolved_sn.append(self._resolve_references(ng, verb, matcher, current_speaker, current_object))
            
         return resolved_sn
     
@@ -281,10 +323,10 @@ class Resolver:
     #   Nouns phrases resolution and discrimination
     ################################################
     def noun_phrases_resolution(self, sentence, current_speaker, uie_object, uie_object_with_more_info):
-        #Skipping processing of sentences that are neither questions nor statements
 
         logger.info(colored_print("-> Resolving noun phrases", 'green'))
         
+        #Skipping processing of sentences that are neither questions nor statements nor imperatives
         if not sentence.data_type in [W_QUESTION, YES_NO_QUESTION, STATEMENT, IMPERATIVE]:
             return sentence
         
@@ -456,10 +498,10 @@ class Resolver:
     # Verbal group resolutions
     ############################
     def verbal_phrases_resolution(self, sentence):
-        #Skipping processing of sentences that are neither questions nor statements
         
         logger.info(colored_print("-> Resolving verbal groups", 'green'))
         
+        #Skipping processing of sentences that are neither questions nor statements nor imperative
         if not sentence.data_type in [W_QUESTION, YES_NO_QUESTION, STATEMENT, IMPERATIVE]:
             return sentence
         
@@ -536,13 +578,15 @@ class Resolver:
         for sv in verbal_groups:
             if sv.d_obj:
                 sv.d_obj = self._resolve_groups_references(sv.d_obj,
+                                                            sv.vrb_main[0],
                                                             matcher,
                                                             current_speaker, 
                                                             self._current_object)
             if sv.i_cmpl:
                 resolved_i_cmpl = []
                 for i_cmpl in sv.i_cmpl:
-                    i_cmpl.gn = self._resolve_groups_references(i_cmpl.gn, 
+                    i_cmpl.gn = self._resolve_groups_references(i_cmpl.gn,
+                                                                sv.vrb_main[0],
                                                                 matcher,
                                                                 current_speaker,
                                                                 self._current_object)
@@ -559,7 +603,11 @@ class Resolver:
                 for vrb in sv.vrb_sub_sentence:
                     #sentence sn nominal groups reference resolution
                     if vrb.sn:
-                        vrb.sn = self._resolve_groups_references(vrb.sn, matcher, current_speaker, current_object)
+                        vrb.sn = self._resolve_groups_references(vrb.sn,
+                                                                vrb.vrb_main[0],
+                                                                matcher, 
+                                                                current_speaker, 
+                                                                current_object)
 
                     if vrb.sv:
                         vrb.sv = self.verbal_phrases_reference_resolution(vrb.sv, matcher,current_speaker, current_object)
