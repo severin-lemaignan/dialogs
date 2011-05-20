@@ -166,8 +166,12 @@ class Resolver:
                 
                 else:
                     # More than one value!
-                    # Add new nominal group
-                    raise DialogError("ALL quantifier on class with more than one instance not implemented yet!")
+                    if nominal_group._quantifier == "SOME":
+                        # Pick one randomly
+                        nominal_group.id = onto_id[0]
+                    else: # ALL
+                        # Add new nominal group
+                        raise DialogError("ALL quantifier on class with more than one instance not implemented yet!")
 
             nominal_group._resolved = True
             return nominal_group
