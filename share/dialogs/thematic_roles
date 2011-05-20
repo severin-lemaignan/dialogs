@@ -35,6 +35,11 @@ actsOnObject Artifact
 receivedBy Agent
 }
 
+clean {
+performedBy Agent
+actsOnObject Artifact
+}
+
 show {
 performedBy Agent
 actsOnObject Location 
