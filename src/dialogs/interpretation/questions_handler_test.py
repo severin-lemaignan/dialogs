@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import logging
-logger = logging.getLogger("dialog")
+logger = logging.getLogger("dialogs")
 
 import unittest
 

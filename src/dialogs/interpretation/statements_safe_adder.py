@@ -1,5 +1,5 @@
 import logging
-logger = logging.getLogger("dialog")
+logger = logging.getLogger("dialogs")
 
 import random
 from dialogs.helpers.helpers import colored_print

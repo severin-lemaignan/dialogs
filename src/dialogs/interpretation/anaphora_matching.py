@@ -2,17 +2,17 @@
 # -*- coding: utf-8 -*-
 
 """
- Created by Chouayakh Mahdi                                                       
- 06/08/2010                                                                       
+ Created by Chouayakh Mahdi
+ 06/08/2010
  The package contains functions perform the anaphora processing
- Functions:   
-    delete_redon_nominal_group : to delete the redundancy in the list of nominal groups                                                                     
-    delete_unuse_nominal_group : to delete the pronoun from the list of the nominal groups          
-    recover_nominal_group_list : to return the list of the nominal groups used by anaphora processing 
+ Functions:
+    delete_redon_nominal_group : to delete the redundancy in the list of nominal groups
+    delete_unuse_nominal_group : to delete the pronoun from the list of the nominal groups
+    recover_nominal_group_list : to return the list of the nominal groups used by anaphora processing
     first_replacement : to perform the first replacement (before the loop)
 """
 import logging
-logger = logging.getLogger("dialog")
+logger = logging.getLogger("dialogs")
 
 from dialogs.sentence import *
 from pyoro import OroServerError

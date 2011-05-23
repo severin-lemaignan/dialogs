@@ -1,5 +1,5 @@
 import logging
-logger = logging.getLogger("dialog")
+logger = logging.getLogger("dialogs")
 
 from dialogs.helpers.helpers import colored_print
 from dialogs.helpers.printers import level_marker

@@ -3,7 +3,7 @@
 
 import logging
 import time
-logger = logging.getLogger("dialog")
+logger = logging.getLogger("dialogs")
 
 import inspect
 import unittest
