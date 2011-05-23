@@ -4,20 +4,20 @@
 
 
 """
- Created by Chouayakh Mahdi                                                       
- 21/06/2010                                                                       
- The package contains functions that affect the analysis of nominal groups        
- We return all elements of a nominal group                                        
- Functions:   
-    is_an_adj : to know if a word is an adjective                                                                  
-    adjective_pos : to return the position of the noun in the sentence             
-    find_sn_pos : to return the nom_group in a given position with adjective_pos  
-    find_sn : to return the first nominal group found in the sentence  
-    find_the_plural : to find if there is a plural and add 'a'    
+ Created by Chouayakh Mahdi
+ 21/06/2010
+ The package contains functions that affect the analysis of nominal groups
+ We return all elements of a nominal group
+ Functions:
+    is_an_adj : to know if a word is an adjective
+    adjective_pos : to return the position of the noun in the sentence
+    find_sn_pos : to return the nom_group in a given position with adjective_pos
+    find_sn : to return the first nominal group found in the sentence
+    find_the_plural : to find if there is a plural and add 'a'
     find_plural : to add 'a' for plural
     refine_nom_gr : to refine the nominal group if there is a mistake             
     return_det : to recover the determinant of the nominal group                  
-    return_adj : to recover the adjectives of the nominal group        
+    return_adj : to recover the adjectives of the nominal group
     convert_adj_to_digit : to return the list of adjectives after change number to digit
     process_adj_quantifier : to return adjectives of the nominal group organized with quantifier
     return_noun : to recover the noun of the nominal group                        
@@ -41,32 +41,32 @@ det_list = ResourcePool().determinants
 
 
 def is_an_adj(word):
+    """Determines if a word is an adjective
+
+    :param string word: a word
+
+    :return: True if the word is recognized as an adjective, False else. 
     """
-    knows if a word is an adjective                                  
-    Input=word                Output=1 if it is an adjective and 0 if not                     
-    """
-    
-    #It is a noun verb pronoun or determinant so we have to return 0
-    if word in ResourcePool().special_nouns+ResourcePool().special_verbs+pronoun_list+det_list:
+
+    #It is a noun verb pronoun or determinant so we have to return False
+    if word in ResourcePool().special_nouns + ResourcePool().special_verbs + pronoun_list + det_list:
         return False
-    
+
     #For the regular adjectives
     for k in ResourcePool().adjective_rules:
         if word.endswith(k):
             return True
-    
+
     #For adjectives created from numbers
-    if word.endswith('th') and other_functions.number(word)==2:
+    if word.endswith('th') and other_functions.number(word) == 2:
         return True
-        
+
     #We use the irregular adjectives list to find it
     if word in adjective_list+ResourcePool().adjective_numbers+adj_quantifier:
         return True
-    
+
     return False
 
-    
-    
 def adjective_pos(phrase, word_pos):
     """
     returns the position of the end of the nominal group                
@@ -218,7 +218,7 @@ def find_the_plural(phrase, position):
         return -1
     
     #If it is adjective we continue
-    if is_an_adj(phrase[position])==1:
+    if is_an_adj(phrase[position]):
         if find_the_plural(phrase, position+1)!=-1:
             return position
     
@@ -296,9 +296,11 @@ def return_det (nom_gr):
 
 
 def return_adj (nom_gr):
-    """
-    returns adjectives of the nominal group                            
-    Input=nominal group                              Output=the adjective            
+    """Returns adjectives of the nominal group
+
+    :param Nominal_Group nom_gr: a nominal group
+
+    :return: a list of adjectives
     """
     
     #init
@@ -312,9 +314,9 @@ def return_adj (nom_gr):
     #We assumed that the noun represented by 1 element at the end
     if nom_gr[0] in det_list:
         while k < len(nom_gr):
-            if is_an_adj(nom_gr[k])==1:
-                adj_list=adj_list+[nom_gr[k]]
-            k=k+1
+            if is_an_adj(nom_gr[k]):
+                adj_list = adj_list + [nom_gr[k]]
+            k = k + 1
     return adj_list
 
 
