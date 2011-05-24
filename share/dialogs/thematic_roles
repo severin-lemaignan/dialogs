@@ -35,9 +35,15 @@ actsOnObject Artifact
 receivedBy Agent
 }
 
+uncover {
+performedby agent
+actsOnObject artifact
+}
+
+
 clean {
-performedBy Agent
-actsOnObject Artifact
+performedby agent
+actsOnObject artifact
 }
 
 show {
