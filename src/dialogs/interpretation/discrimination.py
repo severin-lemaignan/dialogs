@@ -238,13 +238,29 @@ class Discrimination():
             raise UnsufficientInputError({'status':'FAILURE', 'question':questions})
             #return "Give me knew information about the object"
             
-        elif len(objL) == 1:
-            return objL[0]
-        
-        elif len(objL) == 2 and self.oro.check('[' + objL[0] + ' owl:sameAs ' + objL[1] + ']'):
-            return objL[0]
-        
+      
         else:
+            # Check if the speaker sees only some of the object.
+            # If he sees none of them, discriminate on the whole set.
+            # Else, discriminate only on visible objects.
+            agent = description[0][0]
+            logger.debug("Checking which of these objects are visible for " + agent)
+            visible_objects = self.visible_subset(agent, objL)
+
+            if visible_objects:
+                objL = visible_objects
+                logger.debug(colored_print('Only ', "magenta") + 
+                            colored_print(str(objL), 'blue') +
+                            colored_print( " are visible by " + agent, "magenta"))
+            else:
+                logger.debug(colored_print('None are visible by ' + agent, "magenta"))
+
+            if len(objL) == 1:
+                return objL[0]
+
+            if len(objL) == 2 and self.oro.check('[' + objL[0] + ' owl:sameAs ' + objL[1] + ']'):
+                return objL[0]
+
             agent, descriptor = self.get_descriptor(description, ignoreFeatureL)
             object = self.get_type_description(description)
 
@@ -297,6 +313,14 @@ class Discrimination():
                             [], [] ,Verbal_Group.affirmative,[])])]
                 raise UnsufficientInputError({'status':'SUCCESS','question':questions})
                 #return "Give me more information about the object"
+
+    def visible_subset(self, agent, id_list):
+        """ Returns the list of visible objects for an agent from a list of objects.
+        """
+
+        visible_objects = self.oro.findForAgent(agent, "?o", ["?o isVisible true"])
+
+        return list(set(id_list) & set(visible_objects))
 
     # -- ADD_DESCRIPTOR -----------------------------------------------------------#
     # Includes descriptor in description list.
