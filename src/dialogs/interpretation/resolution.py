@@ -159,6 +159,7 @@ class Resolver:
                     uie.value['object'] = nominal_group
                     uie.value['sentence'] = self._current_sentence
                     uie.value['object_with_more_info'] = None
+                    uie.value['stop_interaction'] = True
                     raise uie
                 
                 elif len(onto_id) == 1:

@@ -95,16 +95,19 @@ class Dialog(Thread):
                 except UnsufficientInputError as uie:
                     self._logger.info(colored_print("Not enough informations! Going back to human:", 'magenta'))
                     self._last_output = uie.value
-                    
-                    #Waiting for more info to solve content
-                    self.waiting_for_more_info = True
-                    
+
                     #Output towards human
                     sys.stdout.write(self._verbalizer.verbalize(uie.value['question']) + "\n")
                     sys.stdout.flush()
                     self._logger.info(colored_print("- " +  \
                             self._verbalizer.verbalize(uie.value['question']), \
                             'blue') + "\n")
+
+                    #Waiting for more info to solve content?
+                    if 'stop_interaction' in uie.value.keys() and uie.value['stop_interaction'] == True:
+                        self.waiting_for_more_info = False
+                    else:
+                        self.waiting_for_more_info = True
                 
                 except UnidentifiedAnaphoraError as uae:
                     self._logger.info(colored_print("Not sure of the interpretation...  Asking for confirmation to human:", 'magenta'))
