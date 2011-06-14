@@ -18,15 +18,6 @@
 from dialog.resources_manager import ResourcePool
 import time
 
-
-"""
-Statement of lists
-"""
-day_list = ResourcePool().days_list
-month_list = ResourcePool().months_list
-
-
-
 def refine_val(x,y,time,value):
     """
     makes operation to refine time if it is not correct
@@ -47,27 +38,27 @@ def negative_day(time):
     """
     
     #init
-    i=len(month_list)-1
+    i=len(ResourcePool().months_list)-1
     
     while i >= 0: 
         #If there is negative value of day else we can break the loop
         if int(time['day'])<=0:
-            if month_list[i][0]==time['month']:
+            if ResourcePool().months_list[i][0]==time['month']:
                 
                 if i==0:
                     #If it is the first month we have to loop with the last one
-                    i=len(month_list)-1
+                    i=len(ResourcePool().months_list)-1
                     #We delete a year
                     time['year']=str(int(time['year'])-1)
                 else:
                     i=i-1
                 
-                if month_list[i][0]=='February' and int(time['year'])%4==0 and int(time['year'])%100!=0:
+                if ResourcePool().months_list[i][0]=='February' and int(time['year'])%4==0 and int(time['year'])%100!=0:
                     #If it is February and we have 29 days in it
                     time['day']=str(int(time['day'])+29)
                 else:
-                    time['day']=str(int(time['day'])+int(month_list[i][1]))
-                time['month']=month_list[i][0]
+                    time['day']=str(int(time['day'])+int(ResourcePool().months_list[i][1]))
+                time['month']=ResourcePool().months_list[i][0]
             
             else:
                 i=i-1
@@ -90,8 +81,8 @@ def refine_clock(time):
     time=refine_val('hour','day',time,24)
     
     #For month we don't have number but literal name => special operation 
-    while i < len(month_list):
-        if month_list[i][0]==time['month']:
+    while i < len(ResourcePool().months_list):
+        if ResourcePool().months_list[i][0]==time['month']:
             
             #If the month in February with 29 days
             if time['month']=='February' and int(time['year'])%4==0 and int(time['year'])%100!=0:
@@ -100,19 +91,19 @@ def refine_clock(time):
                     return negative_day(time)
                 else:
                     time['day']=str(int(time['day'])-29)
-                    time['month']=month_list[i+1][0]
+                    time['month']=ResourcePool().months_list[i+1][0]
             
             else:
-                if int(time['day'])<=int(month_list[i][1]):
+                if int(time['day'])<=int(ResourcePool().months_list[i][1]):
                     #It is OK we return time
                     return negative_day(time)
                 else:
-                    time['day']=str(int(time['day'])-int(month_list[i][1]))
+                    time['day']=str(int(time['day'])-int(ResourcePool().months_list[i][1]))
                     #If it is the last month, 
                     if i==11:
-                        time['month']=month_list[0][0]
+                        time['month']=ResourcePool().months_list[0][0]
                     else:
-                        time['month']=month_list[i+1][0]
+                        time['month']=ResourcePool().months_list[i+1][0]
                         
         #If it is the last month, we have to loop with the first one
         if i==11:
@@ -256,12 +247,12 @@ def timescale_i_cmpl(indirect_complement, action_time):
                 action_time['action_period']=day_period(action_time['action_period']['time_begin'], 3)      
         
         #If we have a day as a noun
-        for k in day_list:
+        for k in ResourcePool().days_list:
             if k==j.noun:
                 #We recovery the day
-                today=day_list[time.localtime()[6]]
+                today=ResourcePool().days_list[time.localtime()[6]]
                 #We calculate the day on digit
-                day=day_list.index(k)-day_list.index(today)
+                day=ResourcePool().days_list.index(k)-ResourcePool().days_list.index(today)
                 if day<=0:
                     day=day+7
                 
@@ -274,12 +265,12 @@ def timescale_i_cmpl(indirect_complement, action_time):
                 break
         
         #If we have a month as a noun
-        for k in month_list:
+        for k in ResourcePool().months_list:
             if k==j.noun:
                 #We recovery the day
-                month=month_list[time.localtime()[11]]
+                month=ResourcePool().months_list[time.localtime()[11]]
                 #We calculate the day on digit
-                mth=month_list.index(k)-month_list.index(month)
+                mth=ResourcePool().months_list.index(k)-ResourcePool().months_list.index(month)
                 if mth<=0:
                     mth=mth+12
                 

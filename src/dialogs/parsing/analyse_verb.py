@@ -18,15 +18,6 @@
 """
 from dialogs.resources_manager import ResourcePool
 
-
-"""
-Statement of lists
-"""
-adj_ed_list = ResourcePool().adjective_verb
-past_irreg_vrb = ResourcePool().irregular_verbs_past      
-
-
-
 def find_tense_statement (phrase):
     """
     returns the time of conjugation of the verb in a statement         
@@ -48,7 +39,7 @@ def find_tense_statement (phrase):
         if phrase[1].endswith('ed'):
             return 'present perfect'
         #For irregular forms
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if phrase[1]==i[2]:
                 return 'present perfect'
     
@@ -58,7 +49,7 @@ def find_tense_statement (phrase):
         if phrase[1].endswith('ed'):
             return 'past perfect'
         #For irregular forms
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if phrase[1]==i[2]:
                 return 'past perfect'
     
@@ -70,7 +61,7 @@ def find_tense_statement (phrase):
         #Passive form in the present
         elif find_tense_statement(['have']+phrase[1:])=='present perfect':
             #If there is an adjective and not a verb
-            if phrase[1] in adj_ed_list:
+            if phrase[1] in ResourcePool().adjective_verb:
                 return  'present simple'
             return 'present passive'
     
@@ -81,7 +72,7 @@ def find_tense_statement (phrase):
             return 'past progressive'
         elif find_tense_statement(['have']+phrase[1:])=='present perfect':
             #If there is an adjective and not a verb
-            if phrase[1] in adj_ed_list:
+            if phrase[1] in ResourcePool().adjective_verb:
                 return  'past simple'
             return 'past passive'
         
@@ -101,7 +92,7 @@ def find_tense_statement (phrase):
             return 'past conditional'
 
     #For the irregular forms
-    for i in past_irreg_vrb:
+    for i in ResourcePool().irregular_verbs_past:
         if phrase[0]==i[1]:
             #Default case : if past form = present form we choose present simple
             if i[1]==i[0]:
@@ -173,10 +164,10 @@ def find_tense_question (phrase, aux):
             return 'present progressive'
         elif phrase[0].endswith('ed'):
             #If there is an adjective and not a verb
-            if phrase[1] in adj_ed_list:
+            if phrase[1] in ResourcePool().adjective_verb:
                 return  'present simple'
             return 'present passive'
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if phrase[0]==i[2]:
                 return 'present passive'
         else:
@@ -188,10 +179,10 @@ def find_tense_question (phrase, aux):
             return 'past progressive'
         elif phrase[0].endswith('ed'):
             #If there is an adjective and not a verb
-            if phrase[1] in adj_ed_list:
+            if phrase[1] in ResourcePool().adjective_verb:
                 return  'past simple'
             return 'past passive'
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if phrase[0]==i[2]:
                 return 'past passive'
             else:
@@ -201,7 +192,7 @@ def find_tense_question (phrase, aux):
     elif aux=='have' or aux=='has':
         if phrase[0].endswith('ed'):
             return 'present perfect'
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if phrase[0]==i[2]:
                 return 'present perfect'
 
@@ -209,7 +200,7 @@ def find_tense_question (phrase, aux):
     elif aux=='had':
         if phrase[0].endswith('ed'):
             return 'past perfect'
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if phrase[0]==i[2]:
                 return 'past perfect'
 
@@ -281,7 +272,7 @@ def infinitive (verb, tense):
 
     #processing for the past simple, present perfect, past perfect, present passive and past passive
     elif tense=='present perfect' or tense=='past perfect' or tense=='present passive' or tense=='past passive' or tense=='passive conditional':
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if i[2]==verb[0]:
                 return [i[0]]
         if verb[0].endswith('ed'):
@@ -289,7 +280,7 @@ def infinitive (verb, tense):
 
     #processing for the past simple, present perfect, past perfect, present passive and past passive
     elif tense=='past simple':
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if i[1]==verb[0]:
                 return [i[0]]
         if verb[0].endswith('ed'):

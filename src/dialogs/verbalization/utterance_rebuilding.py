@@ -26,17 +26,8 @@ import other_functions
 import sentence_rebuilding
 from dialogs.sentence import *
 
-
-
-"""
-Statement of lists
-"""
-det_list = ResourcePool().determinants
-pronoun_list = ResourcePool().pronouns
 wques_rules=[('date',['when']),('place',['where']),('origin',['where']), ('reason',['why']),('people',['who'])]
 insertion_tuples=[("'m", 'am'),("'ve", 'have'),("'re", 'are'),("'ll", 'will'),("'d", 'would'),("'s", 'is')]
-
-
 
 def dispatching(analysis):
     """
@@ -155,11 +146,11 @@ def find_sn_pos (phrase, begin_pos):
     end_pos = 1
     
     #If it is a pronoun
-    if phrase[begin_pos] in pronoun_list:
+    if phrase[begin_pos] in ResourcePool().pronouns:
         return [phrase[begin_pos]]
 
     #If there is a nominal group with determinant
-    if phrase[begin_pos] in det_list:
+    if phrase[begin_pos] in ResourcePool().determinants:
         end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
         return phrase[begin_pos : end_pos+begin_pos]
     
@@ -268,7 +259,7 @@ def possesion_form(sentence):
     while begin_pos < len(sentence):
         
         if sentence[begin_pos] == 'of' and sentence[begin_pos-1]=='kind':
-            if sentence[begin_pos+1] in det_list:
+            if sentence[begin_pos+1] in ResourcePool().determinants:
                 sentence=sentence[:begin_pos+1]+sentence[begin_pos+2:]
                 begin_pos=begin_pos+1
         
@@ -359,7 +350,7 @@ def replace_tuple(sentence):
             if sentence[i]==j[1]:
                 
                 #To perform this process we need to have a pronoun
-                if i!=0 and sentence[i-1] in pronoun_list:
+                if i!=0 and sentence[i-1] in ResourcePool().pronouns:
                     sentence[i-1]=sentence[i-1]+j[0]
                     sentence=sentence[:i]+sentence[i+1:]
         
@@ -472,7 +463,7 @@ def a_which_process(sentence):
     
     if sentence[0]=='which':
         #If the w_question is with 'which', we can have determinant that must be deleted
-        if sentence[1] in det_list:
+        if sentence[1] in ResourcePool().determinants:
             return [sentence[0]]+sentence[2:]
     return sentence
 

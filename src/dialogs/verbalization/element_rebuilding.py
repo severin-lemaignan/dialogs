@@ -18,17 +18,6 @@ from dialogs.sentence import *
 import sentence_rebuilding
 import other_functions
 
-
-"""
-Statement of lists
-"""
-modal_list = ResourcePool().modal 
-vrb_to = ResourcePool().verb_need_to
-past_irreg_vrb = ResourcePool().irregular_verbs_past
-present_irreg_vrb = ResourcePool().irregular_verbs_present
-
-
-
 def nom_struc_rebuilding(nom_struc):
     """
     This function recovers nominal structure                                         
@@ -183,7 +172,7 @@ def conjugate_vrb(tense, verb, sn, type, aim):
                 return verb
             else:
                 #Singular nouns
-                for i in present_irreg_vrb:
+                for i in ResourcePool().irregular_verbs_present:
                     if i[0]==verb[0]:
                         return [i[1]]+verb[1:]
                 return [verb[0]+'s']+verb[1:]
@@ -202,31 +191,31 @@ def conjugate_vrb(tense, verb, sn, type, aim):
                 return ['was']+verb[1:]
 
         else:
-            for i in past_irreg_vrb:
+            for i in ResourcePool().irregular_verbs_past:
                 if i[0]==verb[0]:
                     return [i[1]]+verb[1:]
             return [verb[0]+'ed']+verb[1:]
 
     #For progressive forms
     elif tense=='present progressive':
-        for m in present_irreg_vrb:
+        for m in ResourcePool().irregular_verbs_present:
             if m[0]==verb[0]:
                 return conjugate_vrb('present simple', ['be'], sn, type, aim)+[m[2]]+verb[1:]
         return conjugate_vrb('present simple', ['be'], sn, type, aim)+[verb[0]+'ing']+verb[1:]
     elif tense=='past progressive':
-        for m in present_irreg_vrb:
+        for m in ResourcePool().irregular_verbs_present:
             if m[0]==verb[0]:
                 return conjugate_vrb('past simple', ['be'], sn, type, aim)+[m[2]]+verb[1:]
         return conjugate_vrb('past simple', ['be'], sn, type, aim)+[verb[0]+'ing']+verb[1:]
 
     #For perfect forms
     elif tense=='present perfect':
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if verb[0]==i[0]:
                 return conjugate_vrb('present simple', ['have'], sn, type, aim)+[i[2]]+verb[1:]
         return conjugate_vrb('present simple', ['have'], sn, type, aim)+[verb[0]+'ed']+verb[1:]
     elif tense=='present perfect':
-        for i in past_irreg_vrb:
+        for i in ResourcePool().irregular_verbs_past:
             if verb[0]==i[0]:
                 return ['had']+[i[2]]+verb[1:]
         return ['had']+[verb[0]+'ed']+verb[1:]
@@ -266,7 +255,7 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
     vrb=other_functions.list_rebuilding(verb[0])
 
     #If there is modal => no processing
-    for i in modal_list:
+    for i in ResourcePool().modal:
         if i==vrb[0]:
             vrb_condjugated=vrb
     
@@ -290,7 +279,7 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
             return [vrb_condjugated[0]]+['not']+adv+vrb_condjugated[1:]
         if tense!='present simple' and tense!='past simple':
             return [vrb_condjugated[0]]+['not']+adv+vrb_condjugated[1:]
-        for i in modal_list:
+        for i in ResourcePool().modal:
             if i==vrb[0]:
                 return [vrb_condjugated[0]]+['not']+adv+vrb_condjugated[1:]
 
@@ -319,7 +308,7 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
         return [vrb_condjugated[0]]+adverb+vrb_condjugated[1:]
 
     #Modal also
-    for i in modal_list:
+    for i in ResourcePool().modal:
         if i==vrb[0]:
             if state==Verbal_Group.negative:
                 if tense=='present passive' or tense=='passive conditional':
@@ -372,7 +361,7 @@ def scd_vrb_rebuilding(sec_vrb, phrase, flg):
             x=x+1
     
     flag=0
-    for j in vrb_to:
+    for j in ResourcePool().verb_need_to:
         if sec_vrb.vrb_main[0]==j:
             flag=1      
     
@@ -415,7 +404,7 @@ def end_statement_rebuilding(sentence, sv ,sn, type, aim):
     phrase=phrase+sv[0].advrb
     
     flag=0
-    for j in vrb_to:
+    for j in ResourcePool().verb_need_to:
         if sv[0].vrb_main==[j]:
             flag=1
     
@@ -454,7 +443,7 @@ def end_question_rebuilding(sentence, sv ,sn, aim):
             x=x+1
         
         flag=0
-        for j in vrb_to:
+        for j in ResourcePool().verb_need_to:
             if sv[0].vrb_main==[j]:
                 flag=1
                 

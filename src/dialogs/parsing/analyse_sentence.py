@@ -32,17 +32,6 @@ import analyse_verbal_structure
 import other_functions
 import preprocessing
 
-
-"""
-Statement of lists
-"""
-frt_wd = ResourcePool().sentence_starts
-det_dem_list = ResourcePool().demonstrative_det
-modal_list = ResourcePool().modal 
-proposal_list = ResourcePool().proposals
-
-
-
 def dispatching(sentence):
     """
     distributes the sentence according to:                             
@@ -57,7 +46,7 @@ def dispatching(sentence):
             return [Sentence(END, '', [], [])]
         
         #When others
-        for x in frt_wd:
+        for x in ResourcePool().sentence_starts:
             #If we find a knowing case
             if sentence[0]==x[0]:
                 
@@ -201,7 +190,7 @@ def exclama_sentence(sentence):
     Input=the sentence                                   Output=class Sentence   
     """
 
-    for i in frt_wd:
+    for i in ResourcePool().sentence_starts:
         if i[0] == sentence[0]:
             if i[1]=='0':
                 analysis=Sentence(INTERJECTION, '', [], [])
@@ -304,7 +293,7 @@ def w_quest_quant(type, request, sentence):
     Output=class Sentence                                                            
     """
 
-    for j in frt_wd :
+    for j in ResourcePool().sentence_starts :
         if sentence[2]==j[0]:
             if j[1]=='3':
                 #This case is the same with y_n_question
@@ -359,7 +348,7 @@ def w_quest_which(type, request, sentence):
     else:
         #After the first gr if there is no nominal group
         if analyse_nominal_group.find_sn_pos(sentence, len(gr))==[]:
-            for i in frt_wd:
+            for i in ResourcePool().sentence_starts:
                 #If just after we have an a auxiliary
                 if sentence[len(gr)]==i[0] and i[1]=='3':
                     #With subject => it is a yes or no question form
@@ -486,7 +475,7 @@ def y_n_ques(type, request, sentence):
     aux=sentence[0]
     
     #We have to know if there is a modal
-    if aux in modal_list:
+    if aux in ResourcePool().modal:
         modal=aux
 
     #If we have a negative form
@@ -511,7 +500,7 @@ def y_n_ques(type, request, sentence):
     sentence=sentence[1:]
     
     #We have to separate the case using these, this or there
-    if sentence[0] in det_dem_list and analyse_verb.infinitive([aux], 'present simple')==['be']:
+    if sentence[0] in ResourcePool().demonstrative_det and analyse_verb.infinitive([aux], 'present simple')==['be']:
         #If we have a verb or an adverb just after (if not, we have a noun)
         if sentence[0].endswith('ed') or sentence[0].endswith('ing') or sentence[0].endswith('ly') or sentence[0] in ResourcePool().adverbs:
             #We recover this information and remove it
@@ -593,10 +582,10 @@ def y_n_ques(type, request, sentence):
     sentence=analyse_verbal_structure.state_adjective(sentence, vg)
     
     #We have to correct the mistake of the subject
-    for p in det_dem_list:
+    for p in ResourcePool().demonstrative_det:
         if analysis.sn!=[] and analysis.sn[0].det==[p] and analysis.sn[0].noun==[]:
             if sentence!=[0] and sentence[0]=='.' and sentence[0]=='?' and sentence[0]=='!':
-                if sentence[0] in proposal_list:
+                if sentence[0] in ResourcePool().proposals:
                     pass
                 else:
                     analysis.sn[0].noun=[sentence[0]]
@@ -656,7 +645,7 @@ def other_sentence(type, request, sentence):
 
         
         #We have to separate the case using these, this or there
-        if sentence[0] in det_dem_list and analyse_verb.infinitive([sentence[1]], 'present simple')==['be']:
+        if sentence[0] in ResourcePool().demonstrative_det and analyse_verb.infinitive([sentence[1]], 'present simple')==['be']:
             #We recover this information and remove it
             analysis.sn=[Nominal_Group([sentence[0]],[],[],[],[])]
             if sentence[0]=='there' and sentence[1]=='are':
@@ -673,7 +662,7 @@ def other_sentence(type, request, sentence):
             return analysis
         
         #We have to know if there is a modal
-        if sentence[0] in modal_list:
+        if sentence[0] in ResourcePool().modal:
             modal=sentence[0]
             if modal=='can' or modal=='must' or modal=='shall' or modal=='may':
                 sentence=sentence[1:]
@@ -712,7 +701,7 @@ def other_sentence(type, request, sentence):
             sentence=analyse_verbal_structure.delete_unusable_word(sentence)    
             sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
             vg.vrb_tense = analyse_verb.find_tense_statement(sentence)
-        
+
         verb=analyse_verb.find_verb_statement(sentence, vg.vrb_tense)
         verb_main=analyse_verb.return_verb(sentence, verb, vg.vrb_tense)
         vg.vrb_main=[other_functions.convert_to_string(verb_main)]
@@ -730,7 +719,7 @@ def other_sentence(type, request, sentence):
         analysis.data_type=IMPERATIVE
         vg.vrb_tense='present simple'
         
-        if sentence[0] in proposal_list:
+        if sentence[0] in ResourcePool().proposals:
             sentence=['.']+sentence
                 
         #Negative form

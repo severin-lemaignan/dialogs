@@ -37,26 +37,13 @@ import analyse_verb
 import analyse_sentence
 import preprocessing
 
-
-"""
-Statement of lists
-"""
-complement_pronoun = ResourcePool().complement_pronouns
-direct_trans_verb_list = ResourcePool().direct_transitive
-inderect_trans_verb_list = ResourcePool().indirect_transitive
-proposal_list = ResourcePool().proposals
-rel_list = ResourcePool().relatives
-sub_list = ResourcePool().subsentences
-
-
-
 def is_cmpl_pr(word):
     """
     This function return 1 if it is pronoun else 0                         
     Input=word                 Output=1 or 0                 
     """
     
-    if word in complement_pronoun:
+    if word in ResourcePool().complement_pronouns:
         return 1
     return 0
 
@@ -123,7 +110,7 @@ def find_adv(phrase,vg):
             phrase=phrase[:i]+phrase[i+1:]
             
         if phrase[i] in ResourcePool().adverbs:
-            if i>0 and phrase[i-1] in proposal_list:
+            if i>0 and phrase[i-1] in ResourcePool().proposals:
                 vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([phrase[i-1]],[Nominal_Group([],[phrase[i]],[],[],[])])]
                 phrase=phrase[:i-1]+phrase[i+1:]
             else:
@@ -145,7 +132,7 @@ def check_proposal(phrase, object):
         return []
 
     #if there is a proposal which recovery an object
-    if object!=phrase[0:len(object)] and phrase[phrase.index(object[0])-1] in proposal_list:
+    if object!=phrase[0:len(object)] and phrase[phrase.index(object[0])-1] in ResourcePool().proposals:
         return [phrase[phrase.index(object[0])-1]]
 
     #Default case
@@ -191,10 +178,10 @@ def recover_obj_iobj(phrase, vg):
                 conjunction='AND'
                 
                 #If there is a relative
-                begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,rel_list)
+                begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,ResourcePool().relatives)
                 
                 if begin_pos_rel!=-1:
-                    end_pos_rel=other_functions.recover_end_pos_sub(phrase, rel_list)
+                    end_pos_rel=other_functions.recover_end_pos_sub(phrase, ResourcePool().relatives)
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
                 
@@ -243,10 +230,10 @@ def recover_obj_iobj(phrase, vg):
                 conjunction='AND'
                 
                 #If there is a relative
-                begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,rel_list)
+                begin_pos_rel=analyse_nominal_group.find_relative(object, phrase, pos_object,ResourcePool().relatives)
                 
                 if begin_pos_rel!=-1:
-                    end_pos_rel=other_functions.recover_end_pos_sub(phrase, rel_list)
+                    end_pos_rel=other_functions.recover_end_pos_sub(phrase, ResourcePool().relatives)
                     #We remove the relative part of the phrase
                     phrase=phrase[:begin_pos_rel]+phrase[end_pos_rel:]
                 
@@ -330,7 +317,7 @@ def find_scd_vrb(phrase):
             #It should not be followed by a noun or by an adverb
             if analyse_nominal_group.find_sn_pos(phrase, phrase.index(i)+1)==[]:
                 #If there is a proposal after 'to'
-                if phrase[phrase.index(i)+1] in proposal_list:
+                if phrase[phrase.index(i)+1] in ResourcePool().proposals:
                     return []
                 return [phrase[phrase.index(i)+1]]
     return []
@@ -397,13 +384,13 @@ def process_subsentence(phrase,vg):
         return phrase
     
     #We look down the list to see if there is a subsentence
-    for w in sub_list:
+    for w in ResourcePool().subsentences:
         if w in phrase:
                 
             begin_pos=phrase.index(w)
                 
             #We include the relative's proposal if there are relatives in the subsentence
-            end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], sub_list+rel_list)
+            end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], ResourcePool().subsentences+ResourcePool().relatives)
                 
             #If it is 'where', it can be relative if before we have nominal group
             if w=='where' or w=='which':
@@ -443,7 +430,7 @@ def process_subsentence(phrase,vg):
                     #If 'but' is between 2 nominal group and not before subsentence
                     if w=='but':
                         #If the main verb is not a verb but a part of verbal structure => we have nominal groups
-                        for k in ['.','?','!',''] + proposal_list:
+                        for k in ['.','?','!',''] + ResourcePool().proposals:
                             if not vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv \
                                 or \
                                 vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].sv[0].vrb_main[0]==k:
@@ -480,7 +467,7 @@ def process_conjunctive_sub(phrase,vg):
     if begin_pos!=-1:
         #We include the relative's and subsentence's proposal if there are relatives or subsentences in this subsentence
         phrase = [phrase[0]]+preprocessing.remerge_sentences(phrase[1:])
-        end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], ['that']+sub_list+rel_list)
+        end_pos= other_functions.recover_end_pos_sub(phrase[begin_pos:], ['that']+ResourcePool().subsentences+ResourcePool().relatives)
         
         #We have to remove the proposal
         subsentence= phrase[begin_pos+1:end_pos]
@@ -505,7 +492,7 @@ def correct_i_compl(phrase,verb):
     """
     
     #If we have a direct transitive verb
-    if verb in direct_trans_verb_list:
+    if verb in ResourcePool().direct_transitive:
             
         #init
         x=0
@@ -538,7 +525,7 @@ def DOC_to_IOC(vg):
     Input=sentence and verbal class         Output=sentence and verbal class         
     """
     
-    for x in inderect_trans_verb_list:
+    for x in ResourcePool().indirect_transitive:
         #The case of the verb only and his modal form
         if vg.vrb_main!=[] and (vg.vrb_main[0]==x or vg.vrb_main[0].endswith('+'+x)):
             #In this case we have just one direct complement
@@ -597,7 +584,7 @@ def create_nom_gr(sentence,aim):
         return sentence[1:]
     
     #If we have a proposal
-    if sentence[0] in proposal_list:
+    if sentence[0] in ResourcePool().proposals:
         if sentence[1]!='.' and sentence[1]!='?' and sentence[1]!='!' and sentence[1]!=';':
             #We add a determinant
             sentence = [sentence[0]]+['a']+sentence[1:]
@@ -670,7 +657,7 @@ def refine_subsentence(vg):
             #We add the relative and the nominal group into the sentence
             vg.i_cmpl=vg.i_cmpl+[Indirect_Complement(['in'],[gn])]
             
-            for l in inderect_trans_verb_list:
+            for l in ResourcePool().indirect_transitive:
                 if l==vg.vrb_main[0]:
                     vg.i_cmpl[len(vg.i_cmpl)-1].prep=[]
                     break
@@ -711,9 +698,9 @@ def process_compare(sentence,vg):
                 sentence=analyse_nominal_group.take_off_nom_gr(sentence, object, i+1)
                 conjunction='AND'
                 #If there is a relative
-                begin_pos_rel=analyse_nominal_group.find_relative(object, sentence, i+1,rel_list)
+                begin_pos_rel=analyse_nominal_group.find_relative(object, sentence, i+1,ResourcePool().relatives)
                 if begin_pos_rel!=-1:
-                    end_pos_rel=other_functions.recover_end_pos_sub(sentence, rel_list)
+                    end_pos_rel=other_functions.recover_end_pos_sub(sentence, ResourcePool().relatives)
                     #We remove the relative part of the sentence
                     sentence=sentence[:begin_pos_rel]+sentence[end_pos_rel:]
                 if len(sentence)!=i+1 and (sentence[i+1]=='and' or sentence[i+1]=='or' or sentence[i+1]==':but'):
@@ -762,7 +749,7 @@ def can_be_imperative(sentence):
     
     if sentence==[]:
         return False
-    if sentence[0] in ResourcePool().adverbs + proposal_list:
+    if sentence[0] in ResourcePool().adverbs + ResourcePool().proposals:
         return False
     if sentence[0]=='.' or sentence[0]=='?' or sentence[0]=='!':
         return False

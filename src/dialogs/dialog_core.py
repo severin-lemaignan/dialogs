@@ -210,6 +210,7 @@ class Dialog(Thread):
             self._logger.debug(s)
 
         self._logger.info(colored_print("\n-------[       PARSING       ]-------\n", 'green'))
+
         parsed_sentences = self._parser.parse(preprocessed_sentences, None)
 
         for s in parsed_sentences:

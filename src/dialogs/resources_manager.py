@@ -10,11 +10,6 @@ from pyoro import Oro, OroServerError
 
 from dialog_exceptions import UnknownVerb
 
-#TODO: These values currently override the ones defined in dialogs.py.
-DATA_DIR = os.path.abspath(__file__).split('lib')[0].split('src')[0] + '/share/dialogs/'
-ORO_HOST = 'localhost'
-ORO_PORT = 6969
-
 def singleton(cls):
     instances = {}
     def getinstance():
@@ -195,19 +190,13 @@ class ResourcePool:
         list_list_word=list_list_word+[our_list]
         return list_list_word
 
-    def __init__(self, data_path = DATA_DIR, oro_host = ORO_HOST, oro_port = ORO_PORT):
-        
+    def __init__(self):
+        """ Empty constructor for the singleton decorator.
+
+        Real initialization must be manually triggered by calling ResourcePool.init().
+        """
         self.ontology_server = None
-        
-        try:
-            if oro_host:
-                self.ontology_server = Oro(oro_host, oro_port)
-            else:
-                logger.warning("Starting without ontology server. Resolution won't work")
-        except OroServerError:
-            logger.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
-            ". Continuing without the ontology server. Amongst others, resolution won't work.")
-        
+
         self.adjectives = {}
         self.irregular_verbs_past = []
         self.irregular_verbs_present = []
@@ -247,7 +236,7 @@ class ResourcePool:
         self.replace_tuples = []
         self.adjective_numbers_digit = []
         self.days_list = []
-        self.months_list = [] 
+        self.months_list = []
         self.time_adverbs = []
         self.unusable_words = []
         self.time_proposals = []
@@ -258,18 +247,29 @@ class ResourcePool:
 
         """list of tokens that can start a sentence"""
         self.sentence_starts = []
-        
+
         """
         list of verbs that express a goal - ie, that would translate to a
         [S desires O] statement.
         """
         self.goal_verbs = []
-        
+
         """
         dictionnary of all verbs for which thematic roles are known.
         """
         self.thematic_roles = ThematicRolesDict()
-        
+
+    def init(self, data_path, oro_host, oro_port):
+
+        try:
+            if oro_host:
+                self.ontology_server = Oro(oro_host, oro_port)
+            else:
+                logger.warning("Starting without ontology server. Resolution won't work")
+        except OroServerError:
+            logger.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
+            ". Continuing without the ontology server. Amongst others, resolution won't work.")
+
         for line in open (os.path.join(data_path, "adjectives")):
             if line.startswith("#") or not line.strip():
                 continue
@@ -279,11 +279,9 @@ class ResourcePool:
                 adj = line.split()[0]
                 cat = "Feature"
             self.adjectives[adj] = cat
-        
-        
-        
-        verbs = [list(line.split()) 
-                                for line 
+
+        verbs = [list(line.split())
+                                for line
                                 in open (os.path.join(data_path, "verbs"))]
         verbs = self.split_list(verbs)
         self.irregular_verbs_past=verbs[0]
@@ -297,18 +295,17 @@ class ResourcePool:
         self.state=[k[0] for k in verbs[8]]
         self.verb_need_to=[k[0] for k in verbs[9]]
         self.special_verbs=[k[0] for k in verbs[12]]
-        
+
         # Action verbs such as 'see', 'hear' with no active behaviour
         self.action_verb_with_passive_behaviour = dict([(k[0],k[1]) for k in verbs[10]])
         self.goal_verbs = [k[0] for k in verbs[11]]
-        
-        self.sentence_starts = [tuple(line.split()) 
-                                for line 
-                                in open (os.path.join(data_path, "sentence_starts"))]       
-        
-        
-        nouns = [list(line.split()) 
-                    for line 
+
+        self.sentence_starts = [tuple(line.split())
+                                for line
+                                in open (os.path.join(data_path, "sentence_starts"))]
+
+        nouns = [list(line.split())
+                    for line
                     in open (os.path.join(data_path, "nouns"))]
         nouns = self.split_list(nouns)
         self.special_nouns=[k[0] for k in nouns[0]]

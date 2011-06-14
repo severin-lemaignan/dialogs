@@ -19,14 +19,6 @@
 """
 from dialogs.resources_manager import ResourcePool
 
-"""
-Statement of lists
-"""
-number_list = ResourcePool().numbers
-noun_list = ResourcePool().special_nouns
-
-
-
 def find_cap_lettre(word):
     """
     Function return 1 if the word starts with upper case letter                       
@@ -94,7 +86,7 @@ def number(word):
     Input=word          Output=flag(0 if no number or 1 if number or 2 adjective-number)        
     """
     
-    for n in number_list:
+    for n in ResourcePool().numbers:
         if word.startswith(n[1]):
             return 1
         
@@ -103,7 +95,7 @@ def number(word):
             if word.endswith('th'):
                 return 2
             else:
-                if word in noun_list:
+                if word in ResourcePool().special_nouns:
                     return 0
                 return 1
     return 0
@@ -126,7 +118,7 @@ def word_to_digit(word, number):
         else:
             word=word[:len(word)-2]
     
-    for l in number_list:
+    for l in ResourcePool().numbers:
         if word.startswith(l[0]):
             if word.endswith('teen'):
                 number=number+int(l[1])+10
@@ -154,7 +146,7 @@ def convert_to_digit(det):
     #init
     num=k=0
     
-    for n in number_list:
+    for n in ResourcePool().numbers:
         if det.startswith(n[1]):
             return det
         

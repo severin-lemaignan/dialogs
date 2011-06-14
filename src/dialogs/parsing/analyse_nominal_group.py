@@ -29,17 +29,6 @@
 from dialogs.resources_manager import ResourcePool
 import other_functions
 
-"""
-Statement of lists
-"""
-adj_quantifier = ResourcePool().adj_quantifiers
-adjective_list = ResourcePool().adjectives.keys()
-pronoun_list = ResourcePool().pronouns
-proposal_list = ResourcePool().proposals
-det_list = ResourcePool().determinants
-
-
-
 def is_an_adj(word):
     """Determines if a word is an adjective
 
@@ -49,7 +38,7 @@ def is_an_adj(word):
     """
 
     #It is a noun verb pronoun or determinant so we have to return False
-    if word in ResourcePool().special_nouns + ResourcePool().special_verbs + pronoun_list + det_list:
+    if word in ResourcePool().special_nouns + ResourcePool().special_verbs + ResourcePool().pronouns + ResourcePool().determinants:
         return False
 
     #For the regular adjectives
@@ -62,7 +51,7 @@ def is_an_adj(word):
         return True
 
     #We use the irregular adjectives list to find it
-    if word in adjective_list+ResourcePool().adjective_numbers+adj_quantifier:
+    if word in ResourcePool().adjectives.keys()+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
         return True
 
     return False
@@ -97,7 +86,7 @@ def adjective_pos(phrase, word_pos):
         return 1+adjective_pos(phrase, word_pos+1)
     
     #We use the irregular adjectives list to find it
-    if phrase[word_pos] in adjective_list+ResourcePool().adjective_numbers+adj_quantifier:
+    if phrase[word_pos] in ResourcePool().adjectives.keys()+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
         return 1+ adjective_pos(phrase, word_pos+1)
 
     #Default case
@@ -119,11 +108,11 @@ def find_sn_pos (phrase, begin_pos):
     end_pos = 1
     
     #If it is a pronoun
-    if phrase[begin_pos] in pronoun_list:
+    if phrase[begin_pos] in ResourcePool().pronouns:
         return [phrase[begin_pos]]
 
     #If there is a nominal group with determinant
-    if phrase[begin_pos] in det_list:
+    if phrase[begin_pos] in ResourcePool().determinants:
         end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
         return phrase[begin_pos : end_pos+begin_pos]
     
@@ -164,11 +153,11 @@ def find_sn (phrase):
 
     for x in phrase:
         #If there is a pronoun
-        if x in pronoun_list:
+        if x in ResourcePool().pronouns:
             return [phrase[phrase.index(x)]]
 
         #If there is a nominal group with determinant
-        if x in det_list:
+        if x in ResourcePool().determinants:
             nb_position= nb_position + adjective_pos(phrase, phrase.index(x)+1)
             return phrase[phrase.index(x) : phrase.index(x)+nb_position]
         
@@ -211,7 +200,7 @@ def find_the_plural(phrase, position):
         return -1
     
     #If it is proposal we continue
-    if phrase[position] in proposal_list:
+    if phrase[position] in ResourcePool().proposals:
         return find_the_plural(phrase, position+1)
     
     if phrase[position] in ResourcePool().nouns_end_s:
@@ -262,7 +251,7 @@ def refine_nom_gr(nom_gr):
         return nom_gr[:len(nom_gr)-1]
     
     #Case of after we have a indirect complement
-    if nom_gr[len(nom_gr)-1] in proposal_list:
+    if nom_gr[len(nom_gr)-1] in ResourcePool().proposals:
         return nom_gr[:len(nom_gr)-1]
     
     #Case of after we have an adverb
@@ -283,7 +272,7 @@ def return_det (nom_gr):
         return []
     
     #We return the first element of the list
-    if nom_gr[0] in det_list:
+    if nom_gr[0] in ResourcePool().determinants:
         return [nom_gr[0]]
     
     #If there is a number
@@ -312,7 +301,7 @@ def return_adj (nom_gr):
         return []
 
     #We assumed that the noun represented by 1 element at the end
-    if nom_gr[0] in det_list:
+    if nom_gr[0] in ResourcePool().determinants:
         while k < len(nom_gr):
             if is_an_adj(nom_gr[k]):
                 adj_list = adj_list + [nom_gr[k]]
@@ -350,7 +339,7 @@ def process_adj_quantifier(adj_list):
         adjective_list=[[adj_list[z],[]]]+adjective_list
     else:
         while z >= 0:
-            if adj_list[z] in adj_quantifier:
+            if adj_list[z] in ResourcePool().adj_quantifiers:
                 #We can't have quantifier if there is no adjective
                 adjective_list[0][1]=[adj_list[z]]+adjective_list[0][1]
             else:
@@ -459,12 +448,12 @@ def complete_relative(phrase, sbj):
     if find_sn_pos(phrase, 0)!=[]:
         
         while i < len(phrase):
-            if phrase[i] in proposal_list and find_sn_pos(phrase, i+1)==[]:
+            if phrase[i] in ResourcePool().proposals and find_sn_pos(phrase, i+1)==[]:
                 #It is an indirect complement
                 phrase=phrase[:i+1]+sbj+phrase[i+1:]
                 return phrase
             
-            elif phrase[i] in proposal_list:
+            elif phrase[i] in ResourcePool().proposals:
                 #We don't have an indirect object
                 i=i+len(find_sn_pos(phrase, i+1))
             

@@ -52,10 +52,10 @@ py_logger.setLevel(logging.CRITICAL)
 
 
 #hack that tries to find out the current prefix and then the data directory
-DATA_DIR = os.path.abspath(__file__).split('lib')[0].split('src')[0] + '/share/dialogs/'
+DATA_DIR = os.path.abspath(__file__).split('bin')[0].split('src')[0] + '/share/dialogs/'
 
 #default for ORO_SERVER
-ORO_HOST = 'test'
+ORO_HOST = 'localhost'
 ORO_PORT = 6969
 
 #By default, don't start in demo mode
@@ -130,10 +130,14 @@ from dialogs.dialog_core import Dialog
 logger.info("**** DIALOGS module ****")
 logger.info("v." + DIALOGS_VERSION + "\n")
 
+# Do all resource management: loading word dictionaries, connecting to
+# the ontology server...
+ResourcePool().init(DATA_DIR, ORO_HOST, ORO_PORT)
+
 if speaker and ResourcePool().ontology_server:
     ResourcePool().ontology_server.add([speaker + " rdf:type Agent"])
     logger.info(speaker + " added to the ontology")
-    
+
 dialog = Dialog(speaker, demo = demo)
 
 dialog.start()
