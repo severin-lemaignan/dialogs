@@ -16,17 +16,17 @@ def usage():
 
 Usage:
 dialog [OPTIONS] [speaker]
-  -h, --help			Displays this message and exits
-  -v, --version			Returns Dialogs version
-  -t, --test			Runs unit-tests
-  -d, --debug			Sets verbosity to debug
-  -s, --silent			The module won't output anything
-  -p, --process=		Processes the given sentence and exits
-  --demo				Start Dialogs in demo mode (insert pause between each steps)
-  --speech				Use speech recognition instead of text input
-  --lang=				If using speech recognition, the input langage (default: en-US)
-  --orohost				Host of ORO ontology server
-  --oroport				Port of ORO ontology server
+  -h, --help            Displays this message and exits
+  -v, --version         Returns Dialogs version
+  -t, --test            Runs unit-tests
+  -d, --debug           Sets verbosity to debug
+  -s, --silent          The module won't output anything
+  -p, --process=        Processes the given sentence and exits
+  --demo                Start Dialogs in demo mode (insert pause between each steps)
+  --speech              Use speech recognition instead of text input
+  --lang=               If using speech recognition, the input langage (default: en-US)
+  --orohost=            Host of ORO ontology server
+  --oroport=            Port of ORO ontology server
 
 This module reads on stdin user input in natural language, parse it, call 
 resolution routines when ambiguous concepts are used, and finally generate RDF 
@@ -35,9 +35,7 @@ statements that are an interpretation of the input.
 It includes as well a verbalization module that conversely turns RDF statements
 into a sentence in natural language.
 
-dialogs fits into the so-called CHRIS architecture @ LAAS. More details on the 
-LAAS internal Wiki:
-https://intranet.laas.fr/intranet/robots/wiki/ChrisArchitecture
+More details on http://dialogs.openrobots.org
 """
 
 def unit_tests():
