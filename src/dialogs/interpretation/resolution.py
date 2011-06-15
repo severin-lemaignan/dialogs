@@ -8,7 +8,7 @@ from pyoro import OroServerError
 
 from dialogs.helpers.helpers import colored_print
 
-from dialogs.dialog_exceptions import UnsufficientInputError, UnknownVerb, UnidentifiedAnaphoraError, DialogError
+from dialogs.dialog_exceptions import * 
 from dialogs.resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name, generate_id #for nominal group discrimination
 from discrimination import Discrimination
@@ -152,15 +152,8 @@ class Resolver:
                     pass
                 
                 if not onto_id:
-                    uie = UnsufficientInputError({'status':'FAILURE'})
-                    
                     sf = SentenceFactory()
-                    uie.value['question'] = sf.create_no_instance_of(nominal_group)
-                    uie.value['object'] = nominal_group
-                    uie.value['sentence'] = self._current_sentence
-                    uie.value['object_with_more_info'] = None
-                    uie.value['stop_interaction'] = True
-                    raise uie
+                    raise InterruptedInteractionError(sf.create_no_instance_of(nominal_group))
                 
                 elif len(onto_id) == 1:
                     [nominal_group.id] = onto_id

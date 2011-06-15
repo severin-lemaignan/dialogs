@@ -25,6 +25,18 @@ class UnsufficientInputError(DialogError):
     def __str__(self):
         return repr(self.value)
 
+class InterruptedInteractionError(DialogError):
+    """ This exception is raised when the current interaction have to be interrupted
+    for some reason (for instance, if the user says 'Give me some bottle' but the
+    robot does not know any bottle).
+
+    The expected value of the exception is an instance of Sentence that explain to the
+    user why the interaction had to be interrupted.
+    """
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
 class GrammaticalError(DialogError):
     def __init__(self, value):

@@ -103,12 +103,19 @@ class Dialog(Thread):
                             self._verbalizer.verbalize(uie.value['question']), \
                             'blue') + "\n")
 
-                    #Waiting for more info to solve content?
-                    if 'stop_interaction' in uie.value.keys() and uie.value['stop_interaction'] == True:
-                        self.waiting_for_more_info = False
-                    else:
-                        self.waiting_for_more_info = True
+                    #Waiting for more info to solve content
+                    self.waiting_for_more_info = True
                 
+                except InterruptedInteractionError as iie:
+                    self._logger.info(colored_print("I can not continue. I interrupt the interaction.", 'magenta'))
+
+                    #Output towards human
+                    sys.stdout.write(self._verbalizer.verbalize(iie.value) + "\n")
+                    sys.stdout.flush()
+                    self._logger.info(colored_print("- " +  \
+                            self._verbalizer.verbalize(iie.value), \
+                            'blue') + "\n")
+
                 except UnidentifiedAnaphoraError as uae:
                     self._logger.info(colored_print("Not sure of the interpretation...  Asking for confirmation to human:", 'magenta'))
                     self._anaphora_input = uae.value
