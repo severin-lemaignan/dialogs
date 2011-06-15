@@ -381,7 +381,7 @@ class ResourcePool:
         
         #Add action verbs to the ontology
         if self.ontology_server:
-            stmts = [verb.capitalize() + " rdfs:subClassOf PurposefulAction" for verb in self.thematic_roles.verbs.keys() if not self.thematic_roles.verbs[verb].is_synonym()]
+            stmts = [verb.capitalize() + " rdfs:subClassOf cyc:PurposefulAction" for verb in self.thematic_roles.verbs.keys() if not self.thematic_roles.verbs[verb].is_synonym()]
             self.ontology_server.add(stmts)
         
         """
