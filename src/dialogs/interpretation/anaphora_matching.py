@@ -15,6 +15,7 @@ import logging
 logger = logging.getLogger("dialogs")
 
 from dialogs.sentence import *
+from dialogs.sentence_type import *
 from pyoro import OroServerError
 
 class AnaphoraMatcher:
@@ -217,9 +218,9 @@ def replacement(utterance, nominal_group, list_nominal_group, last_nominal_group
     perform the first replacement (before the loop)                          
     Input=nominal group list and the current one       Output=a nominal group or NONE         
     """
-    
+   
     #Usually if it is OK the first sentence is agree
-    if utterance[0].data_type=='agree':
+    if utterance[0].data_type==AGREEMENT:
         return [last_nominal_group,True]
     
     #There is no nominal group to make change (same with first replacement)
