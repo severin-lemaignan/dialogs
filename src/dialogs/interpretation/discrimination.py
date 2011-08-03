@@ -218,6 +218,8 @@ class Discrimination():
     def clarify(self, description, ignoreFeatureL = []):
 
         objL = self.get_all_objects_with_desc(description)
+
+        ResourcePool().mark_active(objL)
         
         if len(objL) == 0:
             logger.debug(colored_print('Nothing found!', "magenta"))

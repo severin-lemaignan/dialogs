@@ -393,7 +393,13 @@ class ResourcePool:
             if not k in adj_s:
                 adj_s.append(k)
         self.adjectives_ontology_classes = adj_s
-   
+  
+    def mark_active(self, ids):
+        if isinstance(ids, basestring):
+            ids = [ids]
+
+        self.ontology_server.add([id + " rdf:type ActiveConcept" for id in ids], "SHORTTERM")
+
     def __del__(self):
         self.close()
     

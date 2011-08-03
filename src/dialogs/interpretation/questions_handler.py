@@ -50,7 +50,7 @@ class QuestionHandler:
         self._sentence = sentence
         #StatementBuilder
         builder = StatementBuilder(self._current_speaker)
-        self._statements = builder.process_sentence(self._sentence)
+        self._statements, situation_id = builder.process_sentence(self._sentence)
         logger.info(level_marker(level=2, color="yellow") + "Generated statements based on the sentence components: " + colored_print(str(self._statements), None, "magenta"))
         
         #Case the question is a y_n_question : check the fact in the ontology

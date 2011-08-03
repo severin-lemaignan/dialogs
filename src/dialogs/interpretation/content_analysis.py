@@ -57,7 +57,7 @@ class ContentAnalyser:
     def process_sentence(self, sentence, current_speaker):
         self.builder.set_current_speaker(current_speaker)
 
-        stmts = self.builder.process_sentence(sentence)
+        stmts, situation_id = self.builder.process_sentence(sentence)
         
         if stmts:
             logger.info("Generated statements: ")
@@ -71,6 +71,11 @@ class ContentAnalyser:
             stmts = self.adder.process()
             
             logger.debug("...added to the ontology")
+
+            if situation_id:
+                # If a new situation has been created, mark it as
+                # active.
+                ResourcePool().mark_active(situation_id)
         else:
             logger.info("No statements produced")
         

@@ -168,6 +168,9 @@ class Resolver:
                         raise DialogError("ALL quantifier on class with more than one instance not implemented yet!")
 
             nominal_group._resolved = True
+
+            ResourcePool().mark_active(nominal_group.id)
+
             return nominal_group
             
         # Case of a nominal group built by only adjectives 
@@ -199,6 +202,9 @@ class Resolver:
                 logger.debug(colored_print("OK, found ", "magenta") + colored_print(str(onto_focus), "blue"))
                 nominal_group.id = onto_focus[0]
                 nominal_group._resolved = True
+
+                ResourcePool().mark_active(nominal_group.id)
+
                 return nominal_group
             
             logger.debug(colored_print("No focus. Processing is as a classic anaphora.", "magenta"))
@@ -247,6 +253,7 @@ class Resolver:
                 if "INSTANCE" in c:
                     nominal_group.id = c[0]
                     nominal_group._resolved = True
+                    ResourcePool().mark_active(nominal_group.id)
                     break
         
         # Case of personal prounouns
@@ -315,6 +322,7 @@ class Resolver:
                                             'sentence':self._current_sentence,
                                             'question':sf.create_do_you_mean_reference(object[0])})
                                             
+        ResourcePool().mark_active(nominal_group.id)
         return nominal_group
         
     ################################################
@@ -378,7 +386,9 @@ class Resolver:
         if builder.process_on_other:
             logger.debug(colored_print("\tFound 'Other'.Looking for this concept in both Dialog history and "+ current_speaker + "'s model", "magenta"))
             nominal_group, stmts = self._resolve_nouns_with_dialog_history(nominal_group, current_speaker, stmts, builder)
-            if nominal_group._resolved: return nominal_group
+            if nominal_group._resolved: 
+                ResourcePool().mark_active(nominal_group.id)
+                return nominal_group
             
         #Trying to discriminate 
         description = [[current_speaker, '?concept', stmts]]
@@ -413,6 +423,7 @@ class Resolver:
         nominal_group.id = id
         nominal_group._resolved = True
         
+        ResourcePool().mark_active(nominal_group.id)
         return nominal_group
     
     
@@ -477,6 +488,7 @@ class Resolver:
             if len(obj_list) == 1:
                 nominal_group.id = obj_list[0]
                 nominal_group._resolved = True
+                ResourcePool().mark_active(nominal_group.id)
             
             else:
                 historic_objects_list = recover_nominal_group_list(get_last(self.sentences_store, 10))

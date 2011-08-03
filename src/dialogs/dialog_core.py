@@ -86,6 +86,7 @@ class Dialog(Thread):
 
             try:               
                 input = self._nl_input_queue.get(block = False).strip()
+                ResourcePool().mark_active(self._speaker)
                 self._logger.info(colored_print("\n-------[       NL INPUT      ]-------\n", 'green'))
                 self._logger.info(colored_print("- " + input + "\n", 'blue'))
                 self.in_interaction = True
