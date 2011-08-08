@@ -76,25 +76,20 @@ class StatementSafeAdder():
         """ This process the commitment of new statements in the ontology
             and deals with adding inconsistency
         """
-        #Adding for myself
+
+        models = ["myself"]
+        if self._current_speaker:
+            models.append(self._current_speaker)
+
+        policy = {"method":"safe_add", "models":models}
+
         try:
-            if not ResourcePool().ontology_server.safeAdd(statements):
+            if not ResourcePool().ontology_server.revise(statements, policy):
                 logger.debug(colored_print("At least one statement hasn't been " + \
                 "pushed to the ontology server because it would lead to inconsistencies."))
                 
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
-
-        #Adding for current speaker
-        if self._current_speaker:
-            try:
-                if not ResourcePool().ontology_server.safeAddForAgent(self._current_speaker, statements):
-                    logger.debug(colored_print("At least one statement hasn't been " + \
-                    "pushed to the ontology server because it would lead to inconsistencies."))
-                    
-            except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
-
 
     def remove(self, statements):
         try:
