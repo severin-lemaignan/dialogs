@@ -890,17 +890,17 @@ class VerbalGroupStatementBuilder:
                   * performedBy id_dany,
                   * involves id_blue_car,
                   ...
-                  * actionSupervisionMode SLOW]
+                  * actionQualification SLOW]
             
             However, this solution is not appropriate for stative verb. It wouldn't make sense to say "Danny is slowly a human".
         """
         
         if verb == 'be':
-            info.debug("Trying to process an adverb that aim to modify an action verb with the sative verb 'To Be' ... No method implemented!")
+            logger.warning("I do not know what to do with the adverb(s) " + str(advrb)+ " that qualify the stative verb 'to be'. Skipping it.")
         else:
             for adv in advrb:
-                #Creating statement [id actionSupervisionMode pattern], where if adv == carefully then pattern = CAREFUL, if adv == slowly then pattern = SLOW, ...
-                self._statements.append(id + " actionSupervisionMode "+ adv[:len(adv) - 2].upper())
+                #Creating statement [id actionQualification pattern], where if adv == carefully then pattern = CAREFUL, if adv == slowly then pattern = SLOW, ...
+                self._statements.append(id + " actionQualification "+ adv[:len(adv) - 2].upper())
             
             
     def process_verb_tense(self, verbal_group, verb, id):

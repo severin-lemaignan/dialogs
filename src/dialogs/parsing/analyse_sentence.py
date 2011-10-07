@@ -629,7 +629,7 @@ def other_sentence(type, request, sentence):
         return []
     
     #We have to add punctuation if there is not
-    if sentence[len(sentence)-1]!='.' and sentence[len(sentence)-1]!='?' and sentence[len(sentence)-1]!='!':
+    if sentence[len(sentence)-1] not in ['.', '?', '!']:
         sentence=sentence+['.']
         
     #We start with determination of probably second verb in subsentence

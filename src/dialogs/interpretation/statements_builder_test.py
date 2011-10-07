@@ -827,7 +827,7 @@ class TestStatementBuilder(unittest.TestCase):
         expected_result = ['* rdf:type Drive', 
                             '* performedBy id_danny',
                             '* involves volvo',
-                            '* actionSupervisionMode QUICK']   
+                            '* actionQualification QUICK']   
         self.process(sentence, expected_result, display_statement_result = True)
     
     

@@ -227,10 +227,10 @@ def upper_to_lower(sentence):
             sentence=['the']+sentence
             
         #If there is a nominal group
-        if analyse_nominal_group.find_sn_pos (sentence,0)!=[]:
+        if analyse_nominal_group.find_sn_pos (sentence,0):
             return sentence
         
-        #It a propre name, we convert lowercase to uppercase
+        #Default case: we assume a proper name, we convert lowercase to uppercase
         sentence[0]=sentence[0][0].upper()+sentence[0][1:]
         
     #If the sentence begins with lower case
@@ -825,11 +825,12 @@ def remerge_sentences(sentence):
     """ 
     
     gr=determination_nominal_group(sentence, 0,'of')
-    if gr!=[] and len(gr)<len(sentence):
+    if gr and len(gr) < len(sentence):
         
-        #Case of 'the bottle on the table'
-        if sentence[len(gr)] in ResourcePool().compelement_proposals:
-            if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
+        next_token = sentence[len(gr)]
+	#Case of 'the bottle on the table'
+        if next_token in ResourcePool().compelement_proposals:
+            if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1):
                 sentence=gr+['which','is']+sentence[sentence.index(sentence[len(gr)]):]
         
     return sentence    
