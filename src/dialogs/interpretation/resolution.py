@@ -97,18 +97,8 @@ class Resolver:
            
         return current_object
         
-        
-    def _resolve_references(self, nominal_group, verb, matcher, current_speaker, current_object):
-        
-        # Case of a resolved nominal group
-        if nominal_group._resolved: 
-            return nominal_group
-            
-        # Case of a quantifier different from ONE
-        #   means the nominal group holds an indefinite determiner. 
-        #   E.g a robot, every plant, fruits, ...
-        if nominal_group._quantifier in ['SOME','ALL']: 
-            
+    
+    def _get_class_name_from_ontology(self, current_speaker, nominal_group):
             onto = []
             
             try:
@@ -121,8 +111,21 @@ class Resolver:
             except OroServerError: # The agent does not exist in the ontology
                 pass
             
-            class_name =  get_class_name(nominal_group.noun[0], onto)
+            return get_class_name(nominal_group.noun[0], onto)
+  
+    def _resolve_references(self, nominal_group, verb, matcher, current_speaker, current_object):
+        
+        # Case of a resolved nominal group
+        if nominal_group._resolved: 
+            return nominal_group
             
+        # Case of a quantifier different from ONE
+        #   means the nominal group holds an indefinite determiner. 
+        #   E.g a robot, every plant, fruits, ...
+        if nominal_group._quantifier in ['SOME','ALL']: 
+            
+            class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
+           
             if verb and verb in ResourcePool().state:
                 # Case of a state verb
                 # id = the class name
@@ -165,6 +168,7 @@ class Resolver:
                         nominal_group.id = onto_id[0]
                     else: # ALL
                         # Add new nominal group
+                        #TODO!
                         raise DialogError("ALL quantifier on class with more than one instance not implemented yet!")
 
             nominal_group._resolved = True
@@ -188,16 +192,32 @@ class Resolver:
             
             onto_focus = ''
             logger.debug(colored_print("Found a demonstrative (this/that...). Trying to resolve it based on current focus...", "magenta"))
-            logger.debug(colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' focusesOn ?concept', None, "magenta"))
-            try:
-                onto_focus = ResourcePool().ontology_server.findForAgent(current_speaker, 
-                                                                            '?concept', 
-                                                                            [current_speaker + ' focusesOn ?concept'])
-            except AttributeError:
-                pass
-            except OroServerError: #Agent not found in the ontology
-                pass
             
+            if nominal_group.noun and nominal_group.noun[0].lower() != 'one': # case "this + category" -> eg "this phone"
+                class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
+                logger.debug(colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' focusesOn ?concept, ?concept rdf:type ' + class_name, None, "magenta"))
+                try:
+                     onto_focus = ResourcePool().ontology_server.findForAgent(
+                                          current_speaker, 
+                                          '?concept', 
+                                          [current_speaker + ' focusesOn ?concept', '?concept rdf:type ' + class_name])
+                except AttributeError:
+                    pass
+                except OroServerError: #Agent not found in the ontology
+                    pass
+
+            else: # case "this" alone or "this one"
+                logger.debug(colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' focusesOn ?concept', None, "magenta"))
+                try:
+                     onto_focus = ResourcePool().ontology_server.findForAgent(
+                                          current_speaker, 
+                                          '?concept', 
+                                          [current_speaker + ' focusesOn ?concept'])
+                except AttributeError:
+                    pass
+                except OroServerError: #Agent not found in the ontology
+                    pass
+             
             if onto_focus:
                 logger.debug(colored_print("OK, found ", "magenta") + colored_print(str(onto_focus), "blue"))
                 nominal_group.id = onto_focus[0]
@@ -215,8 +235,8 @@ class Resolver:
                 pass # Nothing to do appart from processing "this" as "the"
             
             # Case of 
-            #   this + one -  E.g: Take this
-            #   this + None - E.g: Take this one
+            #   this + one -  E.g: Take this one
+            #   this + None - E.g: Take this
             else:
                 try:
                     nominal_group.noun = self._references_resolution_with_anaphora_matcher(
