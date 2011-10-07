@@ -64,6 +64,11 @@ performedBy Agent
 hasGoal [to] Location
 }
 
+look {
+performedBy Agent
+hasGoal [at] Location
+}
+
 think {
 performedBy Agent
 actsOnObject [on] Thing
