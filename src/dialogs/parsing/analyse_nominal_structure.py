@@ -30,11 +30,17 @@ def recover_quantifier(nom_gr):
 
     #The default case is 'ONE'
     if nom_gr.det==[]:
-        #If the noun starts with 'any' => we have 'all'
-        if nom_gr.noun!=[] and nom_gr.noun[0].startswith('any'):
+        #If the noun is 'anything' => SOME 
+        if nom_gr.noun and nom_gr.noun[0] in ["anything"]:
+            nom_gr._quantifier='SOME'
+          #If the noun is 'everything' => ALL 
+        if nom_gr.noun and nom_gr.noun[0] in ["everything"]:
             nom_gr._quantifier='ALL'
+         #If the noun starts with 'any' => we have 'all'
+        if nom_gr.noun and nom_gr.noun[0].startswith('any'):
+            nom_gr._quantifier='SOME'
         #If the noun starts with 'no' => we have 'none'
-        if nom_gr.noun!=[] and nom_gr.noun[0].startswith('no'):
+        if nom_gr.noun and nom_gr.noun[0].startswith('no'):
             nom_gr._quantifier='NONE'
 
     else:

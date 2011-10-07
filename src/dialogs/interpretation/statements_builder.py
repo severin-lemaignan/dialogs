@@ -257,6 +257,7 @@ class NominalGroupStatementBuilder:
                 # Case of an infinite nominal group
                 # E.g "Apples are Yellow Fruits",  or "An apple is a yellow fruit"
                 #   it is wrong to create the statement [Apples hasColor yellow], as it transforms "Apple" into on instance
+                # TODO: in this example, 'yellow' is completly dropped
                 elif ng.noun and \
                     subject_quantifier in ['SOME', 'ALL'] and \
                         ng._quantifier in ['SOME', 'ALL']:
@@ -366,7 +367,7 @@ class NominalGroupStatementBuilder:
                     if noun in ["I", "me"]:
                         noun_id = self._current_speaker
                     elif noun in ["you"]:
-                        noun_id = "myslef"
+                        noun_id = "myself"
                     
                     if noun_id:
                         self._statements.append(ng_id + " owl:differentFrom " + noun_id)
@@ -381,8 +382,7 @@ class NominalGroupStatementBuilder:
             elif not nominal_group.det and noun.istitle():
                 logger.info("... \t" + noun + " is being processed as a proper noun in  " + self._current_speaker + "'s model.")            
                 self._statements.append(ng_id + " rdfs:label \"" + noun + "\"")
-            
-            
+
             # Case : common noun    
             else:
                 logger.info("... \t" + noun + " is being processed as a common noun in " + self._current_speaker + "'s model.")
@@ -421,7 +421,9 @@ class NominalGroupStatementBuilder:
                     
                 # Case of affirmative sentence
                 else:
-                    self._statements.append(ng_id + object_property + class_name)
+                    if isinstance(ng_id, basestring):
+                        ng_id = [ng_id]
+                    self._statements += [id + object_property + class_name for id in ng_id]
                     
     
     def process_adjectives(self, nominal_group, ng_id, negative_object):
@@ -464,8 +466,9 @@ class NominalGroupStatementBuilder:
                 
                 #Case Affirmative assertion
                 else:
-                    self._statements.append(ng_id + object_property + adj[0])
-                        
+                    if isinstance(ng_id, basestring):
+                        ng_id = [ng_id]
+                    self._statements += [id + object_property + adj[0] for id in ng_id]
     
     
     def process_noun_cmpl(self, nominal_group, ng_id, negative_object):

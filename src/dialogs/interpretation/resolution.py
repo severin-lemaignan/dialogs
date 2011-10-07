@@ -126,34 +126,47 @@ class Resolver:
             
             class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
            
-            if verb and verb in ResourcePool().state:
+            if verb and verb in ResourcePool().state and nominal_group.noun[0] not in ["everything", "anything"]:
                 # Case of a state verb
                 # id = the class name
                 # E.g: an apple is a fruit
                 #       the id of apple is Apple
-                logger.debug("Found undefinite quantifier " + nominal_group._quantifier + \
+                logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
                             " for " + nominal_group.noun[0] + " and state verb " + verb + \
                             ". Replacing it by its class.")
                 
                 nominal_group.id = class_name
                 
             else:
-                # case of an action verbs
-                # id = generated 
-                # E.g: An apple grows on a tree
-                # e.g.: show me the books -> books replaced by all book instance
-                #   we get the ids of all existing apples in the ontology otherwise we generate one
-                
-                logger.debug("Found undefinite quantifier " + nominal_group._quantifier + \
-                            " for " + nominal_group.noun[0] + ((" and with verb " + verb) if verb else "") + \
-                            ". Replacing it by all its instances.")
-                            
-                onto_id = []
-                try:
-                    onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type ' + class_name])
-                except OroServerError: # The agent does not exist in the ontology
-                    pass
-                
+                if nominal_group.noun[0] in ["everything", "anything"]:
+			# case of everything/anything
+			# -> we get all ids existing in the ontology
+			
+			logger.debug("Found " + nominal_group.noun[0] + ": retrieving all existing instances.")
+				    
+			onto_id = []
+			try:
+			    onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type owl:Thing'])
+			except OroServerError: # The agent does not exist in the ontology
+			    pass
+	
+                else:
+			# case of an action verbs
+			# id = generated 
+			# E.g: An apple grows on a tree
+			# e.g.: show me the books -> books replaced by all book instance
+			#   we get the ids of all existing books in the ontology otherwise we generate one
+			
+			logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
+				    " for " + nominal_group.noun[0] + ((" and with verb " + verb) if verb else "") + \
+				    ". Replacing it by all its instances.")
+				    
+			onto_id = []
+			try:
+			    onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type ' + class_name])
+			except OroServerError: # The agent does not exist in the ontology
+			    pass
+			
                 if not onto_id:
                     sf = SentenceFactory()
                     raise InterruptedInteractionError(sf.create_no_instance_of(nominal_group))
@@ -167,9 +180,8 @@ class Resolver:
                         # Pick one randomly
                         nominal_group.id = onto_id[0]
                     else: # ALL
-                        # Add new nominal group
-                        #TODO!
-                        raise DialogError("ALL quantifier on class with more than one instance not implemented yet!")
+                        # Add all ids
+                        nominal_group.id = onto_id
 
             nominal_group._resolved = True
 
