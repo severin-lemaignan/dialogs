@@ -142,6 +142,7 @@ class QuestionHandler:
                             prepositions_already_used.append(roles[role])
                                                         
                             if answers:
+                                ResourcePool().mark_active(answers)
                                 self._answer.append([[role], answers])
                         
                         #Case of object found in location + direction
@@ -154,6 +155,7 @@ class QuestionHandler:
                                 pass
                             
                             if answers:
+                                ResourcePool().mark_active(answers)
                                 self._answer.append([[role], answers])
                             
                     else:
@@ -164,6 +166,7 @@ class QuestionHandler:
                             pass
                         
                         if answers:
+                            ResourcePool().mark_active(answers)
                             self._answer.append([[], answers])
                 else:
                     pass
