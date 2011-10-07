@@ -209,7 +209,7 @@ def exclama_sentence(sentence):
     if analysis.data_type==INTERJECTION and not analysis.sv:
         pass
     else:
-        analysis.data_type=STATEMENT
+        analysis.data_type=IMPERATIVE
     return analysis
 
 
