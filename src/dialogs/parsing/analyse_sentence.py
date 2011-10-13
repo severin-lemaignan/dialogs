@@ -583,7 +583,7 @@ def y_n_ques(type, request, sentence):
     
     #We have to correct the mistake of the subject
     for p in ResourcePool().demonstrative_det:
-        if analysis.sn!=[] and analysis.sn[0].det==[p] and analysis.sn[0].noun==[]:
+        if analysis.sn and analysis.sn[0].det==[p] and analysis.sn[0].noun==[]:
             if sentence!=[0] and sentence[0]=='.' and sentence[0]=='?' and sentence[0]=='!':
                 if sentence[0] in ResourcePool().proposals:
                     pass
