@@ -146,7 +146,7 @@ class Resolver:
 				    
 			onto_id = []
 			try:
-			    onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type owl:Thing'])
+			    onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type Artifact'])
 			except OroServerError: # The agent does not exist in the ontology
 			    pass
 	
