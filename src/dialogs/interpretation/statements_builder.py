@@ -681,12 +681,18 @@ class VerbalGroupStatementBuilder:
             
             #Case 1:
             if verb in ResourcePool().state:
-                if subject_id in ResourcePool().ontology_server.listAgents():
-                    sit_id = generate_id(with_question_mark = False)
-                    self._statements.append(subject_id + " experience " + sit_id)
+                if isinstance(subject_id, basestring):
+                    subjects_id = [subject_id]
                 else:
-                    sit_id = subject_id
+                    subjects_id = subject_id
 
+                for subject_id in subjects_id:
+                    if subject_id in ResourcePool().ontology_server.listAgents():
+                        sit_id = generate_id(with_question_mark = False)
+                        self._statements.append(subject_id + " experience " + sit_id)
+                    else:
+                        #TODO: Will kepp only the last one is several ids
+                        sit_id = subject_id
             else:
                 #Case : the verbal group that is being processed is the second verbs . i.e : it is held in the field sentence.sv.sv_sec
                 if second_verb_sit_id:
