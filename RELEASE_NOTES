@@ -4,226 +4,123 @@ This file contains a detailled summary of Dialogs module evolution.
 
 For more details, please refer to the GIT log.
 
-=== General ===
+Dialogs 0.6 - 19/10/2011
+========================
 
+Major new features:
+-------------------
 
-[DONE v0.3] processing "other"
--> "the other one..."
+- concepts that are currently manipulated are marked as 'ActiveConcept' in
+  the ontology. This allows for instance dynamic vizualisation of the
+  grounding process.
+- added infrastructure to assess the grammatical validity of a sentence
+- added mechanism to render sentences with different formatter
+  (included coloured tty + CSS ones)
+- termination sentences (like 'goodbye') are recognized and Dialogs exits.
+- added optional support of speech recognition via gSpeet (python bindings
+  for the Google Speech recognition API)
+- Dialogs now uses the new KB API of oro-server ('revise' action + policies)
 
-[DONE v0.3] Modal verbs
--> can, must, might, should
-    for action verbs.
-    create object property modal+Performs 
-    E.g: canPerforms, (Although, mustPerforms, shouldPerforms are not relation in the ontology, they are created anyway).
-    
-[DONE v0.3] complete resources pool
--> merge in resourcepool word lists that are currently spread out
+Language features:
+------------------
 
-[DONE v0.3] Managing unknown concepts: "Jido is a schtroumph" -> what is a schtroumph ?
--> looping on unknown concepts
-    output toward human but no looping yet
-    
-[DONE v0.3] Negation
-    differentOf
-    complementOf
-    ->cf discussion report of 12/08/10
+- Support for 'ALL' quantification
+- Better support for 'SOME' quantification (when several candidates are
+  available, a random one is picked)
+- Fixed handling of "this" + category (the category was previously ignored)
+- Added support for "in front of" construct
+- Added support for "everything" ('everything' is currently equivalent to
+  'all artifacts')/"anything"
+- Some irregular nouns and adjectives have been added
+- Some thematic roles have been added ('clean', 'look', 'uncover')
 
-==== v0.3 - 12/08/2010 =====
+Grounding features:
+-------------------
 
-=== Documentation ===
+- Added a visibility check in the discrimination routine
+- When an agent expresses a state, use an indirection with 'experience'.
+  For instance: I'm cold -> [myself experience GD3s3, GD3s3 hasFeature cold]
 
-[DONE v0.3] Negation cases
+Other new features:
+-------------------
 
---------------------------------------------------------------------------------
-
-==== v0.2 - 12/08/2010 =====
-
-=== Summary ===
-
-== Main features now implemented: ==
-  * input/output module to chat with the robot
-  * grammar-free parsing module for English natural language (NL)
-  * verbalizing module to reconstruct a NL sentence
-  * glue-ing chat module with parser + verbalizer
-  * resolution of personal references + anaphors
-  * resolution noun phrases (= identification of concepts)
-  * resolution action verbs based on thematic roles (dictionnary-based)
-  * content analysis (done for imperative sentences, statements, questions)
-  * statement builder (convert a parsed sentence into RDF statements)
-  * question handler (for question, try to answer them with ORO)
-  * glue-ing parsing + resolution + analysis + handling
-    
-== Other features: ==
-  * handling of groups with only an adjective
-  * "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
-  * Running dialogs even if no ontology server.
-  * Generate "subclassOf" statements:
-    * E.g: Apples are Fruits
-    * E.g: an Apple is a fruit
-  * Manage Verb Tense in a naive way ("I went to Toulouse" -> [event1205 eventOccurs PAST]).
-  * Process adverbs ("I go slowly to Toulouse" -> [event1205 actionSupervisionMode SLOW])
-  * Process quantifiers: some, all, digits (1,2,3...), none
-  * Handling of conjunctions (AND, OR)
-  * pre content-analysis -> "what color is the tape?" -> don't use the color to discriminate
-  * use 'safeAdd' method to detect the inconsistencies
-  * Coloured output for easy explaination of the Dialogs module behaviour
+- host/port of the ontology server is not hardcoded anymore (!)
+- fixed UTF8 issues
+- continuous refactoring of the code
+  - preprocessor and parser are now splitted
+- fixed some logging issues
+- added a failfast options for the unittests + a diff with expected results
+- added a 'demo' generator that output parsing unittest to HTML
+- lots of small bug fixes
+- completed the documentation with more examples from the user-study and
+  main algorithms
   
-=== General ===
-
-[DONE v0.2] sentence pre-processing (punctuation, term expansion, capital 
-letters...)
-
-[DONE v0.2] Turn everything to English
-
-[DONE v0.2] Clarify which members of sentence are list, which are single element. 
-    map: [A] means list of A
-	Sentence (data_type, aim, sn, sv):
-		data_type:	string	
-		aim:		string
-		sn: 		[Nominal_Group]
-		sv:	    	[Nominal_Group]
-	
-	Nominal_Group(det, noun, adj, noun_cmpl, relative):
-		det:		[string]
-		noun:		[string]
-		adj:		[string]
-		noun_cmpl:	[Nominal_Group]
-        relative:   [sentence]
-        
-    Verbal_Group(vrb_main, sv_sec, vrb_tense, d_obj, i_cmpl, advrb, vrb_adv, 
-    vrb_sub_sentence, state):
-        state:              string
-        vrb_tense:          string
-        vrb_main:           [string]
-        advrb:              [string]
-        vrb_adv:            [string]
-        d_obj:              [Nominal_Group]
-        i_cmpl:             [Indirect_Object([string], [Nominal_Group])]
-        sv_sec:             [Verbal_Group]
-        vrb_sub_sentence:   [sentence]
-        
-
-	
-	Also: If we have several nouns, e.g "toto" and "tata", we create a new 
-    nominal group, even though this results to several single-element lists.
-
-[DONE v0.2] Sort out the "flags": at least, convert it to a map, maybe, remove 
-it.
-	Removed.
-        
-[DONE v0.2] "this bottle is blue" <- what to do with blue? 
-		The adjectives 'blue', is kept in the d_obj as a single element of the 
-        nominal group.
-        Method 'adjectives_only()' in sentence.py in class Nominal_Group' 
-        returns True in this case.
-
-[DONE v0.2] "this bottle is 'next to' the table" -> pre-processing to replace 
-"next to" by "next+to"
-
-[DONE v0.2]{Complete By End July}: Running dialogs even if ORO is off. Need an 
-exception raised when a connection to ORO is required.
-
-[DONE v0.2] Resolving anaphora "it" "one"
-
-[DONE v0.2] Return a sentence towards verbalization
-    possibly create add features in sentenceFactory in sentence.py
-
-[DONE v0.2] subclassOf:
-    E.g: Apples are Fruits
-    E.g: an Apple is a fruit
-    
-
-[DONE v0.2] Verb Tense.
-    
-[DONE v0.2] Process adverbs
-
-[DONE v0.2] Goal verbs
   
-[DONE v0.2] Quantifier
-    add quantifier
-	any - 
-	some - 
-	all - 
-	a digit - 
-	None E.g Negation on nominal group differents from sv.state
-    if determiner is 'a' do not resolve. 
-    E.g Jido is a robot => id_jido rdf:type Robot
-    "Take the bottle 'carefully'", what to do with 'carefully'
+Dialogs 0.5 - 09/02/2011
+========================
+ 
+- Renaming from dialog to dialogs
 
-[DONE v0.2] Processing the demonstrative 'this' 
-    'this is a blue table'
-    Use quantifier 'a' to complete statement
+Dialogs 0.4 - 25/01/2011
+========================
 
-[DONE v0.2] input/output module to chat with the robot
+- added special command 'forget it' to leave an interaction
+- handle 'to know':
+    - for instance, 'do you know the red bottle?'
+	- 'what object do you know?'
+	- 'i know the yellow banana'
+- added a 'demo' mode that wait between each step (except it doesn't
+because I couldn't find a way to actually wait for a keypress... cf commit
+4cba0223)
+- better processing of directions
+- parsing support for more temporal preposistions (as soon as, until...)
+- added 'X is Y' -> 'X sameAs Y'
+- added the ability to 'teach' new concepts (commit f693602e):
+  -> 'Learn that the bottle is on the table'
+- more work on the merge function (when the human complete the informations)
+- parsing (but no futher handling) of time data (months, days...)
+- added an explicit 'SentenceFactory' to easily build common sentences like
+questions
+- added verb 'to think to' in the list of known verbs
 
-[DONE v0.2] parsing module for English natural language (NL)
+and as usual, tenth of bug fixes :-)
 
-[DONE v0.2] resolution of personal references + anaphors
 
-[DONE v0.2] resolution noun phrases (= identification of concepts)
+Dialogs 0.3 - 08/09/2010
+========================
 
-[DONE v0.2] resolution action verbs
-        based on thematic roles
-        
-[DONE v0.2] content analysis (is the sentence a question? a statement?...)
-        Done for imperative and statements.
-        On process for question
-        
-[DONE v0.2] glue-ing parsing + resolution + analysis + handling
+The "Moving to London" scenario pass!
 
-[DONE v0.2] handling of "or" :)
+Dialogs 0.2 - 12/08/2010
+========================
 
-[DONE v0.2] pre content-analysis -> "what color is the tape?" -> don't use the 
-color to discriminate
-        Actually done from Parser.
-        E.g: 'what color is the tape?' provides the following sentence with 
-        'color' held in the field 'aim':
-            Sentence("w_question", "color", 
-                    [Nominal_Group(['the'],
-                                ['tape'],
-                                [],
-                                [],
-                                [])],                                         
-                    [Verbal_Group(['be'],
-                                [],
-                                'present simple',
-                                [],
-                                [],
-                                [],
-                                [],
-                                'affirmative',
-                                [])])
-                                
-            Statements provided for discrimation:
-                ?concept rdf:type Tape .
-   
-[DONE v0.2] Statement to represent disjunction 'or' and conjunction 'and'?
-    specify the process of 'or' as a limit of the input of Dialogs module
+Main features:
+--------------
+    - input/output module to chat with the robot
+    - grammar-free parsing module for English natural language (NL)
+    - verbalizing module to reconstruct a NL sentence
+    - glue-ing chat module with parser + verbalizer
+    - resolution of personal references + anaphors
+    - resolution noun phrases (= identification of concepts)
+    - resolution action verbs based on thematic roles (dictionnary-based)
+    - content analysis (done for imperative sentences, statements, questions)
+    - statement builder (convert a parsed sentence into RDF statements)
+    - question handler (for question, try to answer them with ORO)
+    - glue-ing parsing + resolution + analysis + handling
     
-[DONE v0.2] Add statement in the ontology: use 'safeAdd' method to avoid the 
-inconsistency 
-    see 'http://homepages.laas.fr/slemaign/doc/oro-server/laas/openrobots/ontology/modules/base/BaseModule.html#safeAdd%28java.util.Set%29'
-    Create new Module 'Statement_Safe_adder' aiming to add statements in the 
-    ontology. 
-    It may possibly handle unresolved sentence, and force statement_builder to 
-    build additionnal information.
-    E.g: 'Jido is a robot'. Here, Jido might be discriminate, but not Robot.
-    Although statement_builder can easily provide [id_jido rdf:type Robot], this
-     would not be done as the sentence in unresolved yet.
-    
-  * safeAddForAgent??
-	not on statementBuilder
-    
-=== Interfaces ===
+Other features:
+---------------
+    - handling of groups with only an adjective
+    - "this bottle is 'next to' the table" -> pre-processing to replace "next to" by "next+to"
+    - Running dialog even if no ontology server.
+    - Generate "subclassOf" statements:
+        E.g: Apples are Fruits
+            E.g: an Apple is a fruit
+            - Manage Verb Tense in a naive way ("I went to Toulouse" -> [event1205 eventOccurs PAST]).
+            - Process adverbs ("I go slowly to Toulouse" -> [event1205 actionSupervisionMode SLOW])
+            - Process quantifiers: some, all, digits (1,2,3...), none
+            - Handling of conjunctions (AND, OR)
+            - pre content-analysis -> "what color is the tape?" -> don't use the color to discriminate
+            - use 'safeAdd' method to detect the inconsistencies
+            - Coloured output for easy explaination of the Dialog module behaviour
 
-[DONE v0.2] Improve the output of the dialogs module (including colors) to make clear what append (especially for demos):
-  * First parsing
-  * Resolution *relying on perspective taking* + symbolic knowledge
-  * Back interaction with the human
-  * Re-parsing
-  * Generation of final statements
-
-=== Bugs fixed ===
-
-[FIXED v0.2] "close the loop" -> parser should be able to complete a previously, partially resolved, sentence.
-    with method remerge in sentence.py
