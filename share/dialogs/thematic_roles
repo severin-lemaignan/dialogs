@@ -29,7 +29,7 @@ actsOnObject Artifact
 receivedBy [on] PhysicalSupport
 }
 
-give (bring) {
+give (bring,hand) {
 performedBy Agent
 actsOnObject Artifact
 receivedBy Agent
@@ -63,7 +63,7 @@ actsOnObject Artifact
 [receivedBy Agent]
 }
 
-move (go) {
+move (go,come) {
 performedBy Agent
 [actsOnObject Artifact]
 hasGoal [to] Location
