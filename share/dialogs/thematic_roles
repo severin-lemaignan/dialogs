@@ -40,6 +40,11 @@ performedby agent
 actsOnObject artifact
 }
 
+throw {
+performedby agent
+actsOnObject artifact
+receivedBy [to] PhysicalSupport
+}
 
 clean {
 performedby agent
