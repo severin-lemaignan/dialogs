@@ -983,7 +983,7 @@ def get_class_name(noun,conceptL):
      
 
 def generate_id(with_question_mark = True):
-    sequence = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    sequence = "abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     sample = random.sample(sequence, 5)
     return ("?" + "".join(sample)) if with_question_mark else ("".join(sample))
 
