@@ -75,6 +75,7 @@ class ContentAnalyser:
             if situation_id:
                 # If a new situation has been created, mark it as
                 # active.
+                self.output_sentence.extend(self.sfactory.create_agree_reply())
                 ResourcePool().mark_active(situation_id)
         else:
             logger.info("No statements produced")

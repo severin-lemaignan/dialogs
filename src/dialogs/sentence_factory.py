@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import random
 
 from helpers.helpers import colored_print
 from helpers.printers import level_marker
@@ -480,4 +481,8 @@ class SentenceFactory:
                                     [Nominal_Group([],[],[['welcome',[]]], [],[])],[],[],[],"affirmative", [])])]
     
     def create_agree_reply(self):
-        return [Sentence(AGREEMENT, "alright", [], [])]
+        agreements = []
+        agreements.append([Sentence(AGREEMENT, "alright", [], [])])
+        agreements.append([Sentence(AGREEMENT, "ok", [], [])])
+        
+        return random.choice(agreements)
