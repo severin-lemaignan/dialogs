@@ -320,7 +320,7 @@ class Discrimination():
         """ Returns the list of visible objects for an agent from a list of objects.
         """
 
-        visible_objects = self.oro.findForAgent(agent, "?o", ["?o isVisible true"])
+        visible_objects = self.oro.findForAgent(agent, "?o", [agent + " sees ?o"])
 
         return list(set(id_list) & set(visible_objects))
 
