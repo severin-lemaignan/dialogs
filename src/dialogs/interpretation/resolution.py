@@ -255,7 +255,7 @@ class Resolver:
                             nominal_group, matcher, 
                             current_speaker, 
                             current_object)
-                except DialogError: #...no dialog history yet! Can not do any matching over past sentences
+                except DialogError: #...no dialog history yet! or nothing found in history. Can not do any matching over past sentences
                     uie = UnsufficientInputError({'status':'FAILURE'})
                     
                     sf = SentenceFactory()
@@ -340,9 +340,12 @@ class Resolver:
         #       and List contains nominal group that are to be explored if ng is not confirmed from the user
         
         object = matcher.match_first_object(get_last(self.sentences_store, 10), nominal_group)
-            
+        
+        if not object:
+            raise DialogError("No anaphora matches in dialog history")
+
         # Case there exist only one nominal group identified from anaphora matching
-        if object and len(object[1]) <= 1:
+        if len(object[1]) <= 1:
             nominal_group = object[0]
         
         # Ask for confirmation to the user
