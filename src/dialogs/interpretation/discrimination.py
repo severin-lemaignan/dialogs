@@ -166,7 +166,7 @@ class Discrimination():
 
             if val:
                 #TODO: we only consider the first result item!
-                valL.append(val[0])
+                valL.append(self.oro.getLabel(val[0]))
             # otherwise, the object doesn't have this descriptor, and we don't include it
 
         # we make a set to remove repeated elements
@@ -197,7 +197,7 @@ class Discrimination():
             type = find('rdf:type', desc[2])
             if type: break
             
-        return type
+        return ResourcePool().ontology_server.getLabel(type)
     
     # -- CLARIFY ------------------------------------------------------------------#
     # Searches for a new descriptor candidate. The descriptor should be as 
@@ -292,7 +292,7 @@ class Discrimination():
                     questions = sentence_builder.create_w_question_choice(object, 'type', values)
                     
                 else:
-                    questions = sentence_builder.create_w_question_choice(object, descriptor, values)
+                    questions = sentence_builder.create_w_question_generic_descriptor(object, descriptor, values)
 
                 raise UnsufficientInputError({'status':'SUCCESS','question':questions})
                 #return questions

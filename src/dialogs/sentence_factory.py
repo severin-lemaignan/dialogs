@@ -28,6 +28,29 @@ class SentenceFactory:
             sentence[1].sn[i+1]._conjunction = 'OR'
         
         return sentence
+
+    def create_w_question_generic_descriptor(self, obj_name, feature, values):
+        """ Creates sentences of type: 
+            What <descriptor> <object>? <possible value>
+
+            For instance:
+            "What contains the can? apple juice or orange juice?
+
+            This works only if the descriptor is at 3rd person.
+        """
+        nominal_groupL = [Nominal_Group([],[],[[val.lower(),[]]],[],[]) for val in values]
+        
+        sentence = [Sentence(W_QUESTION, 'description', 
+                        [Nominal_Group(['the'],[obj_name.lower()],[],[],[])], 
+                        [Verbal_Group([feature[:-1]], [],'present simple', 
+                            [], [], [], [] ,Verbal_Group.affirmative,[])]),
+                    Sentence(STATEMENT, '',nominal_groupL,[])]
+        
+                            
+        for i in range(len(values)-1):
+            sentence[1].sn[i+1]._conjunction = 'OR'
+        
+        return sentence
         
     def create_w_question_location(self, obj_name, feature, values):
         """ Creates sentences of type: 
