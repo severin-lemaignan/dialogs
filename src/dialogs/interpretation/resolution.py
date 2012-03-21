@@ -124,7 +124,7 @@ class Resolver:
         # Case of a quantifier different from ONE
         #   means the nominal group holds an indefinite determiner. 
         #   E.g a robot, every plant, fruits, ...
-        if nominal_group._quantifier in ['ALL']: 
+        if nominal_group._quantifier in ['SOME', 'ALL']: 
             
             class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
            
@@ -133,6 +133,7 @@ class Resolver:
                 # id = the class name
                 # E.g: an apple is a fruit
                 #       the id of apple is Apple
+                # TODO: adjectives are discarded: we do not handle 'A green apple is a fruit' for instance
                 logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
                             " for " + nominal_group.noun[0] + " and state verb " + verb + \
                             ". Replacing it by its class.")
@@ -140,6 +141,11 @@ class Resolver:
                 nominal_group.id = class_name
                 
             else:
+                if nominal_group._quantifier in ['SOME']: 
+                    # Do not deal further here with existential quantifier. It will be processed
+                    # later in noun_resolution.
+                    return nominal_group
+                
                 if nominal_group.noun[0] in ["everything", "anything"]:
                     # case of everything/anything
                     # -> we get all *Artifact* ids existing in the ontology
