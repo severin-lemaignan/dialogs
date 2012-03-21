@@ -37,10 +37,10 @@ class Discrimination():
     # OUTPUT:
     # - empty list: no objects found fulfilling the description
     # - list: objects fulfilling the description
-    # - -1: no description (or description format incorrect)
+    # - None: no description (or description format incorrect)
     # -----------------------------------------------------------------------------#
     def get_all_objects_with_desc(self, description):
-        objL = -1
+        objL = None
         
         for agent_desc in description:
             
@@ -58,7 +58,7 @@ class Discrimination():
                 objL = []
                 break
             else:
-                if objL == -1:
+                if objL == None:
                     objL = obj_tmp
                 else:
                     objL = filter(lambda x:x in objL,obj_tmp)  # intersection
@@ -219,28 +219,19 @@ class Discrimination():
 
         objL = self.get_all_objects_with_desc(description)
 
-        ResourcePool().mark_active(objL)
-        
         if len(objL) == 0:
             logger.debug(colored_print('Nothing found!', "magenta"))
         else:
             logger.debug(colored_print('Found these possible concepts ID: ', "magenta") +  colored_print(str(objL), 'blue'))
-        
+
         if not self.oro: #No ontology server
             return 'UNKNOWN_CONCEPT'
-            
+
         if not objL:
-            questions = [Sentence(IMPERATIVE, '', 
-                        [], 
-                        [Verbal_Group(['give'], [],'present simple', 
-                        [Nominal_Group([],['information'],[['new',[]]],[],[])], 
-                        [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
-                        Indirect_Complement(['about'],[Nominal_Group(['the'],['object'],[],[],[])])],
-                        [], [] ,Verbal_Group.affirmative,[])])]
+            questions = SentenceFactory().create_i_dont_understand()
             raise UnsufficientInputError({'status':'FAILURE', 'question':questions})
-            #return "Give me knew information about the object"
-            
-      
+            #return "I don't understand"
+
         else:
             # Check if the speaker sees only some of the object.
             # If he sees none of them, discriminate on the whole set.

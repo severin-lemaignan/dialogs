@@ -470,7 +470,13 @@ class SentenceFactory:
                                 [Nominal_Group([],['I'],[],[],[])],
                                 [Verbal_Group(['know'],[], "present simple", [],[],[],[], "negative", [sentence])])]
             
-    
+
+    def create_i_dont_understand(self):
+        return [Sentence(STATEMENT,
+                            "",
+                            [Nominal_Group([],['I'],[],[],[])],
+                            [Verbal_Group(['understand'],[], "present simple", [],[],[],[], "negative", [])])]
+
     def create_gratulation_reply(self):
         """ Create a reply to gratualtion
             E.g: You are welcome.
