@@ -434,6 +434,7 @@ class Resolver:
             logger.debug(colored_print("Looking for at least one concept matching in " + \
                                        current_speaker + "'s model: \n", "magenta") + \
                                        '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
+            concepts = []
             try:
                 concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmts)
             except AttributeError: # No ontology server
