@@ -343,6 +343,7 @@ class NominalGroupStatementBuilder:
             
             instance_id = None
             if onto_id:
+                # If one of the returned concepts is an instance, take the first one.
                 for c in onto_id:
                     if "INSTANCE" in c:
                         instance_id = c[0]

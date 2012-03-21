@@ -4,6 +4,8 @@
 import logging
 logger = logging.getLogger("dialogs")
 
+import random
+
 from pyoro import OroServerError
 
 from dialogs.helpers.helpers import colored_print
@@ -122,7 +124,7 @@ class Resolver:
         # Case of a quantifier different from ONE
         #   means the nominal group holds an indefinite determiner. 
         #   E.g a robot, every plant, fruits, ...
-        if nominal_group._quantifier in ['SOME','ALL']: 
+        if nominal_group._quantifier in ['ALL']: 
             
             class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
            
@@ -139,49 +141,45 @@ class Resolver:
                 
             else:
                 if nominal_group.noun[0] in ["everything", "anything"]:
-			# case of everything/anything
-			# -> we get all ids existing in the ontology
-			
-			logger.debug("Found " + nominal_group.noun[0] + ": retrieving all existing instances.")
-				    
-			onto_id = []
-			try:
-			    onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type Artifact'])
-			except OroServerError: # The agent does not exist in the ontology
-			    pass
-	
+                    # case of everything/anything
+                    # -> we get all *Artifact* ids existing in the ontology
+
+                    logger.debug("Found " + nominal_group.noun[0] + ": retrieving all existing instances.")
+
+                    onto_id = []
+                    try:
+                        # TODO: anything -> all Artifact: is that right?
+                        onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type Artifact'])
+                    except OroServerError: # The agent does not exist in the ontology
+                        pass
+
                 else:
-			# case of an action verbs
-			# id = generated 
-			# E.g: An apple grows on a tree
-			# e.g.: show me the books -> books replaced by all book instance
-			#   we get the ids of all existing books in the ontology otherwise we generate one
-			
-			logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
-				    " for " + nominal_group.noun[0] + ((" and with verb " + verb) if verb else "") + \
-				    ". Replacing it by all its instances.")
-				    
-			onto_id = []
-			try:
-			    onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type ' + class_name])
-			except OroServerError: # The agent does not exist in the ontology
-			    pass
-			
+                    # case of an action verbs
+                    # id = generated 
+                    # E.g: An apple grows on a tree
+                    # e.g.: show me the books -> books replaced by all book instance
+                    #   we get the ids of all existing books in the ontology otherwise we generate one
+
+                    logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
+                            " for " + nominal_group.noun[0] + ((" and with verb " + verb) if verb else "") + \
+                            ". Replacing it by all its instances.")
+
+                    onto_id = []
+                    try:
+                        onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type ' + class_name])
+                    except OroServerError: # The agent does not exist in the ontology
+                        pass
+
                 if not onto_id:
                     sf = SentenceFactory()
                     raise InterruptedInteractionError(sf.create_no_instance_of(nominal_group))
                 
                 elif len(onto_id) == 1:
                     [nominal_group.id] = onto_id
-                
+
                 else:
-                    # More than one value!
-                    if nominal_group._quantifier == "SOME":
-                        # Pick one randomly
-                        nominal_group.id = onto_id[0]
-                    else: # ALL
-                        # Add all ids
-                        nominal_group.id = onto_id
+                    # More than one value! Add all ids
+                    nominal_group.id = onto_id
 
             nominal_group._resolved = True
 
@@ -280,10 +278,11 @@ class Resolver:
             pass
         
         if onto:
-            logger.debug("... \t" + nominal_group.noun[0] + " is an existing ID in " + current_speaker + "'s model.")
             for c in onto:
                 if "INSTANCE" in c:
                     nominal_group.id = c[0]
+                    logger.debug("... \t" + nominal_group.noun[0] + " is an existing ID (" + nominal_group.id + \
+                                 ") in " + current_speaker + "'s model.")
                     nominal_group._resolved = True
                     ResourcePool().mark_active(nominal_group.id)
                     break
@@ -415,53 +414,78 @@ class Resolver:
         stmts = builder.get_statements()
         builder.clear_statements()
         
-        logger.debug(colored_print("Looking for this concept in "+ current_speaker + "'s model: \n", "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
         
         # Special case of "other" occuring in the nominal group
         if builder.process_on_other:
-            logger.debug(colored_print("\tFound 'Other'.Looking for this concept in both Dialog history and "+ current_speaker + "'s model", "magenta"))
-            nominal_group, stmts = self._resolve_nouns_with_dialog_history(nominal_group, current_speaker, stmts, builder)
+            nominal_group, stmts = self.resolve_different_from_dialog_history(nominal_group, current_speaker, stmts, builder)
             if nominal_group._resolved: 
                 ResourcePool().mark_active(nominal_group.id)
                 return nominal_group
-            
-        #Trying to discriminate 
-        description = [[current_speaker, '?concept', stmts]]
-        
-        #   Features to ignore from discrimination
-        features = []
-        if self._current_sentence.data_type in [W_QUESTION, YES_NO_QUESTION]:
-            if self._current_sentence.aim in ResourcePool().adjectives_ontology_classes:
-                # feature =["hasColor"]
-                features = ["has" + self._current_sentence.aim.capitalize()]
-            else:
-                features = ["rdf:type"]
-            
-        #   Discriminate
-        try:
-            id = discriminator.clarify(description, features)
-        except UnsufficientInputError as uie:
-            #   Create a new concept instead of raising unsificient input error, as the current sentence start with "learn that ..."
-            if self._current_sentence.islearning():
-                id = self._ontology_learns_new_concept(stmts, current_speaker)
+
+
+        if nominal_group._quantifier in ['SOME']:
+            # Pick a random id
+            logger.debug(colored_print("Looking for at least one concept matching in " + \
+                                       current_speaker + "'s model: \n", "magenta") + \
+                                       '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
+            try:
+                concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmts)
+            except AttributeError: # No ontology server
+                pass
+            except OroServerError: #The agent does not exist in the ontology
+                pass
+
+            if concepts:
+                id = random.choice(concepts)
             else:
                 sf = SentenceFactory()
-                if uie.value['status'] != 'SUCCESS':
-                    uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
+                uie = UnsufficientInputError({'status':'FAILURE'})
+                uie.value['question'] = sf.create_what_do_you_mean_reference(nominal_group)
                 uie.value['object'] = nominal_group
                 uie.value['sentence'] = self._current_sentence
                 uie.value['object_with_more_info'] = None
                 raise uie
-        
+
+        else:
+            #Try to discriminate 
+            logger.debug(colored_print("Looking for the concept matching in " + \
+                                       current_speaker + "'s model: \n", "magenta") + \
+                                       '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
+            description = [[current_speaker, '?concept', stmts]]
+
+            #   Features to ignore from discrimination
+            features = []
+            if self._current_sentence.data_type in [W_QUESTION, YES_NO_QUESTION]:
+                if self._current_sentence.aim in ResourcePool().adjectives_ontology_classes:
+                    # feature =["hasColor"]
+                    features = ["has" + self._current_sentence.aim.capitalize()]
+                else:
+                    features = ["rdf:type"]
+
+            #   Discriminate
+            try:
+                id = discriminator.clarify(description, features)
+            except UnsufficientInputError as uie:
+                #   Create a new concept instead of raising unsificient input error, as the current sentence start with "learn that ..."
+                if self._current_sentence.islearning():
+                    id = self._ontology_learns_new_concept(stmts, current_speaker)
+                else:
+                    sf = SentenceFactory()
+                    if uie.value['status'] != 'SUCCESS':
+                        uie.value['question'][:0] = sf.create_what_do_you_mean_reference(nominal_group)
+                    uie.value['object'] = nominal_group
+                    uie.value['sentence'] = self._current_sentence
+                    uie.value['object_with_more_info'] = None
+                    raise uie
+
         logger.debug(colored_print("Hurra! Found \"" + id + "\"", 'magenta'))
-        
+
         nominal_group.id = id
         nominal_group._resolved = True
-        
+
         ResourcePool().mark_active(nominal_group.id)
         return nominal_group
-    
-    
+
     def _noun_phrases_replace_with_ui_exception(self, sentence, uie_object, uie_object_with_more_info):
         """This attempts to replace a nominal group that has failled from discrimation with one that holds more information.
         """
@@ -505,13 +529,24 @@ class Resolver:
         return resolved_sn
     
     
-    def _resolve_nouns_with_dialog_history(self, nominal_group, current_speaker, current_stmts, builder):
-        """This attempts to resolve nouns that involve both a discrimination processing and searching the dialog history
+    def resolve_different_from_dialog_history(self, nominal_group, current_speaker, current_stmts, builder):
+        """This attempts to resolve nouns that involve both a discrimination
+        processing and searching the dialog history
+
+        It first retrieve all candidates that would match without 'other', then
+        select amongst these candidates the ones that where previously
+        mentioned in the dialogue, and eventually add 'owl:differentFrom'
+        statements for each of the resulting concepts.
+
             E.g: the 'other' cup.
-            - if there is only one cup existing in the ontology, then we identify it by a discrimination processing.
-            - if there are several cups known in the ontology, then we possibly mean a cup different from the one that has been stated earlier in the dialog.
+            - if there is only one cup existing in the ontology, then we
+              identify it by a discrimination processing.
+            - if there are several cups known in the ontology, then we possibly
+              mean a cup different from the one that has been stated earlier in
+              the dialog.
         """
-        
+
+        logger.debug(colored_print("\tFound '(an)other'. Looking for a different concept from dialog history.", "magenta"))
         obj_list = []
         try:
             obj_list = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', current_stmts)
@@ -530,11 +565,12 @@ class Resolver:
                 if not historic_objects_list:
                     raise DialogError("Error: possibly due to an empty dialog history")
                 
-                obj_candidate = [obj for obj in historic_objects_list if obj.id in obj_list][0]
+                candidates = [obj for obj in historic_objects_list if obj.id in obj_list]
                 
                 # Discriminate everything different from this ID
-                current_stmts.append("?concept owl:differentFrom " + obj_candidate.id)
-                        
+                for c in candidates:
+                    current_stmts.append("?concept owl:differentFrom " + c.id)
+
         return nominal_group, current_stmts
         
     

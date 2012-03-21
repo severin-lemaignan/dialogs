@@ -662,7 +662,11 @@ def other_processing(sentence):
             
         if sentence[i]=='i':
             sentence[i]='I'
-            
+
+        # Split 'another' into 'an other' -> undefinite det + other
+        if sentence[i]=='another':
+            sentence=sentence[:i-1] + ['an', 'other'] + sentence[i+1:]
+
         i=i+1
     
     return sentence
