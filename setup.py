@@ -5,7 +5,7 @@ import os
 from distutils.core import setup
 
 setup(name='Dialogs',
-      version='0.6',
+      version='0.6.9',
       license='BSD',
       description='Handles natural language inputs and outputs on cognitive robots',
       long_description='Dialogs parses natural language and tries to ground it with respect to an ontology maintained by the robot',
