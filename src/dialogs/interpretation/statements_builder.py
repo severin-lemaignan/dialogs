@@ -667,7 +667,9 @@ class VerbalGroupStatementBuilder:
             #Case 1:  the state verb 'to be'/ to become"""
             #Case 2:  actions or stative verbs with a specified 'goal' or 'thematic' role:
             #                          see '../../share/dialog/thematic_roles'
-            #Case 3:  other action or stative verbs
+            #Case 3: actions verbs with 'passive behaviour' like 'see'
+            #Case 4: special case for 'know'
+            #Case 5:  other action or stative verbs
             
             # Modal or phrasal verbs. E.g: can+do, look+for , ...
             #                   verb = must+do
@@ -692,47 +694,59 @@ class VerbalGroupStatementBuilder:
                         sit_id = generate_id(with_question_mark = False)
                         self._statements.append(subject_id + " experience " + sit_id)
                     else:
-                        #TODO: Will kepp only the last one is several ids
+                        #TODO: Will keep only the last one is several ids
                         sit_id = subject_id
             else:
+
+                # First, create a situation ID that represent the
+                # semantic situation carried by the verbal phrase
+
                 #Case : the verbal group that is being processed is the second verbs . i.e : it is held in the field sentence.sv.sv_sec
                 if second_verb_sit_id:
                     sit_id = second_verb_sit_id
-                
+
                 # Case of question
                 elif self._process_on_question:
                     sit_id = '?event'
-                
+
                 #case of negation : Creating a fake ID that is to find in the ontology for later removal
                 #   Setting up the field process_statement_to_remove to True
                 elif self._process_on_negative:
                     sit_id = generate_id(with_question_mark = True)
                     self._unclarified_ids.append(sit_id)
                     self.process_statements_to_remove = True
-                    
+
+                # General case: we generate an ID
                 else:
                     sit_id = generate_id(with_question_mark = not self._process_on_resolved_sentence)
-                
-                #Case 2:                
+
+
+                # Then, process the type of verb
+
+                #Case 2:
                 if verb in ResourcePool().goal_verbs:
                     self._statements.append(subject_id + " desires " + sit_id)
-                    
+
                     if verbal_group.sv_sec:
                         self.process_vrb_sec(verbal_group, subject_id, subject_quantifier, sit_id)
-                
-                #Case of action verbs wit passive behaviour
+
+                #Case 3: action verbs wit passive behaviour
                 elif verb.lower() in ResourcePool().action_verb_with_passive_behaviour.keys():
                     sit_id = subject_id
-                
-                # Case of know
+
+                # Case 4: 'know'
                 elif verb.lower() == 'know':
                     pass
-                    
-                #Case 3:   
+
+                #Case 5: other verbs -> reification
                 else:
                     self._statements.append(sit_id + " rdf:type " + verb.capitalize())
-                    self._statements.append(sit_id + " rdfs:label \"" + verb.capitalize() + " action #" + sit_id + "\"")
                     self._statements.append(sit_id + " performedBy " + subject_id)
+                    if not self._process_on_question:
+                        # If I'm not processing a question, add a label
+                        # to this action
+                        self._statements.append(sit_id + " rdfs:label \"" + \
+                                verb.capitalize() + " action #" + sit_id + "\"")
            
             # Store the situation id
             self.situation_id = sit_id
