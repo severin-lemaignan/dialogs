@@ -14,37 +14,44 @@ from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import DialogError, GrammaticalError
 
 class QuestionHandler:
-    
+
     def __init__(self, current_speaker = None):
         self._sentence = None
         self._statements = []
         self._current_speaker = current_speaker
-        
-        #This field takes the value True or False when processing a Yes-No-question 
-        #        and takes a list of returned values from the ontology when processing a w_question 
+
+        # This field takes the value True or False when processing a
+        # Yes-No-question and takes a list of returned values from
+        # the ontology when processing a w_question
         self._answer = False
-        
-        #This field is set to 'None' when the answer of the question (wh-question) that is being processed aims to give information about the subject.
+
+        # This field is set to 'None' when the answer of the question 
+        # (wh-question) that is being processed aims to give information 
+        # about the subject.
         #It also holds the flags 'QUERY_ON_DIRECT_OBJ' and 'QUERY_ON_INDIRECT_OBJ'.
         self._query_on_field = None
-        
+
         self._process_on_location = False
-        
-        #This field is set to True, when the verb 'to know' occurs in a sentence
+
+        # This field is set to True, when the verb 'to know' occurs in a 
+        # sentence.
         self.process_on_knowing_concept = False
-        
+
+        # This defined the default model used to resolve queries.
         self._default_agent = "myself"
-        
+
     def clear_statements(self):
         self._statements = []
-    
-    
+
+
     def set_current_speaker(self, current_speaker):
+        """ Updates the speaker ID.
+        """
         self._current_speaker = current_speaker
-    
+
     def get_query_on_field(self):
         return self._query_on_field
-        
+
     def process_sentence(self, sentence):
         """This processes a w_question or yes_no_question sentence"""
         self._sentence = sentence
@@ -52,7 +59,7 @@ class QuestionHandler:
         builder = StatementBuilder(self._current_speaker)
         self._statements, situation_id = builder.process_sentence(self._sentence)
         logger.info(level_marker(level=2, color="yellow") + "Generated statements based on the sentence components: " + colored_print(str(self._statements), None, "magenta"))
-        
+
         #Case the question is a y_n_question : check the fact in the ontology
         if sentence.data_type == YES_NO_QUESTION:
             self._statements = self._set_situation_id(self._statements)
@@ -108,43 +115,42 @@ class QuestionHandler:
                         if "knows" in s:
                             [agent, object] = s.split(" knows ")
                             break
-                    
+
                     #No need of statements such as [S knows O]
                     [statements.remove(s) for s in statements if "knows" in s]
                     self.process_on_knowing_concept = False
-                        
-                
+
                 if statements:
                     logger.info(level_marker(level=2, color="yellow") + "Generated statements for this question: " + colored_print(str(self._statements), None, "magenta"))
-                    
+
                     answers = []
                     if self._process_on_location:
-                        
+
                         prepositions_list = ResourcePool().preposition_rdf_object_property.copy()
                         roles = dict([(preposition,prepositions_list[preposition][0])\
                                 for preposition in prepositions_list.keys()\
                                  if 'objectFoundInLocation' in prepositions_list[preposition]])
-                        
+
                         #Case of ojectFound in location
                         stmts = []
                         prepositions_already_used = []
                         for role in roles:
                             if roles[role] in prepositions_already_used:
                                 continue
-                                
+
                             stmts = [s.replace('objectFoundInLocation', roles[role]) for s in statements]
                             try:
                                 logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(stmts), None, "magenta"))
                                 answers = ResourcePool().ontology_server.findForAgent(agent,'?concept', stmts)
                             except AttributeError: #the ontology server is not started of doesn't know the method
                                 pass
-                            
+
                             prepositions_already_used.append(roles[role])
-                                                        
+
                             if answers:
                                 ResourcePool().mark_active(answers)
                                 self._answer.append([[role], answers])
-                        
+
                         #Case of object found in location + direction
                         stmts = [s.replace('objectFoundInLocation', 'isAt') for s in statements]
                         for role in ResourcePool().direction_words:                        
@@ -153,18 +159,18 @@ class QuestionHandler:
                                 answers = ResourcePool().ontology_server.findForAgent(agent,'?obj', stmts + ['?concept is'+ role.capitalize() + 'Of ?obj', '?concept rdf:type Location'])
                             except AttributeError: #the ontology server is not started of doesn't know the method
                                 pass
-                            
+
                             if answers:
                                 ResourcePool().mark_active(answers)
                                 self._answer.append([[role], answers])
-                            
+
                     else:
                         try:
                             logger.debug(level_marker(level=2, color="yellow") + "Searching in "+ agent +" model: " + colored_print(str(statements), None, "magenta"))
                             answers = ResourcePool().ontology_server.findForAgent(agent, '?concept', statements)
                         except AttributeError: #the ontology server is not started of doesn't know the method
                             pass
-                        
+
                         if answers:
                             ResourcePool().mark_active(answers)
                             self._answer.append([[], answers])

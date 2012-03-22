@@ -18,8 +18,9 @@ else
 
 
 ###################
-This list holds proposals 
-Second element: 1 if the proposal is used by functions which transform adverbial into relative
+This list holds special prepositions
+
+Second element: 1 if the preposition is used by functions which transform adverbial into relative
 Third element: for time, if 1 it is the future else if -1 in the past and else it is not used in time case
 Fourth element: the property that is to be used for generating statements
 Fifth element: helps to determine proposals that are related to an object location when querying the ontology

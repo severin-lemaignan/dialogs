@@ -326,9 +326,10 @@ class Resolver:
     
     
     def _references_resolution_with_anaphora_matcher(self, nominal_group, matcher, current_speaker, current_object):
-        """ This attempts to match the nominal group containing anaphoric words with an object identifed from 
-            the dialog history.
-            However, a confirmation is asked to user
+        """ This attempts to match the nominal group containing anaphoric words
+        with an object identifed from the dialog history.
+
+        If several candidates are found, a confirmation is asked to user.
         """
         if current_object:
             self._current_object = None
@@ -350,10 +351,11 @@ class Resolver:
             raise DialogError("No anaphora matches in dialog history")
 
         # Case there exist only one nominal group identified from anaphora matching
-        if len(object[1]) <= 1:
+        if len(object[1]) == 1:
             nominal_group = object[0]
-        
-        # Ask for confirmation to the user
+            logger.debug("Found anaphoric match " + str(nominal_group))
+
+        # Else, ask for confirmation to the user
         else:
             raise UnidentifiedAnaphoraError({'object':nominal_group,
                                             'object_to_confirm':object[0],
@@ -361,10 +363,10 @@ class Resolver:
                                             'objects_list': object[1],
                                             'sentence':self._current_sentence,
                                             'question':sf.create_do_you_mean_reference(object[0])})
-                                            
+
         ResourcePool().mark_active(nominal_group.id)
         return nominal_group
-        
+
     ################################################
     #   Nouns phrases resolution and discrimination
     ################################################
