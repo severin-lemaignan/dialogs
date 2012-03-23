@@ -120,79 +120,8 @@ class Resolver:
         # Case of a resolved nominal group
         if nominal_group._resolved: 
             return nominal_group
-            
-        # Case of a quantifier different from ONE
-        #   means the nominal group holds an indefinite determiner. 
-        #   E.g a robot, every plant, fruits, ...
-        if nominal_group._quantifier in ['SOME', 'ALL']: 
-            
-            class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
-           
-            if verb and verb in ResourcePool().state and nominal_group.noun[0] not in ["everything", "anything"]:
-                # Case of a state verb
-                # id = the class name
-                # E.g: an apple is a fruit
-                #       the id of apple is Apple
-                # TODO: adjectives are discarded: we do not handle 'A green apple is a fruit' for instance
-                logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
-                            " for " + nominal_group.noun[0] + " and state verb " + verb + \
-                            ". Replacing it by its class.")
-                
-                nominal_group.id = class_name
-                
-            else:
-                if nominal_group._quantifier in ['SOME']: 
-                    # Do not deal further here with existential quantifier. It will be processed
-                    # later in noun_resolution.
-                    return nominal_group
-                
-                if nominal_group.noun[0] in ["everything", "anything"]:
-                    # case of everything/anything
-                    # -> we get all *Artifact* ids existing in the ontology
 
-                    logger.debug("Found " + nominal_group.noun[0] + ": retrieving all existing instances.")
 
-                    onto_id = []
-                    try:
-                        # TODO: anything -> all Artifact: is that right?
-                        onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type Artifact'])
-                    except OroServerError: # The agent does not exist in the ontology
-                        pass
-
-                else:
-                    # case of an action verbs
-                    # id = generated 
-                    # E.g: An apple grows on a tree
-                    # e.g.: show me the books -> books replaced by all book instance
-                    #   we get the ids of all existing books in the ontology otherwise we generate one
-
-                    logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
-                            " for " + nominal_group.noun[0] + ((" and with verb " + verb) if verb else "") + \
-                            ". Replacing it by all its instances.")
-
-                    onto_id = []
-                    try:
-                        onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type ' + class_name])
-                    except OroServerError: # The agent does not exist in the ontology
-                        pass
-
-                if not onto_id:
-                    sf = SentenceFactory()
-                    raise InterruptedInteractionError(sf.create_no_instance_of(nominal_group))
-                
-                elif len(onto_id) == 1:
-                    [nominal_group.id] = onto_id
-
-                else:
-                    # More than one value! Add all ids
-                    nominal_group.id = onto_id
-
-            nominal_group._resolved = True
-
-            ResourcePool().mark_active(nominal_group.id)
-
-            return nominal_group
-            
         # Case of a nominal group built by only adjectives 
         #   E.g, 'big' in 'the yellow banana is big'.
         if nominal_group.adjectives_only():
@@ -298,17 +227,93 @@ class Resolver:
             logger.debug(colored_print("Replaced \"me\" or \"I\" by \"" + current_speaker + "\"","magenta"))
             nominal_group.id = current_speaker
             nominal_group._resolved = True
+            return nominal_group
         
         if nominal_group.noun[0].lower() in ['you']:
             logger.debug(colored_print("Replaced \"you\" by \"myself\"","magenta"))
             nominal_group.id = 'myself'
             nominal_group._resolved = True
-        
+            return nominal_group
+
         #Anaphoric words in the noun
         if nominal_group.noun[0].lower() in ['it', 'one']:
             nominal_group = self._references_resolution_with_anaphora_matcher(nominal_group, matcher, 
                                                                                     current_speaker, 
                                                                                     current_object)
+
+        # Case of a quantifier different from ONE
+        #   means the nominal group holds an indefinite determiner. 
+        #   E.g a robot, every plant, fruits, ...
+        if nominal_group._quantifier in ['SOME', 'ALL']: 
+            
+            class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
+           
+            if verb and verb in ResourcePool().state and nominal_group.noun[0] not in ["everything", "anything"]:
+                # Case of a state verb
+                # id = the class name
+                # E.g: an apple is a fruit
+                #       the id of apple is Apple
+                # TODO: adjectives are discarded: we do not handle 'A green apple is a fruit' for instance
+                logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
+                            " for " + nominal_group.noun[0] + " and state verb " + verb + \
+                            ". Replacing it by its class.")
+                
+                nominal_group.id = class_name
+                
+            else:
+                if nominal_group._quantifier in ['SOME']: 
+                    # Do not deal further here with existential quantifier. It will be processed
+                    # later in noun_resolution.
+                    return nominal_group
+                
+                if nominal_group.noun[0] in ["everything", "anything"]:
+                    # case of everything/anything
+                    # -> we get all *Artifact* ids existing in the ontology
+
+                    logger.debug("Found " + nominal_group.noun[0] + ": retrieving all existing instances.")
+
+                    onto_id = []
+                    try:
+                        # TODO: anything -> all Artifact: is that right?
+                        onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type Artifact'])
+                    except OroServerError: # The agent does not exist in the ontology
+                        pass
+
+                else:
+                    # case of an action verbs
+                    # id = generated 
+                    # E.g: An apple grows on a tree
+                    # e.g.: show me the books -> books replaced by all book instance
+                    #   we get the ids of all existing books in the ontology otherwise we generate one
+
+                    logger.debug("Found indefinite quantifier " + nominal_group._quantifier + \
+                            " for " + nominal_group.noun[0] + ((" and with verb " + verb) if verb else "") + \
+                            ". Replacing it by all its instances.")
+
+                    onto_id = []
+                    try:
+                        onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type ' + class_name])
+                    except OroServerError: # The agent does not exist in the ontology
+                        pass
+
+                if not onto_id:
+                    sf = SentenceFactory()
+                    raise InterruptedInteractionError(sf.create_no_instance_of(nominal_group))
+                
+                elif len(onto_id) == 1:
+                    [nominal_group.id] = onto_id
+
+                else:
+                    # More than one value! Add all ids
+                    nominal_group.id = onto_id
+
+            nominal_group._resolved = True
+
+            ResourcePool().mark_active(nominal_group.id)
+
+            return nominal_group
+
+
         return nominal_group
     
     def _resolve_groups_references(self, array_sn, verb, matcher, current_speaker, current_object):
