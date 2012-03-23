@@ -18,7 +18,6 @@ from dialogs.sentence_factory import SentenceFactory
 
 from random import choice
 
- 
 class Discrimination():
 
     def __init__(self):
@@ -73,7 +72,7 @@ class Discrimination():
     # - agent
     # - object list
     # - ignoreDesc: list of descriptors not to be used
-    # - zPartial: if 1, then partial discriminants are also returned
+    # - zPartial: if true, then partial discriminants are also returned
     # OUTPUT:
     # - discriminant: [C, discriminat] if complete, or [P, discriminant] if partial
     #   The new discriminant should be different from the ones already known or ignored
@@ -84,7 +83,8 @@ class Discrimination():
                         str(colored_print(discriminants[1], 'blue')) + \
                         colored_print(" (complete discriminants: ", 'magenta') + \
                         str(colored_print(discriminants[0], 'blue')) + ")")
-                        
+
+
         complete_disc = discriminants[0] 
         partial_disc = discriminants[1]
 
@@ -94,11 +94,12 @@ class Discrimination():
             res = filter(lambda x: x not in ignoreDesc, partial_disc)
         else:
             res = None
-            
+
         if res:
             # include randomization so the same discriminant is not always returned
             return choice(res)
         else:
+            # No discriminant after applying the blacklist.
             return None
 
     # -- GET_DESCRIPTOR -----------------------------------------------------------#
@@ -341,36 +342,56 @@ class Discrimination():
         
         return description
         
-    # -- FIND_UNAMBIGUOUS_DESC -----------------------------------------------------#
-    # Searches an unambiguous description for a given object. If not found, returns
-    # the id of the object and the most complete description found.
+    # -- FIND_UNAMBIGUOUS_DESC ---------------------------------------#
+    # Searches an unambiguous description for a given object. 
+    # If it fails, it returns the most complete description found.
     #
     # INPUT:
     # - objectID: object to be described
     #
     # OUTPUT:
-    # - description: ok
-    # - [objectID, description]: failed
-    # -----------------------------------------------------------------------------#
+    # - a tuple (is_unambigous, description)
+    #     - is_unambigous is a boolean
+    #     - description is a set of partial statements like 
+    #       "?obj rdf:type Superman" describing as well as possible 
+    #       the object.
+    # ----------------------------------------------------------------#
     def find_unambiguous_desc(self, objectID):
         description = None
         # get the first class name
-        type = self.oro.getDirectClassesOf(objectID).keys()[0] 
-        description = [['myself','?obj',['?obj rdf:type ' + type]]]        
+        type = [t for t in self.oro.getDirectClassesOf(objectID).keys() if t not in ["ActiveConcept"]][0]
+        description = [['myself','?obj',['?obj rdf:type ' + type]]]
         objL = self.get_all_objects_with_desc(description)
-         
+
         while len(objL) > 1:
+
+            nbCandidates = len(objL)
+
             logger.debug('Description ' + objectID +': ' + str(description))
             logger.debug('ObjL: ' + str(objL))
 
-            agent, descriptor = self.get_descriptor(description,1)
-            val = self.oro.findForAgent(agent, '?val','[' + objectID + ' ' + descriptor + ' ?val]')            
-            
-            if not val: 
-                description.insert(0,objectID)
+            agent, descriptor = self.get_descriptor(description,[], True)
+
+            if not descriptor:
                 break
-                
-            description = self.add_descriptor(agent, description, descriptor, val[0])            
+
+            val = self.oro.findForAgent(agent, '?val','[' + objectID + ' ' + descriptor + ' ?val]')
+
+            if not val:
+                break
+
+            description = self.add_descriptor(agent, description, descriptor, val[0])
             objL = self.get_all_objects_with_desc(description)
 
-        return description
+            if nbCandidates == len(objL):
+                logger.error("While trying to find an unambiguous description" + \
+                        " of " + objectID + ", oro answered a non-discriminant" + \
+                        " property. Bug in oro? Halting here for now.")
+                break
+
+        if len(objL) == 1:
+            unambiguous = True
+        else:
+            unambiguous = False
+
+        return (unambiguous, description[0][2])

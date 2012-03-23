@@ -81,26 +81,30 @@ def get_file_handler(filename):
     
     return log_handler
 
-def check_results(res, expected):
-    def check_triplets(tr , te):
-        tr_split = tr.split()
-        te_split = te.split()
-        
-        return  (not '?' in tr_split[0]) and \
-                (not '?' in tr_split[2]) and \
-                (tr_split[0] == te_split[0] or te_split[0] == '*') and\
-                (tr_split[1] == te_split[1]) and\
-                (tr_split[2] == te_split[2] or te_split[2] == '*') 
-       
+def check_results(res, expected, allow_question_mark = False):
+
+    def check_triplets(tr , te, allow_question_mark):
+        sr,pr,orr = tr.split()
+        se,pe,oe = te.split()
+
+
+        if not allow_question_mark and \
+                ('?' in se or '?' in sr):
+           return False
+
+        return  (sr == se or se == '*') and \
+                (pr == pe or pe == '*') and \
+                (orr == oe or oe == '*') 
+
     while res:
         r = res.pop()
         for e in expected:
-            if check_triplets(r, e):
+            if check_triplets(r, e, allow_question_mark):
                 expected.remove(e)
     if expected:
         logger.info("\t**** /Missing statements in result:   ")
-        logger.info("\t" + expected + "\n")
-           
+        logger.info("\t" + str(expected) + "\n")
+
     return expected == res
 
 def wait_for_keypress():

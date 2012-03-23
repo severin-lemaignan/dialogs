@@ -15,21 +15,6 @@ from dialogs.dialog_exceptions import *
 
 from dialogs.helpers.helpers import check_results, get_console_handler, get_file_handler
 
-def check_results(res, expected):
-    def check_triplets(tr , te):
-        tr_split = tr.split()
-        te_split = te.split()
-        
-        return (tr_split[0] == te_split[0] or te_split[0] == '*') and\
-                (tr_split[1] == te_split[1]) and\
-                (tr_split[2] == te_split[2] or te_split[2] == '*')       
-    while res:
-        r = res.pop()
-        for e in expected:
-            if check_triplets(r, e):
-                expected.remove(e)
-    return expected == res
-    
 class TestDiscrimination(unittest.TestCase):
     """This function tests the main features of the class Discrimination"""
 
@@ -38,7 +23,7 @@ class TestDiscrimination(unittest.TestCase):
         self.verbalizer = Verbalizer()
         
         try:
-            ResourcePool().ontology_server.reset()
+            #ResourcePool().ontology_server.reset()
             
             ResourcePool().ontology_server.add(["raquel rdf:type Human",
                             "Gamebox rdfs:subClassOf Box",
@@ -87,7 +72,7 @@ class TestDiscrimination(unittest.TestCase):
     def test_02(self):
         logger.info( "\nTest2: Complete self.discriminant in robot model found.")
         description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
-        expected_result = "Which color is the object? blue or orange or yellow?"
+        expected_result = "Which color is the bottle? Blue or orange or yellow."
         
         try:
             res = self.disc.clarify(description)
@@ -101,13 +86,14 @@ class TestDiscrimination(unittest.TestCase):
     def test_03(self):
         logger.info( "\nTest3: No complete self.discriminant in robot model found.")
         description = [['myself', '?obj', ['?obj rdf:type Box']]]
-        expected_result = "Tell me more about the the object."
+        expected_result = ["Which color is the box? Orange or white.",
+                           "Where is the Box? On the ACCESSKIT or on the table1?"]
         
         try:
             res = self.disc.clarify(description)
         except UnsufficientInputError as use:
             self.assertEquals(use.value['status'], 'SUCCESS')
-            self.assertEquals(self.verbalizer.verbalize(use.value['question']), expected_result)
+            self.assertIn(self.verbalizer.verbalize(use.value['question']), expected_result)
             return
         
         self.fail("Should trigger an unsufficient input exception!")
@@ -116,7 +102,7 @@ class TestDiscrimination(unittest.TestCase):
         logger.info( "\nTest4: Including visibility constraints")
         description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
         description.append(['raquel', '?obj', ['?obj isVisible true']])
-        expected_result = "Which color is the object? blue or orange?"
+        expected_result = "Which color is the bottle? Blue or orange."
         
         try:
             res = self.disc.clarify(description)
@@ -130,7 +116,7 @@ class TestDiscrimination(unittest.TestCase):
     def test_05(self):
         logger.info( "\nTest5: Testing location")
         description = [['myself', '?obj', ['?obj rdf:type Artifact', '?obj hasColor orange']]]
-        expected_result = "Is the object on ACCESSKIT or HRP2TABLE?"
+        expected_result = "Which type is the object? Game box or bottle."
         
         try:
             res = self.disc.clarify(description)
@@ -148,28 +134,37 @@ class TestDescriptionGeneration(TestDiscrimination):
     def test_descr_generation_01(self):
         logger.info( "\nDescription Generation - Test1: Generate unambiguous description")
         objectID = 'BLUE_BOTTLE'
-        expected_result = [['myself', '?obj', ['?obj rdf:type Bottle', '?obj mainColorOfObject blue']]]
+        expected_result = (True, ['?obj rdf:type Bottle', '?obj * blue'])
         res = self.disc.find_unambiguous_desc(objectID)
-        
-        self.assertTrue(check_results(res[0][2], expected_result[0][2]))
+
+        logger.info("Result of desc generation: " + str(res))
+
+        self.assertEquals(res[0], expected_result[0])
+        self.assertTrue(check_results(res[1], expected_result[1], allow_question_mark = True))
 
 
     def test_descr_generation_02(self):
         logger.info( "\nDescription Generation - Test2: Generate unambiguous description")
         objectID = 'ACCESSKIT'
-        expected_result = [['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white', '?obj isUnder ORANGEBOX']]]
+        expected_result = (True, ['?obj rdf:type Gamebox', '?obj isOn table1'])
         res = self.disc.find_unambiguous_desc(objectID)
+
+        logger.info("Result of desc generation: " + str(res))
         
-        self.assertTrue(check_results(res[0][2], expected_result[0][2]))
+        self.assertEquals(res[0], expected_result[0])
+        self.assertTrue(check_results(res[1], expected_result[1], allow_question_mark = True))
 
 
     def test_descr_generation_03(self):
         logger.info( "\nDescription Generation - Test3: Generate unambiguous description")
         objectID = 'SPACENAVBOX'
-        expected_result = ['SPACENAVBOX', ['myself', '?obj', ['?obj rdf:type Box', '?obj mainColorOfObject white']]]
+        expected_result = (True, ['?obj rdf:type Gamebox', '?obj * white', '?obj isOn ACCESSKIT'])
         res = self.disc.find_unambiguous_desc(objectID)
-        
-        self.assertTrue(check_results(res[0][2], expected_result[0][2]))
+
+        logger.info("Result of desc generation: " + str(res))
+
+        self.assertEquals(res[0], expected_result[0])
+        self.assertTrue(check_results(res[1], expected_result[1], allow_question_mark = True))
 
 class TestDiscriminateCompleteDialog(unittest.TestCase):
     """Tests the differents features of the Dialog module.
