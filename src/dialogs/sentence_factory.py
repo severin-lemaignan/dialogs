@@ -185,8 +185,8 @@ class SentenceFactory:
                                 [Nominal_Group([], [], [['sorry',[]]], [], [])],[],[],[],"affirmative", [])]),
                     Sentence(STATEMENT,"",
                             [Nominal_Group([], ['I'], [], [], [])],
-                            [Verbal_Group(['have'],[], "present simple", 
-                                [Nominal_Group(['no'], ['answer'], [], [], [])], [], [],[],"affirmative", [])])]
+                            [Verbal_Group(['know'],[], "present simple", 
+                                [], [], [],[],"negative", [])])]
                     
         
         # Case of adjectives only
