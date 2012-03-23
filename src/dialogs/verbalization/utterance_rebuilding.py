@@ -298,39 +298,63 @@ def possesion_form(sentence):
 
 def determination_nom_gr(sentence, position,prop):
     """
-    This function return the nominal group with his complement                             
-    Input=sentence                             Output=nominal group               
+    This function return the nominal group with his complement
+
+    :param sentence: the input sentence
+    :param position: the start index of the nominal group
+    :param prop: preposition to...?
+
+    :returns: a complete nominal group starting at position
     """
-    
-    nom_gr=find_sn_pos(sentence, position)
-    list_nom_gr=nom_gr
-    
-    while position+len(nom_gr)<len(sentence) and sentence[position+len(nom_gr)] == prop:
-        position=position+len(nom_gr)+1
-        nom_gr=find_sn_pos(sentence, position)
-        list_nom_gr=list_nom_gr+[prop]+nom_gr
-        
+
+    nom_gr = find_sn_pos(sentence, position)
+    list_nom_gr = nom_gr
+
+    while position + len(nom_gr) < len(sentence) and sentence[position+len(nom_gr)] == prop:
+        position = position + len(nom_gr) + 1
+        nom_gr = find_sn_pos(sentence, position)
+        list_nom_gr = list_nom_gr + [prop] + nom_gr
+
     return list_nom_gr
 
 
 
 def and_case(sentence):
     """
-    This function converts 'and' to ',' if it is necessary                                   
-    Input=sentence                                     Output=sentence               
+    This function converts 'and' to ',' if it is necessary
+
+    :param sentence: the input sentence
+    :returns: the sentence with 'and' replaced by commas where necessary
     """
-    
+
+    indicesToReplace = []
+
+    length = len(sentence)
+
+    if length <= 4:
+        # a sentence with less than 5 words can not have 2 "and".
+        return sentence
+
     #init
-    i=0
-    while i < len(sentence):
+    i = length - 4
+
+
+    while i > 0:
         if sentence[i] == 'and':
-            nom_gr=determination_nom_gr(sentence, i+1, 'of')
-            
-            #If the 'and' can be changed to ','
-            if len(sentence)>len(nom_gr)+i+1 and sentence[len(nom_gr)+i+1]=='and':
-                sentence=sentence[:i]+[',']+sentence[i+1:]
-        i=i+1
-   
+
+            nom_gr = determination_nom_gr(sentence, i+1, 'of')
+
+            #can 'and' be changed to ','?
+            if length > i + len(nom_gr) + 1 and \
+               sentence[i + len(nom_gr) + 1] == 'and':
+
+                indicesToReplace.append(i)
+        i -= 1
+
+    # Do the replacement
+    for i in indicesToReplace:
+        sentence = sentence[:i] + [','] + sentence[i+1:]
+
     return sentence
 
 
