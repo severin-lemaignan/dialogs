@@ -29,7 +29,7 @@ Features
 
 [DONE v0.2.99] Special case for "knows", "sees", "hears" in statement builder -> ~passive actions
 
-[TODO] uses discrimination.find_unambiguous_desc(self, objectID) to build 
+[DONE v.0.6.9] uses discrimination.find_unambiguous_desc(self, objectID) to build 
 unambiguous descriptions of concepts when answering questions.
 
 [TODO:3] Class grounding case of adjectives

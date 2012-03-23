@@ -9,7 +9,15 @@ from helpers.printers import level_marker
 from resources_manager import ResourcePool
 from sentence import *
 
+
 class SentenceFactory:
+
+    def __init__(self):
+        self.oro = ResourcePool().ontology_server
+
+        # Store the list of subproperties of 'hasFeature'
+        # used in create_nominal_group_with_object()
+        self.featuresProperties = self.oro["* rdfs:subPropertyOf hasFeature"]
     
     def create_w_question_choice(self, obj_name, feature, values):
         """ Creates sentences of type: 
@@ -206,10 +214,11 @@ class SentenceFactory:
                         yourself = True
                         
                     ng = self.create_nominal_group_with_object(resp, current_speaker)
-                    ng.id = resp
-                    ng._resolved = True
-                    ngL.append(ng)
-                
+                    if ng:
+                        ng.id = resp
+                        ng._resolved = True
+                        ngL.append(ng)
+
                 #Arraging preposition
                 if preposition and preposition[0] in ResourcePool().direction_words:
                     if preposition[0] == 'front':
@@ -317,156 +326,66 @@ class SentenceFactory:
         
     def create_nominal_group_with_object(self, object, current_speaker):
         """Creating a nominal group by retrieving relevant information on 'object'."""
-        
-        
-        def _filter_ontology_inferred_class(object_list):
-            """Filtering infered class from the ontology such as SpatialThing, EnduringThing-Localized, ... that add no needed infos """
-            filter_list = ['Object', 'Location', 
-                            'Agent', 'SpatialThing-Localized', 'SpatialThing',
-                            'PartiallyTangible', 
-                            'EnduringThing-Localized', 'Object-SupportingFurniture', 
-                            'Artifact', 'PhysicalSupport', 'owl:Thing', 'owl:thing',
-                            'Place', 'Furniture']
-                        
-            if not object_list:
-                return ['owl:thing']
-            
-            result_list = []
-            for item in object_list:
-                if not item in filter_list:
-                    result_list.append(item)
-            
-            return result_list if result_list else ['owl:thing']
-            
-        #end of _filter_ontology_inferred_class
-        
+
+        ignored_classes = ['ActiveConcept', 'Location', 
+         'Agent', 'cyc:SpatialThing-Localized', 'cyc:SpatialThing',
+         'cyc:PartiallyTangible', 'cyc:EnduringThing-Localized', 'cyc:Object-SupportingFurniture', 
+         'Artifact', 'PhysicalSupport', 'owl:Thing', 'Place']
+
         #Creating object components : Det, Noun, noun-cmpl, etc.
         # reference to myself, current speaker, ...
         if object == "myself":
-            return Nominal_Group([], ["me"], [], [], [])#No need to go further as we know "myself" ID
+            return Nominal_Group([], ["me"], [], [], []) # No need to go further as we know "myself" ID
         
         if object == current_speaker:
-            return Nominal_Group([], ["you"], [], [], [])#No need to go further as we know the current speaker's ID
-        
-        # Label if Proper noun
-        object_noun = []
-        object_determiner = []
-        
-        onto = []
-        try:
-           onto = ResourcePool().ontology_server.find('?concept', [object + ' rdfs:label ?concept'])
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            pass
-        
-        if onto:
-            object_noun = onto # name must be unique for a given object
-            
-            return Nominal_Group([], object_noun, [], [], [])#No need to go further as we know the label now
-            
-            
-        # Class Type if Common noun or Id
-        else:
-            try:
-               onto = ResourcePool().ontology_server.getDirectClassesOf(object)
-            except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
-            
-            object_noun = [_filter_ontology_inferred_class(onto.keys())[0].lower()]
-                       
-            if object_noun == ['owl:thing']:
-                object_noun = ["object"]
-                
-            object_determiner = ['the']
-        
-        
-        
-        # Adjectives or Object Features 
-        object_features = []
-        description = [' hasFeature ', ' hasSize ']
-        for desc in description:
-            onto = []
-            try:
-               onto = ResourcePool().ontology_server.find('?concept', [object + desc + '?concept'])
-            except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
-                
-            for obj in onto:
-                object_features.append([obj, []]) # Cf Adjectives format: list[main, list[quatifiers]]
-                
-        """ Commented due to recursivity issues
-        # Object Location
-        object_location = []
-        description = [' isNextTo ', ' isBehind ',' isInFrontOf ', ' isOn ', ' isIn ', ' hasGoal ', ' receivedBy ']
-                        
-        for desc in description:
-            onto = []
-            try:
-               onto = ResourcePool().ontology_server.find('?concept', [object + desc + '?concept'])
-            except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
-            
-            #Match preposition with description
-            prep = ''
-            if desc == ' isNexTto ':
-                prep = 'next+to'
-            elif desc == ' isBehind ':
-                prep = 'behind'
-            elif desc == ' isInFrontOf ':
-                prep = 'in+front+of'
-            elif desc == ' isIn ':
-                prep = 'in'
-            elif desc in  [' hasGoal ', ' receivedBy ']:
-                prep = 'to'
-            elif desc == ' isOn ':
-                prep = 'on'
+            return Nominal_Group([], ["you"], [], [], []) # No need to go further as we know the current speaker's ID
+
+        label = self.oro.getLabel(object)
+        if not label == object: #We really have a label for this concept
+            return Nominal_Group([], [label], [], [], [])
+
+        # Else, we proceed with full discrimination to generate a
+        # unique description of our object.
+        from dialogs.interpretation.discrimination import Discrimination
+
+        discrimination = Discrimination()
+        unambiguous, desc = discrimination.find_unambiguous_desc(object)
+
+        logger.info("Result from desc:" + str(desc) + \
+                    " (unambiguous description)" if unambiguous else " (ambiguous description)")
+
+        types = []
+        other_features = []
+
+        for elem in desc:
+            s,p,o = elem.split()
+            if p == "rdf:type":
+                types.append(o)
             else:
-                prep = 'at'
-            
-            for i_c_object in onto:
-                #TODO: Reduce recursivity so that we don't have , the bottle that is on the table, that is in Toulouse, that is in France, that is ...
-                object_location.append(Indirect_Complement([prep], [self.create_w_question_object(i_c_object)]))        
-        
-        #Keep Location in a relative description => relative
-        object_relative_description = []
-        if object_location:
-            object_relative_description = [Sentence("relative", "", [],
-                                                        [Verbal_Group(['be'],                                               
-                                                                       [],
-                                                                       'present_simple',
-                                                                       [],
-                                                                       object_location,
-                                                                       [],
-                                                                       [],
-                                                                       Verbal_Group.affirmative,
-                                                                       [])])]
-        
-        
-        
-        
-        
-        # Noun Complement or Object owner if there exists
-        object_owner = []
-        description = [' belongsTo ']
-        onto = []
-        try:
-            onto = ResourcePool().ontology_server.find('?concept', [object + desc + '?concept'])
-        except AttributeError:
-            pass
-            
-        for n_cmpl_object in onto:
-            #TODO: Reduce recursivity so that we don't have , the bottle of the table, of Toulouse, of France, of ...
-            object_owner.append(self.create_w_question_object(n_cmpl_object))
-        
-        
-           
-                
-        # Nominal Groupp to return
-        return Nominal_Group(object_determiner, 
-                            object_noun, 
-                            object_features, 
-                            object_owner,
-                            object_relative_description)
-        """
+                other_features.append((p,o))
+
+        types =  [t for t in types if t not in ignored_classes]
+
+        # No type remains after filtering: probably an non-concrete
+        # entity. Let forget it.
+        if not types:
+            logger.warning(object + " has no type suitable for verbalization." + \
+                    "I won't mention it to the user.")
+            return None
+
+        object_determiner = ['the']
+        object_noun = [self.oro.getLabel(random.choice(types)).lower()] #TODO: for now, just pick randomly a class name
+        object_features = []
+
+        for feature in other_features:
+            p,o = feature
+            if p in self.featuresProperties:
+                object_features.append([self.oro.getLabel(o), []]) # Cf Adjectives format: list[main, list[quatifiers]]
+            #TODO
+            #else:
+            # features like: "toto sees tata"
+            # -> create relative like "that sees tata"
+
         # Nominal Group to return
         return Nominal_Group(object_determiner, 
                             object_noun, 
