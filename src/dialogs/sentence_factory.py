@@ -289,7 +289,7 @@ class SentenceFactory:
                 #Noun
                 if ng.noun and ng.noun == ['you']:
                     ng.noun = ['I'] if subject else ['me'] 
-                elif ng.noun and ng.noun == ['I', 'me']:
+                elif ng.noun and ng.noun in [['I'], ['me']]:
                     ng.noun = ['you']
                 
                 else: 
