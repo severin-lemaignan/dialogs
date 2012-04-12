@@ -17,11 +17,12 @@ class SentenceFactory:
 
         # Store the list of subproperties of 'hasFeature'
         # used in create_nominal_group_with_object()
-        if self.oro:
+        try:
             self.featuresProperties = self.oro["* rdfs:subPropertyOf hasFeature"]
-        else:
+        except TypeError:
+            # No ontology server?
             self.featuresProperties = []
-
+    
     def create_w_question_choice(self, obj_name, feature, values):
         """ Creates sentences of type: 
             Which color is the bottle? Blue or yellow.

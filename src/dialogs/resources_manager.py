@@ -406,7 +406,11 @@ class ResourcePool:
         if isinstance(ids, basestring):
             ids = [ids]
 
-        self.ontology_server.add([id + " rdf:type ActiveConcept" for id in ids], "SHORTTERM")
+        try:
+            self.ontology_server.add([id + " rdf:type ActiveConcept" for id in ids], "SHORTTERM")
+        except AttributeError:
+            # No ontology server
+            pass
 
     def __del__(self):
         self.close()
