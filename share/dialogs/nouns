@@ -233,3 +233,14 @@ south
 north
 east
 west
+
+
+
+###################
+Compound nouns
+The tokens from these compound nouns are concatenated at the pre-processing stage
+###################
+apple juice
+orange juice
+grape juice
+video tape

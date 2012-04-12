@@ -327,6 +327,11 @@ class ResourcePool:
         #List of diection words, E.g: LEFT, RIGHT, TOP, etc ...
         self.direction_words = [k[0] for k in nouns[12]]
         
+        self.compound_nouns = nouns[13]
+
+        ###
+        ### ADVERBIALS
+
         adverbials = [list(line.split()) 
                     for line 
                     in open (os.path.join(data_path, "adverbial"))]   

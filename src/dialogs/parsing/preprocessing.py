@@ -15,6 +15,7 @@
     upper_to_lower : to process the upper case at the beginning of the sentence   
     but : to find 'but' that need preporcessing     
     concatenate_pos : to concatenate an element in a position given               
+    compound_nouns: replace spaces in compound nouns by '+'
     case_apostrophe_s_to_is : to know if there is this kind of "'s"               
     expand_contractions : to perform expand contraction using concatenate_pos     
     determination_nominal_group : to return the nominal group with his complement
@@ -364,14 +365,33 @@ def preposition_concat(sentence):
     while i < len(sentence):
         
         for j in ResourcePool().concatenate_proposals:
-            if i+len(j) < len(sentence) and sentence[i:i+len(j)]==j:
+            if i+len(j) <= len(sentence) and sentence[i:i+len(j)]==j:
                 sentence=sentence[:i]+[other_functions.convert_to_string(j)]+sentence[i+len(j):]
                 break
                 
         i=i+1
     return sentence
     
-    
+def compound_nouns(sentence):
+    """
+    Replaces all compound nouns defined in the 'nouns' data file by
+    concatenated versions (ie, with a '+' between tokens)
+    """
+    #init
+    i=0
+
+    while i < len(sentence) - 1: # '- 1' because compound nouns have a length >= 2
+
+        for cn in ResourcePool().compound_nouns:
+            if i + len(cn) <= len(sentence) and \
+               sentence[i:i+len(cn)] == cn:
+                sentence = sentence[:i] + \
+                           [other_functions.convert_to_string(cn)] + \
+                           sentence[i+len(cn):]
+                break
+        i += 1
+
+    return sentence
     
 def determination_nominal_group(sentence, position,prop):
     """
@@ -667,8 +687,7 @@ def other_processing(sentence):
         if sentence[i]=='another':
             sentence=sentence[:i-1] + ['an', 'other'] + sentence[i+1:]
 
-        i=i+1
-    
+        i += 1
     return sentence
  
  
@@ -1003,6 +1022,7 @@ def processing(sentence):
     """ 
     
     sentence = preposition_concat(sentence)
+    sentence = compound_nouns(sentence)
     sentence = upper_to_lower(sentence)
     sentence = delete_empty_word(sentence)
     sentence = concat_number(sentence)
