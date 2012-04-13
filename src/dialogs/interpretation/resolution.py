@@ -140,24 +140,24 @@ class Resolver:
             
             if nominal_group.noun and nominal_group.noun[0].lower() != 'one': # case "this + category" -> eg "this phone"
                 class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
-                logger.debug(colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' focusesOn ?concept, ?concept rdf:type ' + class_name, None, "magenta"))
+                logger.debug(colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' pointsAt ?concept, ?concept rdf:type ' + class_name, None, "magenta"))
                 try:
                      onto_focus = ResourcePool().ontology_server.findForAgent(
                                           current_speaker, 
                                           '?concept', 
-                                          [current_speaker + ' focusesOn ?concept', '?concept rdf:type ' + class_name])
+                                          [current_speaker + ' pointsAt ?concept', '?concept rdf:type ' + class_name])
                 except AttributeError:
                     pass
                 except OroServerError: #Agent not found in the ontology
                     pass
 
             else: # case "this" alone or "this one"
-                logger.debug(colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' focusesOn ?concept', None, "magenta"))
+                logger.debug(colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' pointsAt ?concept', None, "magenta"))
                 try:
                      onto_focus = ResourcePool().ontology_server.findForAgent(
                                           current_speaker, 
                                           '?concept', 
-                                          [current_speaker + ' focusesOn ?concept'])
+                                          [current_speaker + ' pointsAt ?concept'])
                 except AttributeError:
                     pass
                 except OroServerError: #Agent not found in the ontology
