@@ -427,7 +427,6 @@ class Resolver:
         stmts = builder.get_statements()
         builder.clear_statements()
         
-        
         # Special case of "other" occuring in the nominal group
         if builder.process_on_other:
             nominal_group, stmts = self.resolve_different_from_dialog_history(nominal_group, current_speaker, stmts, builder)
@@ -437,17 +436,26 @@ class Resolver:
 
 
         if nominal_group._quantifier in ['SOME']:
+
+            #enforce object visibility
+            stmtsAndVisibility = stmts + [current_speaker + " sees ?concept"]
+
             # Pick a random id
-            logger.debug(colored_print("Looking for at least one concept matching in " + \
+            logger.debug(colored_print("Looking for at least one visible concept matching in " + \
                                        current_speaker + "'s model: \n", "magenta") + \
-                                       '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
+                                       '[' + colored_print(', '.join(stmtsAndVisibility), None, 'magenta') + ']')
             concepts = []
             try:
-                concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmts)
+                concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmtsAndVisibility)
             except AttributeError: # No ontology server
                 pass
             except OroServerError: #The agent does not exist in the ontology
                 pass
+
+            if not concepts:
+                # no acceptable concepts that are visible. Look for concepts that are not visible."
+                logger.debug(colored_print("No visible concepts found. Removing the visibility constraint"))
+                concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmts)
 
             if concepts:
                 id = random.choice(concepts)
