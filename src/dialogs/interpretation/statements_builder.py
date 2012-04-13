@@ -7,7 +7,7 @@ from pyoro import OroServerError
 
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import DialogError, GrammaticalError
-
+from dialogs.helpers.helpers import generate_id
 
 
 from dialogs.sentence import *
@@ -996,12 +996,6 @@ def get_class_name(noun,conceptL):
     # Not found in the ontology? Using the capitalized version as class name
     return noun.capitalize()
      
-
-def generate_id(with_question_mark = True):
-    sequence = "abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    sample = random.sample(sequence, 5)
-    return ("?" + "".join(sample)) if with_question_mark else ("".join(sample))
-
 
     
 

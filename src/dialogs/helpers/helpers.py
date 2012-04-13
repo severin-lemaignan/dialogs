@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import random
+
 import logging
 logger = logging.getLogger('dialogs')
 
@@ -135,4 +137,10 @@ if __name__ == '__main__':
     
     #should print a 'Hello World' with normal colour.
     print format_colour("Hello World")
+
+def generate_id(with_question_mark = True):
+    sequence = "abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    sample = random.sample(sequence, 5)
+    return ("?" + "".join(sample)) if with_question_mark else ("".join(sample))
+
 
