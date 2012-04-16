@@ -143,7 +143,8 @@ class Dialog(Thread):
                 except DialogError as de:
                     self._logger.info(colored_print("Error! " + de.value, 'magenta'))
                     #Output towards human
-                    sys.stdout.write("Sorry, I got confused... Could you repeat in a different way?\n")
+                    emotions.confused()
+                    sys.stdout.write("Sorry, I'm confused... Could you repeat in a different way?\n")
                     sys.stdout.flush()
 
 

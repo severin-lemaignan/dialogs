@@ -3,6 +3,7 @@ logger = logging.getLogger("dialogs")
 
 from dialogs.helpers.helpers import colored_print
 from dialogs.helpers.printers import level_marker
+from dialogs.helpers import emotions
 
 from dialogs.interpretation.statements_builder import StatementBuilder
 from dialogs.interpretation.statements_safe_adder  import StatementSafeAdder
@@ -72,6 +73,8 @@ class ContentAnalyser:
             
             logger.debug("...added to the ontology")
 
+            emotions.satisfied()
+
             if situation_id:
                 # If a new situation has been created, mark it as
                 # active.
@@ -91,8 +94,10 @@ class ContentAnalyser:
         answer = self.question_handler.process_sentence(sentence)
         
         if answer:
+            emotions.satisfied()
             logger.info(level_marker(level=2, color="yellow") + "Found: \n" + colored_print(str(answer), None, "magenta"))
         else:
+            emotions.sorry()
             logger.info(level_marker(level=2, color="yellow") + "Couldn't find anything!")
             
         if sentence.data_type == W_QUESTION:
