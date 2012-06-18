@@ -395,6 +395,9 @@ class ResourcePool:
         self.adjectives_ontology_classes = adj_s
   
     def mark_active(self, ids):
+        if not self.ontology_server:
+            return
+
         if isinstance(ids, basestring):
             ids = [ids]
 

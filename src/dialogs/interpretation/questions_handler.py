@@ -333,7 +333,7 @@ class QuestionHandler:
             try:
                 onto = ResourcePool().ontology_server.lookupForAgent(agent, aim)
             except AttributeError:
-                pass
+                onto = None
                 
             concept_descriptor = ["?concept rdf:type " + get_class_name(aim, onto)]
             self._sentence.aim = "thing"

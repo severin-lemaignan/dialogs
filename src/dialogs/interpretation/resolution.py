@@ -455,7 +455,13 @@ class Resolver:
             if not concepts:
                 # no acceptable concepts that are visible. Look for concepts that are not visible."
                 logger.debug(colored_print("No visible concepts found. Removing the visibility constraint"))
-                concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmts)
+                try:
+                    concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmts)
+                except AttributeError: # No ontology server
+                    pass
+                except OroServerError: #The agent does not exist in the ontology
+                    pass
+
 
             if concepts:
                 id = random.choice(concepts)

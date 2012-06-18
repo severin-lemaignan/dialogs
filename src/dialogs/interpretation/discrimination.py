@@ -15,6 +15,7 @@ from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import UnsufficientInputError
 from dialogs.sentence import *
 from dialogs.sentence_factory import SentenceFactory
+from dialogs.helpers.helpers import generate_id
 
 from random import choice
 
@@ -226,7 +227,7 @@ class Discrimination():
             logger.debug(colored_print('Found these possible concepts ID: ', "magenta") +  colored_print(str(objL), 'blue'))
 
         if not self.oro: #No ontology server
-            return 'UNKNOWN_CONCEPT'
+            return 'UNKNOWN_CONCEPT_' + generate_id(with_question_mark = False)
 
         if not objL:
             questions = SentenceFactory().create_i_dont_understand()

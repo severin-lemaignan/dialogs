@@ -688,9 +688,14 @@ class VerbalGroupStatementBuilder:
                     subjects_id = [subject_id]
                 else:
                     subjects_id = subject_id
+                
+                try:
+                    agentslist = ResourcePool().ontology_server.listAgents()
+                except AttributeError:
+                    agentslist = ["myself",self._current_speaker]
 
                 for subject_id in subjects_id:
-                    if subject_id in ResourcePool().ontology_server.listAgents():
+                    if subject_id in agentslist:
                         sit_id = generate_id(with_question_mark = False)
                         self._statements.append(subject_id + " experience " + sit_id)
                     else:
