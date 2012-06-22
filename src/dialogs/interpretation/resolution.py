@@ -101,10 +101,12 @@ class Resolver:
         
     
     def _get_class_name_from_ontology(self, current_speaker, nominal_group):
-            onto = []
+            onto_res = []
             
+            noun = ""
             try:
-                onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
+                noun = '"' + nominal_group.noun[0].replace('+', ' ') + '"'
+                onto_res = ResourcePool().ontology_server.lookupForAgent(current_speaker, noun)
             except IndexError:
                 raise DialogError("We should not have to resolve nominal " + \
                     "groups with indefinite determiner and only adjectives")
@@ -113,7 +115,7 @@ class Resolver:
             except OroServerError: # The agent does not exist in the ontology
                 pass
             
-            return get_class_name(nominal_group.noun[0], onto)
+            return get_class_name(noun, onto_res)
   
     def _resolve_references(self, nominal_group, verb, matcher, current_speaker, current_object):
         
