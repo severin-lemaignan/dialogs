@@ -29,7 +29,14 @@ actsOnObject Artifact
 receivedBy [on] PhysicalSupport
 }
 
-give (bring,hand) {
+bring {
+performedBy Agent
+actsOnObject Artifact
+receivedBy Agent
+}
+
+
+give (hand) {
 performedBy Agent
 actsOnObject Artifact
 receivedBy Agent
