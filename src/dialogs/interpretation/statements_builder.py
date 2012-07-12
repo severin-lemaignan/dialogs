@@ -697,7 +697,7 @@ class VerbalGroupStatementBuilder:
                 for subject_id in subjects_id:
                     if subject_id in agentslist:
                         sit_id = generate_id(with_question_mark = False)
-                        self._statements.append(subject_id + " experience " + sit_id)
+                        self._statements.append(subject_id + " experiences " + sit_id)
                     else:
                         #TODO: Will keep only the last one is several ids
                         sit_id = subject_id
