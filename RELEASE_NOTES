@@ -4,6 +4,54 @@ This file contains a detailled summary of Dialogs module evolution.
 
 For more details, please refer to the GIT log.
 
+Dialogs 0.7 - 18/07/2012
+========================
+
+Selected new features:
+----------------------
+
+- when resolving a concept with an undefinite quantifier, first try to
+  selected an object visible to the speaker
+- to improve usability 'this' is resolved with 'pointsAt' instead 
+  of 'focusesOn'
+- Use of discrimination routines to generate relevant descriptions
+  of objects when answering a question
+- Verbalisation of agreements after recognition of desires
+- Re-enable processing of statements like 'an apple is a fruit'
+  (note that adjectives are discarded, like 'green' in 'a green 
+  apple is a fruit')
+- Improved discrimination output (no changes to the algorithm)
+- Several improvements to what Dialogs says to the user (like 'I have 
+  no answer' repalced by 'I don't know')
+- better behaviour when Dialogs is run without a knowledge base
+- Allow a list of 'standard' compound nouns in share/nouns that are
+  identified as such at pre-processing stage.
+
+Experimental features:
+----------------------
+
+- preliminary support for emotion expression: depending on the success of the 
+  grounding, Dialogs assert some emotional state in the knowledge base.
+  Note that this feature is disabled by commit ee3818ec because it causes some 
+  (strange) issues to the Pellet reasoner.
+
+
+Language features:
+------------------
+
+- Added support for the 'another' construct
+- Added thematic roles for 'throw', 'bring'
+- Added synonyms for 'go' and 'give'
+- Minor other improvements (more adjectives are recognized, etc)
+
+Other changes:
+--------------
+
+- Fixed a silly bug in pronoun reversal (you -> me)
+- Labels are not created anymore when processing questions
+- Many bugfixes
+- Many refactoring, style & comment improvements. Much remain to be done :-)
+
 Dialogs 0.6 - 19/10/2011
 ========================
 
