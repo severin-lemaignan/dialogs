@@ -81,6 +81,14 @@ performedBy Agent
 hasGoal [at] Location
 }
 
+stop (halt) {
+performedBy Agent
+}
+
+test {
+performedBy Agent
+}
+
 think {
 performedBy Agent
 actsOnObject [on] Thing
