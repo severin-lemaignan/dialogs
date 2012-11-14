@@ -18,7 +18,13 @@
 # By default, all predicates are mandatory. If a predicate is inside square 
 # brackets, it means it is optional.
 
-get (pick,take) {
+pick {
+performedBy Agent
+actsOnObject Artifact
+}
+
+
+get (take) {
 performedBy Agent
 actsOnObject Artifact
 }
