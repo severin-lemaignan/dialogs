@@ -327,7 +327,7 @@ class Dialog(Thread):
             #Content analysis
             self._logger.info(colored_print("\n-------[   CONTENT ANALYSIS   ]-------\n", 'green'))
             
-            self.last_stmts_set = self._content_analyser.analyse(self.active_sentence, 
+            self.last_stmts_set, self.current_situation_id = self._content_analyser.analyse(self.active_sentence, 
                                                                     self.current_speaker)
             
             if self._demo_mode:
@@ -340,7 +340,14 @@ class Dialog(Thread):
                 self.last_sentence = (self._content_analyser.analyse_output(), 
                                         self._verbalizer.verbalize(self._content_analyser.analyse_output()))
                 
-                self._sentence_output_queue.put(self.last_sentence[0])
+                if self.current_situation_id:
+                    self._logger.debug(colored_print("Answer: <%s>: Sent to knowledge base." % self.last_sentence[1], 'magenta'))
+                    self._logger.debug("Up to the robot controller now!")
+                    ResourcePool().ontology_server.revise(['%s verbalisesTo "%s"' % (self.current_situation_id,
+                                                                                     self.last_sentence[1])],
+                                                        {"method":"add", "models":["myself"]})
+                else:
+                    self._sentence_output_queue.put(self.last_sentence[0])
                 
                 if self._demo_mode:
                     wait_for_keypress()

@@ -37,7 +37,7 @@ class QuestionHandler:
         # sentence.
         self.process_on_knowing_concept = False
 
-        # This defined the default model used to resolve queries.
+        # This defines the default model used to resolve queries.
         self._default_agent = "myself"
 
     def clear_statements(self):
@@ -96,11 +96,11 @@ class QuestionHandler:
             self._query_on_field = self._set_query_on_field(sentence)
             statements_with_bound_tokens =  self._remove_statements_with_no_unbound_tokens(self._statements)
             
-            #Agent from whith the ontology model is queried
+            #Agent from which the ontology model is queried
             agent = self._default_agent
             
             self._answer = []
-            
+
             #For all the possible subjects of a same question
             if not self._sentence.sn:
                 statements_to_query = [self._extend_statement_from_sentence_aim(statements_with_bound_tokens)]
@@ -178,8 +178,22 @@ class QuestionHandler:
                     pass
 
                 self._statements.extend(statements)
-        return self._answer
-        
+
+        stmts, sit_id = self._build_situation_statements()
+        return self._answer, stmts, sit_id
+    
+    def _build_situation_statements(self):
+        sit_id = generate_id(with_question_mark = False)
+
+        stmts = ["%s experiences %s" % (self._current_speaker, sit_id)]
+        stmts += ["%s rdf:type InterrogativeState" % sit_id]
+        for sn in self._sentence.sn:
+            stmts += ["%s hasObject %s" % (sit_id, sn.id)]
+        stmts += ["%s hasAim %s_question_aim" % (sit_id, self._sentence.aim)]
+        stmts += ["%s hasAnswer %s" % (sit_id, "true" if self._answer else "false")]
+
+        return stmts, sit_id
+    
     def _set_situation_id(self, statements):
         """This attempts to clarify the ID of an action verbs
             E.g: statement = [?event rdf:type Go, ?event performedBy myself, ?event actsOnObject xxx]
