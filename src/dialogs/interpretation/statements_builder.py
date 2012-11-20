@@ -908,10 +908,13 @@ class VerbalGroupStatementBuilder:
             self.lear_more_concept.extend(i_stmt_builder.lear_more_concept)
                 
                 
-    #TODO:      
     def process_sentence_adverb(self, verbal_group):
-        verbal_group.advrb = []
-        
+        id = generate_id(with_question_mark = False)
+        for a in verbal_group.advrb:
+            if a in ResourcePool().location_adverbs:
+                self._statements += ["%s hasGoal %s" % (self.situation_id, id),
+                        "%s rdf:type %sZone" % (id, a.capitalize())]
+
     
     def process_action_verb_adverb(self, advrb ,verb, id):
         """This provides a solution in order to process adverbs modifying the meaning of the action verbs.

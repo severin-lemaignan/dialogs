@@ -2,20 +2,29 @@
 This list holds adverbs
 ##
 
-again
-away
-here place
+again generic
+away location
+here location
 yesterday day -1
 tomorrow day 1
 today day 0
 tonight hour 4
 now hour 0
-perhaps
-maybe
-else
+perhaps generic
+maybe generic
+else generic
+up location
+down location
+left location
+right location
 
-
-
+##
+Words that are assumed to be adverbs if they are alone after a verb
+##
+around location
+behind location
+in location
+out location
 
 ###################
 This list holds special prepositions
@@ -31,6 +40,7 @@ after 1 1
 ago 1 -1
 as 1 0
 at 1 1
+around 1 0 isAround objectFoundInLocation
 because+of 1 0 hasPurpose 
 before 1 -1
 behind 1 0 isBehind objectFoundInLocation

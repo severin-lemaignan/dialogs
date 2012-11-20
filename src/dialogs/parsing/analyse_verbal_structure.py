@@ -152,7 +152,12 @@ def recover_obj_iobj(phrase, vg):
    
     object= analyse_nominal_group.find_sn(phrase)
 
-    while object!=[]:
+    if phrase and \
+       not object and \
+       phrase[0] in ResourcePool().adverbs_at_end:
+           vg.advrb= [phrase[0]]
+
+    while object:
 
         #If it is not a direct object => there is a proposal
         proposal=check_proposal(phrase, object)
@@ -590,8 +595,12 @@ def create_nom_gr(sentence,aim):
             sentence = [sentence[0]]+['a']+sentence[1:]
             sentence = [sentence[0]]+ create_nom_gr_and(sentence[1:])
         else:
-            #If we have a punctuation we add 'it'
-            return [sentence[0]]+['it']+sentence[1:]
+            #If we have a punctuation we add 'it', except if we
+            # recognize it as an adverb.
+            if sentence[0] in ResourcePool().adverbs_at_end:
+                pass
+            else:
+                return [sentence[0]]+['it']+sentence[1:]
     else:
         #Default case : we add object
         sentence = ['a']+sentence

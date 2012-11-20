@@ -208,6 +208,7 @@ class ResourcePool:
         self.numbers = []
         self.demonstrative_det = []
         self.adverbs = []
+        self.adverbs_at_end = []
         self.proposals = []
         self.preposition_rdf_object_property = {}
         self.compelement_proposals = []
@@ -238,6 +239,7 @@ class ResourcePool:
         self.days_list = []
         self.months_list = []
         self.time_adverbs = []
+        self.location_adverbs = []
         self.unusable_words = []
         self.time_proposals = []
         self.action_verb_with_passive_behaviour = {}
@@ -338,20 +340,29 @@ class ResourcePool:
         adverbials = self.split_list(adverbials)
         self.adverbs=[k[0] for k in adverbials[0]]
         self.time_adverbs=adverbials[0]
-        for k in adverbials[1]:
+
+        self.time_adverbs=[k[0] for k in adverbials[0] if k[1] in ["day", "hour"]]
+        self.time_adverbs += [k[0] for k in adverbials[1] if k[1] in ["day", "hour"]]
+        
+        self.location_adverbs=[k[0] for k in adverbials[0] if k[1] == "location"]
+        self.location_adverbs += [k[0] for k in adverbials[1] if k[1] == "location"]
+
+        self.adverbs_at_end = [k[0] for k in adverbials[1]]
+
+        for k in adverbials[2]:
             if k[1]=='1':
                 self.compelement_proposals=self.compelement_proposals+[k[0]]
-        self.proposals=[k[0] for k in adverbials[1]]
+        self.proposals=[k[0] for k in adverbials[2]]
         
         #Preposition with an existing object_property
         # E.g: next+to => isNextTo
-        self.preposition_rdf_object_property = dict([(k[0],k[3:]) for k in adverbials[1]])
-        self.time_proposals=adverbials[1]
-        self.subsentences=[k[0] for k in adverbials[2]]
-        for k in adverbials[2]:
+        self.preposition_rdf_object_property = dict([(k[0],k[3:]) for k in adverbials[2]])
+        self.time_proposals=adverbials[2]
+        self.subsentences=[k[0] for k in adverbials[3]]
+        for k in adverbials[3]:
             if k[1]=='1':
                 self.adv_sub=self.adv_sub+[k[0]]
-        self.prep_change_place=[k[0] for k in adverbials[3]]
+        self.prep_change_place=[k[0] for k in adverbials[4]]
         
         
         grammatical_rules = [list(line.split()) 
