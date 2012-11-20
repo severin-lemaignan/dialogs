@@ -866,7 +866,8 @@ class VerbalGroupStatementBuilder:
                 
                 #Proposition role
                 icmpl_role = None
-                
+                icmpl_qualification = None
+
                 # Case of no preposition
                 if not ic.prep:
                     icmpl_role = " receivedBy " 
@@ -875,17 +876,16 @@ class VerbalGroupStatementBuilder:
                 else:
                     icmpl_role = ResourcePool().thematic_roles.get_cmplt_role_for_preposition(verb, ic.prep[0], True)
                     
-                    # Trying to get the matching property
-                    #  E.g: for the preposition 'next+to' we expect the property 'isNextTo'
+                    # If no thematic role exist, use the generic role 
+                    #'involves' and try to qualify it properly.
+                    #  E.g: 'move the ball next to the table' ->
+                    # action type Move, ..., action involves id1, id1 isNextTo table
                     if not icmpl_role:
                         try:
-                            icmpl_role = " " + ResourcePool().preposition_rdf_object_property[ic.prep[0]][0] + " "
+                            icmpl_qualification = ResourcePool().preposition_rdf_object_property[ic.prep[0]][0]
                         except IndexError:
-                            pass
-                        
-                # Case of prepostion but thematic roles not found
-                if not icmpl_role and ic.prep:
-                    icmpl_role = " is" + ic.prep[0].capitalize() + " "
+                            if ic.prep:
+                                icmpl_qualification = "is" + ic.prep[0].capitalize()
                 
                 
                 #Creating statements
@@ -898,8 +898,13 @@ class VerbalGroupStatementBuilder:
                     
                 # Case of affirmation
                 else:
-                    self._statements.append(sit_id + icmpl_role + ic_noun_id)
-                
+                    if icmpl_qualification:
+                        qualification_id = generate_id(with_question_mark = False)
+                        self._statements += \
+                            ["%s involves %s" % (sit_id, qualification_id),
+                             "%s %s %s" % (qualification_id, icmpl_qualification, ic_noun_id)]
+                    else:
+                        self._statements.append(sit_id + icmpl_role + ic_noun_id)
                 
                 i_stmt_builder.process_nominal_group(ic_noun, ic_noun_id, None, False)
                 
