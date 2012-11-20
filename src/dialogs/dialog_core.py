@@ -9,6 +9,7 @@ from threading import Thread
 from dialog_exceptions import *
 from dialogs.sentence import *
 from helpers.helpers import colored_print, wait_for_keypress
+from helpers import emotions
 from interpretation.anaphora_matching import replacement
 from interpretation.content_analysis import ContentAnalyser
 from interpretation.resolution import Resolver
@@ -343,9 +344,13 @@ class Dialog(Thread):
                 if self.current_situation_id:
                     self._logger.debug(colored_print("Answer: <%s>: Sent to knowledge base." % self.last_sentence[1], 'magenta'))
                     self._logger.debug("Up to the robot controller now!")
-                    ResourcePool().ontology_server.revise(['%s verbalisesTo "%s"' % (self.current_situation_id,
+                    try:
+                        ResourcePool().ontology_server.revise(['%s verbalisesTo "%s"' % (self.current_situation_id,
                                                                                      self.last_sentence[1])],
                                                         {"method":"add", "models":["myself"]})
+                    except AttributeError:
+                        #No knowledge base
+                        pass
                 else:
                     self._sentence_output_queue.put(self.last_sentence[0])
                 

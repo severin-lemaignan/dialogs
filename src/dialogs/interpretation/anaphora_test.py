@@ -8,12 +8,12 @@
 import unittest
 import logging
 
-from dialog.sentence import *
-from dialog.parsing import preprocessing
-from dialog.parsing import analyse_sentence
-from dialog.parsing import parser
+from dialogs.sentence import *
+from dialogs.parsing import preprocessing
+from dialogs.parsing import analyse_sentence
+from dialogs.parsing import parser
 from anaphora_matching import *
-from dialog.parsing.parser_test import compare_nominal_group
+from dialogs.parsing.parser_test import compare_nominal_group
 
 
 """

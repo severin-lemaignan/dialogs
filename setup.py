@@ -4,14 +4,25 @@
 import os
 from distutils.core import setup
 
+def readme():
+    with open('README') as f:
+        return f.read()
+
 setup(name='Dialogs',
       version='0.7',
       license='BSD',
       description='Handles natural language inputs and outputs on cognitive robots',
-      long_description='Dialogs parses natural language and tries to ground it with respect to an ontology maintained by the robot',
+      long_description=readme(),
+      classifiers=[
+        'Development Status :: 4 - Beta',
+        'License :: OSI Approved :: BSD License',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Text Processing :: Linguistic',
+      ],
       author='OpenRobots team',
       author_email='openrobots@laas.fr',
       url='http://dialogs.openrobots.org',
+      install_requires=['pyoro'],
       package_dir = {'': 'src'},
       packages=['dialogs', 'dialogs.interpretation', 'dialogs.parsing', 'dialogs.helpers', 'dialogs.verbalization'],
       scripts=['scripts/dialogs', 'scripts/dialogs_test'],

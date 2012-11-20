@@ -7,7 +7,7 @@
 """
 import unittest
 import logging
-from dialog.sentence import *
+from dialogs.sentence import *
 import timescale_manager
 
 
