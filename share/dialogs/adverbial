@@ -17,6 +17,7 @@ up location
 down location
 left location
 right location
+forward location
 
 ##
 Words that are assumed to be adverbs if they are alone after a verb
