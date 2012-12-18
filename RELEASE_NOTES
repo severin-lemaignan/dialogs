@@ -4,6 +4,24 @@ This file contains a detailled summary of Dialogs module evolution.
 
 For more details, please refer to the GIT log.
 
+Dialogs 0.8 - 18/12/2012
+========================
+Selected features:
+----------------------
+ - recognize forward as an adverb
+ - correct semantics of indirect objects in actions: when no thematic role is explicitely found, we say the action 'involves' a new entity which is qualified by the indirect cmplt.
+ - improved management of location adverbs: we are now able to deal with sentences like 'Look down', 'Move up'...
+ - separate 'pick' and 'get' in thematic roles
+ - associate an 'InterrogativeState' to question; delay answer to human (this commit changes the way questions are answered)
+ - re-enable storing of emotions in the knowledge base
+ - added 'stop' and 'test' as recognized action verbs
+
+Other Changes:
+--------------
+ - improved setup.py, updated README + minor fixes
+
+
+
 Dialogs 0.7 - 18/07/2012
 ========================
 
