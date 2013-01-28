@@ -2,7 +2,7 @@
 * The LAAS-CNRS dialogs module *
 ********************************
 
-(c) LAAS-CNRS 2010-2012
+(c) LAAS-CNRS 2010-2013
 
 This module reads on stdin user input in natural language, parse it, call 
 resolution routines when ambiguous concepts are used, and finally generate RDF 
