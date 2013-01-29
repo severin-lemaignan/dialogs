@@ -17,9 +17,9 @@ def _send_state(state):
     statements = [state_id + " rdf:type " + state, 
                   "myself experiences " + state_id]
     try:
-        logger.info(colored_print("Setting my mood to " + state, "magenta"))
-        #logger.warning(colored_print("Not setting my mood due to Pellet bugs!", "magenta"))
-        ResourcePool().ontology_server.revise(statements, policy)
+        #logger.info(colored_print("Setting my mood to " + state, "magenta"))
+        logger.warning(colored_print("Not setting my mood due to Pellet bugs!", "magenta"))
+        #ResourcePool().ontology_server.revise(statements, policy)
 
     except AttributeError: #the ontology server is not started of doesn't know the method
         pass
