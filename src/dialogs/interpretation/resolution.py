@@ -795,14 +795,14 @@ class Resolver:
         #Commiting the ontology now, in case of a research on this concept on the remaining unresolved concepts of the sentence
         logger.debug(colored_print("Learning this new concept in "+ current_speaker + "'s model: \n", "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
         try:
-            ResourcePool().ontology_server.addForAgent(current_speaker, stmts)
+            ResourcePool().ontology_server.revise(stmts, {"method":"add", "models":[current_speaker]})
         except AttributeError:
             pass
             
         if current_speaker != 'myself':
             logger.debug(colored_print("Learning this new concept in robot's model: \n", "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
             try:
-                ResourcePool().ontology_server.add(stmts)
+                ResourcePool().ontology_server.revise(stmts, {"method":"add", "models":["myself"]})
             except AttributeError:
                 pass
 
