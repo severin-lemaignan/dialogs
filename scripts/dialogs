@@ -133,7 +133,7 @@ logger.info("v." + DIALOGS_VERSION + "\n")
 ResourcePool().init(DATA_DIR, ORO_HOST, ORO_PORT)
 
 if speaker and ResourcePool().ontology_server:
-    ResourcePool().ontology_server.add([speaker + " rdf:type Agent"])
+    ResourcePool().ontology_server.revise([speaker + " rdf:type Agent"], {"method":"add"})
     logger.info(speaker + " added to the ontology")
 
 dialog = Dialog(speaker, demo = demo)

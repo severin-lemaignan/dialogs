@@ -398,7 +398,7 @@ class ResourcePool:
         #Add action verbs to the ontology
         if self.ontology_server:
             stmts = [verb.capitalize() + " rdfs:subClassOf cyc:PurposefulAction" for verb in self.thematic_roles.verbs.keys() if not self.thematic_roles.verbs[verb].is_synonym()]
-            self.ontology_server.add(stmts)
+            self.ontology_server.revise(stmts, {"method":"add", "models":["myself"]})
         
         """
             List of ontology classes that are used in the adjectives list
@@ -418,7 +418,7 @@ class ResourcePool:
             ids = [ids]
 
         try:
-            self.ontology_server.add([id + " rdf:type ActiveConcept" for id in ids], "SHORTTERM")
+            self.ontology_server.revise([id + " rdf:type ActiveConcept" for id in ids], {"method":"add", "models":["myself"], "memory_profile": "SHORTTERM"})
         except AttributeError:
             # No ontology server
             pass
