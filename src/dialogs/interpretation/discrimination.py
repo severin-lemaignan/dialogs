@@ -47,7 +47,7 @@ class Discrimination():
             obj_tmp = []
 
             try:
-                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[' + ', '.join(agent_desc[2]) + ']')
+                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[\'' + '\', \''.join(agent_desc[2]) + '\']')
             except AttributeError: # No ontology server
                 pass
             except OroServerError: #The agent does not exist in the ontology
