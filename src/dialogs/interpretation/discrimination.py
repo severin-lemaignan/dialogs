@@ -47,7 +47,7 @@ class Discrimination():
             obj_tmp = []
 
             try:
-                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], '[\'' + '\', \''.join(agent_desc[2]) + '\']')
+                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], agent_desc[2])
             except AttributeError: # No ontology server
                 pass
             except OroServerError: #The agent does not exist in the ontology
@@ -164,7 +164,7 @@ class Discrimination():
             if descriptor == 'rdf:type':
                 val = self.oro.getDirectClassesOf(obj).keys()
             else:
-                val = self.oro.findForAgent(agent, '?val','[' + obj + ' ' + descriptor + ' ?val]')
+                val = self.oro.findForAgent(agent, '?val', [obj + ' ' + descriptor + ' ?val'])
 
             if val:
                 #TODO: we only consider the first result item!
@@ -376,7 +376,7 @@ class Discrimination():
             if not descriptor:
                 break
 
-            val = self.oro.findForAgent(agent, '?val','[' + objectID + ' ' + descriptor + ' ?val]')
+            val = self.oro.findForAgent(agent, '?val',[ objectID + ' ' + descriptor + ' ?val'])
 
             if not val:
                 break
