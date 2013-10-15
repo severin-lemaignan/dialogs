@@ -57,8 +57,8 @@ LOG_FILENAME = "dialog_test.log"
 logger = logging.getLogger('dialogs')
 logger.setLevel(logging.DEBUG)
 
-pyoro_logger = logging.getLogger('pyoro')
-pyoro_logger.setLevel(logging.INFO)
+kb_logger = logging.getLogger('kb')
+kb_logger.setLevel(logging.INFO)
 
 if len(sys.argv[1:]) == 0:
     usage()
@@ -98,7 +98,7 @@ log_handler.setFormatter(formatter)
 # add log_handler to logger
 logger.addHandler(log_handler)
 
-pyoro_logger.addHandler(log_handler)
+kb_logger.addHandler(log_handler)
 
 # Loggers are configured. We can load the resources (including the
 # ontology).
