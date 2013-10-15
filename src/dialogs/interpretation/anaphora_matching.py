@@ -16,7 +16,7 @@ logger = logging.getLogger("dialogs")
 
 from dialogs.sentence import *
 from dialogs.sentence_types import *
-from pyoro import OroServerError
+from kb import KbError
 
 class AnaphoraMatcher:
     
@@ -85,7 +85,7 @@ def delete_unuse_nominal_group(nominal_group_list):
             onto_class = ResourcePool().ontology_server.getDirectClassesOf(nominal_group_list[i].id)
         except AttributeError:
             pass
-        except OroServerError:
+        except KbError:
             logger.debug("Nominal group with no ID. pass")
             pass
         

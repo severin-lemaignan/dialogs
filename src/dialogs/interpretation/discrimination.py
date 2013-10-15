@@ -9,7 +9,7 @@ information.
 import logging
 logger = logging.getLogger("dialogs")
 
-from pyoro import OroServerError
+from kb import KbError
 
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import UnsufficientInputError
@@ -50,7 +50,7 @@ class Discrimination():
                 obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], agent_desc[2])
             except AttributeError: # No ontology server
                 pass
-            except OroServerError: #The agent does not exist in the ontology
+            except KbError: #The agent does not exist in the ontology
                 pass
 
             # if no object found, no need to continue

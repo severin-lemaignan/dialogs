@@ -7,7 +7,7 @@ from collections import deque
 from threading import Thread
 
 from dialog_exceptions import *
-from pyoro import OroServerError
+from kb import KbError
 from dialogs.sentence import *
 from helpers.helpers import colored_print, wait_for_keypress
 from helpers import emotions
@@ -150,7 +150,7 @@ class Dialog(Thread):
                     sys.stdout.write("Sorry, I'm confused... Could you repeat in a different way?\n")
                     sys.stdout.flush()
 
-                except OroServerError as ke:
+                except KbError as ke:
                     self._logger.info(colored_print("Error! " + ke.value, 'magenta'))
                     #Output towards human
                     emotions.confused()

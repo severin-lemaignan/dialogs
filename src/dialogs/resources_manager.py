@@ -6,7 +6,7 @@ logger = logging.getLogger("dialogs")
 
 import os.path
 
-from pyoro import Oro, OroServerError
+from kb import KB, KbError
 
 from dialog_exceptions import UnknownVerb
 
@@ -261,16 +261,16 @@ class ResourcePool:
         """
         self.thematic_roles = ThematicRolesDict()
 
-    def init(self, data_path, oro_host, oro_port):
+    def init(self, data_path, kb_host, kb_port):
 
         try:
-            if oro_host:
-                self.ontology_server = Oro(oro_host, oro_port)
+            if kb_host:
+                self.ontology_server = KB(kb_host, kb_port)
             else:
                 logger.warning("Starting without ontology server. Resolution won't work")
-        except OroServerError:
-            logger.error("Error while trying to connect to ORO on " + oro_host + ":" + str(oro_port) + \
-            ". Continuing without the ontology server. Amongst others, resolution won't work.")
+        except KbError:
+            logger.error("Error while trying to connect to the knowledge base on " + kb_host + ":" + str(kb_port) + \
+            ". Continuing without knowledge base. Amongst others, resolution won't work.")
 
         for line in open (os.path.join(data_path, "adjectives")):
             if line.startswith("#") or not line.strip():

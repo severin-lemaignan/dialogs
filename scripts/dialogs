@@ -25,8 +25,8 @@ dialog [OPTIONS] [speaker]
   --demo                Start Dialogs in demo mode (insert pause between each steps)
   --speech              Use speech recognition instead of text input
   --lang=               If using speech recognition, the input langage (default: en-US)
-  --orohost=            Host of ORO ontology server
-  --oroport=            Port of ORO ontology server
+  --kbhost=             Host of knowledge base
+  --kbport=             Port of knowledge base
 
 This module reads on stdin user input in natural language, parse it, call 
 resolution routines when ambiguous concepts are used, and finally generate RDF 
@@ -45,16 +45,16 @@ def unit_tests():
 logger = logging.getLogger('dialogs')
 logger.setLevel(logging.WARNING)
 
-py_logger = logging.getLogger('pyoro')
+py_logger = logging.getLogger('kb')
 py_logger.setLevel(logging.CRITICAL)
 
 
 #hack that tries to find out the current prefix and then the data directory
 DATA_DIR = os.path.abspath(__file__).split('bin')[0].split('src')[0] + '/share/dialogs/'
 
-#default for ORO_SERVER
-ORO_HOST = 'localhost'
-ORO_PORT = 6969
+#default for kb_SERVER
+kb_HOST = 'localhost'
+kb_PORT = 6969
 
 #By default, don't start in demo mode
 demo = False
@@ -67,7 +67,7 @@ lang = 'en-US'
 single_sentence = None
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'htdsvp:', ['help', 'test', 'debug', 'silent', 'speech', 'lang=', 'version', 'process=', 'demo', 'orohost=', 'oroport='])
+    optlist, args = getopt.getopt(sys.argv[1:], 'htdsvp:', ['help', 'test', 'debug', 'silent', 'speech', 'lang=', 'version', 'process=', 'demo', 'kbhost=', 'kbport='])
 except getopt.GetoptError, err:
     # print help information and exit:
     print str(err) # will print something like "option -a not recognized"
@@ -98,10 +98,10 @@ for o, a in optlist:
     elif o in ("--demo"):
         demo = True
         logger.setLevel(logging.DEBUG)
-    elif o in ("--orohost"):
-        ORO_HOST = a
-    elif o in ("--oroport"):
-        ORO_PORT = int(a)
+    elif o in ("--kbhost"):
+        kb_HOST = a
+    elif o in ("--kbport"):
+        kb_PORT = int(a)
     else:
         print "Unhandled option " + o
         usage()
@@ -130,7 +130,7 @@ logger.info("v." + DIALOGS_VERSION + "\n")
 
 # Do all resource management: loading word dictionaries, connecting to
 # the ontology server...
-ResourcePool().init(DATA_DIR, ORO_HOST, ORO_PORT)
+ResourcePool().init(DATA_DIR, kb_HOST, kb_PORT)
 
 if speaker and ResourcePool().ontology_server:
     ResourcePool().ontology_server.revise([speaker + " rdf:type Agent"], {"method":"add"})
@@ -189,7 +189,7 @@ else:
 
 dialog.join()
 
-#Closing the connection to ORO
+#Closing the connection to the knowledge base
 ResourcePool().close()
 
 logger.info("Bye bye!")

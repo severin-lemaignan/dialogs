@@ -13,12 +13,12 @@ from sentence import *
 class SentenceFactory:
 
     def __init__(self):
-        self.oro = ResourcePool().ontology_server
+        self.kb = ResourcePool().ontology_server
 
         # Store the list of subproperties of 'hasFeature'
         # used in create_nominal_group_with_object()
         try:
-            self.featuresProperties = self.oro["* rdfs:subPropertyOf hasFeature"]
+            self.featuresProperties = self.kb["* rdfs:subPropertyOf hasFeature"]
         except TypeError:
             # No ontology server?
             self.featuresProperties = []
@@ -344,7 +344,7 @@ class SentenceFactory:
         if object == current_speaker:
             return Nominal_Group([], ["you"], [], [], []) # No need to go further as we know the current speaker's ID
 
-        label = self.oro.getLabel(object)
+        label = self.kb.getLabel(object)
         if not label == object: #We really have a label for this concept
             return Nominal_Group([], [label], [], [], [])
 
@@ -378,13 +378,13 @@ class SentenceFactory:
             return None
 
         object_determiner = ['the']
-        object_noun = [self.oro.getLabel(random.choice(types)).lower()] #TODO: for now, just pick randomly a class name
+        object_noun = [self.kb.getLabel(random.choice(types)).lower()] #TODO: for now, just pick randomly a class name
         object_features = []
 
         for feature in other_features:
             p,o = feature
             if p in self.featuresProperties:
-                object_features.append([self.oro.getLabel(o), []]) # Cf Adjectives format: list[main, list[quatifiers]]
+                object_features.append([self.kb.getLabel(o), []]) # Cf Adjectives format: list[main, list[quatifiers]]
             #TODO
             #else:
             # features like: "toto sees tata"

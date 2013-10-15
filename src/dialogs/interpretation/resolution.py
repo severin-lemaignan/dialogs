@@ -6,7 +6,7 @@ logger = logging.getLogger("dialogs")
 
 import random
 
-from pyoro import OroServerError
+from kb import KbError
 
 from dialogs.helpers.helpers import colored_print
 
@@ -112,7 +112,7 @@ class Resolver:
                     "groups with indefinite determiner and only adjectives")
             except AttributeError:
                 pass
-            except OroServerError: # The agent does not exist in the ontology
+            except KbError: # The agent does not exist in the ontology
                 pass
             
             return get_class_name(noun, onto_res)
@@ -150,7 +150,7 @@ class Resolver:
                                           [current_speaker + ' pointsAt ?concept', '?concept rdf:type ' + class_name])
                 except AttributeError:
                     pass
-                except OroServerError: #Agent not found in the ontology
+                except KbError: #Agent not found in the ontology
                     pass
 
             else: # case "this" alone or "this one"
@@ -162,7 +162,7 @@ class Resolver:
                                           [current_speaker + ' pointsAt ?concept'])
                 except AttributeError:
                     pass
-                except OroServerError: #Agent not found in the ontology
+                except KbError: #Agent not found in the ontology
                     pass
              
             if onto_focus:
@@ -211,7 +211,7 @@ class Resolver:
             onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
         except AttributeError: #the ontology server is not started or doesn't know the method
             pass
-        except OroServerError: #The agent does not exist in the ontology
+        except KbError: #The agent does not exist in the ontology
             pass
         
         if onto:
@@ -278,7 +278,7 @@ class Resolver:
                     try:
                         # TODO: anything -> all Artifact: is that right?
                         onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type Artifact'])
-                    except OroServerError: # The agent does not exist in the ontology
+                    except KbError: # The agent does not exist in the ontology
                         pass
 
                 else:
@@ -295,7 +295,7 @@ class Resolver:
                     onto_id = []
                     try:
                         onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', ['?concept rdf:type ' + class_name])
-                    except OroServerError: # The agent does not exist in the ontology
+                    except KbError: # The agent does not exist in the ontology
                         pass
 
                 if not onto_id:
@@ -451,7 +451,7 @@ class Resolver:
                 concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmtsAndVisibility)
             except AttributeError: # No ontology server
                 pass
-            except OroServerError: #The agent does not exist in the ontology
+            except KbError: #The agent does not exist in the ontology
                 pass
 
             if not concepts:
@@ -461,7 +461,7 @@ class Resolver:
                     concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmts)
                 except AttributeError: # No ontology server
                     pass
-                except OroServerError: #The agent does not exist in the ontology
+                except KbError: #The agent does not exist in the ontology
                     pass
 
 

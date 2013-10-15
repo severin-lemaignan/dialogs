@@ -9,7 +9,6 @@ from dialogs.interpretation.statements_builder import *
 from dialogs.sentence import *
 from dialogs.sentence_factory import SentenceFactory
 
-from pyoro import OroServerError
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import DialogError, GrammaticalError
 
