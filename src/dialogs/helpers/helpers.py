@@ -29,7 +29,7 @@ def colored_print(text, fg_colour = None, bg_colour = None):
     try:
         if len(text) == 0:
             return ''
-        if type(text) == str:
+        if isinstance(text, (str, unicode)):
             pass
         elif len(text) == 1:
             text = text[0]
