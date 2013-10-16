@@ -215,16 +215,16 @@ class Dialog(Thread):
         self.in_interaction = True
         self.input(input, speaker)
         while(self.in_interaction):
-            if answer and self.waiting_for_more_info:
-                self._logger.debug(colored_print("> Automatically answering: ", 'bold'))
-                self._logger.info(colored_print(answer, 'red'))
-                self.input(answer, speaker)
-                
-                answer = None
-            #elif self.waiting_for_more_info:
-            #    return None
-            #pass
-        
+            if self.waiting_for_more_info:
+                if answer:
+                    self._logger.debug(colored_print("> Automatically answering: ", 'bold'))
+                    self._logger.info(colored_print(answer, 'red'))
+                    self.input(answer, speaker)
+                    
+                    answer = None
+                else:
+                    return ([], self.last_sentence)
+
         return (self.last_stmts_set, self.last_sentence)
 
     def _process(self, nl_input):
