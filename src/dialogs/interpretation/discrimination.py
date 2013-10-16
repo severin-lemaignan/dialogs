@@ -360,7 +360,14 @@ class Discrimination():
     def find_unambiguous_desc(self, objectID):
         description = None
         # get the first class name
-        type = [t for t in self.oro.getDirectClassesOf(objectID).keys() if t not in ["ActiveConcept"]][0]
+        types = [t for t in self.oro.getDirectClassesOf(objectID).keys() if t not in ["ActiveConcept"]]
+
+        # Not type asserted/inferred? then assume this object is unique.
+        if not types:
+            return (True, [])
+
+        type = types[0]
+
         description = [['myself','?obj',['?obj rdf:type ' + type]]]
         objL = self.get_all_objects_with_desc(description)
 
