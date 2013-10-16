@@ -56,7 +56,7 @@ class StatementSafeAdder():
             #Attempt to find the unidentified IDs
             onto = ''
             try:
-                onto = ResourcePool().ontology_server.find(id, current_s)
+                onto = ResourcePool().ontology_server.find([id], current_s)
             except AttributeError:
                 pass
             
