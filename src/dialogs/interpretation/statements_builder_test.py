@@ -22,63 +22,60 @@ class TestStatementBuilder(unittest.TestCase):
 
     def setUp(self):
         
-        try:
-            ResourcePool().ontology_server.reset()
-            
-            ResourcePool().ontology_server.add(['SPEAKER rdf:type Human',
-                                                'SPEAKER rdfs:label "Patrick"'])
-            
-            time.sleep(1)
-            
-            ResourcePool().ontology_server.addForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
-                          'id_danny rdf:type Human',
-                          
-                          'volvo hasColor blue', 
-                          'volvo rdf:type Car',
-                          'volvo belongsTo SPEAKER',
-                          
-                          'id_jido rdf:type Robot',
-                          'id_jido rdfs:label "Jido"',
-                          
-                          'twingo rdf:type Car',
-                          'twingo hasSize small',
-                          'twingo_key rdf:type Key',
-                          'twingo_key belongsTo twingo',
-                          
-                          'a_man rdf:type Man',
-                          
-                          'SPEAKER sees a_man',
-                          'id_talk performedBy a_man', 'id_talk rdf:type Talk',
-                          
-                          'fiat belongsTo id_tom',
-                          'fiat rdf:type Car',
-                          'fiat hasColor black',
-                          
-                          'id_tom rdfs:label "Tom"',
-                          'id_tom rdf:type Brother',
-                          'id_tom belongsTo id_danny',
-                          
-                          'id_toulouse rdfs:label "Toulouse"',
-                          'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
-                          
-                          'SPEAKER focusesOn another_cube',
-                          'another_cube belongsTo SPEAKER', 
-                          'another_cube rdf:type Cube',
-                          
-                          'shelf1 rdf:type Shelf',
-                          'green_bottle hasColor green',
-                          'green_bottle rdf:type Bottle',
-                          'a_bottle rdf:type Bottle',
-                          'a_bottle isIn twingo',
-                          
-                          'a_candy rdf:type Candy',
-                          'location_left isLeftOf SPEAKER',
-                          'location_left rdf:type Location',
-                          ])
-            
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            pass
+        ResourcePool().ontology_server.reset()
         
+        ResourcePool().ontology_server.add(['SPEAKER rdf:type Human',
+                                            'SPEAKER rdfs:label "Patrick"'])
+        
+        time.sleep(0.2)
+        
+        ResourcePool().ontology_server.addForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
+                        'id_danny rdf:type Human',
+                        
+                        'volvo hasColor blue', 
+                        'volvo rdf:type Car',
+                        'volvo belongsTo SPEAKER',
+                        
+                        'id_jido rdf:type Robot',
+                        'id_jido rdfs:label "Jido"',
+                        
+                        'twingo rdf:type Car',
+                        'twingo hasSize small',
+                        'twingo_key rdf:type Key',
+                        'twingo_key belongsTo twingo',
+                        
+                        'a_man rdf:type Man',
+                        
+                        'SPEAKER sees a_man',
+                        'id_talk performedBy a_man', 'id_talk rdf:type Talk',
+                        
+                        'fiat belongsTo id_tom',
+                        'fiat rdf:type Car',
+                        'fiat hasColor black',
+                        
+                        'id_tom rdfs:label "Tom"',
+                        'id_tom rdf:type Brother',
+                        'id_tom belongsTo id_danny',
+                        
+                        'id_toulouse rdfs:label "Toulouse"',
+                        'blue_cube rdf:type Cube', 'blue_cube hasColor blue',
+                        
+                        'SPEAKER focusesOn another_cube',
+                        'another_cube belongsTo SPEAKER', 
+                        'another_cube rdf:type Cube',
+                        
+                        'shelf1 rdf:type Shelf',
+                        'green_bottle hasColor green',
+                        'green_bottle rdf:type Bottle',
+                        'a_bottle rdf:type Bottle',
+                        'a_bottle isIn twingo',
+                        
+                        'a_candy rdf:type Candy',
+                        'location_left isLeftOf SPEAKER',
+                        'location_left rdf:type Location',
+                        ])
+        
+    
         self.stmt = StatementBuilder("SPEAKER")
         self.adder = StatementSafeAdder()
         self.resolver = Resolver()
@@ -1400,39 +1397,36 @@ class TestBaseSentenceDialog(unittest.TestCase):
         
         self.oro = ResourcePool().ontology_server
         
-        try:
-            self.oro.reset()
-            
-            self.oro.add(['shelf1 rdf:type Shelf',
-                        'table1 rdf:type Table', 
-                        'table2 rdf:type Table', 
-                        'table2 hasColor blue', 
-                        'Banana rdfs:subClassOf Plant',
-                        'y_banana rdf:type Banana',
-                        'y_banana hasColor yellow',
-                        'y_banana isOn shelf1',
-                        'y_banana belongsTo myself',
-                        'green_banana rdf:type Banana',
-                        'green_banana hasColor green',
-                        'green_banana isOn table2',
-                        'myself focusesOn y_banana',
-                        'big_tree rdf:type Tree',
-                        'big_tree hasSize big',
-                        'red_apple rdf:type Apple',
-                        'red_apple hasColor red',
-                        'myself_left isLeftOf myself', 'myself_left rdf:type Location',
-                        'myself_right isRightOf myself','myself_right rdf:type Location',
-                        'myself_front isFrontOf myself', 'myself_front rdf:type Location',
-                        'myself_back isBackOf myself', 'myself_back rdf:type Location',
-                        'TOP isTopOf myself', 'TOP rdf:type Location',
-                        'BOTTOM isBottomOf myself', 'BOTTOM rdf:type Location',
-                        'shelf1_front isFrontOf shelf1', 'shelf1_front rdf:type Location',
-                        'green_banana_left isLeftOf green_banana', 'green_banana_left rdf:type Location',
-                        ])
-            
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            pass
-    
+        self.oro.reset()
+        
+        self.oro.add(['shelf1 rdf:type Shelf',
+                    'table1 rdf:type Table', 
+                    'table2 rdf:type Table', 
+                    'table2 hasColor blue', 
+                    'Banana rdfs:subClassOf Plant',
+                    'y_banana rdf:type Banana',
+                    'y_banana hasColor yellow',
+                    'y_banana isOn shelf1',
+                    'y_banana belongsTo myself',
+                    'green_banana rdf:type Banana',
+                    'green_banana hasColor green',
+                    'green_banana isOn table2',
+                    'myself focusesOn y_banana',
+                    'big_tree rdf:type Tree',
+                    'big_tree hasSize big',
+                    'red_apple rdf:type Apple',
+                    'red_apple hasColor red',
+                    'myself_left isLeftOf myself', 'myself_left rdf:type Location',
+                    'myself_right isRightOf myself','myself_right rdf:type Location',
+                    'myself_front isFrontOf myself', 'myself_front rdf:type Location',
+                    'myself_back isBackOf myself', 'myself_back rdf:type Location',
+                    'TOP isTopOf myself', 'TOP rdf:type Location',
+                    'BOTTOM isBottomOf myself', 'BOTTOM rdf:type Location',
+                    'shelf1_front isFrontOf shelf1', 'shelf1_front rdf:type Location',
+                    'green_banana_left isLeftOf green_banana', 'green_banana_left rdf:type Location',
+                    ])
+        
+
     def test_sentence1(self):
 
         logger.info("\n##################### test_sentence1 ########################\n")
