@@ -208,7 +208,7 @@ class QuestionHandler:
         
         if find_id:
             try:
-                sit_id = ResourcePool().ontology_server.find('?event', statements)
+                sit_id = ResourcePool().ontology_server.find(['?event'], statements)
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
                 
