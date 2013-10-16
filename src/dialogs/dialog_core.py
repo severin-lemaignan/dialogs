@@ -158,12 +158,8 @@ class Dialog(Thread):
                     sys.stdout.flush()
 
                     # interrupt the interaction
-                    self.stop()
                     self.in_interaction = False
 
-
-
-                            
             except Empty:
                 pass
             
