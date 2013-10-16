@@ -1374,7 +1374,7 @@ class TestStatementBuilder(unittest.TestCase):
         sentence = dump_resolved(sentence, self.stmt._current_speaker, 'myself', self.resolver)
         
         #StatementBuilder
-        res = self.stmt.process_sentence(sentence)
+        res, sitid = self.stmt.process_sentence(sentence)
         
         #Statement Safe Adder
         self.adder._unclarified_ids = self.stmt._unclarified_ids
