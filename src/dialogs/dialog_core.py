@@ -85,8 +85,9 @@ class Dialog(Thread):
     def run(self):
         while self.go_on:
 
-            try:               
-                input = self._nl_input_queue.get(block = False).strip()
+            try:
+                # block with a (short) timeout to prevent maxing the CPU
+                input = self._nl_input_queue.get(True, 0.1).strip()
                 ResourcePool().mark_active(self._speaker)
                 self._logger.info(colored_print("\n-------[       NL INPUT      ]-------\n", 'green'))
                 self._logger.info(colored_print("- " + input + "\n", 'blue'))
