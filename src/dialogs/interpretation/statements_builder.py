@@ -1003,9 +1003,10 @@ class VerbalGroupStatementBuilder:
 """
 def get_class_name(noun,conceptL):
     """Simple function to obtain the exact class name"""
-    for c in conceptL:
-        if 'CLASS' in c: return c[0]
-    
+    if conceptL:
+        for c in conceptL:
+            if 'CLASS' in c: return c[0]
+        
     # Not found in the ontology? Using the capitalized version as class name
     return noun.capitalize()
      
