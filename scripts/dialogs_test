@@ -7,6 +7,8 @@ import logging
 import unittest
 import getopt
 
+from time import time
+
 import operator
 
 def usage():
@@ -152,6 +154,8 @@ def getTestRunner(failsafe, verbosity = 2):
 
 results = {}
 
+starttime = time()
+
 if 'parser' in args or 'all' in args:
     suite = parser.test_suite()
     result = getTestRunner(failfast).run(suite)
@@ -201,5 +205,6 @@ for name in results:
     
 print("| TOTAL            |  % 4d    |   % 4d    |   % 3d    |  % 3d   || % 3d |" % (tuple(total)))
 print("======================================================================")
+print("\nTotal time: %fsec" % (time() - starttime))
 
 ResourcePool().close()
