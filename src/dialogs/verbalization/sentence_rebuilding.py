@@ -31,6 +31,9 @@ def statement(analysis):
     #Recovering the subject
     phrase=element_rebuilding.nom_struc_rebuilding(analysis.sn)
     
+    if not phrase:
+        return []
+
     if analysis.sv!=[]:
         #Recovering the end of the sentence
         phrase=element_rebuilding.end_statement_rebuilding(phrase, analysis.sv, analysis.sn, analysis.data_type,analysis.aim)

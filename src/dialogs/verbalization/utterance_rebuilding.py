@@ -462,14 +462,12 @@ def delete_comma(sentence):
     
     #init    
     i=0
-    
-    word = sentence[len(sentence)-2]
+
     #There is a comma in the end, we have to delete it
-    if word[len(word)-1]==',':
-        word=word[:len(word)-1]
-        sentence[len(sentence)-2]=word
-        
-    #If the comma is as a string, we out it at the end of the word before
+    if sentence[-2].endswith(","):
+        sentence[-2] = sentence[-2][:-1]
+
+    #If the comma is as a string, we append it at the end of the previous word
     while i < len(sentence):
         if sentence[i]==',':
             sentence=sentence[:i-1]+[sentence[i-1]+',']+sentence[i+1:]
@@ -512,34 +510,35 @@ def verbalising(class_list):
         
         sentence = dispatching(class_list[i])
         
-        #To perform some changes to have an usual sentence at the end
-        sentence=and_case(sentence)
-        sentence=possesion_form(sentence)
-        sentence=negation(sentence)
-        if len(class_list[i].sn)<2:
-            sentence=replace_tuple(sentence)
-        sentence=delete_plus(sentence)
-        sentence=delete_comma(sentence)
-        sentence=a_which_process(sentence)
-        sentence=move_prep(sentence)
-        
-        if i>0 and class_list[i-1].data_type==INTERJECTION:
-            utterance=utterance[:len(utterance)-2]+', '
-        else:    
-            #To have the upper case
-            sentence[0]=sentence[0][0].upper()+sentence[0][1:]
-        
-        #convert the list to string
-        sentence= other_functions.convert_string(sentence)
-        
-        #To concatenate the last punctuation to the last word of the sentence
-        sentence=sentence[:len(sentence)-2]+sentence[len(sentence)-1]
-        
-        #To separate with other sentences
-        sentence= sentence+' '
-        
-        utterance=utterance+sentence
-        
+        if sentence:
+            #To perform some changes to have an usual sentence at the end
+            sentence=and_case(sentence)
+            sentence=possesion_form(sentence)
+            sentence=negation(sentence)
+            if len(class_list[i].sn)<2:
+                sentence=replace_tuple(sentence)
+            sentence=delete_plus(sentence)
+            sentence=delete_comma(sentence)
+            sentence=a_which_process(sentence)
+            sentence=move_prep(sentence)
+            
+            if i>0 and class_list[i-1].data_type==INTERJECTION:
+                utterance=utterance[:len(utterance)-2]+', '
+            else:    
+                #To have the upper case
+                sentence[0]=sentence[0][0].upper()+sentence[0][1:]
+            
+            #convert the list to string
+            sentence= other_functions.convert_string(sentence)
+            
+            #To concatenate the last punctuation to the last word of the sentence
+            sentence=sentence[:len(sentence)-2]+sentence[len(sentence)-1]
+            
+            #To separate with other sentences
+            sentence= sentence+' '
+            
+            utterance=utterance+sentence
+            
         i=i+1
     
     #To remove the last escape (at the end)
