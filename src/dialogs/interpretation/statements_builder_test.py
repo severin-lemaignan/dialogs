@@ -27,8 +27,6 @@ class TestStatementBuilder(unittest.TestCase):
         ResourcePool().ontology_server.add(['SPEAKER rdf:type Human',
                                             'SPEAKER rdfs:label "Patrick"'])
         
-        time.sleep(0.2)
-        
         ResourcePool().ontology_server.addForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
                         'id_danny rdf:type Human',
                         

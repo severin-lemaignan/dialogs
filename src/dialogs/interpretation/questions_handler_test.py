@@ -14,87 +14,82 @@ from dialogs.interpretation.statements_builder import *
 from dialogs.interpretation.resolution import Resolver
 from dialogs.interpretation.statements_builder_test import check_results
 
+AGREEMENTS=["Alright.", "Ok."]
+
 class TestQuestionHandler(unittest.TestCase):
     def setUp(self):
-        try:
-            ResourcePool().ontology_server.reset()
-            
-            ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
-                     'blue_cube rdf:type Cube',
-                     'blue_cube hasColor blue',
-                     'blue_cube isOn table1',
-                     
-                     'another_cube rdf:type Cube',
-                     'another_cube isAt shelf1',
-                     'another_cube belongsTo SPEAKER',
-                     'another_cube hasSize small',
-                     
-                     'shelf1 rdf:type Shelf',
-                     'table1 rdf:type Table',
-                     
-                     'myself sees shelf1',
-                     
-                     'take_blue_cube performedBy myself',
-                     'take_blue_cube rdf:type Get',
-                     'take_blue_cube actsOnObject blue_cube',
-                     
-                     'take_my_cube canBePerformedBy SPEAKER',
-                     'take_my_cube involves another_cube',
-                     'take_my_cube rdf:type Take',
-                     
-                     'SPEAKER focusesOn another_cube',
-                     
-                     'id_danny rdfs:label "Danny"',
-                     
-                     'give_another_cube rdf:type Give',
-                     'give_another_cube performedBy id_danny',
-                     'give_another_cube receivedBy SPEAKER',
-                     'give_another_cube actsOnObject another_cube',
-                     
-                     'id_danny sees SPEAKER',
-                     ])
-        except AttributeError: #the ontology server is not started or doesn't know the method
-            pass
+        ResourcePool().ontology_server.reset()
         
-        try:
-            ResourcePool().ontology_server.addForAgent('SPEAKER',
-                    [
-                     'SPEAKER rdfs:label "Patrick"',
-                     'blue_cube rdf:type Cube',
-                     'blue_cube hasColor blue',
-                     'blue_cube isOn table1',
-                     
-                     'another_cube rdf:type Cube',
-                     'another_cube isAt shelf1',
-                     'another_cube belongsTo SPEAKER',
-                     'another_cube hasSize small',
-                     
-                     'shelf1 rdf:type Shelf',
-                     'table1 rdf:type Table',
-                     
-                     'myself sees shelf1',
-                     
-                     'take_blue_cube performedBy myself',
-                     'take_blue_cube rdf:type Get',
-                     'take_blue_cube actsOnObject blue_cube',
-                     
-                     'take_my_cube canBePerformedBy SPEAKER',
-                     'take_my_cube involves another_cube',
-                     'take_my_cube rdf:type Take',
-                     
-                     'SPEAKER focusesOn another_cube',
-                     
-                     'id_danny rdfs:label "Danny"',
-                     
-                     'give_another_cube rdf:type Give',
-                     'give_another_cube performedBy id_danny',
-                     'give_another_cube receivedBy SPEAKER',
-                     'give_another_cube actsOnObject another_cube',
-                     
-                     'id_danny sees SPEAKER',
-                     ])
-        except AttributeError: #the ontology server is not started or doesn't know the method
-            pass
+        ResourcePool().ontology_server.add(['SPEAKER rdf:type Human', 'SPEAKER rdfs:label "Patrick"',
+                    'blue_cube rdf:type Cube',
+                    'blue_cube hasColor blue',
+                    'blue_cube isOn table1',
+                    
+                    'another_cube rdf:type Cube',
+                    'another_cube isAt shelf1',
+                    'another_cube belongsTo SPEAKER',
+                    'another_cube hasSize small',
+                    
+                    'shelf1 rdf:type Shelf',
+                    'table1 rdf:type Table',
+                    
+                    'myself sees shelf1',
+                    
+                    'take_blue_cube performedBy myself',
+                    'take_blue_cube rdf:type Get',
+                    'take_blue_cube actsOnObject blue_cube',
+                    
+                    'take_my_cube canBePerformedBy SPEAKER',
+                    'take_my_cube involves another_cube',
+                    'take_my_cube rdf:type Take',
+                    
+                    'SPEAKER pointsAt another_cube',
+                    
+                    'id_danny rdfs:label "Danny"',
+                    
+                    'give_another_cube rdf:type Give',
+                    'give_another_cube performedBy id_danny',
+                    'give_another_cube receivedBy SPEAKER',
+                    'give_another_cube actsOnObject another_cube',
+                    
+                    'id_danny sees SPEAKER',
+                    ])
+        ResourcePool().ontology_server.addForAgent('SPEAKER',
+                [
+                    'SPEAKER rdfs:label "Patrick"',
+                    'blue_cube rdf:type Cube',
+                    'blue_cube hasColor blue',
+                    'blue_cube isOn table1',
+                    
+                    'another_cube rdf:type Cube',
+                    'another_cube isAt shelf1',
+                    'another_cube belongsTo SPEAKER',
+                    'another_cube hasSize small',
+                    
+                    'shelf1 rdf:type Shelf',
+                    'table1 rdf:type Table',
+                    
+                    'myself sees shelf1',
+                    
+                    'take_blue_cube performedBy myself',
+                    'take_blue_cube rdf:type Get',
+                    'take_blue_cube actsOnObject blue_cube',
+                    
+                    'take_my_cube canBePerformedBy SPEAKER',
+                    'take_my_cube involves another_cube',
+                    'take_my_cube rdf:type Take',
+                    
+                    'SPEAKER pointsAt another_cube',
+                    
+                    'id_danny rdfs:label "Danny"',
+                    
+                    'give_another_cube rdf:type Give',
+                    'give_another_cube performedBy id_danny',
+                    'give_another_cube receivedBy SPEAKER',
+                    'give_another_cube actsOnObject another_cube',
+                    
+                    'id_danny sees SPEAKER',
+                    ])
         
         self.qhandler = QuestionHandler("SPEAKER")
         self.resolver = Resolver()
@@ -826,7 +821,7 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
     
     def test3(self):
         stmt = "Ok thank you."
-        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"Alright.")
+        self.assertIn(self.dialog.test('ACHILLE', stmt)[1][1], AGREEMENTS)
         
     def test3_2(self):
         stmt = "thank you."
@@ -846,7 +841,7 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
                   '* actsOnObject TAPE2']
         
         self.assertTrue(check_results(res[0], expected_result))
-        self.assertEquals(res[1][1], "")
+        self.assertIn(res[1][1], AGREEMENTS)
     
     def test_5(self):
         self.oro.update(['TAPE2 isReachable false'])
@@ -861,7 +856,7 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
                   '* actsOnObject TAPE2']
         
         self.assertTrue(check_results(res[0], expected_result))
-        self.assertEquals(res[1][1], "")
+        self.assertIn(res[1][1], AGREEMENTS)
     
     def test_6(self):
         
