@@ -747,7 +747,7 @@ class VerbalGroupStatementBuilder:
                 else:
                     self._statements.append(sit_id + " rdf:type " + verb.capitalize())
                     self._statements.append(sit_id + " performedBy " + subject_id)
-                    if not self._process_on_question:
+                    if not self._process_on_question and self._process_on_resolved_sentence:
                         # If I'm not processing a question, add a label
                         # to this action
                         self._statements.append(sit_id + " rdfs:label \"" + \
