@@ -9,7 +9,7 @@ def readme():
         return f.read()
 
 setup(name='Dialogs',
-      version='0.10',
+      version='0.11',
       license='BSD',
       description='Handles natural language inputs and outputs on cognitive robots',
       long_description=readme(),
