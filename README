@@ -1,8 +1,8 @@
-********************************
-* The LAAS-CNRS dialogs module *
-********************************
+*************************************
+* Naive Natural Language Processing *
+*************************************
 
-(c) LAAS-CNRS 2010-2013
+(c) LAAS-CNRS 2010-2013, EPFL 2013
 
 This module reads on stdin user input in natural language, parse it, call 
 resolution routines when ambiguous concepts are used, and finally generate RDF 
@@ -12,7 +12,8 @@ It includes as well a verbalization module that conversely turns RDF statements
 into a sentence in natural language.
 
 While not strictly required, it is strongly recommanded to use 'dialogs' with a
-knowledge base that follows the 'KB API' like 'oro-server' (http://oro.openrobots.org).
+knowledge base that follows the 'KB API' like 'minimalKB' or 'oro-server'
+(http://oro.openrobots.org).
 
 I/ INSTALLATION
 ---------------
@@ -34,3 +35,4 @@ Common invokation is:
 The main test-suite can be started with:
 
 > dialogs_test
+
