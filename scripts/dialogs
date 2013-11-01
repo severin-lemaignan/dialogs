@@ -67,7 +67,7 @@ lang = 'en-US'
 single_sentence = None
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'htdsvp:', ['help', 'test', 'debug', 'silent', 'speech', 'lang=', 'version', 'process=', 'demo', 'kbhost=', 'kbport='])
+    optlist, args = getopt.getopt(sys.argv[1:], 'htdsvp:', ['help', 'test', 'debug', 'silent', 'speech', 'version', 'process=', 'demo', 'kbhost=', 'kbport='])
 except getopt.GetoptError, err:
     # print help information and exit:
     print str(err) # will print something like "option -a not recognized"
@@ -93,8 +93,6 @@ for o, a in optlist:
     elif o in ("--speech"):
         from gspeett import gspeett
         use_speech = True
-    elif o in ("--lang"):
-        lang = a
     elif o in ("--demo"):
         demo = True
         logger.setLevel(logging.DEBUG)
@@ -148,9 +146,7 @@ if single_sentence:
 else:
     
     if use_speech:
-        reco = gspeett.GoogleVoiceRecognition(lang)
-        if lang != 'en-US':
-            translator = gspeett.GoogleTranslator(GOOGLE_API_KEY, to='en-US')
+        reco = gspeett.GoogleVoiceRecognition('en-US')
         
     running = True
     while running:
@@ -163,17 +159,12 @@ else:
                 if dialog.waiting_for_more_info or not dialog.in_interaction:
                     res = []
                     while len(res)==0:
-                        
+
                         logger.info("Speak now!")
                         res = reco.mic()
-                    
-                    if lang != 'en-US':
-                        res = translator.translate(res[0])
-                        logger.info(res)
-                        dialog.input(res)
-                    else:
-                        dialog.input(res[0])
-                    
+
+                    dialog.input(res[0])
+
             else:
                 data = sys.stdin.readline()
                 if data != "":
