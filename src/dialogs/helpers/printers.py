@@ -7,7 +7,7 @@ from sentence_atoms import *
 from helpers import colored_print
 
 #OUTPUT_MODE = 'css'
-OUTPUT_MODE = 'color'
+DEFAULT_OUTPUT_MODE = 'color'
 
 def color_printer(text, atom):
     if atom == NOMINAL_GROUP:
@@ -70,12 +70,13 @@ def css_printer(text, atom):
         stderr.writeln("Error: " + text + "has no grammatical category!") 
         return text
 
-def pprint(text, atom):
-    if OUTPUT_MODE == "color":
+def pprint(text, atom, mode = DEFAULT_OUTPUT_MODE):
+    if mode == "color":
         return color_printer(text, atom)
-    if OUTPUT_MODE == "css":
+    if mode == "css":
         return css_printer(text, atom)
-
+    
+    raise Exception("Unknown Dialogs printer: %s"%mode)
 
 def level_marker(level=1, symbol='|', color='red'):
     """Insert 'symbol' at the beginning of the current line
