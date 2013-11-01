@@ -70,7 +70,9 @@ def css_printer(text, atom):
         stderr.writeln("Error: " + text + "has no grammatical category!") 
         return text
 
-def pprint(text, atom, mode = DEFAULT_OUTPUT_MODE):
+def pprint(text, atom, mode = None):
+    if not mode:
+        mode = DEFAULT_OUTPUT_MODE
     if mode == "color":
         return color_printer(text, atom)
     if mode == "css":
