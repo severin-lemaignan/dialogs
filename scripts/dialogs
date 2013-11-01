@@ -9,8 +9,6 @@ import time
 
 from dialogs.version import DIALOGS_VERSION
 
-GOOGLE_API_KEY= "AIzaSyCjUiaoRKX7BZ6twcQj0yW1Y6ElstWeELA"
-
 def usage():
     print """The LAAS-CNRS 'Dialogs' module (v.""" + DIALOGS_VERSION + """).
 
