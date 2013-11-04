@@ -21,6 +21,7 @@ Usage:
 dialogs_test [OPTIONS] TEST_SUITE
   -h, --help               Displays this message and exits
   -f, --failfast           Stops at first failure or error
+  --embedded               Run with an embedded knowledge base (requires MinimalKB)
   -l, --log=[file|stdout]  Where to log: file (in """ + LOG_FILENAME + """) 
                            or stdout (default).
   
@@ -68,9 +69,10 @@ log_handler = logging.StreamHandler()
 formatter = logging.Formatter("%(message)s")
 
 failfast = False
+embedded = False
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'hfl:', ['help', 'failfast', 'log='])
+    optlist, args = getopt.getopt(sys.argv[1:], 'hfl:', ['help', 'failfast', 'embedded', 'log='])
 except getopt.GetoptError, err:
     # print help information and exit:
     print str(err) # will print something like "option -a not recognized"
@@ -84,6 +86,9 @@ for o, a in optlist:
     if o in ("-f", "--failfast"):
         print("Failfast mode enabled.")
         failfast = True
+    elif o in ("--embedded"):
+        print("Using embedded knowledge base.")
+        embedded = True
     elif o in ("-l", "--log"):
         if a == "file":
             print("The output of the unit-tests will be saved in " + LOG_FILENAME)
@@ -97,8 +102,13 @@ for o, a in optlist:
 log_handler.setFormatter(formatter)
 # add log_handler to logger
 logger.addHandler(log_handler)
-
 kb_logger.addHandler(log_handler)
+
+if embedded:
+    minimalkb_logger = logging.getLogger('minimalKB')
+    minimalkb_logger.setLevel(logging.INFO)
+    minimalkb_logger.addHandler(log_handler)
+
 
 # Loggers are configured. We can load the resources (including the
 # ontology).
@@ -114,7 +124,7 @@ ORO_PORT = 6969
 
 # Do all resource management: loading word dictionaries, connecting to
 # the ontology server...
-ResourcePool().init(DATA_DIR, ORO_HOST, ORO_PORT)
+ResourcePool().init(DATA_DIR, ORO_HOST, ORO_PORT, embeddedkb = embedded)
 
 #Import unit-tests
 import dialogs.verbalization.verbalization_test as verbalization

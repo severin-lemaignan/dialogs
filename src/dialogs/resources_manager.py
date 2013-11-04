@@ -6,13 +6,6 @@ logger = logging.getLogger("dialogs")
 
 import os.path
 
-withkb = False
-try:
-    from kb import KB, KbError
-    withkb = True
-except ImportError:
-    pass
-
 from dialog_exceptions import UnknownVerb
 
 def singleton(cls):
@@ -266,17 +259,17 @@ class ResourcePool:
         """
         self.thematic_roles = ThematicRolesDict()
 
-    def init(self, data_path, kb_host, kb_port):
+    def init(self, data_path, kb_host, kb_port, embeddedkb = False, defaultontology = None):
 
-	if withkb:
-            try:
-                if kb_host:
-                    self.ontology_server = KB(kb_host, kb_port)
-                else:
-                    logger.warning("Starting without ontology server. Resolution won't work")
-            except KbError:
-                logger.error("Error while trying to connect to the knowledge base on " + kb_host + ":" + str(kb_port) + \
-                ". Continuing without knowledge base. Amongst others, resolution won't work.")
+        try:
+            from kb import KB, KbError
+            self.ontology_server = KB(kb_host, kb_port, embeddedkb, defaultontology)
+        except ImportError:
+            logger.error("Python bindings to access the knowledge are not available." + \
+                            "Please install 'pykb' and restart Dialogs.")
+        except KbError:
+            logger.error("Error while trying to connect to the knowledge base on %s:%s" % (kb_host, kb_port) + \
+                            ". Continuing without knowledge base. Amongst others, resolution won't work.")
 
         for line in open (os.path.join(data_path, "adjectives")):
             if line.startswith("#") or not line.strip():

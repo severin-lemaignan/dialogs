@@ -22,9 +22,10 @@ dialog [OPTIONS] [speaker]
   -p, --process=        Processes the given sentence and exits
   --demo                Start Dialogs in demo mode (insert pause between each steps)
   --speech              Use speech recognition instead of text input
-  --lang=               If using speech recognition, the input langage (default: en-US)
-  --kbhost=             Host of knowledge base
-  --kbport=             Port of knowledge base
+  --embeddedkb          Use an embedded knowledge base (requires MinimalKB to be installed, default: false)
+  --defaultontology     If using an embedded knowledge base, an optional ontology (.owl|.rdf) to load.
+  --kbhost=             Host of knowledge base, if using a remote knowledge base (default: localhost)
+  --kbport=             Port of knowledge base, if using a remote knowledge base (default: 6969)
 
 This module reads on stdin user input in natural language, parse it, call 
 resolution routines when ambiguous concepts are used, and finally generate RDF 
@@ -43,29 +44,31 @@ def unit_tests():
 logger = logging.getLogger('dialogs')
 logger.setLevel(logging.WARNING)
 
-py_logger = logging.getLogger('kb')
-py_logger.setLevel(logging.CRITICAL)
+kblogger = logging.getLogger('kb')
+kblogger.setLevel(logging.ERROR)
 
 
 #hack that tries to find out the current prefix and then the data directory
 DATA_DIR = os.path.abspath(__file__).split('bin')[0].split('src')[0] + '/share/dialogs/'
 
-#default for kb_SERVER
+#By default, use a remote knowledge base
+embeddedkb = False
+defaultontology = None
 kb_HOST = 'localhost'
 kb_PORT = 6969
 
 #By default, don't start in demo mode
 demo = False
 
+
 #By default, use text input
 use_speech = False
 reco = None
 translator = None
-lang = 'en-US'
 single_sentence = None
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'htdsvp:', ['help', 'test', 'debug', 'silent', 'speech', 'version', 'process=', 'demo', 'kbhost=', 'kbport='])
+    optlist, args = getopt.getopt(sys.argv[1:], 'htdsvp:', ['help', 'test', 'debug', 'silent', 'speech', 'version', 'process=', 'demo', 'kbhost=', 'kbport=', 'embeddedkb', 'defaultontology='])
 except getopt.GetoptError, err:
     # print help information and exit:
     print str(err) # will print something like "option -a not recognized"
@@ -84,8 +87,10 @@ for o, a in optlist:
         sys.exit(0)
     elif o in ("-d", "--debug"):
         logger.setLevel(logging.DEBUG)
+        kblogger.setLevel(logging.INFO)
     elif o in ("-s", "--silent"):
         logger.setLevel(logging.CRITICAL)
+        kblogger.setLevel(logging.CRITICAL)
     elif o in ("-p", "--process"):
         single_sentence = a
     elif o in ("--speech"):
@@ -94,6 +99,10 @@ for o, a in optlist:
     elif o in ("--demo"):
         demo = True
         logger.setLevel(logging.DEBUG)
+    elif o in ("--embeddedkb"):
+        embeddedkb = True
+    elif o in ("--defaultontology"):
+        defaultontology = a
     elif o in ("--kbhost"):
         kb_HOST = a
     elif o in ("--kbport"):
@@ -115,6 +124,7 @@ formatter = logging.Formatter("%(message)s")
 log_handler.setFormatter(formatter)
 # add log_handler to logger
 logger.addHandler(log_handler)
+kblogger.addHandler(log_handler)
 
 #Loggers are set, we can import other modules.
 
@@ -126,7 +136,7 @@ logger.info("v." + DIALOGS_VERSION + "\n")
 
 # Do all resource management: loading word dictionaries, connecting to
 # the ontology server...
-ResourcePool().init(DATA_DIR, kb_HOST, kb_PORT)
+ResourcePool().init(DATA_DIR, kb_HOST, kb_PORT, embeddedkb, defaultontology)
 
 if speaker and ResourcePool().ontology_server:
     ResourcePool().ontology_server.revise([speaker + " rdf:type Agent"], {"method":"add"})
