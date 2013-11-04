@@ -21,6 +21,7 @@ Usage:
 dialogs_test [OPTIONS] TEST_SUITE
   -h, --help               Displays this message and exits
   -f, --failfast           Stops at first failure or error
+  -d, --debug              Verbose output for interactions with knowledge base
   --embedded               Run with an embedded knowledge base (requires MinimalKB)
   -l, --log=[file|stdout]  Where to log: file (in """ + LOG_FILENAME + """) 
                            or stdout (default).
@@ -59,7 +60,6 @@ logger = logging.getLogger('dialogs')
 logger.setLevel(logging.DEBUG)
 
 kb_logger = logging.getLogger('kb')
-kb_logger.setLevel(logging.INFO)
 
 if len(sys.argv[1:]) == 0:
     usage()
@@ -70,9 +70,10 @@ formatter = logging.Formatter("%(message)s")
 
 failfast = False
 embedded = False
+verbosekb = False
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'hfl:', ['help', 'failfast', 'embedded', 'log='])
+    optlist, args = getopt.getopt(sys.argv[1:], 'hfdl:', ['help', 'failfast', 'debug', 'embedded', 'log='])
 except getopt.GetoptError, err:
     # print help information and exit:
     print str(err) # will print something like "option -a not recognized"
@@ -86,6 +87,8 @@ for o, a in optlist:
     if o in ("-f", "--failfast"):
         print("Failfast mode enabled.")
         failfast = True
+    elif o in ("-d", "--debug"):
+        verbosekb = True
     elif o in ("--embedded"):
         print("Using embedded knowledge base.")
         embedded = True
@@ -104,9 +107,18 @@ log_handler.setFormatter(formatter)
 logger.addHandler(log_handler)
 kb_logger.addHandler(log_handler)
 
+if verbosekb:
+    kb_logger.setLevel(logging.DEBUG)
+else:
+    kb_logger.setLevel(logging.WARN)
+
 if embedded:
     minimalkb_logger = logging.getLogger('minimalKB')
-    minimalkb_logger.setLevel(logging.INFO)
+    if verbosekb:
+        minimalkb_logger.setLevel(logging.DEBUG)
+    else:
+        minimalkb_logger.setLevel(logging.WARN)
+
     minimalkb_logger.addHandler(log_handler)
 
 
