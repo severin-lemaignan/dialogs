@@ -47,10 +47,6 @@ logger.setLevel(logging.WARNING)
 kblogger = logging.getLogger('kb')
 kblogger.setLevel(logging.ERROR)
 
-
-#hack that tries to find out the current prefix and then the data directory
-DATA_DIR = os.path.abspath(__file__).split('bin')[0].split('src')[0] + '/share/dialogs/'
-
 #By default, use a remote knowledge base
 embeddedkb = False
 defaultontology = None
@@ -136,7 +132,7 @@ logger.info("v." + DIALOGS_VERSION + "\n")
 
 # Do all resource management: loading word dictionaries, connecting to
 # the ontology server...
-ResourcePool().init(DATA_DIR, kb_HOST, kb_PORT, embeddedkb, defaultontology)
+ResourcePool().init(kb_host = kb_HOST, kb_port = kb_PORT, embeddedkb = embeddedkb, defaultontology = defaultontology)
 
 if speaker and ResourcePool().ontology_server:
     ResourcePool().ontology_server.revise([speaker + " rdf:type Agent"], {"method":"add"})

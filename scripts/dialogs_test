@@ -127,16 +127,13 @@ if embedded:
 from dialogs.resources_manager import ResourcePool
 
 
-#hack that tries to find out the current prefix and then the data directory
-DATA_DIR = os.path.abspath(__file__).split('bin')[0].split('src')[0] + '/share/dialogs/'
-
 #default for ORO_SERVER
 ORO_HOST = 'localhost'
 ORO_PORT = 6969
 
 # Do all resource management: loading word dictionaries, connecting to
 # the ontology server...
-ResourcePool().init(DATA_DIR, ORO_HOST, ORO_PORT, embeddedkb = embedded)
+ResourcePool().init(ORO_HOST, ORO_PORT, embeddedkb = embedded)
 
 #Import unit-tests
 import dialogs.verbalization.verbalization_test as verbalization

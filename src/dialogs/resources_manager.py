@@ -259,7 +259,13 @@ class ResourcePool:
         """
         self.thematic_roles = ThematicRolesDict()
 
-    def init(self, data_path, kb_host, kb_port, embeddedkb = False, defaultontology = None):
+    def init(self, kb_host = "localhost", kb_port = 6969, embeddedkb = False, defaultontology = None, data_path = None):
+
+        if not data_path:
+            #try to guess the current prefix and then the data directory
+            data_path = os.path.abspath(__file__).split('lib')[0].split('src')[0] + 'share/dialogs/'
+            logger.debug("Assuming Dialogs data dir is <%s>" % data_path)
+
 
         try:
             from kb import KB, KbError
