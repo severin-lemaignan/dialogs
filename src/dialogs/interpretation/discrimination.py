@@ -123,7 +123,7 @@ class Discrimination():
         descriptor = None
         agent = None
 
-        # bug in oro doesn't allow to search discriminants base on other agents models!!
+        #TODO bug in oro doesn't allow to search discriminants base on other agents models!!
         # we cannot search in all agents, but only in robot's model
 #        for agent_desc in description:
 #            # list current descriptors to not to use them anymore
@@ -134,7 +134,7 @@ class Discrimination():
 #                agent = agent_desc[0]
 #                break
 
-        agent = "myself"
+        agent = ResourcePool().default_model
         # list current descriptors to not to use them anymore
         #currentDescriptors = map(lambda x: x.split()[1], description[0][2])
         descriptor = self.get_discriminant(agent, objL, ignoreFeatureL, partial_disc)
@@ -368,7 +368,8 @@ class Discrimination():
 
         type = types[0]
 
-        description = [['myself','?obj',['?obj rdf:type ' + type]]]
+        myself = ResourcePool().default_model
+        description = [[myself,'?obj',['?obj rdf:type ' + type]]]
         objL = self.get_all_objects_with_desc(description)
 
         while len(objL) > 1:

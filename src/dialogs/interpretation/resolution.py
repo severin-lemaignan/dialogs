@@ -799,10 +799,10 @@ class Resolver:
         except AttributeError:
             pass
             
-        if current_speaker != 'myself':
+        if current_speaker != ResourcePool().default_model:
             logger.debug(colored_print("Learning this new concept in robot's model: \n", "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
             try:
-                ResourcePool().ontology_server.revise(stmts, {"method":"add", "models":["myself"]})
+                ResourcePool().ontology_server.revise(stmts, {"method":"add", "models":[ResourcePool().default_model]})
             except AttributeError:
                 pass
 

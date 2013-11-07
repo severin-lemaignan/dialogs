@@ -356,7 +356,7 @@ class Dialog(Thread):
                     try:
                         ResourcePool().ontology_server.revise(['%s verbalisesTo "%s"' % (self.current_situation_id,
                                                                                      self.last_sentence[1])],
-                                                        {"method":"add", "models":["myself"]})
+                                                              {"method":"add", "models":[ResourcePool.default_model]})
                     except AttributeError:
                         #No knowledge base
                         pass

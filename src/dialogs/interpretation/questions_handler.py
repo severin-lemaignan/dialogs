@@ -37,7 +37,7 @@ class QuestionHandler:
         self.process_on_knowing_concept = False
 
         # This defines the default model used to resolve queries.
-        self._default_agent = "myself"
+        self._default_agent = ResourcePool().default_model
 
     def clear_statements(self):
         self._statements = []

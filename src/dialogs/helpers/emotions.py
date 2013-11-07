@@ -10,7 +10,7 @@ from dialogs.helpers.helpers import generate_id, colored_print
 
 def _send_state(state):
 
-    models = ["myself"]
+    models = [ResourcePool().default_model]
     policy = {"method":"add", "models":models}
 
     state_id = generate_id(False)

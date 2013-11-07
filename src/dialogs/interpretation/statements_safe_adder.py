@@ -77,7 +77,7 @@ class StatementSafeAdder():
             and deals with adding inconsistency
         """
 
-        models = ["myself"]
+        models = [ResourcePool().default_model]
         if self._current_speaker:
             models.append(self._current_speaker)
 

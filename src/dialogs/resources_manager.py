@@ -166,6 +166,8 @@ class ThematicRolesDict:
 @singleton
 class ResourcePool:
     
+    default_model = "default"
+
     def split_list(self, word_list):
                 
         #init
@@ -403,7 +405,7 @@ class ResourcePool:
         #Add action verbs to the ontology
         if self.ontology_server:
             stmts = [verb.capitalize() + " rdfs:subClassOf cyc:PurposefulAction" for verb in self.thematic_roles.verbs.keys() if not self.thematic_roles.verbs[verb].is_synonym()]
-            self.ontology_server.revise(stmts, {"method":"add", "models":["myself"]})
+            self.ontology_server.revise(stmts, {"method":"add"})
         
         """
             List of ontology classes that are used in the adjectives list
@@ -423,7 +425,7 @@ class ResourcePool:
             ids = [ids]
 
         try:
-            self.ontology_server.revise([id + " rdf:type ActiveConcept" for id in ids], {"method":"add", "models":["myself"], "memory_profile": "SHORTTERM"})
+            self.ontology_server.revise([id + " rdf:type ActiveConcept" for id in ids], {"method":"add", "models":[ResourcePool().default_model], "lifespan": 10})
         except AttributeError:
             # No ontology server
             pass

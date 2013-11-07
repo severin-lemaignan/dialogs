@@ -692,7 +692,7 @@ class VerbalGroupStatementBuilder:
                 try:
                     agentslist = ResourcePool().ontology_server.listAgents()
                 except AttributeError:
-                    agentslist = ["myself",self._current_speaker]
+                    agentslist = [ResourcePool().default_model,self._current_speaker]
 
                 for subject_id in subjects_id:
                     if subject_id in agentslist:
