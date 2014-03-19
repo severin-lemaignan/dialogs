@@ -105,7 +105,7 @@ class Resolver:
             
             noun = ""
             try:
-                noun = '"' + nominal_group.noun[0].replace('+', ' ') + '"'
+                noun = nominal_group.noun[0].replace('+', ' ')
                 onto_res = ResourcePool().ontology_server.lookupForAgent(current_speaker, noun)
             except IndexError:
                 raise DialogError("We should not have to resolve nominal " + \

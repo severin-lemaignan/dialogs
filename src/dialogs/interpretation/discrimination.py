@@ -253,7 +253,7 @@ class Discrimination():
             if len(objL) == 1:
                 return objL[0]
 
-            if len(objL) == 2 and self.oro.check('[' + objL[0] + ' owl:sameAs ' + objL[1] + ']'):
+            if len(objL) == 2 and self.oro.check(['%s owl:sameAs %s' % (objL[0], objL[1])]):
                 return objL[0]
 
             agent, descriptor = self.get_descriptor(description, ignoreFeatureL)
