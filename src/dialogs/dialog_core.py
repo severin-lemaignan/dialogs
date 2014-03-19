@@ -206,6 +206,7 @@ class Dialog(Thread):
         relevant) and the last sentence produced (as a tuple of (Sentence, 
         verbalized sentence), is relevant).
         """
+        import time
         self.in_interaction = True
         self.input(input, speaker)
         while(self.in_interaction):
@@ -214,10 +215,10 @@ class Dialog(Thread):
                     self._logger.debug(colored_print("> Automatically answering: ", 'bold'))
                     self._logger.info(colored_print(answer, 'red'))
                     self.input(answer, speaker)
-                    
                     answer = None
                 else:
                     return ([], self.last_sentence)
+            time.sleep(0.1)
 
         return (self.last_stmts_set, self.last_sentence)
 
