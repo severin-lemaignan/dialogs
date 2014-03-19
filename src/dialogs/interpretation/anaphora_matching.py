@@ -121,24 +121,25 @@ def recover_nominal_group_list(sentences):
     Input=nominal group list                Output=nominal group list                     
     """
     
-    #init
-    nominal_group_list=[]
+    nominal_group_list = []
 
     #We recover all nominal groups of the sentences
-    for i in sentences:
-        nominal_group_list=nominal_group_list+i.sn
-        for j in i.sv:
-            nominal_group_list=nominal_group_list+j.d_obj
-            
-            for x in j.i_cmpl:
-                nominal_group_list=nominal_group_list+x.gn
-            nominal_group_list=nominal_group_list+recover_nominal_group_list(j.vrb_sub_sentence)
-    
-    
+    for sentence in sentences:
+        nominal_group_list += sentence.sn
+
+        for verb_group in sentence.sv:
+            nominal_group_list += verb_group.d_obj
+
+            for icmpl in verb_group.i_cmpl:
+                nominal_group_list += icmpl.gn
+
+            # recursively explore sub-sentences
+            nominal_group_list += recover_nominal_group_list(verb_group.vrb_sub_sentence)
+
     #We perform deletions
-    nominal_group_list=delete_redon_nominal_group(nominal_group_list)
-    nominal_group_list=delete_unuse_nominal_group(nominal_group_list)
-    
+    nominal_group_list = delete_redon_nominal_group(nominal_group_list)
+    nominal_group_list = delete_unuse_nominal_group(nominal_group_list)
+
     #If sentence is empty, we return an empty list      
     return nominal_group_list
 
@@ -149,23 +150,25 @@ def recover_nominal_group_list_without_id(sentences):
     return the list of the nominal groups used by anaphora processing                              
     Input=nominal group list                Output=nominal group list                     
     """
-    
-    #init
-    nominal_group_list=[]
+
+    nominal_group_list = []
 
     #We recover all nominal groups of the sentences
-    for i in sentences:
-        nominal_group_list=nominal_group_list+i.sn
-        for j in i.sv:
-            nominal_group_list=nominal_group_list+j.d_obj
-            
-            for x in j.i_cmpl:
-                nominal_group_list=nominal_group_list+x.gn
-            nominal_group_list=nominal_group_list+recover_nominal_group_list(j.vrb_sub_sentence)
-    
+    for sentence in sentences:
+        nominal_group_list += sentence.sn
+
+        for verb_group in sentence.sv:
+            nominal_group_list += verb_group.d_obj
+
+            for icmpl in verb_group.i_cmpl:
+                nominal_group_list += icmpl.gn
+
+            # recursively explore sub-sentences
+            nominal_group_list += recover_nominal_group_list(verb_group.vrb_sub_sentence)
+
     #We perform deletions
-    nominal_group_list=delete_unuse_nominal_group(nominal_group_list)
-    
+    nominal_group_list = delete_unuse_nominal_group(nominal_group_list)
+
     #If sentence is empty, we return an empty list      
     return nominal_group_list
 
