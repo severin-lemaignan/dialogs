@@ -10,10 +10,10 @@ import time
 from dialogs.version import DIALOGS_VERSION
 
 def usage():
-    print """The LAAS-CNRS 'Dialogs' module (v.""" + DIALOGS_VERSION + """).
+    print """The Dialogs natural language processor (v.""" + DIALOGS_VERSION + """).
 
 Usage:
-dialog [OPTIONS] [speaker]
+dialogs [OPTIONS] [speaker]
   -h, --help            Displays this message and exits
   -v, --version         Returns Dialogs version
   -t, --test            Runs unit-tests
@@ -76,7 +76,7 @@ for o, a in optlist:
         usage()
         sys.exit(0)
     elif o in ("-v", "--version"):
-        print("dialog - " + DIALOGS_VERSION)
+        print("dialogs - " + DIALOGS_VERSION)
         sys.exit(0)
     elif o in ("-t", "--test"):
         unit_tests()
