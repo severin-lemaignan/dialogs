@@ -174,9 +174,7 @@ class Dialog(Thread):
                             nl_output, \
                             'blue') + "\n")
                             
-                # Store output 
-                Dialog.dialog_history.extend(output)
-                
+               
                 
             except Empty:
                 pass
@@ -371,8 +369,10 @@ class Dialog(Thread):
                 self.last_sentence = (None, "")
             
             #Dialog History
-            self._logger.debug(colored_print("Sentence saved in history.", 'magenta'))
+            self._logger.debug(colored_print("Sentence and answer saved in history.", 'magenta'))
             Dialog.dialog_history.append(self.active_sentence)
+            if self.last_sentence[0]:
+                Dialog.dialog_history.extend(self.last_sentence[0])
             
         #Finalizing the processing
         self.active_sentence = None
