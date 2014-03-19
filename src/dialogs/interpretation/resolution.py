@@ -594,9 +594,12 @@ class Resolver:
                 historic_objects_list = recover_nominal_group_list(get_last(self.sentences_store, 10))
                 if not historic_objects_list:
                     raise DialogError("Error: possibly due to an empty dialog history")
-                
+
                 candidates = [obj for obj in historic_objects_list if obj.id in obj_list]
-                
+
+                if not candidates:
+                    logger.debug(colored_print("\tCould not find any suitable candidate from dialog history.", "magenta"))
+
                 # Discriminate everything different from this ID
                 for c in candidates:
                     current_stmts.append("?concept owl:differentFrom " + c.id)
