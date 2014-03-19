@@ -80,15 +80,17 @@ def delete_unuse_nominal_group(nominal_group_list):
     
     while i < len(nominal_group_list):
         #if a nominal group is an agent's proper noun, we remove it 
-        onto_class = []
-        try:
-            onto_class = ResourcePool().ontology_server.getDirectClassesOf(nominal_group_list[i].id)
-        except AttributeError:
+        onto_class = {}
+        if nominal_group_list[i].id:
+            try:
+                onto_class = ResourcePool().ontology_server.getDirectClassesOf(nominal_group_list[i].id)
+            except AttributeError:
+                pass
+        else:
+            # Nominal group with no ID? pass.
             pass
-        except KbError:
-            logger.debug("Nominal group with no ID. pass")
-            pass
-        
+
+
         if onto_class and "Agent" in onto_class.keys():
             nominal_group_list=nominal_group_list[:i]+nominal_group_list[i+1:]
             #When we delete => we increment i
