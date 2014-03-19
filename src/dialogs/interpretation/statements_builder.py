@@ -876,13 +876,16 @@ class VerbalGroupStatementBuilder:
                 else:
                     icmpl_role = ResourcePool().thematic_roles.get_cmplt_role_for_preposition(verb, ic.prep[0], True)
                     
-                    # If no thematic role exist, use the generic role 
-                    #'involves' and try to qualify it properly.
+                    # If no thematic role exist AND the verb is not a state
+                    # verb, use the generic role 'involves' and try to qualify it properly.
                     #  E.g: 'move the ball next to the table' ->
                     # action type Move, ..., action involves id1, id1 isNextTo table
                     if not icmpl_role:
                         try:
-                            icmpl_qualification = ResourcePool().preposition_rdf_object_property[ic.prep[0]][0]
+                            if verb not in ResourcePool().state:
+                                icmpl_qualification = ResourcePool().preposition_rdf_object_property[ic.prep[0]][0]
+                            else:
+                                icmpl_role = " %s " % ResourcePool().preposition_rdf_object_property[ic.prep[0]][0]
                         except IndexError:
                             if ic.prep:
                                 icmpl_qualification = "is" + ic.prep[0].capitalize()
