@@ -3,9 +3,25 @@
 """This test scenario can be invoked either as a standalone Python script or
 through the dialog_test executable.
 """
+
+import logging
+logger = logging.getLogger('dialogs')
+logger.setLevel(logging.DEBUG)
+log_handler = logging.StreamHandler()
+formatter = logging.Formatter("%(message)s")
+log_handler.setFormatter(formatter)
+logger.addHandler(log_handler)
+
 import unittest
 from dialogs.dialog_core import Dialog
 from dialogs.resources_manager import ResourcePool
+
+#By default, use a remote knowledge base
+embeddedkb = False
+kb_HOST = 'localhost'
+kb_PORT = 6969
+
+ResourcePool().init(kb_host = kb_HOST, kb_port = kb_PORT, embeddedkb = embeddedkb, defaultontology = None)
 
 class TestMovingToLondonScenario(unittest.TestCase):
     """
@@ -60,7 +76,7 @@ class TestMovingToLondonScenario(unittest.TestCase):
             """        
         except AttributeError: #the ontology server is not started of doesn't know the method
             print("Couldn't connect to the ontology server. Aborting the test.")
-            sys.exit(0)
+            raise
         
         try:
             self.oro.addForAgent('ACHILLE',[
@@ -88,7 +104,7 @@ class TestMovingToLondonScenario(unittest.TestCase):
                             ])
         except AttributeError: #the ontology server is not started of doesn't know the method
             print("Couldn't connect to the ontology server. Aborting the test.")
-            sys.exit(0)
+            raise
         
         
         try:
@@ -117,7 +133,7 @@ class TestMovingToLondonScenario(unittest.TestCase):
                             ])
         except AttributeError: #the ontology server is not started of doesn't know the method
             print("Couldn't connect to the ontology server. Aborting the test.")
-            sys.exit(0)    
+            raise
        
             
     def runTest(self):
@@ -127,14 +143,15 @@ class TestMovingToLondonScenario(unittest.TestCase):
 
         print()
         self.oro.add(['TAPE1 isIn CARDBOARD_BOX'])
-        self.oro.addForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
+        self.oro.addForAgent('ACHILLE',['ACHILLE pointsAt CARDBOARD_BOX'])
         
         stmt = "Jido, what is in the box?"
         answer = "This box"
         ####
-        self.assertEquals(self.dialog.test('ACHILLE', stmt, answer)[1][1],"The Lords of the robots.")
+        res = self.dialog.test('ACHILLE', stmt, answer)
+        self.assertEquals(res[1][1],"The Lords of the robots.")
         
-        self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn CARDBOARD_BOX'])
+        self.oro.removeForAgent('ACHILLE',['ACHILLE pointsAt CARDBOARD_BOX'])
         
         stmt = "Ok. And where is the other tape?"
         ####
@@ -145,7 +162,6 @@ class TestMovingToLondonScenario(unittest.TestCase):
         
         """Julie arrives, and gives two big boxes to ACHILLE. He can not take anything!"""
        
-        print()
         self.oro.update(['TAPE2 isReachable false'])
                             
         stmt = "Jido, can you take Jido-E?"
@@ -158,17 +174,16 @@ class TestMovingToLondonScenario(unittest.TestCase):
                   '* actsOnObject TAPE2']
         
         self.assertTrue(check_results(res[0], expected_result))
-        self.assertEquals(res[1][1], "")
         
         """Julie pushes a bit the TAPE2, which is now close enough, but still 
         unreachable because of an obstacle.
         """
-        self.oro.addForAgent('ACHILLE',['ACHILLE focusesOn TAPE2'])
+        self.oro.addForAgent('ACHILLE',['ACHILLE pointsAt TAPE2'])
         stmt = "And now, can you reach this tape?"
         ####
         ### Check ['myself reaches TAPE2']
-        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"I don't know, if I can reach this tape.")
-        self.oro.removeForAgent('ACHILLE',['ACHILLE focusesOn TAPE2'])
+        self.assertEquals(self.dialog.test('ACHILLE', stmt)[1][1],"I don't know, if I can reach this tape now.")
+        self.oro.removeForAgent('ACHILLE',['ACHILLE pointsAt TAPE2'])
         
         """Julie pushes again the tape. It is now reachable.
         """
