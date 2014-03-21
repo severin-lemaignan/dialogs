@@ -100,8 +100,7 @@ class TestDiscrimination(unittest.TestCase):
     
     def test_04(self):
         logger.info( "\nTest4: Including visibility constraints")
-        description = [['myself', '?obj', ['?obj rdf:type Bottle']]]
-        description.append(['raquel', '?obj', ['?obj isVisible true']])
+        description = [['myself', '?obj', ['?obj rdf:type Bottle']], ['raquel', '?obj', ['?obj isVisible true']]]
         expected_result = "Which color is the bottle? Blue or orange."
         
         try:

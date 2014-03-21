@@ -1884,10 +1884,10 @@ class TestParsing(unittest.TestCase):
     
     
     def test_61(self):
-        print ''
+        print('')
         print ('######################## test 7.1 ##############################')
         utterance="This one is not the bottle of my uncle but it is the bottle of my brother. It is not on the table but on the shelf."
-        print "Object of this test : Using 'but' with indirect complement"
+        print("Object of this test : Using 'but' with indirect complement")
         print utterance
         print '#################################################################'
         print ''
@@ -2798,7 +2798,6 @@ class TestParsing(unittest.TestCase):
     
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestParsing)
-    return suite
 
 if __name__ == '__main__':
     unittest.TextTestRunner(verbosity=2).run(test_suite())

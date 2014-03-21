@@ -149,8 +149,7 @@ def plural_noun(sn):
         return 1
     else:
         return plural(sn[0].noun[0],sn[0]._quantifier, sn[0].det)
-        
-    return 0
+
 
 
 

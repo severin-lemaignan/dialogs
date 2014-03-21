@@ -145,8 +145,8 @@ class TestAnaphora(unittest.TestCase):
         print 'the nominal group that we have to change'
         nominal_group_struc=Nominal_Group([],['it'],[],[],[])
         print (str(nominal_group_struc))
-        
-        print '#####################################'
+
+        print('#####################################')
         print 'After the first replacement'
         gr = first_replacement(list_gr, nominal_group_struc)
         print "the id of the nominal group: ", gr.id
@@ -558,7 +558,6 @@ class TestAnaphora(unittest.TestCase):
     
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestAnaphora)
-    return suite
 
 if __name__ == '__main__':
     unittest.TextTestRunner(verbosity=2).run(test_suite())

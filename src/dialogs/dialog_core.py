@@ -103,9 +103,9 @@ class Dialog(Thread):
                     #Output towards human
                     sys.stdout.write(self._verbalizer.verbalize(uie.value['question']) + "\n")
                     sys.stdout.flush()
-                    self._logger.info(colored_print("- " +  \
-                            self._verbalizer.verbalize(uie.value['question']), \
-                            'blue') + "\n")
+                    self._logger.info(colored_print("- " +
+                                                    self._verbalizer.verbalize(uie.value['question']),
+                                                    'blue') + "\n")
 
                     #Waiting for more info to solve content
                     self.waiting_for_more_info = True
@@ -116,9 +116,9 @@ class Dialog(Thread):
                     #Output towards human
                     sys.stdout.write(self._verbalizer.verbalize(iie.value) + "\n")
                     sys.stdout.flush()
-                    self._logger.info(colored_print("- " +  \
-                            self._verbalizer.verbalize(iie.value), \
-                            'blue') + "\n")
+                    self._logger.info(colored_print("- " +
+                                                    self._verbalizer.verbalize(iie.value),
+                                                    'blue') + "\n")
 
                 except UnidentifiedAnaphoraError as uae:
                     self._logger.info(colored_print("Not sure of the interpretation...  Asking for confirmation to human:", 'magenta'))
@@ -130,9 +130,9 @@ class Dialog(Thread):
                     #Output towards human
                     sys.stdout.write(self._verbalizer.verbalize(uae.value['question']) + "\n")
                     sys.stdout.flush()
-                    self._logger.info("- " + colored_print( \
-                            self._verbalizer.verbalize(uae.value['question']), \
-                            'blue') + "\n")
+                    self._logger.info("- " + colored_print(
+                        self._verbalizer.verbalize(uae.value['question']),
+                        'blue') + "\n")
                 except GrammaticalError as ge:
                     self._logger.info(colored_print("Grammatical error! " + \
                         "I can not correctly parse the sentence. Asking " + \
@@ -170,9 +170,9 @@ class Dialog(Thread):
                 nl_output = self._verbalizer.verbalize(output)
                 sys.stdout.write(nl_output + "\n")
                 sys.stdout.flush()
-                self._logger.info("- " + colored_print( \
-                            nl_output, \
-                            'blue') + "\n")
+                self._logger.info("- " + colored_print(
+                    nl_output,
+                    'blue') + "\n")
                             
                
                 
@@ -253,9 +253,9 @@ class Dialog(Thread):
                 self.waiting_for_more_info = False
                 sys.stdout.write("Alright. Forgotten!\n")
                 sys.stdout.flush()
-                self._logger.info("- " + colored_print( \
-                        "Alright. Forgotten!", \
-                        'blue') + "\n")
+                self._logger.info("- " + colored_print(
+                    "Alright. Forgotten!",
+                    'blue') + "\n")
                 
                 break
             

@@ -434,8 +434,6 @@ class SentenceFactory:
                                     [Nominal_Group([],[],[['welcome',[]]], [],[])],[],[],[],"affirmative", [])])]
     
     def create_agree_reply(self):
-        agreements = []
-        agreements.append([Sentence(AGREEMENT, "alright", [], [])])
-        agreements.append([Sentence(AGREEMENT, "ok", [], [])])
-        
+        agreements = [[Sentence(AGREEMENT, "alright", [], [])], [Sentence(AGREEMENT, "ok", [], [])]]
+
         return random.choice(agreements)

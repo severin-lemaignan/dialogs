@@ -12,7 +12,7 @@ import timescale_manager
 
 
 def print_time(time):
-    print time['year']+'/'+time['month']+'/'+time['day']
+    print(time['year'] + '/' + time['month'] + '/' + time['day'])
     print time['hour']+':'+time['minute']+':'+time['second']
     
     
@@ -719,8 +719,7 @@ class TestTimescale(unittest.TestCase):
     
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestTimescale)
-    
-    return suite
+
 
 if __name__ == '__main__':
     
