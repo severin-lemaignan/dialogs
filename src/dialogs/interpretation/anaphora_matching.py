@@ -61,9 +61,9 @@ def delete_redon_nominal_group(nominal_group_list):
             if nominal_group_list[j].id==nominal_group_list[i].id:
                 nominal_group_list=nominal_group_list[:j]+nominal_group_list[j+1:]
                 #When we delete => we increment j
-                j=j-1
-            j=j+1
-        i=i+1 
+                j -= 1
+            j += 1
+        i += 1
     
     return nominal_group_list
 
@@ -94,7 +94,7 @@ def delete_unuse_nominal_group(nominal_group_list):
         if onto_class and "Agent" in onto_class.keys():
             nominal_group_list=nominal_group_list[:i]+nominal_group_list[i+1:]
             #When we delete => we increment i
-            i=i-1
+            i -= 1
                 
         
         for j in ResourcePool().pronouns:
@@ -102,17 +102,16 @@ def delete_unuse_nominal_group(nominal_group_list):
             if ([j]==nominal_group_list[i].noun and nominal_group_list[i].det==[]):# or find_cap_lettre(nominal_group_list[i].noun)==1:
                 nominal_group_list=nominal_group_list[:i]+nominal_group_list[i+1:]
                 #When we delete => we increment i
-                i=i-1
+                i -= 1
                 break
         
         #We can have a nominal group with just a determinant or adjective
         if i>-1 and nominal_group_list[i].noun==[]:
             nominal_group_list=nominal_group_list[:i]+nominal_group_list[i+1:]
             #When we delete => we increment i
-            i=i-1
-        
-            
-        i=i+1
+            i -= 1
+
+        i += 1
     return nominal_group_list
 
 

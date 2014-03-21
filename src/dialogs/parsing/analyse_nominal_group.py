@@ -115,7 +115,7 @@ def find_sn_pos (sentence, begin_pos):
 
     #If there is a nominal group with determinant
     if sentence[begin_pos] in ResourcePool().determinants:
-        end_pos= end_pos + adjective_pos(sentence, begin_pos+1)
+        end_pos += adjective_pos(sentence, begin_pos + 1)
         return sentence[begin_pos : end_pos+begin_pos]
     
     #If we have 'something'
@@ -127,13 +127,13 @@ def find_sn_pos (sentence, begin_pos):
        
     #If there is a number, it will be the same with determinant
     if other_functions.number(sentence[begin_pos])==1:
-        end_pos= end_pos + adjective_pos(sentence, begin_pos+1)
+        end_pos += adjective_pos(sentence, begin_pos + 1)
         return sentence[begin_pos : end_pos+begin_pos]
 
     #If it is a proper name
     counter=begin_pos
     while (counter<len(sentence) and other_functions.find_cap_lettre(sentence[counter])==1):
-        counter=counter+1
+        counter += 1
     
     #Default case return [] => ok if counter=begin_pos
     return sentence[begin_pos : counter]
@@ -161,7 +161,7 @@ def find_sn (sentence):
 
         #If there is a nominal group with determinant
         if x in ResourcePool().determinants:
-            nb_position= nb_position + adjective_pos(sentence, sentence.index(x)+1)
+            nb_position += adjective_pos(sentence, sentence.index(x) + 1)
             return sentence[sentence.index(x) : sentence.index(x)+nb_position]
         
         #If we have 'something'
@@ -173,13 +173,13 @@ def find_sn (sentence):
         
         #If there is a number, it will be the same with determinant
         if other_functions.number(x)==1:
-            nb_position= nb_position + adjective_pos(sentence, sentence.index(x)+1)
+            nb_position += adjective_pos(sentence, sentence.index(x) + 1)
             return sentence[sentence.index(x) : sentence.index(x)+nb_position]
 
         #If there is a proper name
         counter=sentence.index(x)
         while (counter<len(sentence) and other_functions.find_cap_lettre(sentence[counter])==1):
-            counter=counter+1
+            counter += 1
         #Not equal => there is a proper name
         if counter!=sentence.index(x):
             return sentence[sentence.index(x) : counter]
@@ -311,7 +311,7 @@ def return_adj (nominal_group):
         while k < len(nominal_group):
             if is_an_adj(nominal_group[k]):
                 adj_list = adj_list + [nominal_group[k]]
-            k = k + 1
+            k += 1
     return adj_list
 
 
@@ -352,8 +352,8 @@ def process_adj_quantifier(adj_list):
                 adjective_list[0][1]=[adj_list[z]]+adjective_list[0][1]
             else:
                 adjective_list=[[adj_list[z],[]]]+adjective_list
-            
-            z=z-1     
+
+            z -= 1
     return adjective_list
 
 
@@ -480,9 +480,9 @@ def complete_relative(sentence, object):
             
             elif sentence[i] in ResourcePool().proposals:
                 #We don't have an indirect object
-                i=i+len(find_sn_pos(sentence, i+1))
-            
-            i=i+1
+                i += len(find_sn_pos(sentence, i + 1))
+
+            i += 1
         #It is a direct complement
         sentence=sentence+object
    

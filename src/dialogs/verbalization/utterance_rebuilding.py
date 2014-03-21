@@ -151,7 +151,7 @@ def find_sn_pos (phrase, begin_pos):
 
     #If there is a nominal group with determinant
     if phrase[begin_pos] in ResourcePool().determinants:
-        end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
+        end_pos += adjective_pos(phrase, begin_pos + 1)
         return phrase[begin_pos : end_pos+begin_pos]
     
     #If we have 'something'
@@ -163,13 +163,13 @@ def find_sn_pos (phrase, begin_pos):
        
     #If there is a number, it will be the same with determinant
     if other_functions.number(phrase[begin_pos])==1:
-        end_pos= end_pos + adjective_pos(phrase, begin_pos+1)
+        end_pos += adjective_pos(phrase, begin_pos + 1)
         return phrase[begin_pos : end_pos+begin_pos]
 
     #If it is a proper name
     counter=begin_pos
     while (counter<len(phrase) and other_functions.find_cap_lettre(phrase[counter])==1):
-        counter=counter+1
+        counter += 1
     
     #Default case return [] => ok if counter=begin_pos
     return phrase[begin_pos : counter]
@@ -219,9 +219,9 @@ def create_possession_claus(list):
     #To take the first element
     phrase=list[i-1]
     if list[i-1][len(list[i-1])-1].endswith('s'):
-        phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'"
+        phrase[len(phrase) - 1] += "'"
     else:
-        phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'s"
+        phrase[len(phrase) - 1] += "'s"
 
     #We concatenate
     while i < len(list):
@@ -232,11 +232,11 @@ def create_possession_claus(list):
             phrase=phrase+list[i][1:]
         
         if list[i][len(list[i])-1].endswith('s'):
-            phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'"
+            phrase[len(phrase) - 1] += "'"
         else:
-            phrase[len(phrase)-1]=phrase[len(phrase)-1]+"'s"
-        
-        i=i+1
+            phrase[len(phrase) - 1] += "'s"
+
+        i += 1
     
     #To remove the 's of the last word in the sentence
     word=phrase[len(phrase)-1]
@@ -261,7 +261,7 @@ def possesion_form(sentence):
         if sentence[begin_pos] == 'of' and sentence[begin_pos-1]=='kind':
             if sentence[begin_pos+1] in ResourcePool().determinants:
                 sentence=sentence[:begin_pos+1]+sentence[begin_pos+2:]
-                begin_pos=begin_pos+1
+                begin_pos += 1
         
         if sentence[begin_pos] == 'of' and sentence[begin_pos-1]!='think' and find_sn_pos(sentence, begin_pos+1)!=[] and sentence[begin_pos+1]!='thing':
             #We have to find the first nominal group
@@ -269,7 +269,7 @@ def possesion_form(sentence):
 
             #In the case of a proper name
             while nom_gr!=[] and begin_pos!=0 and other_functions.find_cap_lettre(nom_gr[0])==1:
-                begin_pos=begin_pos-1
+                begin_pos -= 1
             
                 nom_gr=find_sn_pos(sentence, begin_pos)
                 flag=1
@@ -277,11 +277,11 @@ def possesion_form(sentence):
             #If flag=1 => there is a proper name so we haven't decrement the begin_pos
             if flag==0:
                 while nom_gr == []:
-                    begin_pos=begin_pos-1
+                    begin_pos -= 1
                     nom_gr=find_sn_pos(sentence, begin_pos)
             else:
                 #If there is a proper name, begin_pos is wrong, we have to increment
-                begin_pos=begin_pos+1
+                begin_pos += 1
                 flag=0
                 
             #We recover the list of nominal groups
@@ -289,8 +289,8 @@ def possesion_form(sentence):
             #We create the final phrase
             end_pos=nom_gr_list[len(nom_gr_list)-1]+begin_pos
             sentence=sentence[:begin_pos]+create_possession_claus(nom_gr_list[:len(nom_gr_list)-1])+sentence[end_pos:]
- 
-        begin_pos=begin_pos+1
+
+        begin_pos += 1
 
     return sentence
 
@@ -375,15 +375,15 @@ def replace_tuple(sentence):
                 
                 #To perform this process we need to have a pronoun
                 if i!=0 and sentence[i-1] in ResourcePool().pronouns:
-                    sentence[i-1]=sentence[i-1]+j[0]
+                    sentence[i - 1] += j[0]
                     sentence=sentence[:i]+sentence[i+1:]
         
         #The replacement includes that cases        
         if i!=0 and sentence[i]=='is' and (sentence[i-1]=='that' or sentence[i-1]=='what'):
-            sentence[i-1]=sentence[i-1]+j[0]
+            sentence[i - 1] += j[0]
             sentence=sentence[:i]+sentence[i+1:]
-        
-        i=i+1
+
+        i += 1
     return sentence            
     
 
@@ -409,10 +409,10 @@ def negation(sentence):
             
             else:
                 #General case
-                sentence[i-1]=sentence[i-1]+"n't"
+                sentence[i - 1] += "n't"
                 
             sentence=sentence[:i]+sentence[i+1:]
-        i=i+1
+        i += 1
     return sentence
     
 
@@ -429,7 +429,7 @@ def delete_plus(sentence):
     while i < len(sentence):
         if other_functions.find_plus(sentence[i])==1:
             sentence=sentence[:i]+other_functions.list_rebuilding(sentence[i])+sentence[i+1:]
-        i=i+1
+        i += 1
     return sentence
 
 
@@ -448,8 +448,8 @@ def move_prep(sentence):
         if sentence[i] in ResourcePool().prep_change_place:
             nom_gr = find_sn_pos(sentence, i+1)
             sentence=sentence[:i]+nom_gr+[sentence[i]]+sentence[i+len(nom_gr)+1:]
-            i=i+len(nom_gr)
-        i=i+1
+            i += len(nom_gr)
+        i += 1
     return sentence
 
 
@@ -471,7 +471,7 @@ def delete_comma(sentence):
     while i < len(sentence):
         if sentence[i]==',':
             sentence=sentence[:i-1]+[sentence[i-1]+',']+sentence[i+1:]
-        i=i+1
+        i += 1
     
     return sentence
                 
@@ -535,11 +535,11 @@ def verbalising(class_list):
             sentence=sentence[:len(sentence)-2]+sentence[len(sentence)-1]
             
             #To separate with other sentences
-            sentence= sentence+' '
+            sentence += ' '
             
             utterance=utterance+sentence
-            
-        i=i+1
+
+        i += 1
     
     #To remove the last escape (at the end)
     return utterance[:len(utterance)-1]

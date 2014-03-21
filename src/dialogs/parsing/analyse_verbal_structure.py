@@ -115,9 +115,9 @@ def find_adv(phrase,vg):
                 phrase=phrase[:i-1]+phrase[i+1:]
             else:
                 vg.advrb=vg.advrb+[phrase[i]]
-                phrase=phrase[:i]+phrase[i+1:]   
-        
-        i=i+1
+                phrase=phrase[:i]+phrase[i+1:]
+
+        i += 1
     return phrase
 
 
@@ -405,7 +405,7 @@ def process_subsentence(phrase,vg):
                     
                 #We have to find the nominal group just before
                 while position>0 and gr==[]:
-                    position=position-1
+                    position -= 1
                     gr=analyse_nominal_group.find_sn_pos(phrase, position)
                 #For exceptions, if the nominal group end with the proposal 
                 if gr!=[] and gr[len(gr)-1]==w:
@@ -480,7 +480,7 @@ def process_conjunctive_sub(phrase,vg):
         
         #We perform processing
         vg.vrb_sub_sentence=vg.vrb_sub_sentence+[analyse_sentence.other_sentence(SUBSENTENCE, 'that' ,subsentence)]
-        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type=vg.vrb_sub_sentence[len(vg.vrb_sub_sentence)-1].data_type+'+statement'
+        vg.vrb_sub_sentence[len(vg.vrb_sub_sentence) - 1].data_type += '+statement'
         
         #We delete the subsentence
         phrase=phrase[:phrase.index('that')]
@@ -513,13 +513,13 @@ def correct_i_compl(phrase,verb):
                             
                     #We will find the subject of the relative
                     while analyse_nominal_group.find_sn_pos(phrase, begin_pos)==[]:
-                        begin_pos=begin_pos-1
+                        begin_pos -= 1
                     nom_gr=analyse_nominal_group.find_sn_pos(phrase, begin_pos)
                             
                     #If there nominal group is just before the adverbial
                     if begin_pos+len(nom_gr)==x:
-                        phrase=phrase[:x]+['which','is']+[phrase[x]]+adverbial+[';']+phrase[x+len(adverbial)+1:]        
-            x=x+1
+                        phrase=phrase[:x]+['which','is']+[phrase[x]]+adverbial+[';']+phrase[x+len(adverbial)+1:]
+            x += 1
     return phrase
 
 
@@ -553,7 +553,7 @@ def create_nom_gr_and(sentence):
     while i < len(sentence):
         #If we have a nominal group
         nom_gr=analyse_nominal_group.find_sn_pos(sentence, i)
-        i=i+len(nom_gr)
+        i += len(nom_gr)
     
         while nom_gr!=[] and i < len(sentence) and (sentence[i]=='and' or sentence[i]==';'):
             #If we have 'and'
@@ -561,11 +561,11 @@ def create_nom_gr_and(sentence):
                 sentence[i]='and'
             #We add the determinant
             sentence=sentence[:i+1]+['a']+sentence[i+1:]
-            i=i+1
+            i += 1
             #We continue
             nom_gr=analyse_nominal_group.find_sn_pos(sentence, i)
-            i=i+len(nom_gr)
-        i=i+1
+            i += len(nom_gr)
+        i += 1
 
     return sentence
 
@@ -628,8 +628,8 @@ def refine_indirect_complement(vg):
                     vg.i_cmpl[i].gn=vg.i_cmpl[i].gn+vg.i_cmpl[j].gn
                     vg.i_cmpl=vg.i_cmpl[:j]+vg.i_cmpl[j+1:]
                 else:
-                    j=j+1
-        i=i+1
+                    j += 1
+        i += 1
     return vg    
 
 
@@ -656,7 +656,7 @@ def refine_subsentence(vg):
             vg.d_obj=vg.d_obj+[gn]
             #We delete the subsentence
             vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
-            i=i-1
+            i -= 1
             
         if i>=0 and vg.vrb_sub_sentence[i].aim=='where':
             #We have to make some changers
@@ -673,9 +673,9 @@ def refine_subsentence(vg):
                 
             #We delete the subsentence
             vg.vrb_sub_sentence=vg.vrb_sub_sentence[:i]+vg.vrb_sub_sentence[i+1:]
-            i=i-1
-        
-        i=i+1  
+            i -= 1
+
+        i += 1
     return vg
 
 
@@ -745,7 +745,7 @@ def process_compare(sentence,vg):
                 sentence=sentence[:i-1]+sentence[i+1:]
             
             vg.comparator=vg.comparator+[compare]
-        i=i+1
+        i += 1
     return sentence
 
 

@@ -52,7 +52,7 @@ def compare_nominal_group(ng,rslt_ng):
                 while j < len(rslt_ng[i].relative):
                     if compare_sentence(rslt_ng[i].relative[j], ng[i].relative[j])==1:
                         return 1
-                    j=j+1
+                    j += 1
                     
                 #reinit
                 j=0
@@ -62,7 +62,7 @@ def compare_nominal_group(ng,rslt_ng):
                 return 1
             if rslt_ng[i]._quantifier!=ng[i]._quantifier:
                 return 1
-            i=i+1
+            i += 1
         return 0
 
 def compare_icompl(icompl, rslt_icompl):
@@ -81,7 +81,7 @@ def compare_icompl(icompl, rslt_icompl):
                 return 1
             if compare_nominal_group(rslt_icompl[i].gn,icompl[i].gn) ==1:
                 return 1
-            i=i+1
+            i += 1
         return 0
 
 
@@ -122,9 +122,9 @@ def compare_vs(vs, rslt_vs):
                 while j < len(rslt_vs[i].vrb_sub_sentence):
                     if compare_sentence(vs[i].vrb_sub_sentence[j], rslt_vs[i].vrb_sub_sentence[j])==1:
                         return 1
-                    j=j+1
-            
-            i=i+1
+                    j += 1
+
+            i += 1
         
         return 0
     

@@ -140,7 +140,7 @@ def plural_noun(sn):
         else:
             #If other conjunction, we have just one element
             return 1
-        i=i+1
+        i += 1
       
     #If we have some we can have all possibilities  
     if sn[0].noun==[] and sn[0]._quantifier!='SOME':

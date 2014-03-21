@@ -82,7 +82,7 @@ def imperative(analysis):
     
     if analysis.data_type==RELATIVE:
         if phrase[len(phrase)-1][len(phrase[len(phrase)-1])-1]!=',':
-            phrase[len(phrase)-1]=phrase[len(phrase)-1]+','
+            phrase[len(phrase) - 1] += ','
         return phrase
     
     return phrase+['.']

@@ -51,7 +51,7 @@ def negative_day(time):
                     #We delete a year
                     time['year']=str(int(time['year'])-1)
                 else:
-                    i=i-1
+                    i -= 1
                 
                 if ResourcePool().months_list[i][0]=='February' and int(time['year'])%4==0 and int(time['year'])%100!=0:
                     #If it is February and we have 29 days in it
@@ -61,7 +61,7 @@ def negative_day(time):
                 time['month']=ResourcePool().months_list[i][0]
             
             else:
-                i=i-1
+                i -= 1
         else:
             return time
     
@@ -111,7 +111,7 @@ def refine_clock(time):
             #We add a year
             time['year']=str(int(time['year'])+1)
 
-        i=i+1
+        i += 1
     return negative_day(time)
 
 
@@ -254,7 +254,7 @@ def timescale_i_cmpl(indirect_complement, action_time):
                 #We calculate the day on digit
                 day=ResourcePool().days_list.index(k)-ResourcePool().days_list.index(today)
                 if day<=0:
-                    day=day+7
+                    day += 7
                 
                 #We add information
                 if action_time['action_period']==None:
@@ -272,7 +272,7 @@ def timescale_i_cmpl(indirect_complement, action_time):
                 #We calculate the day on digit
                 mth=ResourcePool().months_list.index(k)-ResourcePool().months_list.index(month)
                 if mth<=0:
-                    mth=mth+12
+                    mth += 12
                 
                 #We add information
                 if action_time['action_period']==None:

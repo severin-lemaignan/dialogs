@@ -578,7 +578,7 @@ def i_cmpl(indirect_complement):
             indirect_complement[i].gn=[indirect_complement[i].gn[1]]
             for k in list_nominal_group:
                 indirect_complement=indirect_complement+[Indirect_Complement(indirect_complement[i].prep,[k])]
-        i=i+1
+        i += 1
     return indirect_complement
 
 def nominal_group_remerge(utterance, flag , nominal_group_structure):

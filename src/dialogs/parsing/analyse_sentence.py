@@ -441,7 +441,7 @@ def w_quest_whom(type, request, sentence):
     analysis=y_n_ques(type, request, sentence)
     
     #We have to add 'to' to the verb
-    analysis.sv[0].vrb_main[0]=analysis.sv[0].vrb_main[0]+'+to'
+    analysis.sv[0].vrb_main[0] += '+to'
     
     return analysis
 

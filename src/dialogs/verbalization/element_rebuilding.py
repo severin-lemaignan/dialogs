@@ -82,7 +82,7 @@ def nom_struc_rebuilding(nom_struc):
             nominal_structure=nominal_structure+[j.aim]+sentence_rebuilding.relative(j, ns)
             ns=[]
 
-        i=i+1
+        i += 1
     return nominal_structure
 
 
@@ -112,7 +112,7 @@ def indirect_compl_rebuilding(indirect_compl):
         while k < len(nom_gr):
             if (nom_gr[k]=='or' or nom_gr[k]=='but') and nom_gr[k+1]!=indirect_compl.prep[0]:
                 nom_gr=nom_gr[:k+1]+indirect_compl.prep+nom_gr[k+1:]
-            k=k+1    
+            k += 1
         
     else:
         nom_gr= indirect_compl.prep + nom_struc_rebuilding(indirect_compl.gn)
@@ -358,7 +358,7 @@ def scd_vrb_rebuilding(sec_vrb, phrase, flg):
         x=1
         while x < len(sec_vrb.i_cmpl):
             phrase=phrase+indirect_compl_rebuilding(sec_vrb.i_cmpl[x])
-            x=x+1
+            x += 1
     
     flag=0
     for j in ResourcePool().verb_need_to:
@@ -398,7 +398,7 @@ def end_statement_rebuilding(sentence, sv ,sn, type, aim):
         x=1
         while x < len(sv[0].i_cmpl):
             phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[x])
-            x=x+1
+            x += 1
 
     #We add the adverb of the sentence
     phrase=phrase+sv[0].advrb
@@ -440,7 +440,7 @@ def end_question_rebuilding(sentence, sv ,sn, aim):
         x=1
         while x < x < len(sv[0].i_cmpl):
             phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[x])
-            x=x+1
+            x += 1
         
         flag=0
         for j in ResourcePool().verb_need_to:

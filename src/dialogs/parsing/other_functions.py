@@ -59,15 +59,15 @@ def recover_end_pos_sub(phrase, propo_sub_list):
     #We loop after the first proposal
     for y in phrase:
         
-        position=position+1
+        position += 1
         
         #If there is a proposal we increment nb_sub
         if y in propo_sub_list:
-            nb_sub=nb_sub+1
+            nb_sub += 1
         
         #If there is a ';' we decrement nb_sub
         if y==';':
-            nb_sub=nb_sub-1
+            nb_sub -= 1
             if nb_sub==0:
                 #The of the processing is here, when there is no 'sub'
                 return position
@@ -110,7 +110,7 @@ def word_to_digit(word, number):
     
     for i in ResourcePool().adjective_numbers_digit:
         if i[0]==word:
-            number=number+int(i[1])
+            number += int(i[1])
     
     if word.endswith('th'):
         if word=='eighth':
@@ -123,15 +123,15 @@ def word_to_digit(word, number):
             if word.endswith('teen'):
                 number=number+int(l[1])+10
             elif word.endswith('ty') and word!='twenty':
-                number=number+int(l[1])*10
+                number += int(l[1]) * 10
             elif l[0]=='hundred':
-                number=number*int(l[1])
-            elif l[0]=='thousand':   
-                number=number*int(l[1])
+                number *= int(l[1])
+            elif l[0]=='thousand':
+                number *= int(l[1])
             elif l[0]=='million':
-                number=number*int(l[1])
+                number *= int(l[1])
             else:
-                number=number+int(l[1])
+                number += int(l[1])
               
     return number
             
@@ -152,7 +152,7 @@ def convert_to_digit(det):
         
     while k < len(det):
         if det[k]!='+':
-            k=k+1
+            k += 1
         else:
             
             num=word_to_digit(det[:k], num)
@@ -190,15 +190,15 @@ def find_scd_verb_sub(sentence):
     while i<len(sentence):
         
         if sentence[i] in ResourcePool().subsentences+ResourcePool().relatives:
-            flag=flag+1
+            flag += 1
                 
         if sentence[i]==';':
-            flag=flag-1
+            flag -= 1
             
         if sentence[i]=='to' and flag>0:
             sentence[i]=':to'
-            
-        i=i+1
+
+        i += 1
     return sentence
 
 
@@ -215,15 +215,15 @@ def recover_scd_verb_sub(sentence):
     while i<len(sentence):
         
         if sentence[i] in ResourcePool().subsentences+ResourcePool().relatives:
-            flag=flag+1
+            flag += 1
                
         if sentence[i]==';':
-            flag=flag-1
+            flag -= 1
             
         if sentence[i]==':to' and flag==0:
             sentence[i]='to'
-            
-        i=i+1
+
+        i += 1
         
     return sentence
 
