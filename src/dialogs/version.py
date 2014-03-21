@@ -1,2 +1,2 @@
 # coding=utf-8
-DIALOGS_VERSION = "0.12"
+DIALOGS_VERSION = "0.13"
