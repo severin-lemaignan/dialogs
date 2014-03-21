@@ -67,7 +67,7 @@ def css_printer(text, atom):
     if atom == AGRAMMATICAL_SENTENCE:
         return "\n<div class='sentence invalid_grammar'>\n" + text + "\n</div>\n"
     else:
-        stderr.writeln("Error: " + text + "has no grammatical category!") 
+        sys.stderr.writeln("Error: " + text + "has no grammatical category!")
         return text
 
 def pprint(text, atom, mode = None):

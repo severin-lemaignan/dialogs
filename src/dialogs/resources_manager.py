@@ -269,11 +269,12 @@ class ResourcePool(object):
 
         try:
             from kb import KB, KbError
-
-            self.ontology_server = KB(kb_host, kb_port, embeddedkb, defaultontology)
         except ImportError:
             logger.error("Python bindings to access the knowledge are not available." + \
                          "Please install 'pykb' and restart Dialogs.")
+        
+        try:
+            self.ontology_server = KB(kb_host, kb_port, embeddedkb, defaultontology)
         except KbError:
             logger.error("Error while trying to connect to the knowledge base on %s:%s" % (kb_host, kb_port) + \
                          ". Continuing without knowledge base. Amongst others, resolution won't work.")

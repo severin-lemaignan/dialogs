@@ -49,7 +49,7 @@ def is_an_adj(word):
         return True
 
     #We use the irregular adjectives list to find it
-    if word in ResourcePool().adjectives.keys()+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
+    if word in list(ResourcePool().adjectives.keys()) + ResourcePool().adjective_numbers + ResourcePool().adj_quantifiers:
         return True
 
     return False
@@ -86,7 +86,7 @@ def adjective_pos(sentence, word_pos):
         return 1+adjective_pos(sentence, word_pos+1)
     
     #We use the irregular adjectives list to find it
-    if sentence[word_pos] in ResourcePool().adjectives.keys()+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
+    if sentence[word_pos] in list(ResourcePool().adjectives.keys()) + ResourcePool().adjective_numbers + ResourcePool().adj_quantifiers:
         return 1+ adjective_pos(sentence, word_pos+1)
 
     #Default case
@@ -269,7 +269,7 @@ def refine_nom_gr(nominal_group):
 def return_det (nominal_group):
     """
     This function returns the determinant of the nominal group                       
-    :param nominal group                           
+    :param nominal_group: the nominal group
     :return: the determinant          
     """
 
@@ -404,7 +404,7 @@ def take_off_nom_gr(sentence, nominal_group, nominal_group_pos):
     Function to delete the nominal group form the sentence                           
     
     :param sentence: the original sentence
-    :param nomianl_group: the nominal group to wipe off
+    :param nominal_group: the nominal group to wipe off
     :param nominal_group_pos: the position of the nominal group in the sentence            
     :return: the modified sentence     
     """

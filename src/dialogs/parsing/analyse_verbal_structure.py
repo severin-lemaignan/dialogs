@@ -291,7 +291,8 @@ def state_adjective(sentence, vg):
             vg.d_obj=[Nominal_Group([],[],adj_list,[],[])]
             sentence=sentence[pos-1:]
             
-            #Same as nominal groups but with adjetives
+            #Same as nominal groups but with adjectives
+            conjunction = None
             while sentence[0]=='or' or sentence[0]==':but':
                 if sentence[0]=='or':
                     conjunction='OR'
@@ -303,7 +304,7 @@ def state_adjective(sentence, vg):
                 adj_list=analyse_nominal_group.process_adj_quantifier(sentence[:pos-1])
                 #We put all adjectives in the direct complement
                 vg.d_obj=vg.d_obj+[Nominal_Group([],[],adj_list,[],[])]
-                vg.d_obj[len(vg.d_obj)-1]._conjunction=conjunction
+                vg.d_obj[len(vg.d_obj)-1]._conjunction = conjunction
                 sentence=sentence[pos-1:]
     return sentence
     
