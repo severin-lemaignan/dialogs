@@ -2,7 +2,7 @@
 import logging
 logger = logging.getLogger("dialogs")
 
-import utterance_rebuilding
+from dialogs.verbalization import utterance_rebuilding
 
 
 class Verbalizer(object):

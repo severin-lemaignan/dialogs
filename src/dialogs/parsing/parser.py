@@ -2,8 +2,8 @@
 import logging
 logger = logging.getLogger("dialogs")
 
-import preprocessing
-import analyse_sentence
+from dialogs.parsing import preprocessing
+from dialogs.parsing import analyse_sentence
 
 
 class Parser(object):

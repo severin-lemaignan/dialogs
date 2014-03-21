@@ -2,12 +2,12 @@
 
 import logging
 
-from sentence_types import *
+from dialogs.sentence_types import *
 
-from helpers.sentence_atoms import *
-from helpers.printers import pprint, level_marker
-from helpers.helpers import colored_print
-from resources_manager import ResourcePool
+from dialogs.helpers.sentence_atoms import *
+from dialogs.helpers.printers import pprint, level_marker
+from dialogs.helpers.helpers import colored_print
+from dialogs.resources_manager import ResourcePool
 
 
 class Sentence(object):

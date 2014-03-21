@@ -7,9 +7,9 @@ import unittest
 from difflib import unified_diff
 
 from dialogs.sentence import *
-from parsing import preprocessing
-from parsing import analyse_sentence
-from parsing import parser
+from dialogs.parsing import preprocessing
+from dialogs.parsing import analyse_sentence
+
 
 def is_equal(grp1, grp2):
     ok = (str(grp1) == str(grp2))
@@ -33,7 +33,7 @@ class TestValidity(unittest.TestCase):
     """ 
     
     def check_invalid(self, utterance):
-        check_valid(utterance, False)
+        self.check_valid(utterance, False)
 
     def check_valid(self, utterance, valid = True):
 

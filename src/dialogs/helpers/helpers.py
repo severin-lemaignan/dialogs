@@ -85,7 +85,7 @@ def get_file_handler(filename):
 
 def check_results(res, expected, allow_question_mark = False):
 
-    def check_triplets(tr , te, allow_question_mark):
+    def check_triplets(tr , te):
         sr,pr,orr = tr.split()
         se,pe,oe = te.split()
 
@@ -101,7 +101,7 @@ def check_results(res, expected, allow_question_mark = False):
     while res:
         r = res.pop()
         for e in expected:
-            if check_triplets(r, e, allow_question_mark):
+            if check_triplets(r, e):
                 expected.remove(e)
     if expected:
         logger.info("\t**** /Missing statements in result:   ")

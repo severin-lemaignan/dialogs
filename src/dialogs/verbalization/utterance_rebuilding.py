@@ -22,9 +22,9 @@
     verbalising : is the basic function of this module
 """
 from dialogs.resources_manager import ResourcePool
-import other_functions
-import sentence_rebuilding
-from dialogs.sentence import *
+from dialogs.verbalization import other_functions, sentence_rebuilding
+from dialogs.sentence_types import *
+
 
 wques_rules=[('date',['when']),('place',['where']),('origin',['where']), ('reason',['why']),('people',['who'])]
 insertion_tuples=[("'m", 'am'),("'ve", 'have'),("'re", 'are'),("'ll", 'will'),("'d", 'would'),("'s", 'is')]
@@ -124,7 +124,7 @@ def adjective_pos(phrase, word_pos):
         return 1+adjective_pos(phrase, word_pos+1)
     
     #We use the irregular adjectives list to find it
-    if phrase[word_pos] in ResourcePool().adjectives.keys()+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
+    if phrase[word_pos] in list(ResourcePool().adjectives.keys()) + ResourcePool().adjective_numbers + ResourcePool().adj_quantifiers:
         return 1+ adjective_pos(phrase, word_pos+1)
 
     #Default case

@@ -193,7 +193,7 @@ def is_an_adj(word):
         return 1
         
     #We use the irregular adjectives list to find it
-    if word in ResourcePool().adjectives.keys()+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
+    if word in list(ResourcePool().adjectives.keys())+ResourcePool().adjective_numbers+ResourcePool().adj_quantifiers:
         return 1
     
     return 0

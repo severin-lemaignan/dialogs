@@ -6,17 +6,17 @@ from Queue import Queue, Empty
 from collections import deque
 from threading import Thread
 
-from dialog_exceptions import *
+from dialogs.dialog_exceptions import *
 from kb import KbError
 from dialogs.sentence import *
-from helpers.helpers import colored_print, wait_for_keypress
-from helpers import emotions
-from interpretation.anaphora_matching import replacement
-from interpretation.content_analysis import ContentAnalyser
-from interpretation.resolution import Resolver
-from parsing.parser import Parser
-from speaker_identification import SpeakerIdentifier
-from verbalization.verbalization import Verbalizer
+from dialogs.helpers.helpers import colored_print, wait_for_keypress
+from dialogs.helpers import emotions
+from dialogs.interpretation.anaphora_matching import replacement
+from dialogs.interpretation.content_analysis import ContentAnalyser
+from dialogs.interpretation.resolution import Resolver
+from dialogs.parsing.parser import Parser
+from dialogs.speaker_identification import SpeakerIdentifier
+from dialogs.verbalization.verbalization import Verbalizer
 
 
 class Dialog(Thread):

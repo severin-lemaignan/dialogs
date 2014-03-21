@@ -18,7 +18,8 @@ from dialogs.dialog_core import Dialog
 
 from dialogs.parsing.parser import Parser
 from dialogs.sentence import *
-import utterance_rebuilding
+from dialogs.sentence_types import *
+from dialogs.verbalization import utterance_rebuilding
 
 
 class TestVerbalization(unittest.TestCase):
