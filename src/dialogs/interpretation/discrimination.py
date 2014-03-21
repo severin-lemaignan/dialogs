@@ -40,7 +40,7 @@ class Discrimination():
     # - None: no description (or description format incorrect)
     # -----------------------------------------------------------------------------#
     def get_all_objects_with_desc(self, description):
-        objL = None
+        obj_list = None
         
         for agent_desc in description:
             
@@ -55,15 +55,15 @@ class Discrimination():
 
             # if no object found, no need to continue
             if not obj_tmp: 
-                objL = []
+                obj_list = []
                 break
             else:
-                if objL is None:
-                    objL = obj_tmp
+                if obj_list is None:
+                    obj_list = obj_tmp
                 else:
-                    objL = filter(lambda x:x in objL,obj_tmp)  # intersection
+                    obj_list = filter(lambda x:x in obj_list,obj_tmp)  # intersection
 
-        return objL
+        return obj_list
 
     # -- GET_DISCRIMINANT ---------------------------------------------------------#
     # Queries the ontology for a list of discriminants. Returns the first one.
@@ -72,14 +72,14 @@ class Discrimination():
     # INPUT:
     # - agent
     # - object list
-    # - ignoreDesc: list of descriptors not to be used
-    # - zPartial: if true, then partial discriminants are also returned
+    # - ignore_descriptors: list of descriptors not to be used
+    # - include_partial: if true, then partial discriminants are also returned
     # OUTPUT:
     # - discriminant: [C, discriminat] if complete, or [P, discriminant] if partial
     #   The new discriminant should be different from the ones already known or ignored
     # -----------------------------------------------------------------------------#
-    def get_discriminant(self, agent, objL, ignoreDesc, zPartial):
-        discriminants = self.oro.discriminateForAgent(agent, objL)
+    def get_discriminant(self, agent, obj_list, ignore_descriptors, include_partial):
+        discriminants = self.oro.discriminateForAgent(agent, obj_list)
         logger.debug(  colored_print('Possible discriminants: ', 'magenta') +  \
                         str(colored_print(discriminants[1], 'blue')) + \
                         colored_print(" (complete discriminants: ", 'magenta') + \
@@ -90,9 +90,9 @@ class Discrimination():
         partial_disc = discriminants[1]
 
         if complete_disc:
-            res =  filter(lambda x: x not in ignoreDesc, complete_disc)
-        elif partial_disc and zPartial:
-            res = filter(lambda x: x not in ignoreDesc, partial_disc)
+            res =  filter(lambda x: x not in ignore_descriptors, complete_disc)
+        elif partial_disc and include_partial:
+            res = filter(lambda x: x not in ignore_descriptors, partial_disc)
         else:
             res = None
 
@@ -110,16 +110,16 @@ class Discrimination():
     # - description: 
     #   [[agent1 '?obj' oro_query]..[[agentN '?obj' oro_query]]
     #   (oro_query= ['?obj hasColor blue',.. ?obj hasShape box'])
-    # - ignoreFeatureL: list of features not to use as discriminants
+    # - ignore_features: list of features not to use as discriminants
     #   [feat1 ..featN]
     # - allowPartialDesc: consider also partial discriminants (1) or not (0) (0 default)
     #
     # OUTPUT:
     # - descriptor or None (if no discriminant for any agent found)
     # -----------------------------------------------------------------------------#
-    def get_descriptor(self, description, ignoreFeatureL=None, partial_disc=True):
+    def get_descriptor(self, description, ignore_features=None, partial_disc=True):
         
-        if not ignoreFeatureL: ignoreFeatureL = []
+        if not ignore_features: ignore_features = []
         objL = self.get_all_objects_with_desc(description)
         descriptor = None
         agent = None
@@ -129,7 +129,7 @@ class Discrimination():
 #        for agent_desc in description:
 #            # list current descriptors to not to use them anymore
 #            #currentDescriptors = map(lambda x: x.split()[1], agent_desc[2])
-#            descriptor = self.get_discriminant(agent_desc[0], objL, ignoreFeatureL, partial_disc)
+#            descriptor = self.get_discriminant(agent_desc[0], objL, ignore_features, partial_disc)
 #
 #            if descriptor:
 #                agent = agent_desc[0]
@@ -138,7 +138,7 @@ class Discrimination():
         agent = ResourcePool().default_model
         # list current descriptors to not to use them anymore
         #currentDescriptors = map(lambda x: x.split()[1], description[0][2])
-        descriptor = self.get_discriminant(agent, objL, ignoreFeatureL, partial_disc)
+        descriptor = self.get_discriminant(agent, objL, ignore_features, partial_disc)
 
         return agent, descriptor
 
@@ -189,9 +189,9 @@ class Discrimination():
 
         def find(value, seq):
             for item in seq:
-                itemL = item.split()
-                if value in itemL: 
-                    return itemL[2]
+                items = item.split()
+                if value in items:
+                    return items[2]
             return None
 
         type = None
@@ -366,7 +366,7 @@ class Discrimination():
 
         # Not type asserted/inferred? then assume this object is unique.
         if not types:
-            return (True, [])
+            return True, []
 
         type = types[0]
 
@@ -405,4 +405,4 @@ class Discrimination():
         else:
             unambiguous = False
 
-        return (unambiguous, description[0][2])
+        return unambiguous, description[0][2]

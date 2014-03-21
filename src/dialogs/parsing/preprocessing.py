@@ -597,7 +597,7 @@ def possesion_form(sentence):
 	flag=0
 
 	#We will find the possession case
-	while (begin_pos<len(sentence)):
+	while begin_pos<len(sentence):
 
 		#We found a posssession case
 		if sentence[begin_pos].endswith("'s") or sentence[begin_pos].endswith("s'"):

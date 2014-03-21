@@ -71,7 +71,7 @@ class StatementBuilder:
             situation_id = self.process_verbal_groups(self._sentence)
         
                                  
-        return (self._statements, situation_id)
+        return self._statements, situation_id
     
     
     def process_nominal_groups(self, nominal_groups):

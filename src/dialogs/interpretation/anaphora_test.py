@@ -87,7 +87,7 @@ sentences[1].sv[0].d_obj[2].id='e'
 ## Aim of this test : Present the duality between the direct and indirect complement
 """
 print('')
-print(('######################## test 1 ##############################'))
+print('######################## test 1 ##############################')
 
 utterance="Using 'it' so we have to replace automatically"
 print('The object of our test is this utterance :')
@@ -128,7 +128,7 @@ class TestAnaphora(unittest.TestCase):
         ## TEST 1
         """
         print('')
-        print(('######################## test 1.1 ##############################'))
+        print('######################## test 1.1 ##############################')
     
         utterance="Using 'it' so we have to replace automatically"
         print('The object of our test is this utterance :')
@@ -181,7 +181,7 @@ class TestAnaphora(unittest.TestCase):
         ## TEST 2
         """
         print('')
-        print(('######################## test 1.2 ##############################'))
+        print('######################## test 1.2 ##############################')
     
         utterance="Using 'it' so we have to replace automatically"
         print('The object of our test is this utterance :')
@@ -235,7 +235,7 @@ class TestAnaphora(unittest.TestCase):
         ## TEST 3
         """
         print('')
-        print(('######################## test 1.3 ##############################'))
+        print('######################## test 1.3 ##############################')
     
         utterance="Using 'it' so we have to replace automatically"
         print('The object of our test is this utterance :')
@@ -289,7 +289,7 @@ class TestAnaphora(unittest.TestCase):
         ## TEST 4
         """
         print('')
-        print(('######################## test 1.4 ##############################'))
+        print('######################## test 1.4 ##############################')
     
         utterance="Using 'it' so we have to replace automatically"
         print('The object of our test is this utterance :')
@@ -343,7 +343,7 @@ class TestAnaphora(unittest.TestCase):
         ## TEST 5
         """
         print('')
-        print(('######################## test 1.5 ##############################'))
+        print('######################## test 1.5 ##############################')
     
         utterance="Using 'it' so we have to replace automatically"
         print('The object of our test is this utterance :')
@@ -397,7 +397,7 @@ class TestAnaphora(unittest.TestCase):
         ## TEST 6
         """
         print('')
-        print(('######################## test 1.6 ##############################'))
+        print('######################## test 1.6 ##############################')
     
         utterance="Using 'it' so we have to replace automatically"
         print('The object of our test is this utterance :')
@@ -451,7 +451,7 @@ class TestAnaphora(unittest.TestCase):
         ## TEST 7
         """
         print('')
-        print(('######################## test 1.7 ##############################'))
+        print('######################## test 1.7 ##############################')
     
         utterance="Using 'it' so we have to replace automatically"
         print('The object of our test is this utterance :')
@@ -505,7 +505,7 @@ class TestAnaphora(unittest.TestCase):
         ## TEST 8
         """
         print('')
-        print(('######################## test 1.8 ##############################'))
+        print('######################## test 1.8 ##############################')
     
         utterance="Using 'it' so we have to replace automatically"
         print('The object of our test is this utterance :')

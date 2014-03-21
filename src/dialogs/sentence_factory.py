@@ -90,14 +90,14 @@ class SentenceFactory:
             "Is it on your left or in front of you?"
         """
         
-        indirect_complL = []
+        indirect_complements = []
         
         for val in values:
             
             if 'right' in val.lower() or 'left' in val.lower():
                 if agent == 'myself': det = 'my'
                 else: det = 'your'
-                indirect_complL.append(Indirect_Complement(['on'],[Nominal_Group([det],[val],[],[],[])]))
+                indirect_complements.append(Indirect_Complement(['on'],[Nominal_Group([det],[val],[],[],[])]))
             else:
                 if agent == 'myself': det = 'me'
                 else: det = 'you'
@@ -106,12 +106,12 @@ class SentenceFactory:
                 elif 'front' in val.lower(): prep = 'in front of'
                 else: prep = None
                 
-                indirect_complL.append(Indirect_Complement([prep],[Nominal_Group([],[det],[],[],[])]))
+                indirect_complements.append(Indirect_Complement([prep],[Nominal_Group([],[det],[],[],[])]))
 
         sentence = [Sentence(YES_NO_QUESTION, '', 
                         [Nominal_Group([],['it'],[],[],[])], 
                         [Verbal_Group(['be'], [],'present simple', 
-                            [], indirect_complL, [], [] ,Verbal_Group.affirmative,[])])]
+                            [], indirect_complements, [], [] ,Verbal_Group.affirmative,[])])]
                     
         for i in range(len(values)-1):
             sentence[0].sv[0].i_cmpl[i+1].gn[0]._conjunction = 'OR'

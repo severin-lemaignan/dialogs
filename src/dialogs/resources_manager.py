@@ -444,35 +444,34 @@ if __name__ == '__main__':
     resources = ResourcePool()
     
     print("*** DIALOG Resource manager ***")
-    print
+    print()
     print("List of loaded resources:")
-    
-    print
+
+    print()
     print("Adjectives:")
     print(str(resources.adjectives))
-    
-    print
+
+    print()
     print("special nouns:")
     print(str(ResourcePool().special_nouns))
-    
-    print
+
+    print()
     print("pronouns:")
     print(str(ResourcePool().pronouns))
-    
-    print
+
+    print()
     print("Preposition verbs:")
     print(str(resources.preposition_verbs))
-    
-    print
+
+    print()
     print("Sentence starts:")
     print(str(resources.sentence_starts))
-    
-    print
+
+    print()
     print("Goal verbs:")
     print(str(resources.goal_verbs))
-    
-    
-    print
+
+    print()
     print("Thematic roles:")
     print(str(resources.thematic_roles))
     

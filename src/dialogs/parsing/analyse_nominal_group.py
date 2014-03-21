@@ -132,7 +132,7 @@ def find_sn_pos (sentence, begin_pos):
 
     #If it is a proper name
     counter=begin_pos
-    while (counter<len(sentence) and other_functions.find_cap_lettre(sentence[counter])==1):
+    while counter<len(sentence) and other_functions.find_cap_lettre(sentence[counter])==1:
         counter += 1
     
     #Default case return [] => ok if counter=begin_pos
@@ -178,7 +178,7 @@ def find_sn (sentence):
 
         #If there is a proper name
         counter=sentence.index(x)
-        while (counter<len(sentence) and other_functions.find_cap_lettre(sentence[counter])==1):
+        while counter<len(sentence) and other_functions.find_cap_lettre(sentence[counter])==1:
             counter += 1
         #Not equal => there is a proper name
         if counter!=sentence.index(x):

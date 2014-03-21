@@ -99,7 +99,7 @@ def delete_unuse_nominal_group(nominal_group_list):
         
         for j in ResourcePool().pronouns:
             #If the nominal group is a pronoun
-            if ([j]==nominal_group_list[i].noun and nominal_group_list[i].det==[]):# or find_cap_lettre(nominal_group_list[i].noun)==1:
+            if [j]==nominal_group_list[i].noun and nominal_group_list[i].det==[]:# or find_cap_lettre(nominal_group_list[i].noun)==1:
                 nominal_group_list=nominal_group_list[:i]+nominal_group_list[i+1:]
                 #When we delete => we increment i
                 i -= 1

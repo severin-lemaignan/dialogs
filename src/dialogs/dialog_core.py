@@ -180,7 +180,7 @@ class Dialog(Thread):
                 pass
             
     def stop(self):
-        while(not self._nl_input_queue.empty()):
+        while not self._nl_input_queue.empty():
             pass
         self.go_on = False
 
@@ -209,7 +209,7 @@ class Dialog(Thread):
         import time
         self.in_interaction = True
         self.input(input, speaker)
-        while(self.in_interaction):
+        while self.in_interaction:
             if self.waiting_for_more_info:
                 if answer:
                     self._logger.debug(colored_print("> Automatically answering: ", 'bold'))
@@ -217,10 +217,10 @@ class Dialog(Thread):
                     self.input(answer, speaker)
                     answer = None
                 else:
-                    return ([], self.last_sentence)
+                    return [], self.last_sentence
             time.sleep(0.1)
 
-        return (self.last_stmts_set, self.last_sentence)
+        return self.last_stmts_set, self.last_sentence
 
     def _process(self, nl_input):
         #Parsing

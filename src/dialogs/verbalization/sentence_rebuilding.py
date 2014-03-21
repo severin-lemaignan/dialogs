@@ -48,7 +48,7 @@ def statement(analysis):
     #If it is a relative form
     if analysis.data_type==RELATIVE or analysis.data_type.startswith(SUBSENTENCE):
         if phrase[len(phrase)-1][len(phrase[len(phrase)-1])-1]!=',':
-            phrase[len(phrase)-1]=phrase[len(phrase)-1]+','
+            phrase[len(phrase) - 1] += ','
         return phrase
     if analysis.data_type==W_QUESTION:
         return phrase+['?']

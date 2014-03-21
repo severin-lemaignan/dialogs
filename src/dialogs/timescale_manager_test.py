@@ -23,7 +23,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_01(self):
         print('')
-        print(('######################## test 1.1 ##############################'))
+        print('######################## test 1.1 ##############################')
         print("Object of this test : Without indirect complement and without adverb")
         print('')
         
@@ -61,7 +61,7 @@ class TestTimescale(unittest.TestCase):
      
     def test_02(self):
         print('')
-        print(('######################## test 1.2 ##############################'))
+        print('######################## test 1.2 ##############################')
         print("Object of this test : With just an indirect complement but not for time")
         print('')
         
@@ -99,7 +99,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_03(self):
         print('')
-        print(('######################## test 1.3 ##############################'))
+        print('######################## test 1.3 ##############################')
         print("Object of this test : With just an indirect complement but not for time")
         print('')
         
@@ -137,7 +137,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_04(self):
         print('')
-        print(('######################## test 1.4 ##############################'))
+        print('######################## test 1.4 ##############################')
         print("Object of this test : With an indirect complement and adverb")
         print('')
         
@@ -175,7 +175,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_05(self):
         print('')
-        print(('######################## test 1.5 ##############################'))
+        print('######################## test 1.5 ##############################')
         print("Object of this test : Adverb 'now' alone is like we have nothing")
         print('')
         
@@ -213,7 +213,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_06(self):
         print('')
-        print(('######################## test 1.6 ##############################'))
+        print('######################## test 1.6 ##############################')
         print("Object of this test : Adverb 'today' represent a period of this day")
         print('')
         
@@ -257,7 +257,7 @@ class TestTimescale(unittest.TestCase):
         
     def test_07(self):
         print('')
-        print(('######################## test 1.7 ##############################'))
+        print('######################## test 1.7 ##############################')
         print("Object of this test : With many indirect complement but not about time")
         print('')
         
@@ -298,7 +298,7 @@ class TestTimescale(unittest.TestCase):
 
     def test_08(self):
         print('')
-        print(('######################## test 1.8 ##############################'))
+        print('######################## test 1.8 ##############################')
         print("Object of this test : Tomorrow")
         print('')
         
@@ -342,7 +342,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_09(self):
         print('')
-        print(('######################## test 1.9 ##############################'))
+        print('######################## test 1.9 ##############################')
         print("Object of this test : Yesterday")
         print('')
         
@@ -386,7 +386,7 @@ class TestTimescale(unittest.TestCase):
      
     def test_10(self):
         print('')
-        print(('######################## test 1.10 ##############################'))
+        print('######################## test 1.10 ##############################')
         print("Object of this test : Tonight")
         print('')
         
@@ -430,7 +430,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_11(self):
         print('')
-        print(('######################## test 1.10 ##############################'))
+        print('######################## test 1.10 ##############################')
         print("Object of this test : using adverb with specific effective time")
         print('')
         
@@ -477,7 +477,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_12(self):
         print('')
-        print(('######################## test 1.11 ##############################'))
+        print('######################## test 1.11 ##############################')
         print("Object of this test : DIGIT in indirect complement")
         print('')
         
@@ -520,7 +520,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_13(self):
         print('')
-        print(('######################## test 1.12 ##############################'))
+        print('######################## test 1.12 ##############################')
         print("Object of this test : Using pm as a time")
         print('')
         
@@ -565,7 +565,7 @@ class TestTimescale(unittest.TestCase):
         
     def test_14(self):
         print('')
-        print(('######################## test 1.13 ##############################'))
+        print('######################## test 1.13 ##############################')
         print("Object of this test : Using pm as a time")
         print('')
         
@@ -609,7 +609,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_15(self):
         print('')
-        print(('######################## test 1.14 ##############################'))
+        print('######################## test 1.14 ##############################')
         print("Object of this test : Using pm as a time")
         print('')
         
@@ -653,7 +653,7 @@ class TestTimescale(unittest.TestCase):
         
     def test_16(self):
         print('')
-        print(('######################## test 1.15 ##############################'))
+        print('######################## test 1.15 ##############################')
         print("Object of this test : Using pm as a time")
         print('')
         
@@ -696,7 +696,7 @@ class TestTimescale(unittest.TestCase):
     
     def test_17(self):
         print('')
-        print(('######################## test 1.16 ##############################'))
+        print('######################## test 1.16 ##############################')
         print("Object of this test : Using pm as a time")
         print('')
         

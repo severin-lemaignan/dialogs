@@ -168,7 +168,7 @@ def find_sn_pos (phrase, begin_pos):
 
     #If it is a proper name
     counter=begin_pos
-    while (counter<len(phrase) and other_functions.find_cap_lettre(phrase[counter])==1):
+    while counter<len(phrase) and other_functions.find_cap_lettre(phrase[counter])==1:
         counter += 1
     
     #Default case return [] => ok if counter=begin_pos
