@@ -1,3 +1,4 @@
+# coding=utf-8
 """
  Created by Chouayakh Mahdi
  21/06/2010

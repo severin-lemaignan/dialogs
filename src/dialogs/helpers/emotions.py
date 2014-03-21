@@ -1,3 +1,4 @@
+# coding=utf-8
 """ This module encodes several emotional state of the robot like confusion,
 joy, etc. as statements. These can be added to the knowledge base to express
 the state of the robot during the dialogs."""

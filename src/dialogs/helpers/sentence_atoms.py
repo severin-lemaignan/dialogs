@@ -1,4 +1,4 @@
-
+# coding=utf-8
 # Sentence-related classes
 # (used ONLY to print out a sentence)
 
