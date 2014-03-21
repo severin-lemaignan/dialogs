@@ -18,12 +18,12 @@ from dialogs.sentence import *
 from dialogs.sentence_types import *
 from kb import KbError
 
-class AnaphoraMatcher:
-    
+
+class AnaphoraMatcher(object):
     def match_first_object(self, sentences, c_gr):
-        list_gr=recover_nominal_group_list(sentences)
+        list_gr = recover_nominal_group_list(sentences)
         gr = first_replacement(list_gr, c_gr)
-            
+
         return [gr, list_gr]
         
 

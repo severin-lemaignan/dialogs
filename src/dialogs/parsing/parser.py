@@ -6,38 +6,37 @@ import preprocessing
 import analyse_sentence
 
 
+class Parser(object):
+    def __init__(self):
+        pass
 
-class Parser:
-	def __init__(self):
-		pass
+    def preprocess(self, nl_input, active_sentence=None):
 
-	def preprocess(self, nl_input, active_sentence = None):
+        #Return active_sentence if not empty, possibly send from Dialog.
+        if active_sentence:
+            return [active_sentence]
 
-		#Return active_sentence if not empty, possibly send from Dialog.
-		if active_sentence:
-			return [active_sentence]
+        #Do all basic replacements (like capitals, n't -> not, etc) + splits in several
+        #sentence with points.
+        sentence_list = preprocessing.process_sentence(nl_input)
 
-		#Do all basic replacements (like capitals, n't -> not, etc) + splits in several 
-		#sentence with points.
-		sentence_list = preprocessing.process_sentence(nl_input)
-
-		return sentence_list
+        return sentence_list
 
 
-	def parse(self, preprocessed_sentences, active_sentence = None):
+    def parse(self, preprocessed_sentences, active_sentence=None):
 
-		# If the user pass a simple string, preprocess it first.
-		if isinstance(preprocessed_sentences, basestring):
-			preprocessed_sentences = self.preprocess(preprocessed_sentences)
+        # If the user pass a simple string, preprocess it first.
+        if isinstance(preprocessed_sentences, basestring):
+            preprocessed_sentences = self.preprocess(preprocessed_sentences)
 
-		#Return active_sentence if not empty, possibly send from Dialog.
-		if active_sentence:
-			return active_sentence
+        #Return active_sentence if not empty, possibly send from Dialog.
+        if active_sentence:
+            return active_sentence
 
-		self._sentence_list = preprocessed_sentences
+        self._sentence_list = preprocessed_sentences
 
-		#Do the actual grammatical parsing
-		self._class_list = analyse_sentence.sentences_analyzer(self._sentence_list)
+        #Do the actual grammatical parsing
+        self._class_list = analyse_sentence.sentences_analyzer(self._sentence_list)
 
-		return self._class_list
+        return self._class_list
 

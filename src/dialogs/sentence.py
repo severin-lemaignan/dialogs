@@ -9,7 +9,8 @@ from helpers.printers import pprint, level_marker
 from helpers.helpers import colored_print
 from resources_manager import ResourcePool
 
-class Sentence:
+
+class Sentence(object):
     """
     A sentence is formed from:
     data_type: the type of a sentence whether it is a question, an imperative, ...
@@ -17,51 +18,52 @@ class Sentence:
     sv : a verbal structure typed into a Verbal_Group
     aim : is used for retrieveing the aim of a question
     """
+
     def __init__(
-        self,
-        data_type,
-        aim,
-        sn,
-        sv,
-        ):
+            self,
+            data_type,
+            aim,
+            sn,
+            sv,
+    ):
         self.data_type = data_type
         self.aim = aim
         self.sn = sn
         self.sv = sv
-    
-    def isvalid(self):
-       """ Checks a sentence is grammatically valid
-       """
-       sn_valid = True
-       sv_valid = True
-       if self.sn:
-           sn_valid = reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x.isvalid(), self.sn), 
-                        True)
-       if self.sv:
-           sv_valid = reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x.isvalid(), self.sv), 
-                        True)
 
-       return sn_valid and sv_valid
+    def isvalid(self):
+        """ Checks a sentence is grammatically valid
+        """
+        sn_valid = True
+        sv_valid = True
+        if self.sn:
+            sn_valid = reduce(lambda c1, c2: c1 and c2,
+                              map(lambda x: x.isvalid(), self.sn),
+                              True)
+        if self.sv:
+            sv_valid = reduce(lambda c1, c2: c1 and c2,
+                              map(lambda x: x.isvalid(), self.sv),
+                              True)
+
+        return sn_valid and sv_valid
 
     def resolved(self):
         """returns True when the whole sentence is completely resolved
         to concepts known by the robot.
         """
-        return  reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x._resolved, self.sn), 
-                        True) \
-                and \
-                reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x._resolved, self.sv), 
-                        True)
+        return reduce(lambda c1, c2: c1 and c2,
+                      map(lambda x: x._resolved, self.sn),
+                      True) \
+            and \
+               reduce(lambda c1, c2: c1 and c2,
+                      map(lambda x: x._resolved, self.sv),
+                      True)
 
-    
+
     def __str__(self):
         res = level_marker() + pprint(self.data_type, SENTENCE_TYPE)
         res += pprint(self.aim, SENTENCE_AIM) # 'aim' may be None
-        
+
         if self.sn:
             sn = ""
             for s in self.sn:
@@ -70,7 +72,7 @@ class Sentence:
         if self.sv:
             for s in self.sv:
                 res += str(s).replace("\n", "\n\t") + "\n"
-        
+
         #res += "This sentence is " + ("fully resolved." if self.resolved() else "not fully resolved.")
 
         if self.isvalid():
@@ -78,44 +80,44 @@ class Sentence:
         else:
             res = pprint(res, AGRAMMATICAL_SENTENCE)
         return res
-    
+
     def flatten(self):
         return [self.data_type,
                 self.aim,
                 map(lambda x: x.flatten(), self.sn),
                 map(lambda x: x.flatten(), self.sv)]
-    
+
     def isaborting(self):
         #Forget it
         if self.data_type == IMPERATIVE \
-            and "forget" in [verb for sv in self.sv for verb in sv.vrb_main]\
+            and "forget" in [verb for sv in self.sv for verb in sv.vrb_main] \
             and "affirmative" in [sv.state for sv in self.sv]:
             return True
-            
+
         #[it] doesn't matter'
-        if self.data_type == STATEMENT  \
-            and "matter" in [verb for sv in self.sv for verb in sv.vrb_main]\
+        if self.data_type == STATEMENT \
+            and "matter" in [verb for sv in self.sv for verb in sv.vrb_main] \
             and "negative" in [sv.state for sv in self.sv]:
             return True
-            
+
         return False
-    
+
     def islearning(self):
         #Learn that
-        if  self.data_type == IMPERATIVE\
-            and "learn" in [verb for sv in self.sv for verb in sv.vrb_main]\
+        if self.data_type == IMPERATIVE \
+            and "learn" in [verb for sv in self.sv for verb in sv.vrb_main] \
             and "affirmative" in [sv.state for sv in self.sv]:
             return True
         return False
-    
+
     def append_sub_sentence(self, sub_sentence):
         """This append a subsentence to the current sentence """
         self.sv[0].d_obj = []
         self.sv[0].i_cmpl = []
         self.sv[0].vrb_sub_sentence.append(sub_sentence)
-                
 
-class Nominal_Group:
+
+class Nominal_Group(object):
     """
     Nominal group class declaration
     det : determinant
@@ -125,28 +127,28 @@ class Nominal_Group:
     relative : is a relative sentence typed into Sentence
     """
 
-    def __init__(   self,
-                    det,
-                    noun,
-                    adj,
-                    noun_cmpl,
-                    relative,
-                    ):
+    def __init__(self,
+                 det,
+                 noun,
+                 adj,
+                 noun_cmpl,
+                 relative,
+    ):
         self.det = det
         self.noun = noun
         self.adj = adj
         self.noun_cmpl = noun_cmpl
         self.relative = relative
-                
+
         """This field is True when this nominal group is resolved to a concept
         known by the robot."""
         self._resolved = False
-        
+
         """This field hold the ID of the concept represented by this group.
         When the group is resolved, id must be different from None
         """
         self.id = None
-        
+
         self._conjunction = 'AND' #could be 'AND' or 'OR'... TODO: use constants!
         self._quantifier = 'ONE'  #could be 'ONE' or 'SOME'... TODO: use constants!
 
@@ -161,60 +163,58 @@ class Nominal_Group:
                 return False
 
         # We don't accept groups like "give me A BLUE"
-        if self._quantifier in ['SOME','ALL'] and self.adjectives_only():
+        if self._quantifier in ['SOME', 'ALL'] and self.adjectives_only():
             return False
 
         return True
 
     def __str__(self):
-        
+
         res = level_marker()
-        
+
         if self._conjunction != 'AND':
             res += pprint(self._conjunction, CONJUNCTION)
-        
+
         if self._quantifier != 'ONE':
             res += pprint(self._quantifier, QUANTIFIER)
-            
+
         if self._resolved:
             res += pprint(self.id, ID)
             res = pprint(res, RESOLVED)
-            
+
         else:
-            
-            
+
+
             if self.det:
-                res +=   pprint(" ".join(self.det), DETERMINER) 
-            
-            
+                res += pprint(" ".join(self.det), DETERMINER)
+
             for k in self.adj:
                 if k[1]:
-                    res +=  pprint(" ".join(k[1]), ADJECTIVE_QUALIFIER) 
-                res +=  pprint(k[0], ADJECTIVE)
-            
+                    res += pprint(" ".join(k[1]), ADJECTIVE_QUALIFIER)
+                res += pprint(k[0], ADJECTIVE)
+
             if self.noun:
-                res +=   pprint(", ".join(self.noun), NOUN)
-            
-            
+                res += pprint(", ".join(self.noun), NOUN)
+
             if self.noun_cmpl:
                 for s in self.noun_cmpl:
                     res += pprint(str(s).replace("\n", "\n\t"), NOUN_CMPLT)
-            
+
             if self.relative:
                 for rel in self.relative:
                     res += pprint(str(rel).replace("\n", "\n\t"), RELATIVE_GRP)
-        
+
         return pprint(res, NOMINAL_GROUP)
-    
-    
+
+
     def flatten(self):
         return [self.det,
                 self.noun,
                 self.adj,
                 map(lambda x: x.flatten(), self.noun_cmpl),
                 map(lambda x: x.flatten(), self.relative)]
-        
-        
+
+
     def adjectives_only(self):
         """This method returns True when this nominal group holds only a set of adjectives.
         E.g: the banana is yellow. The parser provides an object sentence with two nominal groups:
@@ -228,31 +228,31 @@ class Nominal_Group:
             return True
         else:
             return False
-        
-    
-class Indirect_Complement:
+
+
+class Indirect_Complement(object):
     """
     Indirect complement class declaration
     gn : nominal group
     prep : preposition
     """
-    
+
     def __init__(self, prep, nominal_group):
         self.prep = prep
         self.gn = nominal_group
-        
+
     def resolved(self):
-        return  reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x._resolved, self.gn), 
-                        True)
-        
+        return reduce(lambda c1, c2: c1 and c2,
+                      map(lambda x: x._resolved, self.gn),
+                      True)
+
     def __str__(self):
         res = pprint(" ".join(self.prep), PREPOSITION)
-        
+
         if self.gn:
             for s in self.gn:
                 res += pprint(str(s).replace("\n", "\n\t"), INDIRECT_OBJECT)
-        
+
         return res
 
     def isvalid(self):
@@ -261,19 +261,19 @@ class Indirect_Complement:
         This currently means:
             - its nominal group is valid
         """
-        return  self.gn \
-                and \
-                reduce( lambda c1,c2: c1 and c2, 
-                        map(lambda x: x.isvalid(), self.gn), 
-                        True)
- 
+        return self.gn \
+            and \
+               reduce(lambda c1, c2: c1 and c2,
+                      map(lambda x: x.isvalid(), self.gn),
+                      True)
 
-   
+
     def flatten(self):
         return [self.prep,
                 map(lambda x: x.flatten(), self.gn)]
 
-class Verbal_Group:
+
+class Verbal_Group(object):
     """
     Verbal_group class declaration
     vrb_main: the main verb of a sentence
@@ -284,11 +284,11 @@ class Verbal_Group:
     vrb_adv : an adverb describing the verb
     advrb : an adverb used as an adverbial of the whole sentence
     """
-    
+
     #List of verb state
     affirmative = "affirmative"
     negative = "negative"
-    
+
     def __init__(
             self,
             vrb_main,
@@ -300,7 +300,7 @@ class Verbal_Group:
             advrb,
             state,
             vrb_sub_sentence,
-            ):
+    ):
         self.vrb_main = vrb_main
         self.sv_sec = sv_sec
         self.vrb_tense = vrb_tense
@@ -310,14 +310,14 @@ class Verbal_Group:
         self.vrb_adv = vrb_adv
         self.state = state
         self.vrb_sub_sentence = vrb_sub_sentence
-        
+
         """This field is True when this verbal group is resolved to a concept
         known by the robot."""
         self._resolved = False
-        
+
         self.comparator = [] #To process comparison like stronger than you
-        
-        
+
+
     def isvalid(self):
         """ Check this verbal group is valid.
 
@@ -326,54 +326,54 @@ class Verbal_Group:
             - its direct and indirect complements, if they exists, are valid
             - the sub sentence, if it exists, is valid 
         """
-        return  (True if self.vrb_main else False) \
-                and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.isvalid(), self.d_obj), True) \
-                and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.isvalid(), self.i_cmpl), True) \
-                and \
-                reduce(lambda c1,c2: c1 and c2 , map(lambda x: x.isvalid(), self.sv_sec), True)\
-                and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.isvalid(), self.vrb_sub_sentence), True)
- 
+        return (True if self.vrb_main else False) \
+                   and \
+               reduce(lambda c1, c2: c1 and c2, map(lambda x: x.isvalid(), self.d_obj), True) \
+                   and \
+               reduce(lambda c1, c2: c1 and c2, map(lambda x: x.isvalid(), self.i_cmpl), True) \
+                   and \
+               reduce(lambda c1, c2: c1 and c2, map(lambda x: x.isvalid(), self.sv_sec), True) \
+            and \
+               reduce(lambda c1, c2: c1 and c2, map(lambda x: x.isvalid(), self.vrb_sub_sentence), True)
+
 
     def resolved(self):
-        return  self._resolved \
-                and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x._resolved, self.d_obj), True) \
-                and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.i_cmpl), True) \
-                and \
-                reduce(lambda c1,c2: c1 and c2 , map(lambda x: x.resolved(), self.sv_sec), True)\
-                and \
-                reduce(lambda c1,c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
-    
+        return self._resolved \
+                   and \
+               reduce(lambda c1, c2: c1 and c2, map(lambda x: x._resolved, self.d_obj), True) \
+                   and \
+               reduce(lambda c1, c2: c1 and c2, map(lambda x: x.resolved(), self.i_cmpl), True) \
+                   and \
+               reduce(lambda c1, c2: c1 and c2, map(lambda x: x.resolved(), self.sv_sec), True) \
+            and \
+               reduce(lambda c1, c2: c1 and c2, map(lambda x: x.resolved(), self.vrb_sub_sentence), True)
+
     def __str__(self):
-        res =  pprint(" ".join(self.vrb_main), VERB) + pprint(self.vrb_tense, TENSE)
+        res = pprint(" ".join(self.vrb_main), VERB) + pprint(self.vrb_tense, TENSE)
         if self.advrb:
             res += pprint(" ".join(self.advrb), ADVERBIAL)
         if self.vrb_adv:
             res += pprint(" ".join(self.vrb_adv), VERBAL_ADVERBIAL)
-                
+
         if self.d_obj:
             for cmpl in self.d_obj:
                 res += '\t' + pprint(str(cmpl).replace("\n", "\n\t"), DIRECT_OBJECT) + "\n"
-        
+
         if self.i_cmpl:
             for cmpl in self.i_cmpl:
                 res += '\t' + str(cmpl).replace("\n", "\n\t") + "\n"
-        
+
         if self.vrb_sub_sentence:
             for vrb_sub_s in self.vrb_sub_sentence:
                 res += '\t' + pprint(str(vrb_sub_s).replace("\n", "\n\t"), SUB_SENTENCE) + "\n"
-        
+
         if self.sv_sec:
             for vrb_sec_s in self.sv_sec:
                 res += '\t' + pprint(str(vrb_sec_s).replace("\n", "\n\t"), SECONDARY_VERBAL_GROUP) + "\n"
-        
-        res = pprint(res, AFFIRMATIVE if self.state == Verbal_Group.affirmative else NEGATIVE) 
+
+        res = pprint(res, AFFIRMATIVE if self.state == Verbal_Group.affirmative else NEGATIVE)
         res = pprint(res, RESOLVED) if self.resolved() else pprint(res, NOT_RESOLVED)
-        
+
         return pprint(res, VERBAL_GROUP)
 
 
@@ -389,19 +389,19 @@ class Verbal_Group:
                 map(lambda x: x.flatten(), self.vrb_sub_sentence)]
 
 
-
-class Comparator():
+class Comparator(object):
     """
     This class holds a single method that compares two objects and return True or False.
     The objects should hold a method 'flatten', turning it into a list
     
-    """    
+    """
+
     def __init__(self):
         pass
-    
+
     def compare(self, obj1, obj2):
         return obj1.__class__ == obj2.__class__ and \
-                obj1.flatten() == obj2.flatten()
+               obj1.flatten() == obj2.flatten()
 
 def ispronoun(word):
     if word in ResourcePool().pronouns:

@@ -19,8 +19,8 @@ from dialogs.helpers.helpers import generate_id
 
 from random import choice
 
-class Discrimination():
 
+class Discrimination(object):
     def __init__(self):
         self.oro = ResourcePool().ontology_server
 
@@ -41,9 +41,9 @@ class Discrimination():
     # -----------------------------------------------------------------------------#
     def get_all_objects_with_desc(self, description):
         obj_list = None
-        
+
         for agent_desc in description:
-            
+
             obj_tmp = []
 
             try:
@@ -54,14 +54,14 @@ class Discrimination():
                 pass
 
             # if no object found, no need to continue
-            if not obj_tmp: 
+            if not obj_tmp:
                 obj_list = []
                 break
             else:
                 if obj_list is None:
                     obj_list = obj_tmp
                 else:
-                    obj_list = filter(lambda x:x in obj_list,obj_tmp)  # intersection
+                    obj_list = filter(lambda x: x in obj_list, obj_tmp)  # intersection
 
         return obj_list
 
@@ -80,17 +80,16 @@ class Discrimination():
     # -----------------------------------------------------------------------------#
     def get_discriminant(self, agent, obj_list, ignore_descriptors, include_partial):
         discriminants = self.oro.discriminateForAgent(agent, obj_list)
-        logger.debug(  colored_print('Possible discriminants: ', 'magenta') +  \
-                        str(colored_print(discriminants[1], 'blue')) + \
-                        colored_print(" (complete discriminants: ", 'magenta') + \
-                        str(colored_print(discriminants[0], 'blue')) + ")")
+        logger.debug(colored_print('Possible discriminants: ', 'magenta') + \
+                     str(colored_print(discriminants[1], 'blue')) + \
+                     colored_print(" (complete discriminants: ", 'magenta') + \
+                     str(colored_print(discriminants[0], 'blue')) + ")")
 
-
-        complete_disc = discriminants[0] 
+        complete_disc = discriminants[0]
         partial_disc = discriminants[1]
 
         if complete_disc:
-            res =  filter(lambda x: x not in ignore_descriptors, complete_disc)
+            res = filter(lambda x: x not in ignore_descriptors, complete_disc)
         elif partial_disc and include_partial:
             res = filter(lambda x: x not in ignore_descriptors, partial_disc)
         else:
@@ -118,7 +117,7 @@ class Discrimination():
     # - descriptor or None (if no discriminant for any agent found)
     # -----------------------------------------------------------------------------#
     def get_descriptor(self, description, ignore_features=None, partial_disc=True):
-        
+
         if not ignore_features: ignore_features = []
         objL = self.get_all_objects_with_desc(description)
         descriptor = None
@@ -126,14 +125,14 @@ class Discrimination():
 
         #TODO bug in oro doesn't allow to search discriminants base on other agents models!!
         # we cannot search in all agents, but only in robot's model
-#        for agent_desc in description:
-#            # list current descriptors to not to use them anymore
-#            #currentDescriptors = map(lambda x: x.split()[1], agent_desc[2])
-#            descriptor = self.get_discriminant(agent_desc[0], objL, ignore_features, partial_disc)
-#
-#            if descriptor:
-#                agent = agent_desc[0]
-#                break
+        #        for agent_desc in description:
+        #            # list current descriptors to not to use them anymore
+        #            #currentDescriptors = map(lambda x: x.split()[1], agent_desc[2])
+        #            descriptor = self.get_discriminant(agent_desc[0], objL, ignore_features, partial_disc)
+        #
+        #            if descriptor:
+        #                agent = agent_desc[0]
+        #                break
 
         agent = ResourcePool().default_model
         # list current descriptors to not to use them anymore
@@ -142,7 +141,7 @@ class Discrimination():
 
         return agent, descriptor
 
-    
+
     # -- get_values_for_descriptor ------------------------------------------------#
     # Creates the information to be sent to user based on the discriminant found.
     #
@@ -170,7 +169,7 @@ class Discrimination():
             if val:
                 #TODO: we only consider the first result item!
                 valL.append(self.oro.getLabel(val[0]))
-            # otherwise, the object doesn't have this descriptor, and we don't include it
+                # otherwise, the object doesn't have this descriptor, and we don't include it
 
         # we make a set to remove repeated elements
         return list(set(valL))
@@ -195,13 +194,13 @@ class Discrimination():
             return None
 
         type = None
-        
+
         for desc in description:
             type = find('rdf:type', desc[2])
             if type: break
-            
+
         return ResourcePool().ontology_server.getLabel(type)
-    
+
     # -- CLARIFY ------------------------------------------------------------------#
     # Searches for a new descriptor candidate. The descriptor should be as 
     # discriminating as possible.
@@ -226,14 +225,15 @@ class Discrimination():
         if len(objL) == 0:
             logger.debug(colored_print('Nothing found!', "magenta"))
         else:
-            logger.debug(colored_print('Found these possible concepts ID: ', "magenta") +  colored_print(str(objL), 'blue'))
+            logger.debug(
+                colored_print('Found these possible concepts ID: ', "magenta") + colored_print(str(objL), 'blue'))
 
         if not self.oro: #No ontology server
-            return 'UNKNOWN_CONCEPT_' + generate_id(with_question_mark = False)
+            return 'UNKNOWN_CONCEPT_' + generate_id(with_question_mark=False)
 
         if not objL:
             questions = SentenceFactory().create_i_dont_understand()
-            raise UnsufficientInputError({'status':'FAILURE', 'question':questions})
+            raise UnsufficientInputError({'status': 'FAILURE', 'question': questions})
             #return "I don't understand"
 
         else:
@@ -246,9 +246,9 @@ class Discrimination():
 
             if visible_objects:
                 objL = visible_objects
-                logger.debug(colored_print('Only ', "magenta") + 
-                            colored_print(str(objL), 'blue') +
-                            colored_print( " are visible by " + agent, "magenta"))
+                logger.debug(colored_print('Only ', "magenta") +
+                             colored_print(str(objL), 'blue') +
+                             colored_print(" are visible by " + agent, "magenta"))
             else:
                 logger.debug(colored_print('None are visible by ' + agent, "magenta"))
 
@@ -263,14 +263,14 @@ class Discrimination():
 
             if descriptor:
                 sentence_builder = SentenceFactory()
-                
+
                 question = None
                 values = self.get_values_for_descriptor(agent, descriptor, objL)
                 if not object: object = 'object'
-                
-                if descriptor == 'hasColor'  or  descriptor == 'mainColorOfObject':
+
+                if descriptor == 'hasColor' or descriptor == 'mainColorOfObject':
                     questions = sentence_builder.create_w_question_choice(object, 'color', values)
-                            
+
                 elif descriptor == 'hasShape':
                     questions = sentence_builder.create_w_question_choice(object, 'shape', values)
 
@@ -282,7 +282,7 @@ class Discrimination():
 
                 elif descriptor == 'isIn':
                     questions = sentence_builder.create_w_question_location(object, 'in', values)
-                    
+
                 elif descriptor == 'isNextTo':
                     questions = sentence_builder.create_w_question_location(object, 'next to', values)
 
@@ -291,24 +291,25 @@ class Discrimination():
 
                 elif descriptor == 'isLocated':
                     questions = sentence_builder.create_w_question_location_PT(values, agent)
-                
+
                 elif descriptor == 'rdf:type':
                     questions = sentence_builder.create_w_question_choice(object, 'type', values)
-                    
+
                 else:
                     questions = sentence_builder.create_w_question_generic_descriptor(object, descriptor, values)
 
-                raise UnsufficientInputError({'status':'SUCCESS','question':questions})
+                raise UnsufficientInputError({'status': 'SUCCESS', 'question': questions})
                 #return questions
-                    
+
             else:
-                questions = [Sentence(IMPERATIVE, '', [], 
-                            [Verbal_Group(['give'], [],'present simple', 
-                            [Nominal_Group([],['information'],[['more',[]]],[],[])], 
-                            [Indirect_Complement([],[Nominal_Group([],['me'],[],[],[])]),
-                            Indirect_Complement(['about'],[Nominal_Group(['the'],[object],[],[],[])])],
-                            [], [] ,Verbal_Group.affirmative,[])])]
-                raise UnsufficientInputError({'status':'SUCCESS','question':questions})
+                questions = [Sentence(IMPERATIVE, '', [],
+                                      [Verbal_Group(['give'], [], 'present simple',
+                                                    [Nominal_Group([], ['information'], [['more', []]], [], [])],
+                                                    [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])]),
+                                                     Indirect_Complement(['about'], [
+                                                         Nominal_Group(['the'], [object], [], [], [])])],
+                                          [], [], Verbal_Group.affirmative, [])])]
+                raise UnsufficientInputError({'status': 'SUCCESS', 'question': questions})
                 #return "Give me more information about the object"
 
     def visible_subset(self, agent, id_list):
@@ -332,19 +333,19 @@ class Discrimination():
     # - new description
     # -----------------------------------------------------------------------------#
     def add_descriptor(self, agent, description, descriptor, value):
-        
+
         # return sublist index in seq containing value
         def find(value, seq):
             for index, item in enumerate(seq):
-                if value in item: 
+                if value in item:
                     return index, item
-                    
+
         idx, desc = find(agent, description)
         desc[2].append('?obj ' + descriptor + ' ' + value)
         description[idx] = desc
-        
+
         return description
-        
+
     # -- FIND_UNAMBIGUOUS_DESC ---------------------------------------#
     # Searches an unambiguous description for a given object. 
     # If it fails, it returns the most complete description found.
@@ -371,22 +372,22 @@ class Discrimination():
         type = types[0]
 
         myself = ResourcePool().default_model
-        description = [[myself,'?obj',['?obj rdf:type ' + type]]]
+        description = [[myself, '?obj', ['?obj rdf:type ' + type]]]
         objL = self.get_all_objects_with_desc(description)
 
         while len(objL) > 1:
 
             nbCandidates = len(objL)
 
-            logger.debug('Description ' + objectID +': ' + str(description))
+            logger.debug('Description ' + objectID + ': ' + str(description))
             logger.debug('ObjL: ' + str(objL))
 
-            agent, descriptor = self.get_descriptor(description,[], True)
+            agent, descriptor = self.get_descriptor(description, [], True)
 
             if not descriptor:
                 break
 
-            val = self.oro.findForAgent(agent, '?val',[ objectID + ' ' + descriptor + ' ?val'])
+            val = self.oro.findForAgent(agent, '?val', [objectID + ' ' + descriptor + ' ?val'])
 
             if not val:
                 break
@@ -396,8 +397,8 @@ class Discrimination():
 
             if nbCandidates == len(objL):
                 logger.error("While trying to find an unambiguous description" + \
-                        " of " + objectID + ", oro answered a non-discriminant" + \
-                        " property. Bug in oro? Halting here for now.")
+                             " of " + objectID + ", oro answered a non-discriminant" + \
+                             " property. Bug in oro? Halting here for now.")
                 break
 
         if len(objL) == 1:

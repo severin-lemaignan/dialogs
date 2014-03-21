@@ -5,8 +5,9 @@
 
 """
 
-class ActionMatching:
-	pass
+
+class ActionMatching(object):
+    pass
 
 def unit_tests():
 	"""This function tests the main features of the class ActionMatching"""

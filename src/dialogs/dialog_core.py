@@ -389,10 +389,10 @@ class Dialog(Thread):
 
 def unit_tests():
     print("Please run the 'dialog_test' Python script.")
-    print
+    print()
     print("> ./dialog_test")
 
 if __name__ == '__main__':
     print("Please run the 'dialogs' Python script.")
-    print
+    print()
     print("> dialogs")
