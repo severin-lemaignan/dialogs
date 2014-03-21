@@ -31,7 +31,8 @@ class Resolver:
      action_matcher module.
     
     """
-    def __init__(self, sentences_store = []):
+    def __init__(self, sentences_store=None):
+        if not sentences_store: sentences_store = []
         self._current_sentence = None
         self._current_object = None
         self.sentences_store = sentences_store

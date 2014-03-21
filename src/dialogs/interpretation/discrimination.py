@@ -117,8 +117,9 @@ class Discrimination():
     # OUTPUT:
     # - descriptor or None (if no discriminant for any agent found)
     # -----------------------------------------------------------------------------#
-    def get_descriptor(self, description, ignoreFeatureL = [], partial_disc=True):
+    def get_descriptor(self, description, ignoreFeatureL=None, partial_disc=True):
         
+        if not ignoreFeatureL: ignoreFeatureL = []
         objL = self.get_all_objects_with_desc(description)
         descriptor = None
         agent = None
@@ -217,8 +218,9 @@ class Discrimination():
     #   - [SUCCESS, "Which value? ..."]: user should indicate value for descriptor (mantain previous description)
     #   - [SUCCESS, "additional info required"]: user should give additional info (mantain previous description)
     # -----------------------------------------------------------------------------#
-    def clarify(self, description, ignoreFeatureL = []):
+    def clarify(self, description, ignoreFeatureL=None):
 
+        if not ignoreFeatureL: ignoreFeatureL = []
         objL = self.get_all_objects_with_desc(description)
 
         if len(objL) == 0:
