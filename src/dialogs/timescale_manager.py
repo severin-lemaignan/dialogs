@@ -188,7 +188,7 @@ def adverbs_interpretation(time, adverb_list):
         #For each adverb we have more information about the action time
         action_time=timescale_adverb(time,i)
         #To mix information, we have to use the time of begin of action
-        if action_time!=None:
+        if action_time is not None:
             time=action_time['time_begin']
     return action_time
     
@@ -213,7 +213,7 @@ def timescale_i_cmpl(indirect_complement, action_time):
                         j.det=['1']
                     
                     #This copy is effective if we have an effective time, why we have a flag
-                    if action_time['effective_time']==None:
+                    if action_time['effective_time'] is None:
                         action_time['effective_time']=action_time['action_period']['time_begin'].copy()
                                     
                     if j.adj==[['next',[]]]:
@@ -229,7 +229,7 @@ def timescale_i_cmpl(indirect_complement, action_time):
                 #We have an accurate time
                 elif j.noun==["o'clock"] or j.noun==['pm'] or j.noun==['am']:
                     #This copy is effective if we have an effective time, why we have a flag
-                    if action_time['effective_time']==None:
+                    if action_time['effective_time'] is None:
                         action_time['effective_time']=action_time['action_period']['time_begin'].copy()
                         
                     #We will change pm on something like am
@@ -257,7 +257,7 @@ def timescale_i_cmpl(indirect_complement, action_time):
                     day += 7
                 
                 #We add information
-                if action_time['action_period']==None:
+                if action_time['action_period'] is None:
                     action_time['action_period']={'time_begin':action_time['effective_time'].copy(),
                                                   'time_end':action_time['effective_time'].copy()}
                 action_time['action_period']['time_begin']['day']=str(int(action_time['action_period']['time_begin']['day'])+day)
@@ -275,7 +275,7 @@ def timescale_i_cmpl(indirect_complement, action_time):
                     mth += 12
                 
                 #We add information
-                if action_time['action_period']==None:
+                if action_time['action_period'] is None:
                     action_time['action_period']={'time_begin':action_time['effective_time'].copy(),
                                                   'time_end':action_time['effective_time'].copy()}
                 action_time['action_period']['time_begin']['month']=str(int(action_time['action_period']['time_begin']['month'])+month)
@@ -306,7 +306,7 @@ def timescale_sentence(indirect_complement,adverb_list,time):
     """
     
     action_time={'action_period':adverbs_interpretation(time,adverb_list),'effective_time':None}
-    if action_time['action_period']==None:
+    if action_time['action_period'] is None:
         action_time['effective_time']=time
     elif action_time['action_period']['time_begin']==action_time['action_period']['time_end']:
         action_time['effective_time']=action_time['action_period']['time_begin'].copy()

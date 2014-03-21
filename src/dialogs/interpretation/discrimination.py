@@ -58,7 +58,7 @@ class Discrimination():
                 objL = []
                 break
             else:
-                if objL == None:
+                if objL is None:
                     objL = obj_tmp
                 else:
                     objL = filter(lambda x:x in objL,obj_tmp)  # intersection

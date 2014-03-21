@@ -43,13 +43,13 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print_time(time['action_period']['time_begin'])
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -81,13 +81,13 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print_time(time['action_period']['time_begin'])
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -119,13 +119,13 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print_time(time['action_period']['time_begin'])
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -157,13 +157,13 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print_time(time['action_period']['time_begin'])
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -195,13 +195,13 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ' )
             print_time(time['action_period']['time_begin'])
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -233,7 +233,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -241,7 +241,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -276,7 +276,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -284,7 +284,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -316,7 +316,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -324,7 +324,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -358,7 +358,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -366,7 +366,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -400,7 +400,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -408,7 +408,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -443,7 +443,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -451,7 +451,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -487,7 +487,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -495,7 +495,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -528,7 +528,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -536,7 +536,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -571,7 +571,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -579,7 +579,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -613,7 +613,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -621,7 +621,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -656,7 +656,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -664,7 +664,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
@@ -697,7 +697,7 @@ class TestTimescale(unittest.TestCase):
         print_time(d_time)
         
         time=timescale_manager.timescale_sentence(sentence.sv[0].i_cmpl,sentence.sv[0].advrb, d_time)
-        if time['action_period']!=None:
+        if time['action_period'] is not None:
             print('')
             print('The period of the action is : ')
             print('From : ' )
@@ -705,7 +705,7 @@ class TestTimescale(unittest.TestCase):
             print('To : ')
             print_time(time['action_period']['time_end'])
         
-        if time['effective_time']!=None:
+        if time['effective_time'] is not None:
             print('')
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
