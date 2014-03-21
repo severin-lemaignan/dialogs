@@ -27,6 +27,7 @@
 from dialogs.resources_manager import ResourcePool
 import other_functions
 
+
 def is_an_adj(word):
     """Determines if a word is an adjective
 
@@ -49,10 +50,12 @@ def is_an_adj(word):
         return True
 
     #We use the irregular adjectives list to find it
-    if word in list(ResourcePool().adjectives.keys()) + ResourcePool().adjective_numbers + ResourcePool().adj_quantifiers:
+    if word in list(
+            ResourcePool().adjectives.keys()) + ResourcePool().adjective_numbers + ResourcePool().adj_quantifiers:
         return True
 
     return False
+
 
 def adjective_pos(sentence, word_pos):
     """
@@ -63,38 +66,38 @@ def adjective_pos(sentence, word_pos):
     :param word_pos: the position of the first adjective    
     :return: the position of the last word of the nominal group                       
     """
-    
+
     #If it is the end of the sentence
-    if len(sentence)-1<=word_pos:
+    if len(sentence) - 1 <= word_pos:
         return 1
-    
+
     #The case of '2 of them'
-    if sentence[word_pos]=='of':
+    if sentence[word_pos] == 'of':
         return 0
-    
+
     #It is a noun so we have to return 1
     if sentence[word_pos] in ResourcePool().special_nouns:
         return 1
-    
+
     #For the regular adjectives
     for k in ResourcePool().adjective_rules:
         if sentence[word_pos].endswith(k):
-            return 1+adjective_pos(sentence, word_pos+1)
-    
+            return 1 + adjective_pos(sentence, word_pos + 1)
+
     #For adjectives created from numbers
-    if sentence[word_pos].endswith('th') and other_functions.number(sentence[word_pos])==2:
-        return 1+adjective_pos(sentence, word_pos+1)
-    
+    if sentence[word_pos].endswith('th') and other_functions.number(sentence[word_pos]) == 2:
+        return 1 + adjective_pos(sentence, word_pos + 1)
+
     #We use the irregular adjectives list to find it
-    if sentence[word_pos] in list(ResourcePool().adjectives.keys()) + ResourcePool().adjective_numbers + ResourcePool().adj_quantifiers:
-        return 1+ adjective_pos(sentence, word_pos+1)
+    if sentence[word_pos] in list(
+            ResourcePool().adjectives.keys()) + ResourcePool().adjective_numbers + ResourcePool().adj_quantifiers:
+        return 1 + adjective_pos(sentence, word_pos + 1)
 
     #Default case
     return 1
 
 
-
-def find_sn_pos (sentence, begin_pos):
+def find_sn_pos(sentence, begin_pos):
     """
     We will find the nominal group which is in a known position                      
     We have to use adjective_pos to return the end position of nominal group         
@@ -103,12 +106,12 @@ def find_sn_pos (sentence, begin_pos):
     :param begin_pos:the position of the nominal group       
     :return: the nominal group (as a list of words)
     """
-    
-    if begin_pos>=len(sentence):
+
+    if begin_pos >= len(sentence):
         return []
-    
+
     end_pos = 1
-    
+
     #If it is a pronoun
     if sentence[begin_pos] in ResourcePool().pronouns:
         return [sentence[begin_pos]]
@@ -116,31 +119,30 @@ def find_sn_pos (sentence, begin_pos):
     #If there is a nominal group with determinant
     if sentence[begin_pos] in ResourcePool().determinants:
         end_pos += adjective_pos(sentence, begin_pos + 1)
-        return sentence[begin_pos : end_pos+begin_pos]
-    
+        return sentence[begin_pos: end_pos + begin_pos]
+
     #If we have 'something'
     for k in ResourcePool().composed_nouns:
         if sentence[begin_pos].startswith(k):
             if sentence[begin_pos] in ResourcePool().noun_not_composed:
                 return []
-            return [sentence[begin_pos]]    
-       
-    #If there is a number, it will be the same with determinant
-    if other_functions.number(sentence[begin_pos])==1:
+            return [sentence[begin_pos]]
+
+            #If there is a number, it will be the same with determinant
+    if other_functions.number(sentence[begin_pos]) == 1:
         end_pos += adjective_pos(sentence, begin_pos + 1)
-        return sentence[begin_pos : end_pos+begin_pos]
+        return sentence[begin_pos: end_pos + begin_pos]
 
     #If it is a proper name
-    counter=begin_pos
-    while counter<len(sentence) and other_functions.find_cap_lettre(sentence[counter])==1:
+    counter = begin_pos
+    while counter < len(sentence) and other_functions.find_cap_lettre(sentence[counter]) == 1:
         counter += 1
-    
+
     #Default case return [] => ok if counter=begin_pos
-    return sentence[begin_pos : counter]
+    return sentence[begin_pos: counter]
 
 
-
-def find_sn (sentence):
+def find_sn(sentence):
     """
     Returns the first nominal group found in the sentence.                              
     
@@ -148,7 +150,7 @@ def find_sn (sentence):
     :return: the nominal group                                                        
     """
 
-    nb_position=1
+    nb_position = 1
 
     #If sentence is empty
     if not sentence:
@@ -162,31 +164,30 @@ def find_sn (sentence):
         #If there is a nominal group with determinant
         if x in ResourcePool().determinants:
             nb_position += adjective_pos(sentence, sentence.index(x) + 1)
-            return sentence[sentence.index(x) : sentence.index(x)+nb_position]
-        
+            return sentence[sentence.index(x): sentence.index(x) + nb_position]
+
         #If we have 'something'
         for k in ResourcePool().composed_nouns:
             if x.startswith(k):
                 if x in ResourcePool().noun_not_composed:
                     return []
                 return [sentence[sentence.index(x)]]
-        
+
         #If there is a number, it will be the same with determinant
-        if other_functions.number(x)==1:
+        if other_functions.number(x) == 1:
             nb_position += adjective_pos(sentence, sentence.index(x) + 1)
-            return sentence[sentence.index(x) : sentence.index(x)+nb_position]
+            return sentence[sentence.index(x): sentence.index(x) + nb_position]
 
         #If there is a proper name
-        counter=sentence.index(x)
-        while counter<len(sentence) and other_functions.find_cap_lettre(sentence[counter])==1:
+        counter = sentence.index(x)
+        while counter < len(sentence) and other_functions.find_cap_lettre(sentence[counter]) == 1:
             counter += 1
-        #Not equal => there is a proper name
-        if counter!=sentence.index(x):
-            return sentence[sentence.index(x) : counter]
-   
+            #Not equal => there is a proper name
+        if counter != sentence.index(x):
+            return sentence[sentence.index(x): counter]
+
     #Default case
     return []
-
 
 
 def find_the_plural(sentence, position):
@@ -194,37 +195,36 @@ def find_the_plural(sentence, position):
 
     :param sentence and position of nominal group
     :return: the position of plural or -1
-    """ 
-    
+    """
+
     if len(sentence) - position - 1 < 0:
         return -1
-    
+
     #It is a number the word is not a plural
     if other_functions.number(sentence[position]) == 1:
         return -1
-    
+
     #If it is proposal we continue
     if sentence[position] in ResourcePool().proposals:
-        return find_the_plural(sentence, position+1)
-    
+        return find_the_plural(sentence, position + 1)
+
     if sentence[position] in ResourcePool().nouns_end_s:
         return -1
-    
+
     #If it is adjective we continue
     if is_an_adj(sentence[position]):
-        if find_the_plural(sentence, position+1)!=-1:
+        if find_the_plural(sentence, position + 1) != -1:
             return position
-    
+
     #If it is an  adjective ends with 's'
     if sentence[0].endswith("'s") or sentence[position].endswith("ous"):
         return -1
-    
+
     #we have plural if the noun ends with 's'
     if find_sn_pos(sentence, position) == [] and sentence[position].endswith('s'):
         return position
 
     return -1
-
 
 
 def find_plural(sentence):
@@ -235,12 +235,11 @@ def find_plural(sentence):
     """
 
     #We find the position of the plural in the sentence
-    position=find_the_plural(sentence,0)
+    position = find_the_plural(sentence, 0)
     if position != -1:
         #If not -1 we have plural without determinant
         sentence = sentence[:position] + ['a'] + sentence[position:]
     return sentence
-
 
 
 def refine_nom_gr(nominal_group):
@@ -250,23 +249,23 @@ def refine_nom_gr(nominal_group):
     :return: nominal group
     """
 
-    idx = len(nominal_group)-1
-    
+    idx = len(nominal_group) - 1
+
     #Case of the end of the sentence
-    if nominal_group[idx] in ['?','!','.']:
+    if nominal_group[idx] in ['?', '!', '.']:
         return nominal_group[:idx]
-    
+
     #Case of after we have a indirect complement
     if nominal_group[idx] in ResourcePool().proposals:
         return nominal_group[:idx]
-    
+
     #Case of after we have an adverb
     if nominal_group[idx] in ResourcePool().adverbs:
         return nominal_group[:idx]
     return nominal_group
 
 
-def return_det (nominal_group):
+def return_det(nominal_group):
     """
     This function returns the determinant of the nominal group                       
     :param nominal_group: the nominal group
@@ -276,32 +275,31 @@ def return_det (nominal_group):
     #nominal_group is empty
     if not nominal_group:
         return []
-    
+
     #We return the first element of the list
     if nominal_group[0] in ResourcePool().determinants:
         return [nominal_group[0]]
-    
+
     #If there is a number
-    if other_functions.number(nominal_group[0])==1:
+    if other_functions.number(nominal_group[0]) == 1:
         return [nominal_group[0]]
-     
+
     #Default case
     return []
 
 
-
-def return_adj (nominal_group):
+def return_adj(nominal_group):
     """Returns adjectives of the nominal group
 
     :param Nominal_Group nominal_group: a nominal group
 
     :return: a list of adjectives
     """
-    
+
     #init
-    k=1
-    adj_list=[]
-    
+    k = 1
+    adj_list = []
+
     #If nominal_group is empty
     if not nominal_group:
         return []
@@ -315,50 +313,47 @@ def return_adj (nominal_group):
     return adj_list
 
 
-
 def convert_adj_to_digit(adj_list):
     """
     returns the list of adjectives after change number to digit                           
     :param the adjective                            
     :return: the adjective            
     """
-    
+
     for i in adj_list:
-        if i.endswith('th') and other_functions.number(i)==2:
-            adj_list[adj_list.index(i)]=other_functions.convert_to_digit(i)+'th'
-    
+        if i.endswith('th') and other_functions.number(i) == 2:
+            adj_list[adj_list.index(i)] = other_functions.convert_to_digit(i) + 'th'
+
     return adj_list
 
 
-
-def process_adj_quantifier(adj_list):    
+def process_adj_quantifier(adj_list):
     """
     returns adjectives of the nominal group organized with quantifier                           
     :param the adjective                            
     :return: the adjective            
     """
-    
+
     #init
-    adjective_list=[]   
-    
+    adjective_list = []
+
     #Now, we will put quantifier (if it exist) with the adjective
-    z=len(adj_list)-1
-    if z==0:
-        adjective_list=[[adj_list[z],[]]]+adjective_list
+    z = len(adj_list) - 1
+    if z == 0:
+        adjective_list = [[adj_list[z], []]] + adjective_list
     else:
         while z >= 0:
             if adj_list[z] in ResourcePool().adj_quantifiers:
                 #We can't have quantifier if there is no adjective
-                adjective_list[0][1]=[adj_list[z]]+adjective_list[0][1]
+                adjective_list[0][1] = [adj_list[z]] + adjective_list[0][1]
             else:
-                adjective_list=[[adj_list[z],[]]]+adjective_list
+                adjective_list = [[adj_list[z], []]] + adjective_list
 
             z -= 1
     return adjective_list
 
 
-
-def return_noun (nominal_group, adjective, determinant):
+def return_noun(nominal_group, adjective, determinant):
     """
     returns the noun of the nominal group
     :param nominal group, the determinant and the adjecvtive     
@@ -366,13 +361,12 @@ def return_noun (nominal_group, adjective, determinant):
     """
 
     #If nominal_group is empty
-    if nominal_group==[] or nominal_group[len(determinant)+len(adjective):]==[]:
+    if nominal_group == [] or nominal_group[len(determinant) + len(adjective):] == []:
         return []
-    return [" ".join(nominal_group[len(determinant)+len(adjective):])]
+    return [" ".join(nominal_group[len(determinant) + len(adjective):])]
 
 
-
-def find_nom_gr_compl (nominal_group, sentence, position):
+def find_nom_gr_compl(nominal_group, sentence, position):
     """
     We will find the complement of the nominal group which is also a nominal group
     We know the position of the complement so we use find_sn_pos                     
@@ -388,15 +382,14 @@ def find_nom_gr_compl (nominal_group, sentence, position):
         return []
     else:
         #This condition include the case when we have 'of' at the end of the sentence
-        if len(sentence)<=len(nominal_group)+position or len(sentence)==len(nominal_group)+position+1:
+        if len(sentence) <= len(nominal_group) + position or len(sentence) == len(nominal_group) + position + 1:
             return []
         else:
             #We have a complement when there is 'of' before
-            if sentence[position+len(nominal_group)]=='of':
-                return find_sn_pos(sentence, position+len(nominal_group)+1)
-    #Default case
+            if sentence[position + len(nominal_group)] == 'of':
+                return find_sn_pos(sentence, position + len(nominal_group) + 1)
+        #Default case
     return []
-
 
 
 def take_off_nom_gr(sentence, nominal_group, nominal_group_pos):
@@ -410,23 +403,22 @@ def take_off_nom_gr(sentence, nominal_group, nominal_group_pos):
     """
 
     if nominal_group:
-        
+
         #If we have to remove the complement
-        if sentence[nominal_group_pos-1] == 'of' :
-            sentence = sentence[:nominal_group_pos-1]+sentence[nominal_group_pos+len(nominal_group):]
-        else :
-            sentence = sentence[:nominal_group_pos]+sentence[nominal_group_pos+len(nominal_group):]
+        if sentence[nominal_group_pos - 1] == 'of':
+            sentence = sentence[:nominal_group_pos - 1] + sentence[nominal_group_pos + len(nominal_group):]
+        else:
+            sentence = sentence[:nominal_group_pos] + sentence[nominal_group_pos + len(nominal_group):]
 
         #If there is a nominal complement
-        while len(sentence)>nominal_group_pos and sentence[nominal_group_pos]=='of' :
-            nominal_group=find_sn_pos(sentence, nominal_group_pos+1)
-            sentence=take_off_nom_gr(sentence, nominal_group, sentence.index(nominal_group[0]))
-           
+        while len(sentence) > nominal_group_pos and sentence[nominal_group_pos] == 'of':
+            nominal_group = find_sn_pos(sentence, nominal_group_pos + 1)
+            sentence = take_off_nom_gr(sentence, nominal_group, sentence.index(nominal_group[0]))
+
     return sentence
 
 
-
-def find_relative (nominal_group, sentence, position, propo_rel_list):
+def find_relative(nominal_group, sentence, position, propo_rel_list):
     """
     Function to find the position of the relative                                    
 
@@ -446,15 +438,14 @@ def find_relative (nominal_group, sentence, position, propo_rel_list):
     # We deleted all nominal groups and their complements 
     # => we have not nominal_group+relative but relative only
     if sentence[0:len(nominal_group)] != nominal_group \
-       and sentence[0] in propo_rel_list:
+        and sentence[0] in propo_rel_list:
         return 0
-    #The proposal is after the nominal group
+        #The proposal is after the nominal group
     if len(sentence) > len(nominal_group) + position + 1 \
-       and sentence[position + len(nominal_group)] in propo_rel_list:
-        return position+len(nominal_group)
-    
-    return -1
+        and sentence[position + len(nominal_group)] in propo_rel_list:
+        return position + len(nominal_group)
 
+    return -1
 
 
 def complete_relative(sentence, object):
@@ -465,26 +456,26 @@ def complete_relative(sentence, object):
     :param object: the object of the relative (its nominal group)
     :return: relative concatenated to the nominal group                                        
     """
-    
+
     #init
-    i=0
-    
+    i = 0
+
     #If there is a subject, the relative proposal refer to direct or indirect complement
     if find_sn_pos(sentence, 0):
-        
+
         while i < len(sentence):
-            if sentence[i] in ResourcePool().proposals and find_sn_pos(sentence, i+1)==[]:
+            if sentence[i] in ResourcePool().proposals and find_sn_pos(sentence, i + 1) == []:
                 #It is an indirect complement
-                sentence=sentence[:i+1]+object+sentence[i+1:]
+                sentence = sentence[:i + 1] + object + sentence[i + 1:]
                 return sentence
-            
+
             elif sentence[i] in ResourcePool().proposals:
                 #We don't have an indirect object
                 i += len(find_sn_pos(sentence, i + 1))
 
             i += 1
-        #It is a direct complement
-        sentence=sentence+object
-   
+            #It is a direct complement
+        sentence = sentence + object
+
     #Default case
     return sentence               

@@ -2,18 +2,22 @@
 # -*- coding: utf-8 -*-
 
 import logging
+
 logger = logging.getLogger("dialogs")
 
 import os.path
 
 from dialog_exceptions import UnknownVerb
 
+
 def singleton(cls):
     instances = {}
+
     def getinstance():
         if cls not in instances:
             instances[cls] = cls()
         return instances[cls]
+
     return getinstance
 
 
@@ -86,6 +90,7 @@ class VerbEntry(object):
         for role in self.roles:
             res += str(role) + "\n"
         return res
+
 
 @singleton
 class ThematicRolesDict(object):
@@ -162,6 +167,7 @@ class ThematicRolesDict(object):
         for name, verb in self.verbs.items():
             res += str(verb) + "\n"
         return res
+
 
 @singleton
 class ResourcePool(object):
@@ -272,7 +278,7 @@ class ResourcePool(object):
         except ImportError:
             logger.error("Python bindings to access the knowledge are not available." + \
                          "Please install 'pykb' and restart Dialogs.")
-        
+
         try:
             self.ontology_server = KB(kb_host, kb_port, embeddedkb, defaultontology)
         except KbError:
@@ -440,9 +446,8 @@ class ResourcePool(object):
 
 
 if __name__ == '__main__':
-    
     resources = ResourcePool()
-    
+
     print("*** DIALOG Resource manager ***")
     print()
     print("List of loaded resources:")

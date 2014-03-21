@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+
 logger = logging.getLogger("dialogs")
 
 from dialogs.helpers.helpers import colored_print
@@ -261,7 +262,7 @@ class QuestionHandler(object):
         for s in current_statements:
             if '?concept' in s.split():
                 return current_statements + concept_descriptor
-            #case: the statement is partially build from statement builder
+                #case: the statement is partially build from statement builder
 
         stmts = []
         if sn:

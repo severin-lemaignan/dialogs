@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+
 logger = logging.getLogger("dialogs")
 
 import random
@@ -99,14 +100,13 @@ class StatementSafeAdder(object):
             ResourcePool().ontology_server.remove(statements)
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
-        
-        
-        
-        
+
+
 def unit_tests():
     """This function tests the main features of the class StatementBuilder"""
     print("This is a test...")
-     
+
+
 if __name__ == '__main__':
     unit_tests()
     

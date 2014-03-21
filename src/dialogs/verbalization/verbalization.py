@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+
 logger = logging.getLogger("dialogs")
 
 from dialogs.verbalization import utterance_rebuilding

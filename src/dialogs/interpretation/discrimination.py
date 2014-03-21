@@ -7,11 +7,13 @@ information.
 """
 
 import logging
+
 logger = logging.getLogger("dialogs")
 
 from kb import KbError
 
 from dialogs.resources_manager import ResourcePool
+
 from dialogs.dialog_exceptions import UnsufficientInputError
 from dialogs.sentence import *
 from dialogs.sentence_factory import SentenceFactory

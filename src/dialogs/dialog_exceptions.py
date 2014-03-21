@@ -3,9 +3,11 @@
 class DialogError(Exception):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
-        
+
+
 class UnsufficientInputError(DialogError):
     """ This exception is raised when discrimination routines need more 
     information from the user to actually find out the ID of the concept being
@@ -20,10 +22,13 @@ class UnsufficientInputError(DialogError):
      - question: a question (as a set of instance of Sentence class) to be asked 
      to the user
     """
+
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
+
 
 class InterruptedInteractionError(DialogError):
     """ This exception is raised when the current interaction have to be interrupted
@@ -33,35 +38,46 @@ class InterruptedInteractionError(DialogError):
     The expected value of the exception is an instance of Sentence that explain to the
     user why the interaction had to be interrupted.
     """
+
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
+
 
 class GrammaticalError(DialogError):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
-        
+
+
 class EmptyGrammaticalGroup(GrammaticalError):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
+
 
 class UnrecognizedSentenceType(DialogError):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
+
 
 class UnknownVerb(DialogError):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
-    
+
+
 class UnidentifiedAnaphoraError(DialogError):
     """ This exception is raised when the confirmation of the anaphora is needed from the user.
     
@@ -73,7 +89,9 @@ class UnidentifiedAnaphoraError(DialogError):
      - question: a question (as a set of instance of Sentence class) to be asked 
      to the user
     """
+
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)

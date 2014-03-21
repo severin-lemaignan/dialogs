@@ -9,6 +9,7 @@ from helpers import colored_print
 #OUTPUT_MODE = 'css'
 DEFAULT_OUTPUT_MODE = 'color'
 
+
 def color_printer(text, atom):
     if atom == NOMINAL_GROUP:
         return level_marker() + colored_print('Nominal group:\n\t', 'bold') + text
@@ -55,10 +56,13 @@ def color_printer(text, atom):
     else:
         return text
 
+
 def css_printer(text, atom):
-    if atom in [SENTENCE, SUBJECT, NOMINAL_GROUP, VERBAL_GROUP, SECONDARY_VERBAL_GROUP, SUB_SENTENCE, DIRECT_OBJECT, INDIRECT_OBJECT, RESOLVED, NOT_RESOLVED, RELATIVE_GRP, NOUN_CMPLT, NEGATIVE]:
+    if atom in [SENTENCE, SUBJECT, NOMINAL_GROUP, VERBAL_GROUP, SECONDARY_VERBAL_GROUP, SUB_SENTENCE, DIRECT_OBJECT,
+                INDIRECT_OBJECT, RESOLVED, NOT_RESOLVED, RELATIVE_GRP, NOUN_CMPLT, NEGATIVE]:
         return "\n<div class='" + atom.lower() + "'>\n" + text + "\n</div>\n"
-    if atom in [SENTENCE_AIM, SENTENCE_TYPE, TENSE, VERB, QUANTIFIER, CONJUNCTION, DIGIT, DETERMINER, NOUN, ADJECTIVE, ADJECTIVE_QUALIFIER, VERBAL_ADVERBIAL, ID]:
+    if atom in [SENTENCE_AIM, SENTENCE_TYPE, TENSE, VERB, QUANTIFIER, CONJUNCTION, DIGIT, DETERMINER, NOUN, ADJECTIVE,
+                ADJECTIVE_QUALIFIER, VERBAL_ADVERBIAL, ID]:
         return "<span class='" + atom.lower() + "'>" + text + "</span> "
     if atom in [PREPOSITION, ADVERBIAL]:
         return "<br/><span class='" + atom.lower() + "'>" + text + "</span> "
@@ -70,15 +74,17 @@ def css_printer(text, atom):
         sys.stderr.writeln("Error: " + text + "has no grammatical category!")
         return text
 
-def pprint(text, atom, mode = None):
+
+def pprint(text, atom, mode=None):
     if not mode:
         mode = DEFAULT_OUTPUT_MODE
     if mode == "color":
         return color_printer(text, atom)
     if mode == "css":
         return css_printer(text, atom)
-    
-    raise Exception("Unknown Dialogs printer: %s"%mode)
+
+    raise Exception("Unknown Dialogs printer: %s" % mode)
+
 
 def level_marker(level=1, symbol='|', color='red'):
     """Insert 'symbol' at the beginning of the current line

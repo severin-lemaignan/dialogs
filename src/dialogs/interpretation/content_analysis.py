@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+
 logger = logging.getLogger("dialogs")
 
 from dialogs.helpers.helpers import colored_print
@@ -7,12 +8,13 @@ from dialogs.helpers.printers import level_marker
 from dialogs.helpers import emotions
 
 from dialogs.interpretation.statements_builder import StatementBuilder
-from dialogs.interpretation.statements_safe_adder  import StatementSafeAdder
+from dialogs.interpretation.statements_safe_adder import StatementSafeAdder
 from dialogs.interpretation.questions_handler import QuestionHandler
 from dialogs.sentence_factory import SentenceFactory
 from dialogs.sentence import Sentence
 from dialogs.sentence_types import *
 from dialogs.resources_manager import ResourcePool
+
 """This module implements ...
 
 """
@@ -67,12 +69,12 @@ class ContentAnalyser(object):
 
         if sentence.data_type in [IMPERATIVE, STATEMENT]:
             logger.debug(colored_print("Processing the content of " + (
-            "an imperative sentence" if sentence.data_type == IMPERATIVE else "a statement "), "magenta"))
+                "an imperative sentence" if sentence.data_type == IMPERATIVE else "a statement "), "magenta"))
             return self.process_sentence(sentence, current_speaker)
 
         if sentence.data_type in [W_QUESTION, YES_NO_QUESTION]:
             logger.debug(colored_print("Processing the content of " + (
-            "a W question " if sentence.data_type == W_QUESTION else "a YES/NO question"), "magenta"))
+                "a W question " if sentence.data_type == W_QUESTION else "a YES/NO question"), "magenta"))
             return self.process_question(sentence, current_speaker)
 
         return None, None # default: no statement generated, no situation ID

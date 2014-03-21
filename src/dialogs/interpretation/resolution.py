@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+
 logger = logging.getLogger("dialogs")
 
 import random
@@ -10,7 +11,7 @@ from kb import KbError
 
 from dialogs.helpers.helpers import colored_print
 
-from dialogs.dialog_exceptions import * 
+from dialogs.dialog_exceptions import *
 from dialogs.resources_manager import ResourcePool
 from statements_builder import NominalGroupStatementBuilder, get_class_name, generate_id #for nominal group discrimination
 from discrimination import Discrimination
@@ -832,7 +833,7 @@ def get_last(list, nb):
     #Empty list
     if not list:
         return list
-    
+
     #Not empty list but, NB > len(list).
     if nb > len(list):
         stnts = list
@@ -840,17 +841,17 @@ def get_last(list, nb):
     else:
         last = len(list)
         stnts = list[(last - nb):last]
-    
+
     #reverse    
     stnts.reverse()
-    
-    return stnts
 
+    return stnts
 
 
 def unit_tests():
     """This function tests the main features of the class Resolver"""
     print("This is a test...")
+
 
 if __name__ == '__main__':
     unit_tests()

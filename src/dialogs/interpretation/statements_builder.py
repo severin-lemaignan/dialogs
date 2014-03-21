@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+
 logger = logging.getLogger("dialogs")
 
 import random
@@ -9,7 +10,6 @@ from kb import KbError
 from dialogs.resources_manager import ResourcePool
 from dialogs.dialog_exceptions import DialogError, GrammaticalError
 from dialogs.helpers.helpers import generate_id
-
 
 from dialogs.sentence import *
 
@@ -1009,17 +1009,19 @@ class VerbalGroupStatementBuilder(object):
                 self._statements = vrb_subs_builder._statements
                 self._unclarified_ids = vrb_subs_builder._unclarified_ids
                 self.lear_more_concept = vrb_subs_builder.lear_more_concept
-        
-            
+
+
 """
     The following function are not implemented for a specific class
 """
-def get_class_name(noun,conceptL):
+
+
+def get_class_name(noun, conceptL):
     """Simple function to obtain the exact class name"""
     if conceptL:
         for c in conceptL:
             if 'CLASS' in c: return c[0]
-        
+
     # Not found in the ontology? Using the capitalized version as class name
     return noun.capitalize()
      
