@@ -237,9 +237,9 @@ def w_quest_class(sentence):
     """
     
     analysis=y_n_ques(W_QUESTION, 'classification'+'+'+sentence[4],sentence[5:])
-    if analysis.sn!=[]:
+    if analysis.sn:
         #The direct object must be empty
-        if analysis.sv[0].d_obj!=[]:
+        if analysis.sv[0].d_obj:
             analysis.sv[0].i_cmpl=analysis.sv[0].i_cmpl+[Indirect_Complement([],analysis.sv[0].d_obj)]
             analysis.sv[0].d_obj=[]
     return analysis
@@ -302,7 +302,7 @@ def w_quest_quant(type, request, sentence):
     analysis=y_n_ques(type, request,sentence[3:])
 
     #There is not sn in the sentence
-    if analysis.sn==[]:
+    if not analysis.sn:
         analysis.sn=[Nominal_Group(['a'],[sentence[2]],[],[],[])]
 
     else:
@@ -347,12 +347,12 @@ def w_quest_which(type, request, sentence):
         return y_n_ques(type, sentence[1],sentence[2:])
     else:
         #After the first gr if there is no nominal group
-        if analyse_nominal_group.find_sn_pos(sentence, len(gr))==[]:
+        if not analyse_nominal_group.find_sn_pos(sentence, len(gr)):
             for i in ResourcePool().sentence_starts:
                 #If just after we have an a auxiliary
                 if sentence[len(gr)]==i[0] and i[1]=='3':
                     #With subject => it is a yes or no question form
-                    if analyse_nominal_group.find_sn_pos(sentence, len(gr)+1)!=[]:
+                    if analyse_nominal_group.find_sn_pos(sentence, len(gr) + 1):
                         analysis=y_n_ques(type, request, sentence[len(gr):])
                         nominal_gr=other_sentence(type, request, gr)
                         analysis.sv[0].d_obj=nominal_gr.sn
@@ -393,7 +393,7 @@ def stc_start_subsentence(sentence):
     
     #We process the subsentence 
     analysis.sv[0].vrb_sub_sentence=analysis.sv[0].vrb_sub_sentence+dispatching(subsentence)
-    if analysis.sv[0].vrb_sub_sentence!=[]:
+    if analysis.sv[0].vrb_sub_sentence:
         analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type=SUBSENTENCE+'+'+analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].data_type
         if sentence[0][0]==':':
             analysis.sv[0].vrb_sub_sentence[len(analysis.sv[0].vrb_sub_sentence)-1].aim=sentence[0][1:]
@@ -509,7 +509,7 @@ def y_n_ques(type, request, sentence):
                 analysis.sn[0]._quantifier='SOME'
             sentence=sentence[1:]
     
-    if analysis.sn==[]:
+    if not analysis.sn:
         #We recover the subject
         sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
     
@@ -537,7 +537,7 @@ def y_n_ques(type, request, sentence):
             sentence=sentence[1:]
       
         #Here we have special processing for different cases
-        if sentence!=[]:
+        if sentence:
             #For 'what' descrition case
             if sentence[0]=='like' and aux!='would':
                 vg.vrb_main=['like']
@@ -553,7 +553,7 @@ def y_n_ques(type, request, sentence):
         
         #It verifies if there is a secondary verb
         sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
-        if sec_vrb!=[]:
+        if sec_vrb:
             sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
             
         #We recover the subsentence
@@ -572,7 +572,7 @@ def y_n_ques(type, request, sentence):
         sentence=analyse_verbal_structure.find_adv(sentence, vg)
     
     #We perform the processing with the modal
-    if modal!=[]:
+    if modal:
         vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
     
     #If there is a forgotten
@@ -625,7 +625,7 @@ def other_sentence(type, request, sentence):
     analysis=Sentence(type, request, [], [])
     modal=[]
     
-    if sentence==[]:
+    if not sentence:
         return []
     
     #We have to add punctuation if there is not
@@ -652,7 +652,7 @@ def other_sentence(type, request, sentence):
                 analysis.sn[0]._quantifier='SOME'
             sentence=sentence[1:]
         
-        if analysis.sn==[]:
+        if not analysis.sn:
             #We recover the subject
             sentence=analyse_nominal_structure.recover_ns(sentence, analysis, 0)
         
@@ -679,7 +679,7 @@ def other_sentence(type, request, sentence):
                 sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
             
             #There is a modal
-            elif modal!=[]:
+            elif modal:
                 sentence=[sentence[0]]+sentence[2:]
                 sentence=analyse_verbal_structure.delete_unusable_word(sentence)
                 sentence=analyse_verbal_structure.find_vrb_adv (sentence,vg)
@@ -710,7 +710,7 @@ def other_sentence(type, request, sentence):
         sentence= sentence[sentence.index(verb[0])+len(verb_main):]
             
         #We perform the processing with the modal
-        if modal!=[]:
+        if modal:
             vg.vrb_main=[modal+'+'+vg.vrb_main[0]]
 
     #This is a imperative form
@@ -748,7 +748,7 @@ def other_sentence(type, request, sentence):
     
     #It verifies if there is a secondary verb
     sec_vrb=analyse_verbal_structure.find_scd_vrb(sentence)
-    if sec_vrb!=[]:
+    if sec_vrb:
         sentence=analyse_verbal_structure.process_scd_sentence(sentence, vg, sec_vrb)
 
     #We recover the subsentence
@@ -808,7 +808,7 @@ def sentences_analyzer(sentences):
 
     #We process all sentences of the list
     for i in sentences:
-        if i!=[]:
+        if i:
             #We have to add punctuation if there is not
             if i[-1] not in ['.', '?', '!']:
                 i = i + ['.']

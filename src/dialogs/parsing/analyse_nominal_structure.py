@@ -29,7 +29,7 @@ def recover_quantifier(nom_gr):
     flg=0
 
     #The default case is 'ONE'
-    if nom_gr.det==[]:
+    if not nom_gr.det:
         #If the noun is 'anything' => SOME 
         if nom_gr.noun and nom_gr.noun[0] in ["anything"]:
             nom_gr._quantifier='SOME'
@@ -94,9 +94,9 @@ def put_rela_from_nncompl_noun(gn):
     :return: nominal group class
     """
 
-    if gn != []:
+    if gn:
         #If empty
-        if gn.noun_cmpl == []:
+        if not gn.noun_cmpl:
             pass
         else:
             put_rela_from_nncompl_noun(gn.noun_cmpl[0])
@@ -143,7 +143,7 @@ def fill_nom_gr (phrase, nom_gr, pos_nom_gr, conjunction):
         relative = relative + [analyse_sentence.other_sentence(RELATIVE, phrase[begin_pos_rel], relative_phrase)]
 
     #If there is a nom_gr_compl, we must make a recursive process for embedded complement
-    if nom_gr_compl!=[]:
+    if nom_gr_compl:
         gn=Nominal_Group(det,noun,adj,[fill_nom_gr(phrase,nom_gr_compl,pos_nom_gr+len(nom_gr)+1,'AND')],relative)
 
     else:
@@ -177,7 +177,7 @@ def recover_ns(phrase, analysis, position):
     sbj=analyse_nominal_group.find_sn_pos(phrase, position)
 
     #We loop until we don't have a nominal group
-    while sbj!=[]:
+    while sbj:
 
         #We refine the nominal group if there is an error like ending with question mark
         sbj=analyse_nominal_group.refine_nom_gr(sbj)
@@ -208,7 +208,7 @@ def recover_ns(phrase, analysis, position):
             phrase=phrase[1:]
 
             #This case is used by whose
-            if sbj==[]:
+            if not sbj:
                 phrase=['that']+phrase
                 sbj=analyse_nominal_group.find_sn_pos(phrase, position)
 

@@ -35,7 +35,7 @@ def convert_to_string(liste):
     Function creates strings with '+' in place of ' '                                
     Input=list of string                      Output=string with + in place of ' '   
     """
-    if liste==[]:
+    if not liste:
         return ''
     
     if len(liste)==1:

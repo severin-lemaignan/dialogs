@@ -70,13 +70,13 @@ def nom_struc_rebuilding(nom_struc):
             nominal_structure = nominal_structure+nom_struc[i].noun
         
         #We recover noun complement
-        if nom_struc[i].noun_cmpl!=[]:
+        if nom_struc[i].noun_cmpl:
             nominal_structure = nominal_structure + ['of']
             nominal_structure=nominal_structure+nom_struc_rebuilding(nom_struc[i].noun_cmpl)
 
         #We recover the relative
         for j in nom_struc[i].relative:
-            if j.sn==[]:
+            if not j.sn:
                 ns=[nom_struc[i]]
         
             nominal_structure=nominal_structure+[j.aim]+sentence_rebuilding.relative(j, ns)
@@ -99,7 +99,7 @@ def indirect_compl_rebuilding(indirect_compl):
     k=0
 
     #We have 2 cases : with proposal and without
-    if indirect_compl.prep!=[]:
+    if indirect_compl.prep:
         nom_gr= nom_struc_rebuilding(indirect_compl.gn)
         
         #If we have another i_cmpl with a different preposition
@@ -134,12 +134,12 @@ def conjugate_vrb(tense, verb, sn, type, aim):
         tense='present simple'
     
     if aim.startswith('classification'):
-        if sn==[]:
+        if not sn:
             sn=[Nominal_Group([],[aim[15:]],[],[],[])]
-        elif sn[0].noun==[]:
+        elif not sn[0].noun:
             sn[0].noun=[aim[15:]]
             
-    if sn==[]:
+    if not sn:
         if type==IMPERATIVE:
             #If no subject, we use the third person of plural
             sn=[Nominal_Group([],['they'],[],[],[])]
@@ -248,7 +248,7 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
     vrb_condjugated=[]
     
     #If verb is empty
-    if verb==[]:
+    if not verb:
         return []
     
     #We take of the '+'
@@ -260,7 +260,7 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
             vrb_condjugated=vrb
     
     #No modal => normal processing
-    if vrb_condjugated==[]:
+    if not vrb_condjugated:
         vrb_condjugated=conjugate_vrb(tense, vrb, sn, type, aim)
     elif tense=='present passive' or tense=='passive conditional':
         vrb_condjugated=[vrb[0]]+['be']+conjugate_vrb('present passive', vrb[1:], sn,'', aim)[1:]
@@ -294,7 +294,7 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     Output=verb part                                                                 
     """
     #If verb is empty
-    if verb==[]:
+    if not verb:
         return []
     
     #We take of the '+'
@@ -351,7 +351,7 @@ def scd_vrb_rebuilding(sec_vrb, phrase, flg):
         for x in sec_vrb.i_cmpl:
             phrase=phrase+indirect_compl_rebuilding(x)
     else:
-        if sec_vrb.i_cmpl!=[]:
+        if sec_vrb.i_cmpl:
             phrase=phrase+indirect_compl_rebuilding(sec_vrb.i_cmpl[0])
         phrase=phrase+nom_struc_rebuilding(sec_vrb.d_obj)
         #init
@@ -391,7 +391,7 @@ def end_statement_rebuilding(sentence, sv ,sn, type, aim):
         for x in sv[0].i_cmpl:
             phrase=phrase+indirect_compl_rebuilding(x)
     else:
-        if sv[0].i_cmpl!= []:
+        if sv[0].i_cmpl:
             phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[0])
         phrase=phrase+nom_struc_rebuilding(sv[0].d_obj)
         #init
@@ -432,7 +432,7 @@ def end_question_rebuilding(sentence, sv ,sn, aim):
         for x in sv[0].i_cmpl:
             phrase=phrase+indirect_compl_rebuilding(x)
     else:
-        if sv[0].i_cmpl!= []:
+        if sv[0].i_cmpl:
             phrase=phrase+indirect_compl_rebuilding(sv[0].i_cmpl[0])
         phrase=phrase+nom_struc_rebuilding(sv[0].d_obj)
         

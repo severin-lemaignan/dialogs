@@ -34,7 +34,7 @@ def statement(analysis):
     if not phrase:
         return []
 
-    if analysis.sv!=[]:
+    if analysis.sv:
         #Recovering the end of the sentence
         phrase=element_rebuilding.end_statement_rebuilding(phrase, analysis.sv, analysis.sn, analysis.data_type,analysis.aim)
         
@@ -69,7 +69,7 @@ def imperative(analysis):
     #init
     phrase=[]
     
-    if analysis.sv!=[]:
+    if analysis.sv:
         #Recovering the basic part of the sentence
         phrase=element_rebuilding.end_statement_rebuilding(phrase, analysis.sv, analysis.sn, analysis.data_type,analysis.aim)
     
@@ -95,7 +95,7 @@ def relative(relative, ns):
     Input=class sentence                              Output=sentence                
     """
     
-    if ns==[]:
+    if not ns:
         phrase=statement(relative)
     else:
         relative.sn=ns
@@ -117,7 +117,7 @@ def y_o_question(analysis):
     #Recovering the subject
     subject=element_rebuilding.nom_struc_rebuilding(analysis.sn)
     
-    if analysis.sv!=[]:
+    if analysis.sv:
         #Recovering the end of the sentence
         phrase=element_rebuilding.end_question_rebuilding(phrase, analysis.sv, analysis.sn,analysis.aim)
     
@@ -149,7 +149,7 @@ def w_question(analysis):
     verbalises a w_question                                            
     Input=class sentence                              Output=sentence                
     """
-    if analysis.sv!=[]:
+    if analysis.sv:
         #Opinion is a what question so we have to make some changes
         if analysis.sv[0].vrb_main[0].endswith('like'):
             verb=analysis.sv[0].vrb_main[0]
@@ -208,14 +208,14 @@ def quantity_ques(analysis):
     #We have to memorise the verb
     verb=other_functions.list_rebuilding(analysis.sv[0].vrb_main[0])
     
-    if analysis.sv!=[]:
+    if analysis.sv:
     #First case : aim is the subject with verb be
         if analysis.sv[0].d_obj==[] and (verb[0]=='be' or (len(verb)>1 and  verb[1]=='be')):
             phrase=statement(analysis)
             return ['how','much']+phrase[1:len(phrase)-1]+['?']
     
         #Second case : aim is the subject without verb be
-        elif  analysis.sv[0].d_obj==[]:
+        elif not analysis.sv[0].d_obj:
             return ['how','much']+y_o_question(analysis)
     
         #Third case : as yes no question without the direct complement

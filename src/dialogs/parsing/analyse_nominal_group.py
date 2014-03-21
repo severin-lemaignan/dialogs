@@ -151,7 +151,7 @@ def find_sn (sentence):
     nb_position=1
 
     #If sentence is empty
-    if sentence ==[]:
+    if not sentence:
         return []
 
     for x in sentence:
@@ -274,7 +274,7 @@ def return_det (nominal_group):
     """
 
     #nominal_group is empty
-    if nominal_group==[]:
+    if not nominal_group:
         return []
     
     #We return the first element of the list
@@ -303,7 +303,7 @@ def return_adj (nominal_group):
     adj_list=[]
     
     #If nominal_group is empty
-    if nominal_group==[]:
+    if not nominal_group:
         return []
 
     #We assumed that the noun represented by 1 element at the end
@@ -384,7 +384,7 @@ def find_nom_gr_compl (nominal_group, sentence, position):
     """
 
     #If the nominal_group or sentence is empty
-    if nominal_group==[]:
+    if not nominal_group:
         return []
     else:
         #This condition include the case when we have 'of' at the end of the sentence
@@ -470,7 +470,7 @@ def complete_relative(sentence, object):
     i=0
     
     #If there is a subject, the relative proposal refer to direct or indirect complement
-    if find_sn_pos(sentence, 0)!=[]:
+    if find_sn_pos(sentence, 0):
         
         while i < len(sentence):
             if sentence[i] in ResourcePool().proposals and find_sn_pos(sentence, i+1)==[]:

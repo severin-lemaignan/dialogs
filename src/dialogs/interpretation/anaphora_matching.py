@@ -33,7 +33,7 @@ def find_cap_lettre(word):
     return 1 if the word starts with upper case letter                       
     Input=word               Output=flag(0 if no upper case or 1 if upper case)        
     """
-    if word==[]:
+    if not word:
         return 0
     
     for i in ResourcePool().capital_letters:
@@ -183,7 +183,7 @@ def first_replacement(nominal_group_list, current_nominal_group):
     #init
     flg=0
     
-    if nominal_group_list==[]:
+    if not nominal_group_list:
         return None
     
     if current_nominal_group.noun==['it'] or (current_nominal_group.det==['this'] and current_nominal_group.noun==[]):
@@ -228,7 +228,7 @@ def replacement(utterance, nominal_group, list_nominal_group, last_nominal_group
         return [last_nominal_group,True]
     
     #There is no nominal group to make change (same with first replacement)
-    if recover_nominal_group_list_without_id(utterance)==[]:
+    if not recover_nominal_group_list_without_id(utterance):
         nominal_group = first_replacement(list_nominal_group, nominal_group)
         return [nominal_group,False]
     

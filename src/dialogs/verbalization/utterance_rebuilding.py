@@ -276,7 +276,7 @@ def possesion_form(sentence):
 
             #If flag=1 => there is a proper name so we haven't decrement the begin_pos
             if flag==0:
-                while nom_gr == []:
+                while not nom_gr:
                     begin_pos -= 1
                     nom_gr=find_sn_pos(sentence, begin_pos)
             else:

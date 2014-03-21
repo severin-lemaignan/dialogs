@@ -174,11 +174,11 @@ class ResourcePool:
         flag=0
         list_list_word=our_list=[]
         for i in word_list:
-            if i!=[]:
+            if i:
                 if i[0].startswith('#'):
                     if flag==0:
                         flag=1
-                        if our_list!=[]:
+                        if our_list:
                             list_list_word=list_list_word+[our_list]
                             our_list=[]
                     else:

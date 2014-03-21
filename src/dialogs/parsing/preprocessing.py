@@ -84,7 +84,7 @@ def process_and_beginning_sentence(sentence):
     """
     
     #If sentence is empty
-    if sentence==[]:
+    if not sentence:
         return []
     
     #Using flag is for the ending of this function
@@ -102,7 +102,7 @@ def process_and_beginning_sentence(sentence):
     if sentence[0] in ResourcePool().proposals:
         gr=determination_nominal_group(sentence, 1,'of')
         #We put the nominal group at the end of the sentence
-        if gr!=[]:
+        if gr:
             sentence=sentence[len(gr)+1:]+[',']+[sentence[0]]+gr
             sentence=process_and_beginning_sentence(sentence)
         else:
@@ -270,7 +270,7 @@ def but(sentence):
         if sentence[i]=='but':
             #After 'but' of subsentence we must have a nominal group (subject)
             scd_nominal_group=analyse_nominal_group.find_sn_pos (sentence, i+1)
-            if scd_nominal_group==[]:
+            if not scd_nominal_group:
                 sentence[i]=':but'
             else:
                 
@@ -485,7 +485,7 @@ def and_nominal_group(sentence):
         position=i
         
         #We recovery all nominal groups followed the first one
-        while nominal_group!=[]:
+        while nominal_group:
             list_nominal_group=list_nominal_group+[nominal_group]
             i += len(nominal_group)
             nominal_group=determination_nominal_group(sentence, i, 'of')
@@ -543,7 +543,7 @@ def find_nominal_group_list(phrase):
         nominal_group_lent=len(nominal_group)
 
         #We need to have a nominal group so we forced it
-        if nominal_group == []:
+        if not nominal_group:
             nominal_group=analyse_nominal_group.find_sn_pos(['the']+phrase, 0)
             nominal_group_lent=len(nominal_group)-1
 
@@ -614,7 +614,7 @@ def possesion_form(sentence):
 
             #If flag=1 => there is a propre name so we haven't decrement the begin_pos
             if flag==0:
-                while nominal_group == []:
+                while not nominal_group:
                     begin_pos -= 1
                     nominal_group=analyse_nominal_group.find_sn_pos(sentence, begin_pos)
 
@@ -709,9 +709,9 @@ def move_prep(sentence):
                 position=i
                 
                 #If after preposition we have nominal group, it is for this nominal group 
-                if analyse_nominal_group.find_sn_pos(sentence, i+1)==[]:        
+                if not analyse_nominal_group.find_sn_pos(sentence, i + 1):
                     #We have to find the nominal group just before
-                    while analyse_nominal_group.find_sn_pos(sentence, position)==[]:
+                    while not analyse_nominal_group.find_sn_pos(sentence, position):
                         position -= 1
                     sentence=sentence[:position]+[p]+sentence[position:i]+sentence[i+1:]
         i += 1
@@ -739,7 +739,7 @@ def conjunction_processing(sentence, cjt):
                 position -= 1
                 fst_nominal_group=analyse_nominal_group.find_sn_pos(sentence, position)
                 
-            if fst_nominal_group!=[]:
+            if fst_nominal_group:
                 
                 #We will find the second nominal group
                 scd_nominal_group=analyse_nominal_group.find_sn_pos(sentence, i+1)
@@ -872,7 +872,7 @@ def add_scd_vrb(sentence):
         #If we have a verb that need a second verb
         if sentence[i] in ResourcePool().verb_need_to:
             nominal_group=analyse_nominal_group.find_sn_pos(sentence, i+1)
-            if nominal_group!=[]:
+            if nominal_group:
                 sentence=sentence[:i+len(nominal_group)+1]+['to']+sentence[i+len(nominal_group)+1:]
             else:
                 sentence=sentence[:i+1]+['to']+sentence[i+1:]
@@ -1085,7 +1085,7 @@ def process_sentence(utterance):
             sentence=sentence+[j]
             
     #If the user forget the punctuation at the end
-    if sentence!=[]:
+    if sentence:
         sentence = processing(sentence)
         sentence_list=sentence_list+sentence
 

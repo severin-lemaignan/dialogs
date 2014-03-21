@@ -62,7 +62,7 @@ def eliminate_redundancy(phrase):
     #init
     phrase_aux=[]
 
-    if phrase!=[]:
+    if phrase:
 
         phrase_aux=[phrase[0]]
 
@@ -82,7 +82,7 @@ def convert_string(token_list):
     """
 
     #list is empty
-    if token_list==[]:
+    if not token_list:
         return ''
 
     if len(token_list)==1:

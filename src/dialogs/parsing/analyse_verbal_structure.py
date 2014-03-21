@@ -70,7 +70,7 @@ def find_vrb_adv(phrase, vg):
     """
 
     #If phrase is empty
-    if phrase==[]:
+    if not phrase:
         return phrase
 
     #If there is an auxiliary
@@ -95,7 +95,7 @@ def find_adv(phrase,vg):
     """
 
     #If phrase is empty
-    if phrase ==[]:
+    if not phrase:
         vg.advrb= []
 
     #init
@@ -128,7 +128,7 @@ def check_proposal(phrase, object):
     Input=sentence and object            Output=proposal if the object is indirect   
     """
 
-    if object==[]:
+    if not object:
         return []
 
     #if there is a proposal which recovery an object
@@ -163,11 +163,11 @@ def recover_obj_iobj(phrase, vg):
         proposal=check_proposal(phrase, object)
         
         
-        if proposal!=[]:
+        if proposal:
             
             gr_nom_list=[]
             #This 'while' is for duplicate with 'and'
-            while object!=[]:
+            while object:
                 pos_object=phrase.index(object[0])
                 
                 #We refine the nominal group if there is an error like ending with question mark
@@ -196,7 +196,7 @@ def recover_obj_iobj(phrase, vg):
                     phrase=[phrase[0]]+analyse_nominal_group.find_plural(phrase[1:])
                     
                     #We have not duplicate the proposal, it depends on the presence of the nominal group after  
-                    if analyse_nominal_group.find_sn_pos(phrase,1)!=[]:
+                    if analyse_nominal_group.find_sn_pos(phrase, 1):
                         phrase=[phrase[0]]+proposal+phrase[1:]
                     else:   
                         phrase=[phrase[0]]+phrase[1:]
@@ -221,7 +221,7 @@ def recover_obj_iobj(phrase, vg):
             #It is a direct complement
             gr_nom_list=[]
             #It reproduces the same code as above
-            while object!=[]:
+            while object:
                 pos_object=phrase.index(object[0])
                 
                 #We refine the nominal group if there is an error like ending with question mark
@@ -260,7 +260,7 @@ def recover_obj_iobj(phrase, vg):
                     object=[]
             
             #In a sentence there is just one direct complement if there is no second verb
-            if vg.d_obj==[]:
+            if not vg.d_obj:
                 vg.d_obj=gr_nom_list
             else:
                 #Else the first nominal group found is indirect and this one is direct complement
@@ -282,7 +282,7 @@ def state_adjective(sentence, vg):
     """
     
     #In case there is a state verb followed by an adjective
-    if sentence!=[]:
+    if sentence:
         if vg.vrb_main[0] in ResourcePool().state and analyse_nominal_group.adjective_pos(sentence,0)-1!=0:
             
             #Here we have juist to process adjectives, nominal groups are processed
@@ -320,7 +320,7 @@ def find_scd_vrb(phrase):
         if i=='to':
 
             #It should not be followed by a noun or by an adverb
-            if analyse_nominal_group.find_sn_pos(phrase, phrase.index(i)+1)==[]:
+            if not analyse_nominal_group.find_sn_pos(phrase, phrase.index(i) + 1):
                 #If there is a proposal after 'to'
                 if phrase[phrase.index(i)+1] in ResourcePool().proposals:
                     return []
@@ -357,7 +357,7 @@ def process_scd_sentence(phrase, vg, sec_vrb):
     
     #It verifies if there is a secondary verb
     sec_sec_vrb=find_scd_vrb(scd_sentence)
-    if sec_sec_vrb!=[]:
+    if sec_sec_vrb:
         #print vg.sv_sec[0].sv_sec
         scd_sentence=process_scd_sentence(scd_sentence, vg.sv_sec[0], sec_sec_vrb)
     
@@ -507,12 +507,12 @@ def correct_i_compl(phrase,verb):
                 #If there is a plural
                 phrase=phrase[:x]+analyse_nominal_group.find_plural(phrase[x:])
                         
-                if analyse_nominal_group.find_sn_pos(phrase, x+1)!=[]:
+                if analyse_nominal_group.find_sn_pos(phrase, x + 1):
                     adverbial=analyse_nominal_group.find_sn_pos(phrase, x+1)
                     begin_pos=x-1
                             
                     #We will find the subject of the relative
-                    while analyse_nominal_group.find_sn_pos(phrase, begin_pos)==[]:
+                    while not analyse_nominal_group.find_sn_pos(phrase, begin_pos):
                         begin_pos -= 1
                     nom_gr=analyse_nominal_group.find_sn_pos(phrase, begin_pos)
                             
@@ -534,7 +534,7 @@ def DOC_to_IOC(vg):
         #The case of the verb only and his modal form
         if vg.vrb_main!=[] and (vg.vrb_main[0]==x or vg.vrb_main[0].endswith('+'+x)):
             #In this case we have just one direct complement
-            if vg.d_obj!=[]:
+            if vg.d_obj:
                 vg.i_cmpl=vg.i_cmpl+[Indirect_Complement([],vg.d_obj)]
                 vg.d_obj=[]
                 return vg
@@ -621,7 +621,7 @@ def refine_indirect_complement(vg):
     
     while i < len(vg.i_cmpl):
         j=i+1
-        if vg.i_cmpl[i].prep!=[]:
+        if vg.i_cmpl[i].prep:
             while j < len(vg.i_cmpl):
                 #If we have the same proposal, we concatenate them
                 if vg.i_cmpl[j].prep!=[] and vg.i_cmpl[i].prep==vg.i_cmpl[j].prep:
@@ -698,7 +698,7 @@ def process_compare(sentence,vg):
             
             object= analyse_nominal_group.find_sn_pos(sentence, i+1)
             #It reproduces the same code as above
-            while object!=[]:
+            while object:
                 #We refine the nominal group if there is an error like ending with question mark
                 object=analyse_nominal_group.refine_nom_gr(object)
                 #Recovering nominal group
@@ -756,7 +756,7 @@ def can_be_imperative(sentence):
     Input=sentence        Output=0 can be imperative and 1 no
     """
     
-    if sentence==[]:
+    if not sentence:
         return False
     if sentence[0] in ResourcePool().adverbs + ResourcePool().proposals:
         return False
