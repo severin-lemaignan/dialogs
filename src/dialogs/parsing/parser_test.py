@@ -154,42 +154,41 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
     i=0
 
     if len(utterance)!=len(rslt_utterance):
-        print 'There is a problem with the analyse utterance : length(utterance)!=length(result)'
+        print('There is a problem with the analyse utterance : length(utterance)!=length(result)')
     else:
         while i < len(rslt_utterance):
             
-            print "The sentence after the analyse utterance is :"
+            print("The sentence after the analyse utterance is :")
             if i<len (sentence_list):
-                print sentence_list[i]
+                print(sentence_list[i])
             
-            print (str(utterance[i]))
+            print((str(utterance[i])))
             
             for a in utterance[i].sv:
                 for z in a.comparator:
-                    print "The comparison in the sentence is : "
-                    print z['object']
-                    print (str(z['nom_gr'][0]))
+                    print("The comparison in the sentence is : ")
+                    print(z['object'])
+                    print((str(z['nom_gr'][0])))
             
             #ok = compare_sentence(utterance[i], rslt_utterance[i])
             ok = (str(utterance[i]) == str(rslt_utterance[i]))
             if not ok:
-                print "Parsing result for this sentence is not what was expected."
-                print "Expected result:"
-                print str(rslt_utterance[i])
-                print "Diff:"
+                print("Parsing result for this sentence is not what was expected.")
+                print("Expected result:")
+                print(str(rslt_utterance[i]))
+                print("Diff:")
                 diff = unified_diff(str(utterance[i]).splitlines(1),
                              str(rslt_utterance[i]).splitlines(1),
                              fromfile="what I got",
                              tofile="what I expected",
                              n=1)
-                print ''.join(diff),
-                print "\033[0m" #reset the ANSI colors, if any
+                print(''.join(diff) + "\033[0m") #reset the ANSI colors, if any
                 return 1
             else:
-                print "############### Parsing is OK ###############"
-                print ''
-            
-            i=i+1
+                print("############### Parsing is OK ###############")
+                print('')
+
+            i += 1
     return 0
 
 
@@ -199,13 +198,13 @@ class TestParsing(unittest.TestCase):
     """
     
     def test_01(self):
-        print''
-        print ('######################## test 1.1 ##############################')
+        print('')
+        print(('######################## test 1.1 ##############################'))
         utterance="The bottle is on the table. The bottle is blue. the bottle is Blue"
-        print "Object of this test : To use different cases with a state's verb"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : To use different cases with a state's verb")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -232,13 +231,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
         
     def test_02(self):
-        print''
-        print ('######################## test 1.2 ##############################')
+        print('')
+        print(('######################## test 1.2 ##############################'))
         utterance="Jido's blue bottle is on the table. I'll play a guitar, a piano and a violon."
-        print "Object of this test : To use the complement of the noun and the duplication with 'and'"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : To use the complement of the noun and the duplication with 'and'")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -265,13 +264,13 @@ class TestParsing(unittest.TestCase):
     
     
     def test_03(self):
-        print ''
-        print ('######################## test 1.3 ##############################')
+        print('')
+        print(('######################## test 1.3 ##############################'))
         utterance="It's on the table. I give it to you. give me the bottle. I don't give the bottle to you."
-        print "Object of this test : Present the duality between the direct and indirect complement"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Present the duality between the direct and indirect complement")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -304,13 +303,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_04(self):
-        print ''
-        print ('######################## test 1.4 ##############################')
+        print('')
+        print(('######################## test 1.4 ##############################'))
         utterance="you aren't preparing the car and my father's moto at the same time. is the bottle of my brother in your right?"
-        print "Object of this test : To have more information in sentence and trying the yes or no question"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : To have more information in sentence and trying the yes or no question")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -331,13 +330,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
         
     def test_05(self):
-        print ''
-        print ('######################## test 1.5 ##############################')
+        print('')
+        print(('######################## test 1.5 ##############################'))
         utterance="You shouldn't drive his poorest uncle's wife's big new car. Should I give you the bottle? shall I go"
-        print "Object of this test : Using different case of modal"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different case of modal")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -366,13 +365,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_06(self):
-        print ''
-        print ('######################## test 1.6 ##############################')
+        print('')
+        print(('######################## test 1.6 ##############################'))
         utterance="Isn't he doing his homework and his game now? Can't he take this bottle. good afternoon"
-        print "Object of this test : Using different case of modal and start dialogue"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different case of modal and start dialogue")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -394,13 +393,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_07(self):
-        print ''
-        print ('######################## test 1.7 ##############################')
+        print('')
+        print(('######################## test 1.7 ##############################'))
         utterance="Don't quickly give me the blue bottle. I wanna play with my guitar. I'd like to go to the cinema."
-        print "Object of this test : Using the second verb of the sentence"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using the second verb of the sentence")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -438,16 +437,16 @@ class TestParsing(unittest.TestCase):
     
     
     def test_08(self):
-        print ''
-        print ('######################## test 1.8 ##############################')
+        print('')
+        print(('######################## test 1.8 ##############################'))
         utterance="the man, who talks, has a new car. I play the guitar, that I bought yesterday,."
-        print "Object of this test : Using relative with subject and object"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using relative with subject and object")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
-        print sentence_list
+        print(sentence_list)
         rslt=[Sentence(STATEMENT, '', 
                 [Nominal_Group(['the'],['man'],[],[],[Sentence(RELATIVE, 'who', 
                     [],  
@@ -479,13 +478,13 @@ class TestParsing(unittest.TestCase):
     
     
     def test_11(self):
-        print ''
-        print ('######################## test 2.1 ##############################')
+        print('')
+        print(('######################## test 2.1 ##############################'))
         utterance="don't quickly give me the bottle which is on the table, and the glass which I cleaned yesterday, at my left"
-        print "Object of this test : Using nested relative with he duplication with 'and'"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using nested relative with he duplication with 'and'")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -511,14 +510,14 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_12(self):
-        print ''
-        print ('######################## test 2.2 ##############################')
+        print('')
+        print(('######################## test 2.2 ##############################'))
         utterance="The bottle that I bought from the store which is in the shopping center, , is yours."
-        print "Object of this test : Using relative"
-        print utterance
-        print '#################################################################'
-        print ''
-        print 
+        print("Object of this test : Using relative")
+        print(utterance)
+        print('#################################################################')
+        print('')
+        print()
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -543,13 +542,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_13(self):
-        print ''
-        print ('######################## test 2.3 ##############################')
+        print('')
+        print(('######################## test 2.3 ##############################'))
         utterance="When won't the planning session take place? when must you take the bus"
-        print "Object of this test : Using different cases of when questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of when questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -570,13 +569,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_14(self):
-        print ''
-        print ('######################## test 2.4 ##############################')
+        print('')
+        print(('######################## test 2.4 ##############################'))
         utterance="Where is Broyen ? where are you going. Where must Jido and you be from?"
-        print "Object of this test : Using different cases of where questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of where questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -603,13 +602,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_15(self):
-        print ''
-        print ('######################## test 2.5 ##############################')
+        print('')
+        print(('######################## test 2.5 ##############################'))
         utterance="What time is the news on TV? What size do you wear? the code is written by me. Mahdi is gonna the Laas?"
-        print "Object of this test : Using different cases of what questions and forced yes no question"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what questions and forced yes no question")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -642,13 +641,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_16(self):
-        print ''
-        print ('######################## test 2.6 ##############################')
+        print('')
+        print(('######################## test 2.6 ##############################'))
         utterance="what is the weather like in the winter here? what were you doing? What isn't Jido going to do tomorrow"
-        print "Object of this test : Using different cases of what questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -680,13 +679,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_17(self):
-        print ''
-        print ('######################## test 2.7 ##############################')
+        print('')
+        print(('######################## test 2.7 ##############################'))
         utterance="What's happening. What must happen in the company today? What didn't happen here. no. Sorry."
-        print "Object of this test : Using different cases of what questions and disagree"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what questions and disagree")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -715,13 +714,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_18(self):
-        print ''
-        print ('######################## test 2.8 ##############################')
+        print('')
+        print(('######################## test 2.8 ##############################'))
         utterance="What is the biggest bottle's color on your left. What does your brother do for a living?"
-        print "Object of this test : Using different cases of what questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -746,13 +745,13 @@ class TestParsing(unittest.TestCase):
 
     
     def test_21(self):
-        print ''
-        print ('######################## test 3.1 ##############################')
+        print('')
+        print(('######################## test 3.1 ##############################'))
         utterance="What type of people don't read this magazine? what kind of music must he listen to everyday"
-        print "Object of this test : Using different cases of what questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -773,13 +772,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_22(self):
-        print ''
-        print ('######################## test 3.2 ##############################')
+        print('')
+        print(('######################## test 3.2 ##############################'))
         utterance="What kind of sport is your favorite? what is the problem with him? what is the matter with this person"
-        print "Object of this test : Using different cases of what questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -806,13 +805,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_23(self):
-        print ''
-        print ('######################## test 3.3 ##############################')
+        print('')
+        print(('######################## test 3.3 ##############################'))
         utterance="How old are you? how long is your uncle's store opened tonight? how long is your uncle's store open tonight?"
-        print "Object of this test : Using different cases of how questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of how questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -839,13 +838,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_24(self):
-        print ''
-        print ('######################## test 3.4 ##############################')
+        print('')
+        print(('######################## test 3.4 ##############################'))
         utterance="how far is it from the hotel to the restaurant? how soon can you be here? How often does Jido go skiing?"
-        print "Object of this test : Using different cases of how questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of how questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -873,13 +872,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_25(self):
-        print ''
-        print ('######################## test 3.5 ##############################')
+        print('')
+        print(('######################## test 3.5 ##############################'))
         utterance="how much water should they transport? how many guests weren't at the party? how much does the motocycle cost"
-        print "Object of this test : Using different cases of how questions of quantity"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of how questions of quantity")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -906,13 +905,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_26(self):
-        print ''
-        print ('######################## test 3.6 ##############################')
+        print('')
+        print(('######################## test 3.6 ##############################'))
         utterance="How about going to the cinema? how have not they gotten a loan for their business? OK"
-        print "Object of this test : Using different cases of how questions and agree"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of how questions and agree")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -936,13 +935,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_27(self):
-        print ''
-        print ('######################## test 3.7 ##############################')
+        print('')
+        print(('######################## test 3.7 ##############################'))
         utterance="How did you like Steven Spilburg's new movie. how could I get to the restaurant from here"
-        print "Object of this test : Using different cases of how questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of how questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -963,13 +962,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_28(self):
-        print ''
-        print ('######################## test 3.8 ##############################')
+        print('')
+        print(('######################## test 3.8 ##############################'))
         utterance="Why should she go to Toulouse? who could you talk to on the phone. Whose blue bottle and red glass are these."
-        print "Object of this test : Using different cases of why, who and Whose questions"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of why, who and Whose questions")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -999,13 +998,13 @@ class TestParsing(unittest.TestCase):
         
     
     def test_31(self):
-        print ''
-        print ('######################## test 4.1 ##############################')
+        print('')
+        print(('######################## test 4.1 ##############################'))
         utterance="What are you thinking about the idea that I present you? what color is the bottle that you bought,"
-        print "Object of this test : Using different cases of what question with relative" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what question with relative" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1036,13 +1035,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_32(self):
-        print ''
-        print ('######################## test 4.2 ##############################')
+        print('')
+        print(('######################## test 4.2 ##############################'))
         utterance="Which salesperson's competition won the award which we won in the last years"
-        print "Object of this test : Using different cases of what question with relative" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what question with relative" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1064,13 +1063,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_33(self):
-        print ''
-        print ('######################## test 4.3 ##############################')
+        print('')
+        print(('######################## test 4.3 ##############################'))
         utterance="what'll your house look like? what do you think of the latest novel which Jido wrote"
-        print "Object of this test : Using different cases of what question with relative"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what question with relative")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1096,13 +1095,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_34(self):
-        print ''
-        print ('######################## test 4.4 ##############################')
+        print('')
+        print(('######################## test 4.4 ##############################'))
         utterance="learn that I want you to give me the blue bottle,. If you do your job, you will be happy."
-        print "Object of this test : Using different cases of what question with relative" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using different cases of what question with relative" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1136,13 +1135,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_35(self):
-        print ''
-        print ('######################## test 4.5 ##############################')
+        print('')
+        print(('######################## test 4.5 ##############################'))
         utterance="what is wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago."
-        print "Object of this test : Using wrong in the what questions, using the 'or' and moving preposition like 'ago'"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using wrong in the what questions, using the 'or' and moving preposition like 'ago'")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1176,13 +1175,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_36(self):
-        print ''
-        print ('######################## test 4.6 ##############################')
+        print('')
+        print(('######################## test 4.6 ##############################'))
         utterance="this is a bottle. There is a bottle on the table"
-        print "Object of this test : To use different demonstrative determinant" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : To use different demonstrative determinant" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1206,14 +1205,14 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_37(self):
-        print ''
-        print ('######################## test 4.7 ##############################')
+        print('')
+        print(('######################## test 4.7 ##############################'))
     
         utterance="What do you do for a living in this building? What does your brother do for a living here"
-        print "Object of this test : Correct duality between nominal group with and without noun" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Correct duality between nominal group with and without noun" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1238,13 +1237,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_38(self):
-        print ''
-        print ('######################## test 4.8 ##############################')
+        print('')
+        print(('######################## test 4.8 ##############################'))
         utterance="To whom are you talking? you should have the bottle. would you have played a guitar. you would have played a guitar"
-        print "Object of this test : Using 'to whom' and passive conditional"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using 'to whom' and passive conditional")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1282,13 +1281,13 @@ class TestParsing(unittest.TestCase):
 
     
     def test_41(self):
-        print ''
-        print ('######################## test 5.1 ##############################')
+        print('')
+        print(('######################## test 5.1 ##############################'))
         utterance="you'd like the blue bottle or the glass? the green or blue bottle is on the table. the green or the blue glass is mine?"
-        print "Object of this test : Process 'OR'"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process 'OR'")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1319,14 +1318,14 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_42(self):
-        print ''
-        print ('######################## test 5.2 ##############################')
+        print('')
+        print(('######################## test 5.2 ##############################'))
     
         utterance="learn that I want you to give me the blue bottle that is blue."
-        print "Object of this test : Duality between 'that' derminant and 'that' of adverbial"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Duality between 'that' derminant and 'that' of adverbial")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1354,13 +1353,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
         
     def test_43(self):
-        print ''
-        print ('######################## test 5.3 ##############################')
+        print('')
+        print(('######################## test 5.3 ##############################'))
         utterance="The bottle is behind to me. The bottle is next to the table in front of the kitchen."
-        print "Object of this test : Using preposition with more than one word"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using preposition with more than one word")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1382,13 +1381,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_44(self):
-        print ''
-        print ('######################## test 5.4 ##############################')
+        print('')
+        print(('######################## test 5.4 ##############################'))
         utterance="Take the bottle carefully. I take that bottle that I drink in. I take twenty two bottles."
-        print "Object of this test : Find adverb after verb, duplicate information in relative and include numbers"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Find adverb after verb, duplicate information in relative and include numbers")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1422,13 +1421,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_45(self):
-        print ''
-        print ('######################## test 5.5 ##############################')
+        print('')
+        print(('######################## test 5.5 ##############################'))
         utterance="I'll play Jido's guitar, a saxophone, a piano of the wife of my oncle and Patrick's violon."
-        print "Object of this test : Process with many 'of' and 'and'"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process with many 'of' and 'and'")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1449,13 +1448,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
         
     def test_46(self):
-        print ''
-        print ('######################## test 5.6 ##############################')
+        print('')
+        print(('######################## test 5.6 ##############################'))
         utterance="Give me two or three bottles. the bottle is blue, big and fanny. give me the bottle on the table"
-        print "Object of this test : Using numbers, many adjectives and transform indirect complement into relative"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using numbers, many adjectives and transform indirect complement into relative")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1492,13 +1491,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
         
     def test_47(self):
-        print ''
-        print ('######################## test 5.7 ##############################')
+        print('')
+        print(('######################## test 5.7 ##############################'))
         utterance="the boys' ball is blue. He ask me to do something. is any person courageous on the laboratory"
-        print "Object of this test : 'of' in plural and using more determinant"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : 'of' in plural and using more determinant")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1531,13 +1530,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_48(self):
-        print ''
-        print ('######################## test 5.8 ##############################')
+        print('')
+        print(('######################## test 5.8 ##############################'))
         utterance="What must be happened in the company today? The building shouldn't be built fastly. You can be here."
-        print "Object of this test : Process be+verb+ed"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process be+verb+ed")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1566,13 +1565,13 @@ class TestParsing(unittest.TestCase):
     
     
     def test_51(self):
-        print ''
-        print ('######################## test 6.1 ##############################')
+        print('')
+        print(('######################## test 6.1 ##############################'))
         utterance="what size is the best one? What object is blue? How good is this"
-        print "Object of this test : Generalize the w question"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Generalize the w question")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1599,13 +1598,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_52(self):
-        print ''
-        print ('######################## test 6.2 ##############################')
+        print('')
+        print(('######################## test 6.2 ##############################'))
         utterance="He Patrick, the bottle is on the table. give it to me"
-        print "Object of this test : Using interjection in different cases"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using interjection in different cases")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1629,13 +1628,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_53(self):
-        print ''
-        print ('######################## test 6.3 ##############################')
+        print('')
+        print(('######################## test 6.3 ##############################'))
         utterance="Jido, give me the bottle. Jido, Patrick and you will go to the cinema. Jido, Patrick and you, give me the bottle"
-        print "Object of this test : Using interjection in different cases"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using interjection in different cases")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1674,14 +1673,14 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_54(self):
-        print ''
-        print ('######################## test 6.4 ##############################')
+        print('')
+        print(('######################## test 6.4 ##############################'))
     
         utterance="The bottle is not blue but it is red. It is not the glass but the bottle. it is blue or red"
-        print "Object of this test : Process 'BUT' as conjunction and adverbial"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process 'BUT' as conjunction and adverbial")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1716,14 +1715,14 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_55(self):
-        print ''
-        print ('######################## test 6.5 ##############################')
+        print('')
+        print(('######################## test 6.5 ##############################'))
     
         utterance="It is not red but blue. this is my banana. bananas are fruits."
-        print "Object of this test : Process plural"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process plural")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1754,13 +1753,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_56(self):
-        print ''
-        print ('######################## test 6.6 ##############################')
+        print('')
+        print(('######################## test 6.6 ##############################'))
         utterance="there are no bananas. All bananas are here. give me more information about the bottle."
-        print "Object of this test : More determinants and transformation of the indirect complement" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : More determinants and transformation of the indirect complement" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1797,13 +1796,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_57(self):
-        print ''
-        print ('######################## test 6.7 ##############################')
+        print('')
+        print(('######################## test 6.7 ##############################'))
         utterance="Jido, tell me where you go. Goodbye. Bye. there is nothing. it is another one."
-        print "Object of this test : More determinants and ending the dialog" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : More determinants and ending the dialog" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1847,13 +1846,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_58(self):
-        print ''
-        print ('######################## test 6.8 ##############################')
+        print('')
+        print(('######################## test 6.8 ##############################'))
         utterance="The bottle becomes blue. One piece could become two, if you smoldered it."
-        print "Object of this test : More state verb and numbers" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : More state verb and numbers" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1885,12 +1884,12 @@ class TestParsing(unittest.TestCase):
     
     def test_61(self):
         print('')
-        print ('######################## test 7.1 ##############################')
+        print(('######################## test 7.1 ##############################'))
         utterance="This one is not the bottle of my uncle but it is the bottle of my brother. It is not on the table but on the shelf."
         print("Object of this test : Using 'but' with indirect complement")
-        print utterance
-        print '#################################################################'
-        print ''
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1918,13 +1917,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_62(self):
-        print ''
-        print ('######################## test 7.2 ##############################')
+        print('')
+        print(('######################## test 7.2 ##############################'))
         utterance="Give me the fourth and seventh bottle. Give me the one thousand ninth and the thirty thousand twenty eighth bottle."
-        print "Object of this test : Porcess adjective numbers"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Porcess adjective numbers")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1947,13 +1946,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_63(self):
-        print ''
-        print ('######################## test 7.3 ##############################')
+        print('')
+        print(('######################## test 7.3 ##############################'))
         utterance="the evil tyrant is in the laboratory. I don't know what are you talking about."
-        print "Object of this test : Adjectives can't be noun and complete indirect coomplement" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Adjectives can't be noun and complete indirect coomplement" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -1980,13 +1979,13 @@ class TestParsing(unittest.TestCase):
     
     
     def test_64(self):
-        print ''
-        print ('######################## test 7.4 ##############################')
+        print('')
+        print(('######################## test 7.4 ##############################'))
         utterance="I go to the place where I was born. I study where you studied. I study where you build your house where you put the bottle."
-        print "Object of this test : Duality between relative and adverbial" 
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Duality between relative and adverbial" )
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2033,13 +2032,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
         
     def test_65(self):
-        print ''
-        print ('######################## test 7.5 ##############################')
+        print('')
+        print(('######################## test 7.5 ##############################'))
         utterance="apples grow on trees and plants. give me three apples."
-        print "Object of this test : Plural with duplication"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Plural with duplication")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2065,13 +2064,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
 
     def test_66(self):
-        print ''
-        print ('######################## test 7.6 ##############################')
+        print('')
+        print(('######################## test 7.6 ##############################'))
         utterance="When your father came, we was preparing the dinner. While I phoned, he made a sandwich with bacons."
-        print "Object of this test : Process adverbial at the beginning of the sentence"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process adverbial at the beginning of the sentence")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2110,13 +2109,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_67(self):
-        print ''
-        print ('######################## test 7.7 ##############################')
+        print('')
+        print(('######################## test 7.7 ##############################'))
         utterance="the big and very strong man is on the corner. the too big and very strong man is on the corner."
-        print "Object of this test : Add contifier for adjectives"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Add contifier for adjectives")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2137,13 +2136,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
 
     def test_68(self):
-        print ''
-        print ('######################## test 7.8 ##############################')
+        print('')
+        print(('######################## test 7.8 ##############################'))
         utterance="red apples grow on green trees and plants. a kind of thing. It can be played by thirty thousand twenty eight players."
-        print "Object of this test : Using adjectives wuth plural"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using adjectives wuth plural")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2176,13 +2175,13 @@ class TestParsing(unittest.TestCase):
     
     
     def test_70(self):
-        print ''
-        print ('######################## test 8.1 ##############################')
+        print('')
+        print(('######################## test 8.1 ##############################'))
         utterance="let the man go to the cinema. Is it the time to let you go. And where is the other tape."
-        print "Object of this test : Porcess verb with many second verbs"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Porcess verb with many second verbs")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2221,13 +2220,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_71(self):
-        print ''
-        print ('######################## test 8.2 ##############################')
+        print('')
+        print(('######################## test 8.2 ##############################'))
         utterance="And now, can you reach the tape. it could have been them. It is just me at the door. A strong clause can stand on its own"
-        print "Object of this test : Process with 'and' in the beginning and more examples"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process with 'and' in the beginning and more examples")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2262,13 +2261,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)    
     
     def test_72(self):
-        print ''
-        print ('######################## test 8.3 ##############################')
+        print('')
+        print(('######################## test 8.3 ##############################'))
         utterance="tell me what to do. No, I can not reach it."
-        print "Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2301,13 +2300,13 @@ class TestParsing(unittest.TestCase):
 
 
     def test_73(self):
-        print ''
-        print ('######################## test 8.4 ##############################')
+        print('')
+        print(('######################## test 8.4 ##############################'))
         utterance="I will come back on monday. I'll play with guitar. I'll play football"
-        print "Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using sentences like 'agree' with another sentence (seperatite by comma)")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2337,13 +2336,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)                   
     
     def test_74(self):
-        print''
-        print ('######################## test 8.5 ##############################')
+        print('')
+        print(('######################## test 8.5 ##############################'))
         utterance="I'll play guitar, piano and violon. I'll play with guitar, piano and violon. give me everything"
-        print "Object of this test : To take off determinant"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : To take off determinant")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2379,13 +2378,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_75(self):
-        print''
-        print ('######################## test 8.6 ##############################')
+        print('')
+        print(('######################## test 8.6 ##############################'))
         utterance="I will come back at seven o'clock tomorrow. He finish the project 10 minutes before."
-        print "Object of this test : Process some time with digit"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process some time with digit")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2409,13 +2408,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_76(self):
-        print''
-        print ('######################## test 8.7 ##############################')
+        print('')
+        print(('######################## test 8.7 ##############################'))
         utterance="I'll play a guitar a piano and a violon. I'll play with a guitar a piano and a violon. the boss you and me are here"
-        print "Object of this test : To take off comma between the nominal groups"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : To take off comma between the nominal groups")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2453,13 +2452,13 @@ class TestParsing(unittest.TestCase):
         
         
     def test_77(self):
-        print''
-        print ('######################## test 8.8 ##############################')
+        print('')
+        print(('######################## test 8.8 ##############################'))
         utterance="The time of speaking sentence is the best. I come at 10pm. I will come tomorrow evening"
-        print "Object of this test : Add test to take off determinant and for timescale"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Add test to take off determinant and for timescale")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2492,13 +2491,13 @@ class TestParsing(unittest.TestCase):
         
     
     def test_81(self):
-        print''
-        print ('######################## test 9.1 ##############################')
+        print('')
+        print(('######################## test 9.1 ##############################'))
         utterance="I think that I know who is he. see you. So I want to go"
-        print "Object of this test : Process relative without object, so we duplicate the nominal group"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Process relative without object, so we duplicate the nominal group")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
         
@@ -2535,13 +2534,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_82(self):
-        print''
-        print ('######################## test 9.2 ##############################')
+        print('')
+        print(('######################## test 9.2 ##############################'))
         utterance="the interpretation is to find a defenition or a rule for something. and in a dialog, there is an interaction between them"
-        print "Object of this test : Put indirect complement or second verb before the sentence"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Put indirect complement or second verb before the sentence")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
@@ -2573,13 +2572,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_83(self):
-        print''
-        print ('######################## test 9.3 ##############################')
+        print('')
+        print(('######################## test 9.3 ##############################'))
         utterance="To have a dialog, we need more than 1 protagonist. I finish the dialog, and I check many problems"
-        print "Object of this test : Having indirect complement before the sentence and to have more one sentence in utterance"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Having indirect complement before the sentence and to have more one sentence in utterance")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
@@ -2612,13 +2611,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
 
     def test_84(self):
-        print''
-        print ('######################## test 9.4 ##############################')
+        print('')
+        print(('######################## test 9.4 ##############################'))
         utterance="the left of what? Jido, what do you do? throw one of them. Very good"
-        print "Object of this test : Question at the end of sentence"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Question at the end of sentence")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
@@ -2655,13 +2654,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_85(self):
-        print''
-        print ('######################## test 9.5 ##############################')
+        print('')
+        print(('######################## test 9.5 ##############################'))
         utterance="the bottle on the table, is blue. where is this tape"
-        print "Object of this test : add relative and process nominal group with this as determinant and be as a verb"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : add relative and process nominal group with this as determinant and be as a verb")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
@@ -2687,13 +2686,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_86(self):
-        print''
-        print ('######################## test 9.6 ##############################')
+        print('')
+        print(('######################## test 9.6 ##############################'))
         utterance="the bottle of Jido which is blue, is on the table. I do my homework before he comes"
-        print "Object of this test : nominal group with relative and noun complement and using before as subsentence"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : nominal group with relative and noun complement and using before as subsentence")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
@@ -2724,13 +2723,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_87(self):
-        print''
-        print ('######################## test 9.7 ##############################')
+        print('')
+        print(('######################## test 9.7 ##############################'))
         utterance="before he comes, I do my homework. I have played foot since I was a young boy."
-        print "Object of this test : Using proposal like 'before' as subsentence, i_cmpl and adjective"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Using proposal like 'before' as subsentence, i_cmpl and adjective")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     
@@ -2764,13 +2763,13 @@ class TestParsing(unittest.TestCase):
         self.assertEquals(result_test, 0)
     
     def test_88(self):
-        print''
-        print ('######################## test 9.8 ##############################')
+        print('')
+        print(('######################## test 9.8 ##############################'))
         utterance="They haven't played tennis since 1987. give me the glass the paper and the bottle."
-        print "Object of this test : Final test with present perfect and parsing and with many nominal group"
-        print utterance
-        print '#################################################################'
-        print ''
+        print("Object of this test : Final test with present perfect and parsing and with many nominal group")
+        print(utterance)
+        print('#################################################################')
+        print('')
         sentence_list=preprocessing.process_sentence(utterance)
         class_list= analyse_sentence.sentences_analyzer(sentence_list)
     

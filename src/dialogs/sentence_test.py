@@ -14,15 +14,14 @@ from parsing import parser
 def is_equal(grp1, grp2):
     ok = (str(grp1) == str(grp2))
     if not ok:
-        print "Groups are different."
-        print "Diff:"
+        print("Groups are different.")
+        print("Diff:")
         diff = unified_diff(str(grp1).splitlines(1),
                      str(grp2).splitlines(1),
                      fromfile="what I got",
                      tofile="what I expected",
                      n=1)
-        print ''.join(diff),
-        print "\033[0m" #reset the ANSI colors, if any
+        print(''.join(diff) + "\033[0m") #reset the ANSI colors, if any
         return False 
     else:
         return True 

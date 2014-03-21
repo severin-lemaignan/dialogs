@@ -118,25 +118,25 @@ def wait_for_keypress():
 if __name__ == '__main__':
 
     #should print a blue 'Hello World'
-    print format_colour("$BLUEHello World$RESET")
+    print(format_colour("$BLUEHello World$RESET"))
     
     #should print a default 'Hello World'
-    print format_colour("$BLUEHello World$RESET", False)
+    print(format_colour("$BLUEHello World$RESET", False))
     
     #should print a blue bold 'Hello World'
-    print format_colour("$BLUE$BOLDHello World$RESET")
+    print(format_colour("$BLUE$BOLDHello World$RESET"))
     
     #should print a yellow bold 'Hello World'
-    print format_colour("$YELLOW$BOLDHello World$RESET")
+    print(format_colour("$YELLOW$BOLDHello World$RESET"))
     
     #should print a 'Hello World' on a yellow background.
-    print format_colour("$BG-YELLOWHello World$RESET")
+    print(format_colour("$BG-YELLOWHello World$RESET"))
     
     #should print a 'Hello World' in bold
-    print format_colour("$BOLDHello World$RESET")
+    print(format_colour("$BOLDHello World$RESET"))
     
     #should print a 'Hello World' with normal colour.
-    print format_colour("Hello World")
+    print(format_colour("Hello World"))
 
 def generate_id(with_question_mark = True):
     sequence = "abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

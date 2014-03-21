@@ -2143,10 +2143,10 @@ class TestVerbalization(unittest.TestCase):
 
     def test_64(self):
         
-        print ''
-        print '######################## test 1.57 ##############################'
-        print '#################################################################'
-        print ''
+        print('')
+        print('######################## test 1.57 ##############################')
+        print('#################################################################')
+        print('')
         
         original_utterance="And now, can you reach the tape. it could have been them. It is just me at the door. A strong clause can stand on its own."
         
@@ -2177,17 +2177,17 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        print("The original utterance is : ", original_utterance)
+        print("The result obtained is :    ", utterance)
         
         self.assertEquals(original_utterance, utterance)
 
     def test_65(self):
         
-        print ''
-        print '######################## test 1.58 ##############################'
-        print '#################################################################'
-        print ''
+        print('')
+        print('######################## test 1.58 ##############################')
+        print('#################################################################')
+        print('')
         
         original_utterance="Tell me what to do. No, I can not reach it."
         
@@ -2216,17 +2216,17 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        print("The original utterance is : ", original_utterance)
+        print("The result obtained is :    ", utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_66(self):
         
-        print ''
-        print '######################## test 1.59 ##############################'
-        print '#################################################################'
-        print ''
+        print('')
+        print('######################## test 1.59 ##############################')
+        print('#################################################################')
+        print('')
         
         original_utterance="I'll come back on Monday. I'll play with a guitar. I'll play football."
         
@@ -2251,17 +2251,17 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        print("The original utterance is : ", original_utterance)
+        print("The result obtained is :    ", utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_67(self):
         
-        print ''
-        print '######################## test 1.60 ##############################'
-        print '#################################################################'
-        print ''
+        print('')
+        print('######################## test 1.60 ##############################')
+        print('#################################################################')
+        print('')
         
         original_utterance="I'll play a guitar, a piano and a violon. I'll play with a guitar, a piano and a violon. Give me everything."
         
@@ -2295,17 +2295,17 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        print("The original utterance is : ", original_utterance)
+        print("The result obtained is :    ", utterance)
         
         self.assertEquals(original_utterance, utterance)
           
     def test_68(self):
         
-        print ''
-        print '######################## test 1.61 ##############################'
-        print '#################################################################'
-        print ''
+        print('')
+        print('######################## test 1.61 ##############################')
+        print('#################################################################')
+        print('')
         
         original_utterance="I'll come back at 7 o'clock tomorrow. He finishes the project 10 minutes before."
         
@@ -2327,17 +2327,17 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        print("The original utterance is : ", original_utterance)
+        print("The result obtained is :    ", utterance)
         
         self.assertEquals(original_utterance, utterance)
 
     def test_69(self):
         
-        print ''
-        print '######################## test 1.62 ##############################'
-        print '#################################################################'
-        print ''
+        print('')
+        print('######################## test 1.62 ##############################')
+        print('#################################################################')
+        print('')
         
         original_utterance="I'll play a guitar, a piano and a violon. I'll play with a guitar, a piano and a violon. The boss, you and me are here."
         
@@ -2371,17 +2371,17 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        print("The original utterance is : ", original_utterance)
+        print("The result obtained is :    ", utterance)
         
         self.assertEquals(original_utterance, utterance)
         
     def test_70(self):
         
-        print ''
-        print '######################## test 1.63 ##############################'
-        print '#################################################################'
-        print ''
+        print('')
+        print('######################## test 1.63 ##############################')
+        print('#################################################################')
+        print('')
         
         original_utterance="A speaking sentence's time is the best. I come at 10 pm. I'll come an evening tomorrow."
         
@@ -2410,8 +2410,8 @@ class TestVerbalization(unittest.TestCase):
         
         utterance=utterance_rebuilding.verbalising(sentences)
         
-        print "The original utterance is : ", original_utterance
-        print "The result obtained is :    ", utterance
+        print("The original utterance is : ", original_utterance)
+        print("The result obtained is :    ", utterance)
         
         self.assertEquals(original_utterance, utterance)
     
