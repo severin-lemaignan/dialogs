@@ -246,10 +246,12 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'0','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'23','minute':'59','second':'59'}}
-    
+        rslt= {'action_period': {
+        'time_begin': {'year': d_time['year'], 'month': d_time['month'], 'day': d_time['day'], 'hour': '0',
+                       'minute': '0', 'second': '0'},
+        'time_end': {'year': d_time['year'], 'month': d_time['month'], 'day': d_time['day'], 'hour': '23',
+                     'minute': '59', 'second': '59'}}, 'effective_time': None}
+
         self.assertEquals(time,rslt)
         print('')
         
@@ -329,10 +331,12 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'28','hour':'0','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'28','hour':'23','minute':'59','second':'59'}}
-    
+        rslt= {'action_period': {
+        'time_begin': {'year': d_time['year'], 'month': d_time['month'], 'day': '28', 'hour': '0', 'minute': '0',
+                       'second': '0'},
+        'time_end': {'year': d_time['year'], 'month': d_time['month'], 'day': '28', 'hour': '23', 'minute': '59',
+                     'second': '59'}}, 'effective_time': None}
+
         self.assertEquals(time,rslt)
         print('')
     
@@ -371,10 +375,12 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'26','hour':'0','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'26','hour':'23','minute':'59','second':'59'}}
-    
+        rslt= {'action_period': {
+        'time_begin': {'year': d_time['year'], 'month': d_time['month'], 'day': '26', 'hour': '0', 'minute': '0',
+                       'second': '0'},
+        'time_end': {'year': d_time['year'], 'month': d_time['month'], 'day': '26', 'hour': '23', 'minute': '59',
+                     'second': '59'}}, 'effective_time': None}
+
         self.assertEquals(time,rslt)
         print('')
      
@@ -413,10 +419,12 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'23','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'28','hour':'3','minute':'59','second':'59'}}
-    
+        rslt= {'action_period': {
+        'time_begin': {'year': d_time['year'], 'month': d_time['month'], 'day': d_time['day'], 'hour': '23',
+                       'minute': '0', 'second': '0'},
+        'time_end': {'year': d_time['year'], 'month': d_time['month'], 'day': '28', 'hour': '3', 'minute': '59',
+                     'second': '59'}}, 'effective_time': None}
+
         self.assertEquals(time,rslt)
         print('')
     
@@ -456,11 +464,14 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'31','hour':'0','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'31','hour':'23','minute':'59','second':'59'}}
-        rslt['effective_time']={'year':d_time['year'],'month':d_time['month'],'day':'31','hour':'7','minute':'0','second':'0'}
-        
+        rslt= {'action_period': {
+        'time_begin': {'year': d_time['year'], 'month': d_time['month'], 'day': '31', 'hour': '0', 'minute': '0',
+                       'second': '0'},
+        'time_end': {'year': d_time['year'], 'month': d_time['month'], 'day': '31', 'hour': '23', 'minute': '59',
+                     'second': '59'}},
+               'effective_time': {'year': d_time['year'], 'month': d_time['month'], 'day': '31', 'hour': '7',
+                                  'minute': '0', 'second': '0'}}
+
         self.assertEquals(time,rslt)
         print('')
     
@@ -500,9 +511,10 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['effective_time']={'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'16','minute':'1','second':'0'}
-        
+        rslt= {'action_period': None,
+               'effective_time': {'year': d_time['year'], 'month': d_time['month'], 'day': d_time['day'], 'hour': '16',
+                                  'minute': '1', 'second': '0'}}
+
         self.assertEquals(time,rslt)
         print('')
     
@@ -541,10 +553,12 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'18','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'22','minute':'59','second':'59'}}
-    
+        rslt= {'action_period': {
+        'time_begin': {'year': d_time['year'], 'month': d_time['month'], 'day': '9', 'hour': '18', 'minute': '0',
+                       'second': '0'},
+        'time_end': {'year': d_time['year'], 'month': d_time['month'], 'day': '9', 'hour': '22', 'minute': '59',
+                     'second': '59'}}, 'effective_time': None}
+
         self.assertEquals(time,rslt)
         print('')
         
@@ -584,10 +598,12 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'18','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'22','minute':'59','second':'59'}}
-    
+        rslt= {'action_period': {
+        'time_begin': {'year': d_time['year'], 'month': d_time['month'], 'day': '9', 'hour': '18', 'minute': '0',
+                       'second': '0'},
+        'time_end': {'year': d_time['year'], 'month': d_time['month'], 'day': '9', 'hour': '22', 'minute': '59',
+                     'second': '59'}}, 'effective_time': None}
+
         self.assertEquals(time,rslt)
         print('')
     
@@ -626,10 +642,12 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['action_period']={'time_begin':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'18','minute':'0','second':'0'},
-                               'time_end':{'year':d_time['year'],'month':d_time['month'],'day':'9','hour':'22','minute':'59','second':'59'}}
-    
+        rslt= {'action_period': {
+        'time_begin': {'year': d_time['year'], 'month': d_time['month'], 'day': '9', 'hour': '18', 'minute': '0',
+                       'second': '0'},
+        'time_end': {'year': d_time['year'], 'month': d_time['month'], 'day': '9', 'hour': '22', 'minute': '59',
+                     'second': '59'}}, 'effective_time': None}
+
         self.assertEquals(time,rslt)
         print('')
         
@@ -669,9 +687,10 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['effective_time']={'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'22','minute':'0','second':'0'}
-        
+        rslt= {'action_period': None,
+               'effective_time': {'year': d_time['year'], 'month': d_time['month'], 'day': d_time['day'], 'hour': '22',
+                                  'minute': '0', 'second': '0'}}
+
         self.assertEquals(time,rslt)
         print('')
     
@@ -710,9 +729,10 @@ class TestTimescale(unittest.TestCase):
             print('The effective time of the action is : ')
             print_time(time['effective_time'])
         
-        rslt={'action_period':None,'effective_time':None}
-        rslt['effective_time']={'year':d_time['year'],'month':d_time['month'],'day':d_time['day'],'hour':'22','minute':'0','second':'0'}
-        
+        rslt= {'action_period': None,
+               'effective_time': {'year': d_time['year'], 'month': d_time['month'], 'day': d_time['day'], 'hour': '22',
+                                  'minute': '0', 'second': '0'}}
+
         self.assertEquals(time,rslt)
         print('')
   
