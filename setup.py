@@ -5,7 +5,7 @@ import os
 from distutils.core import setup
 
 def readme():
-    with open('README') as f:
+    with open('README.md') as f:
         return f.read()
 
 setup(name='Dialogs',
@@ -27,7 +27,7 @@ setup(name='Dialogs',
       packages=['dialogs', 'dialogs.interpretation', 'dialogs.parsing', 'dialogs.helpers', 'dialogs.verbalization'],
       scripts=['scripts/dialogs', 'scripts/dialogs_test'],
       data_files=[('share/dialogs', ['share/dialogs/' + f for f in os.listdir('share/dialogs')]),
-                  ('share/doc/dialogs', ['AUTHORS', 'LICENSE', 'TODO', 'README']),
+                  ('share/doc/dialogs', ['AUTHORS', 'LICENSE', 'TODO', 'README.md']),
                   ('share/doc/dialogs', ['doc/' + f for f in os.listdir('doc/') if f != "demo"]),
                   ('share/examples/dialogs', ['share/examples/dialogs/' + f for f in os.listdir('share/examples/dialogs')])]
       )

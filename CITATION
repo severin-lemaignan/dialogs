@@ -1,0 +1,19 @@
+To cite Dialogs in publications, please use:
+
+Lemaignan et al., Grounding the Interaction: Anchoring Situated Discourse in Everyday Human-Robot Interaction, International Journal of Social Robotics, 2011.
+
+For LaTeX users, you can use this BibTeX entry:
+
+@ARTICLE{lemaignan2011grounding,
+  author = {Lemaignan, S. and Ros, R. and Sisbot, E.A. and Alami, R. and Beetz,
+    M.},
+  title = {Grounding the Interaction: Anchoring Situated Discourse in Everyday
+    Human-Robot Interaction},
+  journal = {International Journal of Social Robotics},
+  year = {2011},
+  pages = {1--19},
+  doi = {10.1007/s12369-011-0123-x},
+  issn = {1875-4791},
+  publisher = {Springer Netherlands}
+}
+
