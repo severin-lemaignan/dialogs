@@ -150,12 +150,12 @@ class Resolver(object):
                 0].lower() != 'one': # case "this + category" -> eg "this phone"
                 class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
                 logger.debug(colored_print("Looking for : ", "magenta") + colored_print(
-                    current_speaker + ' pointsAt ?concept, ?concept rdf:type ' + class_name, None, "magenta"))
+                    current_speaker + ' focusesOn ?concept, ?concept rdf:type ' + class_name, None, "magenta"))
                 try:
                     onto_focus = ResourcePool().ontology_server.findForAgent(
                         current_speaker,
                         '?concept',
-                        [current_speaker + ' pointsAt ?concept', '?concept rdf:type ' + class_name])
+                        [current_speaker + ' focusesOn ?concept', '?concept rdf:type ' + class_name])
                 except AttributeError:
                     pass
                 except KbError: #Agent not found in the ontology
@@ -163,13 +163,13 @@ class Resolver(object):
 
             else: # case "this" alone or "this one"
                 logger.debug(
-                    colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' pointsAt ?concept',
+                    colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' focusesOn ?concept',
                                                                                None, "magenta"))
                 try:
                     onto_focus = ResourcePool().ontology_server.findForAgent(
                         current_speaker,
                         '?concept',
-                        [current_speaker + ' pointsAt ?concept'])
+                        [current_speaker + ' focusesOn ?concept'])
                 except AttributeError:
                     pass
                 except KbError: #Agent not found in the ontology
