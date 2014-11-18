@@ -11,6 +11,10 @@ interpretation of the input.
 It includes as well a verbalization module that conversely turns RDF statements
 into a sentence in natural language.
 
+
+![verview of the Dialogs pipeline](doc/dialogs_module_simple.png)
+
+
 While not strictly required, it is strongly recommanded to use `dialogs` with a
 knowledge base that follows the ''KB API'' like
 [minimalKB](https://github.com/severin-lemaignan/minimalkb/) or
