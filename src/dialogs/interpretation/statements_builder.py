@@ -22,7 +22,7 @@ class StatementBuilder(object):
     """ Build statements related to a sentence"""
 
     def __init__(self, current_speaker=None):
-        #This field keeps record of the sentence that is being processed
+        # This field keeps record of the sentence that is being processed
         self._sentence = None
 
         #This field identifies the current speaker
@@ -85,7 +85,7 @@ class StatementBuilder(object):
         self.lear_more_concept.extend(ng_stmt_builder.lear_more_concept)
 
     def process_verbal_groups(self, sentence):
-        #VerbalGroupStatementBuilder
+        # VerbalGroupStatementBuilder
         vg_stmt_builder = VerbalGroupStatementBuilder(sentence.sv, self._current_speaker)
 
         #Setting up attribute of verbalGroupStatementBuilder:
@@ -128,7 +128,7 @@ class NominalGroupStatementBuilder(object):
     """
 
     def __init__(self, nominal_groups, current_speaker=None):
-        #This field keeps record of the nominal group that is being processed
+        # This field keeps record of the nominal group that is being processed
         self._nominal_groups = nominal_groups
 
         #This field identifies the current speaker
@@ -177,8 +177,9 @@ class NominalGroupStatementBuilder(object):
 
         onto = ''
         try:
-            onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(self._current_speaker), ng.noun[0])
-        except AttributeError: #the ontology server is not started of doesn't know the method
+            onto = ResourcePool().ontology_server.lookupForAgent(
+                ResourcePool().get_model_mapping(self._current_speaker), ng.noun[0])
+        except AttributeError:  # the ontology server is not started of doesn't know the method
             pass
 
         if onto:
@@ -219,14 +220,15 @@ class NominalGroupStatementBuilder(object):
 
         def get_concept_to_learn(nom_grp):
             if nom_grp._quantifier == 'ONE':
-                return [] #Concept already known for sure
+                return []  # Concept already known for sure
 
             learn_more = []
 
             for noun in nom_grp.noun:
                 onto = ''
                 try:
-                    onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(self._current_speaker), noun)
+                    onto = ResourcePool().ontology_server.lookupForAgent(
+                        ResourcePool().get_model_mapping(self._current_speaker), noun)
                 except AttributeError:
                     pass
 
@@ -241,7 +243,7 @@ class NominalGroupStatementBuilder(object):
         # Case of resolved nominal group
         if ng._resolved:
 
-            #Trying to learn more concept
+            # Trying to learn more concept
             self.lear_more_concept = get_concept_to_learn(ng)
 
             # Case: Adjectives only
@@ -267,17 +269,17 @@ class NominalGroupStatementBuilder(object):
                                 ng._quantifier in ['SOME', 'ALL']:
                     self.process_noun_phrases(ng, ng_id, subject_quantifier, negative_object)
 
-        #Case of a not resolved nominal group
+        # Case of a not resolved nominal group
         else:
             process_all_component_of_a_nominal_group(ng, ng_id, subject_quantifier, negative_object)
 
 
     def process_determiners(self, nominal_group, ng_id, negative_object):
         for det in nominal_group.det:
-            #logger.debug("Found determiner:\"" + det + "\"")
+            # logger.debug("Found determiner:\"" + det + "\"")
             # Case 1: definite article : the"""
             # Case 2: demonstratives : this, that, these, those"""
-            if det in ResourcePool().demonstrative_det: #['this', 'that', 'these', 'those']:
+            if det in ResourcePool().demonstrative_det:  #['this', 'that', 'these', 'those']:
                 self.process_on_demonstrative_det = True
 
             # Case 3: possessives : my, your, his, her, its, our, their """
@@ -329,7 +331,7 @@ class NominalGroupStatementBuilder(object):
                                                            ['ALL', 'ALL']]:
                 return ' rdfs:subClassOf '
 
-            else:#default case
+            else:  # default case
                 return ' rdf:type '
 
         # End of def get_object_property()
@@ -339,10 +341,11 @@ class NominalGroupStatementBuilder(object):
             # Case : existing ID
             onto_id = ''
             try:
-                onto_id = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(self._current_speaker), noun)
-            except AttributeError: #the ontology server is not started of doesn't know the method
+                onto_id = ResourcePool().ontology_server.lookupForAgent(
+                    ResourcePool().get_model_mapping(self._current_speaker), noun)
+            except AttributeError:  # the ontology server is not started of doesn't know the method
                 pass
-            except KbError: #The agent does not exist in the ontology
+            except KbError:  # The agent does not exist in the ontology
                 pass
 
             instance_id = None
@@ -354,7 +357,7 @@ class NominalGroupStatementBuilder(object):
                         break
 
             if instance_id:
-                #Case of Negation
+                # Case of Negation
                 if negative_object:
                     self._statements.append(ng_id + " owl:differentFrom " + instance_id)
 
@@ -383,7 +386,7 @@ class NominalGroupStatementBuilder(object):
                 else:
                     pass
 
-            #Case : proper noun (Always Capitalized in sentence, and never follows a determiner) 
+            # Case : proper noun (Always Capitalized in sentence, and never follows a determiner)
             elif not nominal_group.det and noun.istitle():
                 logger.info(
                     "... \t" + noun + " is being processed as a proper noun in  " + self._current_speaker + "'s model.")
@@ -440,7 +443,7 @@ class NominalGroupStatementBuilder(object):
         adjectives list.
         """
         for adj in nominal_group.adj:
-            #Case of 'other'
+            # Case of 'other'
             # E.g: the other cube:
             if adj[0].lower() == "other":
                 self.process_on_other = True
@@ -498,7 +501,7 @@ class NominalGroupStatementBuilder(object):
                 self.process_nominal_group(noun_cmpl, noun_cmpl_id, None, False)
                 # Case of affirmation
             if not negative_object:
-                #Case of Direction: The left of, the right of ...
+                # Case of Direction: The left of, the right of ...
                 if nominal_group.noun and nominal_group.noun[0] in ResourcePool().direction_words:
                     self._statements.append(ng_id + " is" + nominal_group.noun[0].capitalize() + "Of " + noun_cmpl_id)
                 else:
@@ -519,7 +522,7 @@ class NominalGroupStatementBuilder(object):
         """
 
         def set_relative_object_id_with_parent_nominal_goup_id(parent_ng, current_relative, parent_ng_id):
-            #get parent ng with no relative
+            # get parent ng with no relative
             current_ng = parent_ng
             current_ng.relative = []
 
@@ -540,7 +543,7 @@ class NominalGroupStatementBuilder(object):
                             i_cmpl_ng.id = parent_ng_id
 
         for rel in nominal_group.relative:
-            #logger.debug("processing relative:")
+            # logger.debug("processing relative:")
             if rel.sv:
                 rel_vg_stmt_builder = VerbalGroupStatementBuilder(rel.sv, self._current_speaker)
                 #case 1
@@ -570,7 +573,7 @@ class VerbalGroupStatementBuilder(object):
     """ Build statements related to a verbal group"""
 
     def __init__(self, verbal_groups, current_speaker=None):
-        #This field keeps record of the verbal group that is being processed
+        # This field keeps record of the verbal group that is being processed
         self._verbal_groups = verbal_groups
 
         #This field identifies the current speaker
@@ -626,7 +629,7 @@ class VerbalGroupStatementBuilder(object):
         """This processes a sentence sv attribute, given the (resolved) ID and quantifier of the subject
             and return a set of RDF statements.
         """
-        #Case: an imperative sentence does not contain an sn attribute,
+        # Case: an imperative sentence does not contain an sn attribute,
         #      we will assume that it is implicitly an order from the current speaker.
         #      performed by the recipient of the order.
         #      Therefore, the subject_id holds the value 'myself'
@@ -647,7 +650,7 @@ class VerbalGroupStatementBuilder(object):
         """This processes every single verbal group in the sentence sv, given the (resolved) ID and quantifier of the subject.
         """
         for vg in verbal_groups:
-        #Verbal group state : Negative or affirmative
+            # Verbal group state : Negative or affirmative
             self.process_state(vg)
 
             #Main verb
@@ -673,7 +676,7 @@ class VerbalGroupStatementBuilder(object):
 
         for verb in verbal_group.vrb_main:
 
-            #Case 1:  the state verb 'to be'/ to become"""
+            # Case 1:  the state verb 'to be'/ to become"""
             #Case 2:  actions or stative verbs with a specified 'goal' or 'thematic' role:
             #                          see '../../share/dialog/thematic_roles'
             #Case 3: actions verbs with 'passive behaviour' like 'see'
@@ -757,8 +760,8 @@ class VerbalGroupStatementBuilder(object):
                     self._statements.append(sit_id + " rdf:type " + verb.capitalize())
                     self._statements.append(sit_id + " performedBy " + subject_id)
                     if not self._process_on_question and \
-                       not self._process_on_negative \
-                       and self._process_on_resolved_sentence:
+                            not self._process_on_negative \
+                            and self._process_on_resolved_sentence:
                         # If I'm not processing a question, add a label
                         # to this action
                         self._statements.append(sit_id + " rdfs:label \"" + \
@@ -800,7 +803,7 @@ class VerbalGroupStatementBuilder(object):
 
     def process_direct_object(self, d_objects, verb, id, quantifier):
         """This processes the attribute d_obj of a sentence verbal groups."""
-        #logger.debug("Processing direct object d_obj:")
+        # logger.debug("Processing direct object d_obj:")
 
         d_obj_stmt_builder = NominalGroupStatementBuilder(d_objects, self._current_speaker)
 
@@ -851,7 +854,7 @@ class VerbalGroupStatementBuilder(object):
         for ic in indirect_cmpls:
 
             # Case 1: if there is no preposition, the indirect complement is obviously an indirect object.
-            #        Therefore, it receives the action
+            # Therefore, it receives the action
             #            e.g. I gave you a ball also means I gave a ball 'to' you
             #        see http://www.englishlanguageguide.com/english/grammar/indirect-object.asp
 
@@ -955,7 +958,7 @@ class VerbalGroupStatementBuilder(object):
                 advrb) + " that qualify the stative verb 'to be'. Skipping it.")
         else:
             for adv in advrb:
-                #Creating statement [id actionQualification pattern], where if adv == carefully then pattern = CAREFUL, if adv == slowly then pattern = SLOW, ...
+                # Creating statement [id actionQualification pattern], where if adv == carefully then pattern = CAREFUL, if adv == slowly then pattern = SLOW, ...
                 self._statements.append(id + " actionQualification " + adv[:len(adv) - 2].upper())
 
 
@@ -981,8 +984,8 @@ class VerbalGroupStatementBuilder(object):
         """
         if verbal_group._resolved and not self._process_on_question:
 
-            #Assiging the variable 'tense' with either PAST or FUTUR
-            tense = '' #Nothing to do if the verb tense involves the present
+            # Assiging the variable 'tense' with either PAST or FUTUR
+            tense = ''  #Nothing to do if the verb tense involves the present
 
             #PAST
             if 'past' in verbal_group.vrb_tense:

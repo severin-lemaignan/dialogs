@@ -13,7 +13,8 @@ from dialogs.helpers.helpers import colored_print
 
 from dialogs.dialog_exceptions import *
 from dialogs.resources_manager import ResourcePool
-from statements_builder import NominalGroupStatementBuilder, get_class_name, generate_id #for nominal group discrimination
+from statements_builder import NominalGroupStatementBuilder, get_class_name, \
+    generate_id  # for nominal group discrimination
 from discrimination import Discrimination
 from anaphora_matching import AnaphoraMatcher, recover_nominal_group_list, first_replacement
 from dialogs.sentence import *
@@ -39,7 +40,7 @@ class Resolver(object):
         self._current_object = None
         self.sentences_store = sentences_store
 
-    ##########################################
+    # #########################################
     #   References and anaphoric resolutions
     ##########################################
 
@@ -110,13 +111,14 @@ class Resolver(object):
         noun = ""
         try:
             noun = nominal_group.noun[0].replace('+', ' ')
-            onto_res = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(current_speaker), noun)
+            onto_res = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(current_speaker),
+                                                                     noun)
         except IndexError:
             raise DialogError("We should not have to resolve nominal " + \
                               "groups with indefinite determiner and only adjectives")
         except AttributeError:
             pass
-        except KbError: # The agent does not exist in the ontology
+        except KbError:  # The agent does not exist in the ontology
             pass
 
         return get_class_name(noun, onto_res)
@@ -147,7 +149,7 @@ class Resolver(object):
                               "magenta"))
 
             if nominal_group.noun and nominal_group.noun[
-                0].lower() != 'one': # case "this + category" -> eg "this phone"
+                0].lower() != 'one':  # case "this + category" -> eg "this phone"
                 class_name = self._get_class_name_from_ontology(current_speaker, nominal_group)
                 logger.debug(colored_print("Looking for : ", "magenta") + colored_print(
                     current_speaker + ' focusesOn ?concept, ?concept rdf:type ' + class_name, None, "magenta"))
@@ -158,10 +160,10 @@ class Resolver(object):
                         [current_speaker + ' focusesOn ?concept', '?concept rdf:type ' + class_name])
                 except AttributeError:
                     pass
-                except KbError: #Agent not found in the ontology
+                except KbError:  #Agent not found in the ontology
                     pass
 
-            else: # case "this" alone or "this one"
+            else:  # case "this" alone or "this one"
                 logger.debug(
                     colored_print("Looking for : ", "magenta") + colored_print(current_speaker + ' focusesOn ?concept',
                                                                                None, "magenta"))
@@ -172,7 +174,7 @@ class Resolver(object):
                         [current_speaker + ' focusesOn ?concept'])
                 except AttributeError:
                     pass
-                except KbError: #Agent not found in the ontology
+                except KbError:  #Agent not found in the ontology
                     pass
 
             if onto_focus:
@@ -189,7 +191,7 @@ class Resolver(object):
             # Case of 
             #   this + noun - E.g: Take this cube:
             if nominal_group.noun and nominal_group.noun[0].lower() != 'one':
-                pass # Nothing to do appart from processing "this" as "the"
+                pass  # Nothing to do appart from processing "this" as "the"
 
             # Case of 
             #   this + one -  E.g: Take this one
@@ -200,7 +202,7 @@ class Resolver(object):
                         nominal_group, matcher,
                         current_speaker,
                         current_object)
-                except DialogError: #...no dialog history yet! or nothing found in history. Can not do any matching over past sentences
+                except DialogError:  #...no dialog history yet! or nothing found in history. Can not do any matching over past sentences
                     uie = UnsufficientInputError({'status': 'FAILURE'})
 
                     sf = SentenceFactory()
@@ -218,10 +220,11 @@ class Resolver(object):
         # Case of an existing ID in the Ontology
         onto = []
         try:
-            onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(current_speaker), nominal_group.noun[0])
-        except AttributeError: #the ontology server is not started or doesn't know the method
+            onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(current_speaker),
+                                                                 nominal_group.noun[0])
+        except AttributeError:  #the ontology server is not started or doesn't know the method
             pass
-        except KbError: #The agent does not exist in the ontology
+        except KbError:  #The agent does not exist in the ontology
             pass
 
         if onto:
@@ -274,7 +277,7 @@ class Resolver(object):
 
             else:
                 if nominal_group._quantifier in ['SOME']:
-                # Do not deal further here with existential quantifier. It will be processed
+                    # Do not deal further here with existential quantifier. It will be processed
                     # later in noun_resolution.
                     return nominal_group
 
@@ -287,9 +290,10 @@ class Resolver(object):
                     onto_id = []
                     try:
                         # TODO: anything -> all Artifact: is that right?
-                        onto_id = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept',
-                                                                              ['?concept rdf:type Artifact'])
-                    except KbError: # The agent does not exist in the ontology
+                        onto_id = ResourcePool().ontology_server.findForAgent(
+                            ResourcePool().get_model_mapping(current_speaker), '?concept',
+                            ['?concept rdf:type Artifact'])
+                    except KbError:  # The agent does not exist in the ontology
                         pass
 
                 else:
@@ -305,9 +309,10 @@ class Resolver(object):
 
                     onto_id = []
                     try:
-                        onto_id = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept',
-                                                                              ['?concept rdf:type ' + class_name])
-                    except KbError: # The agent does not exist in the ontology
+                        onto_id = ResourcePool().ontology_server.findForAgent(
+                            ResourcePool().get_model_mapping(current_speaker), '?concept',
+                            ['?concept rdf:type ' + class_name])
+                    except KbError:  # The agent does not exist in the ontology
                         pass
 
                 if not onto_id:
@@ -431,7 +436,7 @@ class Resolver(object):
             The output is the ID of the nominal group
         """
 
-        if nominal_group._resolved: #already resolved: possible after asking human for more details.
+        if nominal_group._resolved:  #already resolved: possible after asking human for more details.
             return nominal_group
 
         logger.debug(str(nominal_group))
@@ -460,20 +465,22 @@ class Resolver(object):
                          '[' + colored_print(', '.join(stmtsAndVisibility), None, 'magenta') + ']')
             concepts = []
             try:
-                concepts = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept', stmtsAndVisibility)
-            except AttributeError: # No ontology server
+                concepts = ResourcePool().ontology_server.findForAgent(
+                    ResourcePool().get_model_mapping(current_speaker), '?concept', stmtsAndVisibility)
+            except AttributeError:  # No ontology server
                 pass
-            except KbError: #The agent does not exist in the ontology
+            except KbError:  #The agent does not exist in the ontology
                 pass
 
             if not concepts:
                 # no acceptable concepts that are visible. Look for concepts that are not visible."
                 logger.debug(colored_print("No visible concepts found. Removing the visibility constraint"))
                 try:
-                    concepts = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept', stmts)
-                except AttributeError: # No ontology server
+                    concepts = ResourcePool().ontology_server.findForAgent(
+                        ResourcePool().get_model_mapping(current_speaker), '?concept', stmts)
+                except AttributeError:  # No ontology server
                     pass
-                except KbError: #The agent does not exist in the ontology
+                except KbError:  #The agent does not exist in the ontology
                     pass
 
             if concepts:
@@ -592,7 +599,8 @@ class Resolver(object):
             colored_print("\tFound '(an)other'. Looking for a different concept from dialog history.", "magenta"))
         obj_list = []
         try:
-            obj_list = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept', current_stmts)
+            obj_list = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker),
+                                                                   '?concept', current_stmts)
         except AttributeError:
             pass
 
@@ -637,7 +645,7 @@ class Resolver(object):
         return sentence
 
     def _resolve_verbs(self, verbal_group):
-        if verbal_group.resolved(): #already resolved: possible after asking human for more details.
+        if verbal_group.resolved():  #already resolved: possible after asking human for more details.
             return verbal_group
 
         resolved_verbs = []
@@ -811,7 +819,8 @@ class Resolver(object):
         logger.debug(colored_print("Learning this new concept in " + current_speaker + "'s model: \n",
                                    "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
         try:
-            ResourcePool().ontology_server.revise(stmts, {"method": "add", "models": [ResourcePool().get_model_mapping(current_speaker)]})
+            ResourcePool().ontology_server.revise(stmts, {"method": "add", "models": [
+                ResourcePool().get_model_mapping(current_speaker)]})
         except AttributeError:
             pass
 
@@ -830,7 +839,7 @@ class Resolver(object):
 
 def get_last(list, nb):
     """This returns the last 'Nb' elements of the list 'list' in the reverse order"""
-    #Empty list
+    # Empty list
     if not list:
         return list
 

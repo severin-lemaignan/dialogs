@@ -53,11 +53,11 @@ def adverbial_or_subsentence(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
-        #If we have a proposal which can be for subsentence and for indirect object
+        # If we have a proposal which can be for subsentence and for indirect object
 
         for z in ResourcePool().adv_sub:
             if sentence[i] == z[1:]:
@@ -83,11 +83,11 @@ def process_and_beginning_sentence(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #If sentence is empty
+    # If sentence is empty
     if not sentence:
         return []
 
-    #Using flag is for the ending of this function
+    # Using flag is for the ending of this function
     if other_functions.find_cap_lettre(sentence[0]) == 1:
         flg = 1
         sentence[0] = sentence[0][0].lower() + sentence[0][1:]
@@ -141,7 +141,7 @@ def delete_and_from_number(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
@@ -158,13 +158,13 @@ def concat_number(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     sentence = delete_and_from_number(sentence)
 
     while i < len(sentence):
-        #There is a number
+        # There is a number
         if other_functions.number(sentence[i]) == 1:
             begin_pos = i
 
@@ -191,10 +191,10 @@ def upper_to_lower(sentence):
     Input=sentence, beginning sentence list                  Output=sentence
     """
 
-    #If the sentence begins with upper case
+    # If the sentence begins with upper case
     if other_functions.find_cap_lettre(sentence[0]):
 
-        #We convert upper case to lower case if it is not 'I'
+        # We convert upper case to lower case if it is not 'I'
         if sentence[0] == 'I':
             sentence = expand_contractions(sentence)
             return sentence
@@ -236,7 +236,7 @@ def upper_to_lower(sentence):
         #Default case: we assume a proper name, we convert lowercase to uppercase
         sentence[0] = sentence[0][0].upper() + sentence[0][1:]
 
-    #If the sentence begins with lower case
+    # If the sentence begins with lower case
     else:
         #We make changes here because we need lower case and not upper case
         sentence = expand_contractions(sentence)
@@ -263,11 +263,11 @@ def but(sentence):
     Input=sentence                         Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
-        #The 'but' must be between 2 nominal groups
+        # The 'but' must be between 2 nominal groups
         if sentence[i] == 'but':
             #After 'but' of subsentence we must have a nominal group (subject)
             scd_nominal_group = analyse_nominal_group.find_sn_pos(sentence, i + 1)
@@ -295,9 +295,9 @@ def concatenate_pos(sentence, position, element, pos_rem):
     Output=sentence
     """
 
-    #We perform concatenation
+    # We perform concatenation
     sentence = sentence[:position + 1] + element + sentence[position + 1:]
-    #We remove the superfusion part
+    # We remove the superfusion part
     sentence[position] = sentence[position][:len(sentence[position]) - pos_rem]
     return sentence
 
@@ -320,7 +320,7 @@ def expand_contractions(sentence):
     Input=sentence                       Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
@@ -351,10 +351,10 @@ def preposition_concat(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
-    #For the case of whom
+    # For the case of whom
     if sentence[0:2] == ['To', 'whom']:
         sentence = ['To+whom'] + sentence[2:]
 
@@ -375,10 +375,10 @@ def compound_nouns(sentence):
     Replaces all compound nouns defined in the 'nouns' data file by
     concatenated versions (ie, with a '+' between tokens)
     """
-    #init
+    # init
     i = 0
 
-    while i < len(sentence) - 1: # '- 1' because compound nouns have a length >= 2
+    while i < len(sentence) - 1:  # '- 1' because compound nouns have a length >= 2
 
         for cn in ResourcePool().compound_nouns:
             if i + len(cn) <= len(sentence) and \
@@ -415,12 +415,12 @@ def and_nominal_group_comma(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #init
+    # init
     i = 0
     flag = 2
     list_nominal_group = []
 
-    #If we find ','
+    # If we find ','
     while i < len(sentence):
         if sentence[i] == ',':
             nominal_group = determination_nominal_group(sentence, i + 1, 'of')
@@ -472,12 +472,12 @@ def and_nominal_group(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #init
+    # init
     i = 0
     list_nominal_group = our_list = []
 
     while i < len(sentence):
-        #We start by finding the first nominal group
+        # We start by finding the first nominal group
         nominal_group = determination_nominal_group(sentence, i, 'of')
         position = i
 
@@ -519,17 +519,18 @@ def find_nominal_group_list(phrase):
     Input=sentence                    Output=list of nominal group
     """
 
-    #init
+    # init
     list = []
     nb_element = 0
 
     nominal_group = analyse_nominal_group.find_sn_pos(phrase, 0)
-    #We use the length of the nominal group because it will be different with len(nominal_group)
+    # We use the length of the nominal group because it will be different with len(nominal_group)
     nominal_group_lent = len(nominal_group)
 
     #We loop until there is no more nominal group
     while nominal_group != [] and (
-        nominal_group[len(nominal_group) - 1].endswith("'s") or nominal_group[len(nominal_group) - 1].endswith("s'")):
+                nominal_group[len(nominal_group) - 1].endswith("'s") or nominal_group[len(nominal_group) - 1].endswith(
+                    "s'")):
 
         list = [nominal_group] + list
         nb_element += nominal_group_lent
@@ -559,9 +560,9 @@ def create_possession_claus(list):
     Input=list of nominal group                 Output=phrase of nominal group
     """
 
-    #init
+    # init
     i = 1
-    #To take the first element
+    # To take the first element
     phrase = list[i - 1]
 
     #We concatenate
@@ -587,11 +588,11 @@ def possesion_form(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #init
+    # init
     begin_pos = 0
     flag = 0
 
-    #We will find the possession case
+    # We will find the possession case
     while begin_pos < len(sentence):
 
         #We found a posssession case
@@ -640,7 +641,7 @@ def refine_possesion_form(sentence):
     Input=sentence                                     Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
@@ -657,10 +658,10 @@ def other_processing(sentence):
     Input=sentence                              Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
-    #Question with which starts with nominal group without determinant
+    # Question with which starts with nominal group without determinant
     if sentence != [] and sentence[0] == 'which':
         sentence = [sentence[0]] + ['the'] + sentence[1:]
 
@@ -692,13 +693,13 @@ def move_prep(sentence):
     Input=sentence                              Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
         for p in ResourcePool().prep_change_place:
 
-            #If there is a preposal
+            # If there is a preposal
             if sentence[i] == p:
                 position = i
 
@@ -718,14 +719,14 @@ def conjunction_processing(sentence, cjt):
     Input=sentence and the conjunction                     Output=sentence
     """
 
-    #init
+    # init
     i = 0
     fst_nominal_group = []
 
     while i < len(sentence):
 
         if sentence[i] == cjt:
-            #We have to find the first and the second nominal group in the sentence
+            # We have to find the first and the second nominal group in the sentence
             position = i
             #Until we find the first nominal group
             while position > 0 and fst_nominal_group == []:
@@ -762,7 +763,7 @@ def reorganize_adj(sentence):
     Input=sentence                              Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence) - 1:
@@ -780,13 +781,13 @@ def subsentence_comma(sentence):
     Input=sentence                              Output=sentence
     """
 
-    #init
+    # init
     i = 0
     while i < len(sentence):
         if sentence[i] == ',':
             sentence[i] = ';'
 
-            #We delete it if it is at the end of the sentence
+            # We delete it if it is at the end of the sentence
             if i == len(sentence) - 1:
                 sentence = sentence[:i]
             elif sentence[i + 1] == '?' or sentence[i + 1] == '!' or sentence[i + 1] == '.':
@@ -801,7 +802,7 @@ def take_off_comma(sentences):
     Input=list of sentence                  Output=sentence
     """
 
-    #init
+    # init
     i = k = 0
 
     while k < len(sentences):
@@ -820,7 +821,7 @@ def delete_empty_word(sentence):
     Input=sentence                              Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
@@ -841,7 +842,7 @@ def remerge_sentences(sentence):
     if gr and len(gr) < len(sentence):
 
         next_token = sentence[len(gr)]
-        #Case of 'the bottle on the table'
+        # Case of 'the bottle on the table'
         if next_token in ResourcePool().compelement_proposals:
             if analyse_nominal_group.find_sn_pos(sentence, len(gr) + 1):
                 sentence = gr + ['which', 'is'] + sentence[sentence.index(sentence[len(gr)]):]
@@ -854,11 +855,11 @@ def add_scd_vrb(sentence):
     transform the verb after the first verb into second verb
     Input=sentence                              Output=sentence
     """
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
-        #If we have a verb that need a second verb
+        # If we have a verb that need a second verb
         if sentence[i] in ResourcePool().verb_need_to:
             nominal_group = analyse_nominal_group.find_sn_pos(sentence, i + 1)
             if nominal_group:
@@ -876,10 +877,10 @@ def interjection(sentence):
     Input=sentence                     Output=list of sentence
     """
 
-    #init
+    # init
     i = pos = 0
 
-    #We will find the position of the first ','
+    # We will find the position of the first ','
     while i < len(sentence) and pos == 0:
         if sentence[i] == ';':
             pos = i
@@ -915,7 +916,7 @@ def what_to_relative(sentence):
     Input=sentence                              Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence) - 1:
@@ -944,7 +945,7 @@ def am_pm(sentence):
     Input=sentence                            Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
@@ -964,7 +965,7 @@ def and_between_sentence(sentence):
     Input=sentence                            Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
@@ -986,7 +987,7 @@ def double_det(sentence):
     Input=sentence                            Output=sentence
     """
 
-    #init
+    # init
     i = 0
 
     while i < len(sentence):
@@ -1042,14 +1043,14 @@ def process_sentence(utterance):
     Input=utterance and beginning sentence list         Output=list of sentence
     """
 
-    #init
+    # init
     sentence = []
     sentence_list = []
     utterance = utterance.split()
 
     for j in utterance:
 
-        #If user put space between the last word and the punctuation
+        # If user put space between the last word and the punctuation
         if j == '.' or j == '?' or j == '!':
             sentence = sentence + [j]
             sentence = processing(sentence)
@@ -1066,7 +1067,7 @@ def process_sentence(utterance):
         else:
             sentence = sentence + [j]
 
-    #If the user forget the punctuation at the end
+    # If the user forget the punctuation at the end
     if sentence:
         sentence = processing(sentence)
         sentence_list = sentence_list + sentence

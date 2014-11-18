@@ -23,16 +23,16 @@ def singleton(cls):
 
 class ThematicRole(object):
     def __init__(self, desc):
-        if desc.startswith('['): #optional role
+        if desc.startswith('['):  # optional role
             self.optional = True
-            desc = desc[1:-1] #remove square brackets
+            desc = desc[1:-1]  #remove square brackets
         else:
             self.optional = False
 
         tokens = desc.strip().split()
         self.id = tokens[0]
 
-        if tokens[1].startswith('['): #preposition
+        if tokens[1].startswith('['):  # preposition
             self.preposition = tokens[1][1:-1]
             self.actors_classes = tokens[2].split(',')
         else:
@@ -62,7 +62,7 @@ class VerbEntry(object):
         try:
             role = self.roles[self._role_pointer - 1]
 
-            if role.preposition: #if next role is supposed to be introduced by a preposition, skip it
+            if role.preposition:  # if next role is supposed to be introduced by a preposition, skip it
                 return self.next_role()
             else:
                 return role
@@ -115,11 +115,11 @@ class ThematicRolesDict(object):
         lines = desc.split("\n")
         verb_desc = lines[0].strip().split()
 
-        roles = [ThematicRole(desc) for desc in lines[1:-2]] #lines[0] is verb desc, line[n] is '}'
+        roles = [ThematicRole(desc) for desc in lines[1:-2]]  # lines[0] is verb desc, line[n] is '}'
 
         verbs = [VerbEntry(verb_desc[0], verb_desc[0], roles)]
 
-        #synonyms?
+        # synonyms?
         if verb_desc[1].startswith('('):
             for syn in verb_desc[1][1:-1].split(','):
                 verbs.append(VerbEntry(syn, verb_desc[0], roles))
@@ -131,19 +131,19 @@ class ThematicRolesDict(object):
         try:
             res = self.verbs[verb.lower()].subject.id
         except KeyError:
-            #raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
-            res = "performedBy" #for now, return by default a generic "performedBy" predicate when no specific thematic role for the subject is defined.
+            # raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            res = "performedBy"  #for now, return by default a generic "performedBy" predicate when no specific thematic role for the subject is defined.
         return (" " + res + " ") if with_spaces else res
 
     def get_next_cmplt_role(self, verb, with_spaces=False):
-        res = "involves" #for now, return by default a generic "involve" predicate when no specific thematic role is defined.
+        res = "involves"  # for now, return by default a generic "involve" predicate when no specific thematic role is defined.
         try:
             res = self.verbs[verb.lower()].next_role().id
         except KeyError:
-            #raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            # raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
             pass
         except AttributeError:
-            #TODO: case "get me the bottle" -> "get" expects only one cmplt -> warn the user that the grammatical structure is wrong
+            # TODO: case "get me the bottle" -> "get" expects only one cmplt -> warn the user that the grammatical structure is wrong
             pass
         return (" " + res + " ") if with_spaces else res
 
@@ -151,7 +151,7 @@ class ThematicRolesDict(object):
         try:
             role = self.verbs[verb.lower()].get_role_for_preposition(preposition)
         except KeyError:
-            #raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
+            # raise UnknownVerb('Verb ' + verb + ' has no thematic role defined')
             return None
 
         if not role:
@@ -175,7 +175,7 @@ class ResourcePool(object):
 
     def split_list(self, word_list):
 
-        #init
+        # init
         flag = 0
         list_list_word = our_list = []
         for i in word_list:
@@ -269,7 +269,7 @@ class ResourcePool(object):
     def init(self, kb_host="localhost", kb_port=6969, embeddedkb=False, defaultontology=None, data_path=None):
 
         if not data_path:
-            #try to guess the current prefix and then the data directory
+            # try to guess the current prefix and then the data directory
             data_path = os.path.abspath(__file__).split('lib')[0].split('src')[0] + 'share/dialogs/'
             logger.debug("Assuming Dialogs data dir is <%s>" % data_path)
 
@@ -290,7 +290,7 @@ class ResourcePool(object):
                 continue
             try:
                 adj, cat = line.split()
-            except ValueError: #for adjectives without category, set a generic "Feature" category
+            except ValueError:  # for adjectives without category, set a generic "Feature" category
                 adj = line.split()[0]
                 cat = "Feature"
             self.adjectives[adj] = cat
@@ -339,7 +339,7 @@ class ResourcePool(object):
         self.months_list = nouns[10]
         self.unusable_words = [k[0] for k in nouns[11]]
 
-        #List of diection words, E.g: LEFT, RIGHT, TOP, etc ...
+        # List of diection words, E.g: LEFT, RIGHT, TOP, etc ...
         self.direction_words = [k[0] for k in nouns[12]]
 
         self.compound_nouns = nouns[13]
@@ -401,7 +401,7 @@ class ResourcePool(object):
 
             desc += line
 
-            if line.startswith("}"): #end of block
+            if line.startswith("}"):  #end of block
                 self.thematic_roles.add_verb(desc)
                 desc = ""
 
