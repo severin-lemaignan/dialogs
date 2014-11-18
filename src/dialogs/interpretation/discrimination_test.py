@@ -76,7 +76,7 @@ class TestDiscrimination(unittest.TestCase):
         expected_result = "Which color is the bottle? Blue or orange or yellow."
 
         try:
-            res = self.disc.clarify(description)
+            self.disc.clarify(description)
         except UnsufficientInputError as use:
             self.assertEquals(use.value['status'], 'SUCCESS')
             self.assertEquals(self.verbalizer.verbalize(use.value['question']), expected_result)

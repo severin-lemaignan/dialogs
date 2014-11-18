@@ -45,7 +45,7 @@ class TestQuestionHandler(unittest.TestCase):
                                             'take_my_cube involves another_cube',
                                             'take_my_cube rdf:type Take',
 
-                                            'SPEAKER pointsAt another_cube',
+                                            'SPEAKER focusesOn another_cube',
 
                                             'id_danny rdfs:label "Danny"',
 
@@ -81,7 +81,7 @@ class TestQuestionHandler(unittest.TestCase):
                                                        'take_my_cube involves another_cube',
                                                        'take_my_cube rdf:type Take',
 
-                                                       'SPEAKER pointsAt another_cube',
+                                                       'SPEAKER focusesOn another_cube',
 
                                                        'id_danny rdfs:label "Danny"',
 
@@ -485,7 +485,7 @@ class TestQuestionHandler(unittest.TestCase):
             # res may be a list of several IDs that match the question. Here the result succeed if the expected one is among them
 
         if sentence.data_type == YES_NO_QUESTION:
-            self.assertEquals(expected_result, res)
+            self.assertEquals(expected_result, res[0])
 
 
 class TestQuestionHandlerDialog(unittest.TestCase):

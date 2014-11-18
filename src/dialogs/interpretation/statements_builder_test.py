@@ -1217,7 +1217,7 @@ class TestStatementBuilder(unittest.TestCase):
                                                      Verbal_Group.negative,
                                            [])])
 
-        expected_result = ['SPEAKER owl:differentFrom id_tom']
+        expected_result = ['SPEAKER experiences *', '* owl:differentFrom id_tom']
         self.process(sentence, expected_result, display_statement_result=True)
 
     """
