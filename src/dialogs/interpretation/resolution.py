@@ -226,7 +226,7 @@ class Resolver(object):
 
         if onto:
             for c in onto:
-                if "INSTANCE" in c:
+                if "instance" in c:
                     nominal_group.id = c[0]
                     logger.debug("... \t" + nominal_group.noun[0] + " is an existing ID (" + nominal_group.id + \
                                  ") in " + current_speaker + "'s model.")

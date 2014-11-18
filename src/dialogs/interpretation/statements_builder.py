@@ -183,7 +183,7 @@ class NominalGroupStatementBuilder(object):
 
         if onto:
             for c in onto:
-                if "INSTANCE" in c:
+                if "instance" in c:
                     return c[0]
 
         if ng.noun[0].lower() in ['i', 'me']:
@@ -349,7 +349,7 @@ class NominalGroupStatementBuilder(object):
             if onto_id:
                 # If one of the returned concepts is an instance, take the first one.
                 for c in onto_id:
-                    if "INSTANCE" in c:
+                    if "instance" in c:
                         instance_id = c[0]
                         break
 
