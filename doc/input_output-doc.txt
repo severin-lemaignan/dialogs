@@ -6,7 +6,7 @@ Our data structure consists on classes arranged in a tree; this facilitates sear
 Since we deal with sentences containing several aftershocks following, we opted for the use of lists. Therefore, the data to be transmitted between the different modules will be a list of several classes Sentence. 
 A sentence is formed from:
     sn : a nominal structure typed into a Nominal_group
-    sv : a verbal structure typed into a Verbal_Group
+    sv : a verbal structure typed into a VerbalGroup
     aim : is used for retrieveing the aim of a question
     data_type: is the type of the sentence
 
@@ -241,7 +241,7 @@ Utterance: "I take twenty two bottles."
 In the case of a verb of state, we note the absence of a direct object as opposed to adverbial. We have therefore chosen to use the variable d_obj to convey information related to adjectives.
 Utterance: "The bottle is on the table. The bottle is blue. The bottle is Blue."
 	For the first sentence, it is an adverbial
-	In the second, we have an adjective. We create, on the level  of d_obj, a Nominal_Group contained that adjective
+	In the second, we have an adjective. We create, on the level  of d_obj, a NominalGroup contained that adjective
 	In the third sentence, we have a proper name (any word in uppercase is considered a proper name) and so we use the d_obj
 
 

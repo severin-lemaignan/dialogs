@@ -120,7 +120,7 @@ def y_o_question(analysis):
         phrase = element_rebuilding.end_question_rebuilding(phrase, analysis.sv, analysis.sn, analysis.aim)
 
         #We need special processing to find the position of the subject
-        if analysis.sv[0].state == Verbal_Group.negative:
+        if analysis.sv[0].state == VerbalGroup.negative:
             phrase = phrase[0:2] + subject + phrase[2:]
         else:
             phrase = [phrase[0]] + subject + phrase[1:]
@@ -239,7 +239,7 @@ def quantity_ques(analysis):
                 phrase = phrase + sub_process(s)
 
             #processing of the state
-            if analysis.sv[0].state == Verbal_Group.negative:
+            if analysis.sv[0].state == VerbalGroup.negative:
                 phrase = phrase[0:2] + subject + phrase[2:]
             else:
                 phrase = [phrase[0]] + subject + phrase[1:]

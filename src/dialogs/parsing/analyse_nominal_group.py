@@ -291,7 +291,7 @@ def return_det(nominal_group):
 def return_adj(nominal_group):
     """Returns adjectives of the nominal group
 
-    :param Nominal_Group nominal_group: a nominal group
+    :param NominalGroup nominal_group: a nominal group
 
     :return: a list of adjectives
     """

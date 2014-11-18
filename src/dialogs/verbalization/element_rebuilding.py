@@ -135,17 +135,17 @@ def conjugate_vrb(tense, verb, sn, type, aim):
 
     if aim.startswith('classification'):
         if not sn:
-            sn = [Nominal_Group([], [aim[15:]], [], [], [])]
+            sn = [NominalGroup([], [aim[15:]], [], [], [])]
         elif not sn[0].noun:
             sn[0].noun = [aim[15:]]
 
     if not sn:
         if type == IMPERATIVE:
             #If no subject, we use the third person of plural
-            sn = [Nominal_Group([], ['they'], [], [], [])]
+            sn = [NominalGroup([], ['they'], [], [], [])]
         else:
             #If no subject, we use the third person of singular
-            sn = [Nominal_Group([], ['it'], [], [], [])]
+            sn = [NominalGroup([], ['it'], [], [], [])]
 
     #For future simple
     if tense == 'future simple':
@@ -267,14 +267,14 @@ def vrb_stat_rebuilding(tense, verb, adv, sn, state, type, aim):
         vrb_condjugated = [vrb[0]] + ['be'] + conjugate_vrb('present passive', vrb[1:], sn, '', aim)[1:]
 
     #Affirmative case
-    if state == Verbal_Group.affirmative:
+    if state == VerbalGroup.affirmative:
         if len(vrb) > 1:
             return [vrb_condjugated[0]] + adv + vrb_condjugated[1:]
         else:
             return adv + vrb_condjugated
 
     #Negative case : we have to use do or have or be or modal if there is no
-    elif state == Verbal_Group.negative:
+    elif state == VerbalGroup.negative:
 
         if vrb[0] == 'be' or vrb[0] == 'do' or vrb[0] == 'have':
             return [vrb_condjugated[0]] + ['not'] + adv + vrb_condjugated[1:]
@@ -303,14 +303,14 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     #If there is be or have : it is ok
     if vrb[0] == 'be' or vrb[0] == 'have':
         vrb_condjugated = conjugate_vrb(tense, vrb, sn, '', aim)
-        if state == Verbal_Group.negative:
+        if state == VerbalGroup.negative:
             return [vrb_condjugated[0]] + ['not'] + adverb + vrb_condjugated[1:]
         return [vrb_condjugated[0]] + adverb + vrb_condjugated[1:]
 
     #Modal also
     for i in ResourcePool().modal:
         if i == vrb[0]:
-            if state == Verbal_Group.negative:
+            if state == VerbalGroup.negative:
                 if tense == 'present passive' or tense == 'passive conditional':
                     return [vrb[0]] + ['not'] + adverb + ['be'] + conjugate_vrb('present passive', vrb[1:], sn, '',
                                                                                 aim)[1:]
@@ -322,12 +322,12 @@ def vrb_ques_rebuilding(tense, verb, adverb, sn, state, aim):
     if tense == 'present simple' or tense == 'past simple':
         #We need to add the auxilary
         aux = conjugate_vrb(tense, ['do'], sn, '', aim)
-        if state == Verbal_Group.negative:
+        if state == VerbalGroup.negative:
             return aux + ['not'] + adverb + vrb
         return aux + adverb + vrb
     else:
         vrb_condjugated = conjugate_vrb(tense, vrb, sn, '', aim)
-        if state == Verbal_Group.negative:
+        if state == VerbalGroup.negative:
             return [vrb_condjugated[0]] + ['not'] + adverb + vrb_condjugated[1:]
         return [vrb_condjugated[0]] + adverb + vrb_condjugated[1:]
 

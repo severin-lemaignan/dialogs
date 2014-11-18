@@ -305,12 +305,12 @@ class Discrimination(object):
 
             else:
                 questions = [Sentence(IMPERATIVE, '', [],
-                                      [Verbal_Group(['give'], [], 'present simple',
-                                                    [Nominal_Group([], ['information'], [['more', []]], [], [])],
-                                                    [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])]),
-                                                     Indirect_Complement(['about'], [
-                                                         Nominal_Group(['the'], [object], [], [], [])])],
-                                          [], [], Verbal_Group.affirmative, [])])]
+                                      [VerbalGroup(['give'], [], 'present simple',
+                                                    [NominalGroup([], ['information'], [['more', []]], [], [])],
+                                                    [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])]),
+                                                     IndirectComplement(['about'], [
+                                                         NominalGroup(['the'], [object], [], [], [])])],
+                                          [], [], VerbalGroup.affirmative, [])])]
                 raise UnsufficientInputError({'status': 'SUCCESS', 'question': questions})
                 #return "Give me more information about the object"
 

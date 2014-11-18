@@ -29,11 +29,11 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['I'], [], [], [])],
-                            [Verbal_Group(['play'], [], 'future simple',
-                                          [Nominal_Group(['a'], ['guitar'], [], [], []),
-                                           Nominal_Group(['a'], ['piano'], [], [], []),
-                                           Nominal_Group(['a'], ['violon'], [], [], [])],
+                            [NominalGroup([], ['I'], [], [], [])],
+                            [VerbalGroup(['play'], [], 'future simple',
+                                          [NominalGroup(['a'], ['guitar'], [], [], []),
+                                           NominalGroup(['a'], ['piano'], [], [], []),
+                                           NominalGroup(['a'], ['violon'], [], [], [])],
                                 [],
                                 [], [], 'affirmative', [])])
 
@@ -69,11 +69,11 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                            [Verbal_Group(['be'], [], 'present simple',
+                            [NominalGroup(['the'], ['bottle'], [], [], [])],
+                            [VerbalGroup(['be'], [], 'present simple',
                                 [],
-                                          [Indirect_Complement(['on'],
-                                                               [Nominal_Group(['the'], ['table'], [], [], [])])],
+                                          [IndirectComplement(['on'],
+                                                               [NominalGroup(['the'], ['table'], [], [], [])])],
                                 [], [], 'affirmative', [])])
 
         print('The sentence that we will process is : ')
@@ -108,13 +108,13 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['you'], [], [], [])],
-                            [Verbal_Group(['prepare'], [], 'present progressive',
-                                          [Nominal_Group(['the'], ['car'], [], [], []),
-                                           Nominal_Group(['the'], ['moto'], [],
-                                                         [Nominal_Group(['my'], ['father'], [], [], [])], [])],
-                                          [Indirect_Complement(['at'], [
-                                              Nominal_Group(['the'], ['time'], [['same', []]], [], [])])],
+                            [NominalGroup([], ['you'], [], [], [])],
+                            [VerbalGroup(['prepare'], [], 'present progressive',
+                                          [NominalGroup(['the'], ['car'], [], [], []),
+                                           NominalGroup(['the'], ['moto'], [],
+                                                         [NominalGroup(['my'], ['father'], [], [], [])], [])],
+                                          [IndirectComplement(['at'], [
+                                              NominalGroup(['the'], ['time'], [['same', []]], [], [])])],
                                 [], [], 'negative', [])])
 
         print('The sentence that we will process is : ')
@@ -149,11 +149,11 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('w_question', 'description',
-                            [Nominal_Group(['the'], ['weather'], [], [], [])],
-                            [Verbal_Group(['like'], [], 'present simple',
+                            [NominalGroup(['the'], ['weather'], [], [], [])],
+                            [VerbalGroup(['like'], [], 'present simple',
                                 [],
-                                          [Indirect_Complement(['in'],
-                                                               [Nominal_Group(['the'], ['winter'], [], [], [])])],
+                                          [IndirectComplement(['in'],
+                                                               [NominalGroup(['the'], ['winter'], [], [], [])])],
                                 [], ['here'], 'affirmative', [])])
 
         print('The sentence that we will process is : ')
@@ -188,10 +188,10 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('yes_no_question', '',
-                            [Nominal_Group([], ['he'], [], [], [])],
-                            [Verbal_Group(['do'], [], 'present progressive',
-                                          [Nominal_Group(['his'], ['homework'], [], [], []),
-                                           Nominal_Group(['his'], ['game'], [], [], [])],
+                            [NominalGroup([], ['he'], [], [], [])],
+                            [VerbalGroup(['do'], [], 'present progressive',
+                                          [NominalGroup(['his'], ['homework'], [], [], []),
+                                           NominalGroup(['his'], ['game'], [], [], [])],
                                 [],
                                 [], ['now'], 'negative', [])])
 
@@ -228,10 +228,10 @@ class TestTimescale(unittest.TestCase):
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('w_question', 'situation',
             [],
-                            [Verbal_Group(['must+happen'], [], 'present simple',
+                            [VerbalGroup(['must+happen'], [], 'present simple',
                                 [],
-                                          [Indirect_Complement(['in'],
-                                                               [Nominal_Group(['the'], ['company'], [], [], [])])],
+                                          [IndirectComplement(['in'],
+                                                               [NominalGroup(['the'], ['company'], [], [], [])])],
                                 [], ['today'], 'affirmative', [])])
 
         print('The sentence that we will process is : ')
@@ -272,13 +272,13 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                            [Verbal_Group(['be'], [], 'present simple',
+                            [NominalGroup(['the'], ['bottle'], [], [], [])],
+                            [VerbalGroup(['be'], [], 'present simple',
                                 [],
-                                          [Indirect_Complement(['next+to'],
-                                                               [Nominal_Group(['the'], ['table'], [], [], [])]),
-                                           Indirect_Complement(['in+front+of'],
-                                                               [Nominal_Group(['the'], ['kitchen'], [], [], [])])],
+                                          [IndirectComplement(['next+to'],
+                                                               [NominalGroup(['the'], ['table'], [], [], [])]),
+                                           IndirectComplement(['in+front+of'],
+                                                               [NominalGroup(['the'], ['kitchen'], [], [], [])])],
                                 [], [], 'affirmative', [])])
 
         print('The sentence that we will process is : ')
@@ -315,8 +315,8 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('w_question', 'thing',
-                            [Nominal_Group([], ['Jido'], [], [], [])],
-                            [Verbal_Group(['do'], [], 'future simple',
+                            [NominalGroup([], ['Jido'], [], [], [])],
+                            [VerbalGroup(['do'], [], 'future simple',
                                 [],
                                 [],
                                 [], ['tomorrow'], 'affirmative', [])])
@@ -359,9 +359,9 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['I'], [], [], [])],
-                            [Verbal_Group(['buy'], [], 'past simple',
-                                          [Nominal_Group(['the'], ['guitar'], [], [], [])],
+                            [NominalGroup([], ['I'], [], [], [])],
+                            [VerbalGroup(['buy'], [], 'past simple',
+                                          [NominalGroup(['the'], ['guitar'], [], [], [])],
                                 [],
                                 [], ['yesterday'], 'affirmative', [])])
 
@@ -403,10 +403,10 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '27', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('w_question', 'long',
-                            [Nominal_Group(['the'], ['store'], [], [Nominal_Group(['your'], ['uncle'], [], [], [])],
+                            [NominalGroup(['the'], ['store'], [], [NominalGroup(['your'], ['uncle'], [], [], [])],
                                 [])],
-                            [Verbal_Group(['be'], [], 'present simple',
-                                          [Nominal_Group([], [], [['open', []]], [], [])],
+                            [VerbalGroup(['be'], [], 'present simple',
+                                          [NominalGroup([], [], [['open', []]], [], [])],
                                 [],
                                 [], ['tonight'], 'affirmative', [])])
 
@@ -448,11 +448,11 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'August', 'day': '30', 'hour': '10', 'minute': '0', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['I'], [], [], [])],
-                            [Verbal_Group(['come+back'], [], 'future simple',
+                            [NominalGroup([], ['I'], [], [], [])],
+                            [VerbalGroup(['come+back'], [], 'future simple',
                                 [],
-                                          [Indirect_Complement(['at'],
-                                                               [Nominal_Group(['7'], ["o'clock"], [], [], [])])],
+                                          [IndirectComplement(['at'],
+                                                               [NominalGroup(['7'], ["o'clock"], [], [], [])])],
                                 [], ['tomorrow'], 'affirmative', [])])
         sentence.sv[0].i_cmpl[0].gn[0]._quantifier = "DIGIT"
 
@@ -496,11 +496,11 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'September', 'day': '8', 'hour': '16', 'minute': '11', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['he'], [], [], [])],
-                            [Verbal_Group(['finish'], [], 'present simple',
-                                          [Nominal_Group(['the'], ['project'], [], [], [])],
-                                          [Indirect_Complement(['before'],
-                                                               [Nominal_Group(['10'], ['minute'], [], [], [])])],
+                            [NominalGroup([], ['he'], [], [], [])],
+                            [VerbalGroup(['finish'], [], 'present simple',
+                                          [NominalGroup(['the'], ['project'], [], [], [])],
+                                          [IndirectComplement(['before'],
+                                                               [NominalGroup(['10'], ['minute'], [], [], [])])],
                                 [], [], 'affirmative', [])])
         sentence.sv[0].i_cmpl[0].gn[0]._quantifier = "DIGIT"
 
@@ -540,10 +540,10 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'September', 'day': '8', 'hour': '16', 'minute': '11', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['I'], [], [], [])],
-                            [Verbal_Group(['come'], [], 'future simple',
+                            [NominalGroup([], ['I'], [], [], [])],
+                            [VerbalGroup(['come'], [], 'future simple',
                                 [],
-                                          [Indirect_Complement([], [Nominal_Group(['a'], ['evening'], [], [], [])])],
+                                          [IndirectComplement([], [NominalGroup(['a'], ['evening'], [], [], [])])],
                                 [], ['tomorrow'], 'affirmative', [])])
 
         print('The sentence that we will process is : ')
@@ -585,10 +585,10 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'September', 'day': '8', 'hour': '16', 'minute': '11', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['I'], [], [], [])],
-                            [Verbal_Group(['play'], [], 'past simple',
-                                          [Nominal_Group(['a'], ['guitar'], [], [], [])],
-                                          [Indirect_Complement(['ago'], [Nominal_Group(['a'], ['year'], [], [], [])])],
+                            [NominalGroup([], ['I'], [], [], [])],
+                            [VerbalGroup(['play'], [], 'past simple',
+                                          [NominalGroup(['a'], ['guitar'], [], [], [])],
+                                          [IndirectComplement(['ago'], [NominalGroup(['a'], ['year'], [], [], [])])],
                                 [], [], 'affirmative', [])])
 
         print('The sentence that we will process is : ')
@@ -629,11 +629,11 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'September', 'day': '8', 'hour': '16', 'minute': '11', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['we'], [], [], [])],
-                            [Verbal_Group(['win'], [], 'past simple',
-                                          [Nominal_Group(['the'], ['award'], [], [], [])],
-                                          [Indirect_Complement(['in'], [
-                                              Nominal_Group(['the'], ['year'], [['next', []]], [], [])])],
+                            [NominalGroup([], ['we'], [], [], [])],
+                            [VerbalGroup(['win'], [], 'past simple',
+                                          [NominalGroup(['the'], ['award'], [], [], [])],
+                                          [IndirectComplement(['in'], [
+                                              NominalGroup(['the'], ['year'], [['next', []]], [], [])])],
                                 [], [], 'affirmative', [])])
 
         print('The sentence that we will process is : ')
@@ -674,10 +674,10 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'September', 'day': '8', 'hour': '16', 'minute': '11', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['I'], [], [], [])],
-                            [Verbal_Group(['come'], [], 'present simple',
+                            [NominalGroup([], ['I'], [], [], [])],
+                            [VerbalGroup(['come'], [], 'present simple',
                                 [],
-                                          [Indirect_Complement(['at'], [Nominal_Group(['10'], ['pm'], [], [], [])])],
+                                          [IndirectComplement(['at'], [NominalGroup(['10'], ['pm'], [], [], [])])],
                                 [], [], 'affirmative', [])])
         sentence.sv[0].i_cmpl[0].gn[0]._quantifier = "DIGIT"
 
@@ -717,10 +717,10 @@ class TestTimescale(unittest.TestCase):
 
         d_time = {'year': '2010', 'month': 'September', 'day': '9', 'hour': '16', 'minute': '11', 'second': '0'}
         sentence = Sentence('statement', '',
-                            [Nominal_Group([], ['I'], [], [], [])],
-                            [Verbal_Group(['come+back'], [], 'future simple',
+                            [NominalGroup([], ['I'], [], [], [])],
+                            [VerbalGroup(['come+back'], [], 'future simple',
                                 [],
-                                          [Indirect_Complement(['on'], [Nominal_Group([], ['Monday'], [], [], [])])],
+                                          [IndirectComplement(['on'], [NominalGroup([], ['Monday'], [], [], [])])],
                                 [], [], 'affirmative', [])])
 
         print('The sentence that we will process is : ')

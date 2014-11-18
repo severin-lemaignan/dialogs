@@ -206,16 +206,16 @@ Parsing result:
 \small
 \begin{verbatimtab}
   Sentence(Sentence.statement, '', 
-      [Nominal_Group(['the'], ['man'], [], [],[Sentence(Sentence.relative, 'who', 
+      [NominalGroup(['the'], ['man'], [], [],[Sentence(Sentence.relative, 'who', 
           [],  
-          [Verbal_Group(['talk'],[],'present simple', 
+          [VerbalGroup(['talk'],[],'present simple', 
               [], 
               [],
-              [], ['now'] ,Verbal_Group.affirmative,[])])])],  
-      [Verbal_Group(['have'], [],'present simple', 
-          [Nominal_Group(['a'],['car'],[['new',[]]],[],[])],
+              [], ['now'] ,VerbalGroup.affirmative,[])])])],  
+      [VerbalGroup(['have'], [],'present simple', 
+          [NominalGroup(['a'],['car'],[['new',[]]],[],[])],
           [],
-          [], [] ,Verbal_Group.affirmative,[])])
+          [], [] ,VerbalGroup.affirmative,[])])
 \end{verbatimtab}
 \normalsize
 
@@ -233,16 +233,16 @@ Result:
 \small
 \begin{verbatimtab}
   Sentence(Sentence.statement, '', 
-      [Nominal_Group([],['I'],[],[],[])], 
-      [Verbal_Group(['play'], [],'present perfect', 
-          [Nominal_Group(['a'],['foot'],[],[],[])], 
+      [NominalGroup([],['I'],[],[],[])], 
+      [VerbalGroup(['play'], [],'present perfect', 
+          [NominalGroup(['a'],['foot'],[],[],[])], 
           [],
-          [], [] ,Verbal_Group.affirmative,[Sentence('subsentence+statement', 'since', 
-              [Nominal_Group([],['I'],[],[],[])], 
-              [Verbal_Group(['be'], [],'past simple', 
-                  [Nominal_Group(['a'],['boy'],[['young',['very']]],[],[])], 
+          [], [] ,VerbalGroup.affirmative,[Sentence('subsentence+statement', 'since', 
+              [NominalGroup([],['I'],[],[],[])], 
+              [VerbalGroup(['be'], [],'past simple', 
+                  [NominalGroup(['a'],['boy'],[['young',['very']]],[],[])], 
                   [],
-                  [], [] ,Verbal_Group.affirmative,[])])])])
+                  [], [] ,VerbalGroup.affirmative,[])])])])
 \end{verbatimtab}
 \normalsize
 
@@ -1184,7 +1184,7 @@ In the case of a state verb, we note the absence of a direct object as opposed t
 \begin{verbatimtab}
   Utterance: "The bottle is on the table. The bottle is blue. The bottle is Blue."
   ? For the first sentence, it is an adverbial
-  ? In the second, we have an adjective. We create, on the level  of d_obj, a Nominal_Group
+  ? In the second, we have an adjective. We create, on the level  of d_obj, a NominalGroup
 contained that adjective
   ? In the third sentence, we have a proper name (any word in uppercase is considered a proper name)
 and so we use the d_obj

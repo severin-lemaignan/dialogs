@@ -17,8 +17,8 @@ def is_equal(grp1, grp2):
     if not ok:
         print("Groups are different.")
         print("Diff:")
-        diff = unified_diff(str(grp1).splitlines(1),
-                            str(grp2).splitlines(1),
+        diff = unified_diff(str(grp1).splitlines(),
+                            str(grp2).splitlines(),
                             fromfile="what I got",
                             tofile="what I expected",
                             n=1)
@@ -73,25 +73,25 @@ class TestSentence(unittest.TestCase):
 
         sentence1 = Sentence('w_question',
                              'location',
-                             [Nominal_Group(['the'], ['mother'], [], [], [])],
-                             [Verbal_Group(['be'], [], 'present simple', [], [], ['today'], [], [], [])])
+                             [NominalGroup(['the'], ['mother'], [], [], [])],
+                             [VerbalGroup(['be'], [], 'present simple', [], [], ['today'], [], [], [])])
 
         logger.info("*********************************")
         logger.info(sentence1)
 
         sentence2 = Sentence('statement',
                              '',
-                             [Nominal_Group([], ["Jido"], [], [], []), Nominal_Group([], ["Danny"], [], [], [])],
-                             [Verbal_Group(["want"], [], 'infinitive', [], [], [], [], 'affirmative', [])])
+                             [NominalGroup([], ["Jido"], [], [], []), NominalGroup([], ["Danny"], [], [], [])],
+                             [VerbalGroup(["want"], [], 'infinitive', [], [], [], [], 'affirmative', [])])
 
         logger.info("*********************************")
         logger.info(sentence2)
 
         sentence3 = Sentence('statement',
                              '',
-                             [Nominal_Group([], ["Holmes"], [], [], []), Nominal_Group([], ["Sherlock"], [], [], [])],
-                             [Verbal_Group(["want"],
-                                           [Verbal_Group(["eat"], [], 'infinitive', [], [], [], [], 'affirmative', [])],
+                             [NominalGroup([], ["Holmes"], [], [], []), NominalGroup([], ["Sherlock"], [], [], [])],
+                             [VerbalGroup(["want"],
+                                           [VerbalGroup(["eat"], [], 'infinitive', [], [], [], [], 'affirmative', [])],
                                            'past simple',
                                  [],
                                  [],
@@ -105,23 +105,23 @@ class TestSentence(unittest.TestCase):
 
         sentence4 = Sentence('statement',
                              '',
-                             [Nominal_Group(['the'],
+                             [NominalGroup(['the'],
                                             ['bottle'],
                                             [['blue', []], ['gray', []]],
-                                            [Nominal_Group(['my'], ['mother'], [], [], [sentence2]),
-                                             Nominal_Group(['my'], ['father'], [], [], [])],
+                                            [NominalGroup(['my'], ['mother'], [], [], [sentence2]),
+                                             NominalGroup(['my'], ['father'], [], [], [])],
                                  [])],
-                             [Verbal_Group(['know'],
+                             [VerbalGroup(['know'],
                                  [],
                                            'present simple',
-                                           [Nominal_Group(['the'], ["land"], ['old'], [], []),
-                                            Nominal_Group(['the'], ["brand"], [['lazy', []]], [], [])],
+                                           [NominalGroup(['the'], ["land"], ['old'], [], []),
+                                            NominalGroup(['the'], ["brand"], [['lazy', []]], [], [])],
                                            [
-                                               Indirect_Complement(['in'],
-                                                                   [Nominal_Group(['the'], ['garden'], [['green', []]],
+                                               IndirectComplement(['in'],
+                                                                   [NominalGroup(['the'], ['garden'], [['green', []]],
                                                                        [], [])]),
-                                               Indirect_Complement(['to'],
-                                                                   [Nominal_Group(['the'], ['car'], [['red', []]], [],
+                                               IndirectComplement(['to'],
+                                                                   [NominalGroup(['the'], ['car'], [['red', []]], [],
                                                                        [])])
                                            ],
                                            ["slowly"],
@@ -133,23 +133,23 @@ class TestSentence(unittest.TestCase):
 
         sentence4bis = Sentence('statement',
                                 '',
-                                [Nominal_Group(['the'],
+                                [NominalGroup(['the'],
                                                ['bottle'],
                                                [['blue', []], ['gray', []]],
-                                               [Nominal_Group(['my'], ['mother'], [], [], [sentence2]),
-                                                Nominal_Group(['my'], ['father'], [], [], [])],
+                                               [NominalGroup(['my'], ['mother'], [], [], [sentence2]),
+                                                NominalGroup(['my'], ['father'], [], [], [])],
                                     [])],
-                                [Verbal_Group(['know'],
+                                [VerbalGroup(['know'],
                                     [],
                                               'present simple',
-                                              [Nominal_Group(['the'], ["land"], [['old', []]], [], []),
-                                               Nominal_Group(['the'], ["brand"], [['lazy', []]], [], [])],
+                                              [NominalGroup(['the'], ["land"], [['old', []]], [], []),
+                                               NominalGroup(['the'], ["brand"], [['lazy', []]], [], [])],
                                               [
-                                                  Indirect_Complement(['in'],
-                                                                      [Nominal_Group(['the'], ['garden'],
+                                                  IndirectComplement(['in'],
+                                                                      [NominalGroup(['the'], ['garden'],
                                                                                      [['green', []]], [], [])]),
-                                                  Indirect_Complement(['to'],
-                                                                      [Nominal_Group(['the'], ['car'], [['red', []]],
+                                                  IndirectComplement(['to'],
+                                                                      [NominalGroup(['the'], ['car'], [['red', []]],
                                                                           [], [])])
                                               ],
                                               ["slowly"],
@@ -166,10 +166,10 @@ class TestSentence(unittest.TestCase):
         logger.info("sentence3 == sentence4: " + str(cmp.compare(sentence3, sentence4)))
 
         logger.info("*************  Nominal group adjective only ****************")
-        logger.info("Nominal_Group(['the'],['man'],[],[],[]) is adjective only: " + str(
-            Nominal_Group(['the'], ['man'], [], [], []).adjectives_only()))
-        logger.info("Nominal_Group([],[],[['blue',[]]],[],[]) is adjective only: " + str(
-            Nominal_Group([], [], [['blue', []]], [], []).adjectives_only()))
+        logger.info("NominalGroup(['the'],['man'],[],[],[]) is adjective only: " + str(
+            NominalGroup(['the'], ['man'], [], [], []).adjectives_only()))
+        logger.info("NominalGroup([],[],[['blue',[]]],[],[]) is adjective only: " + str(
+            NominalGroup([], [], [['blue', []]], [], []).adjectives_only()))
 
 
 class TestRemerge(unittest.TestCase):
@@ -190,7 +190,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -198,7 +198,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -215,7 +215,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -223,7 +223,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -241,7 +241,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [['big', ['very']]], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [['big', ['very']]], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -249,7 +249,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [['big', ['very']], ['blue', ['too']]], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [['big', ['very']], ['blue', ['too']]], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -266,7 +266,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -274,7 +274,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -291,7 +291,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last output')
         logger.info(str(nom_gr_struc))
 
@@ -299,12 +299,12 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
             [],
-                                                                    [Verbal_Group(['be'], [], 'present simple',
+                                                                    [VerbalGroup(['be'], [], 'present simple',
                                                                         [],
-                                                                                  [Indirect_Complement(['on'], [
-                                                                                      Nominal_Group(['the'], ['table'],
+                                                                                  [IndirectComplement(['on'], [
+                                                                                      NominalGroup(['the'], ['table'],
                                                                                           [], [], [])])],
                                                                         [], [], 'affirmative', [])])])
 
@@ -323,7 +323,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -331,12 +331,12 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
             [],
-                                                                    [Verbal_Group(['be'], [], 'present simple',
+                                                                    [VerbalGroup(['be'], [], 'present simple',
                                                                         [],
-                                                                                  [Indirect_Complement(['on'], [
-                                                                                      Nominal_Group(['the'], ['table'],
+                                                                                  [IndirectComplement(['on'], [
+                                                                                      NominalGroup(['the'], ['table'],
                                                                                           [], [], [])])],
                                                                         [], [], 'affirmative', [])])])
 
@@ -355,7 +355,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -363,7 +363,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [['green', []]], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [['green', []]], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -380,7 +380,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -388,7 +388,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [['green', []]], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [['green', []]], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -405,7 +405,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -413,7 +413,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [['dark', ['too']]], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [['dark', ['too']]], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -430,7 +430,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bear'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bear'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -438,7 +438,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['this'], ['plush'], [], [], [])
+        rslt = NominalGroup(['this'], ['plush'], [], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -455,7 +455,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -463,10 +463,10 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
-                                                                    [Nominal_Group([], ['he'], [], [], [])],
-                                                                    [Verbal_Group(['buy'], [], 'past simple',
-                                                                                  [Nominal_Group(['the'], ['bottle'],
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+                                                                    [NominalGroup([], ['he'], [], [], [])],
+                                                                    [VerbalGroup(['buy'], [], 'past simple',
+                                                                                  [NominalGroup(['the'], ['bottle'],
                                                                                       [], [], [])],
                                                                         [],
                                                                         [], ['yesterday'], 'affirmative', [])])])
@@ -486,7 +486,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -494,10 +494,10 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
-                                                                    [Nominal_Group([], ['he'], [], [], [])],
-                                                                    [Verbal_Group(['buy'], [], 'past simple',
-                                                                                  [Nominal_Group(['the'], ['bottle'],
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+                                                                    [NominalGroup([], ['he'], [], [], [])],
+                                                                    [VerbalGroup(['buy'], [], 'past simple',
+                                                                                  [NominalGroup(['the'], ['bottle'],
                                                                                       [], [], [])],
                                                                         [],
                                                                         [], ['yesterday'], 'affirmative', [])])])
@@ -517,7 +517,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -525,7 +525,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [Nominal_Group([], ['Jido'], [], [], [])], [])
+        rslt = NominalGroup(['the'], ['bottle'], [], [NominalGroup([], ['Jido'], [], [], [])], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -542,7 +542,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -550,7 +550,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [Nominal_Group([], ['Jido'], [], [], [])], [])
+        rslt = NominalGroup(['the'], ['bottle'], [], [NominalGroup([], ['Jido'], [], [], [])], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -567,7 +567,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -575,7 +575,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [['best', []]], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [['best', []]], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -591,7 +591,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -599,7 +599,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [Nominal_Group([], ['Jido'], [], [], [])], [])
+        rslt = NominalGroup(['the'], ['bottle'], [], [NominalGroup([], ['Jido'], [], [], [])], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -615,7 +615,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -623,7 +623,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [['red', []]], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [['red', []]], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -639,7 +639,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -647,12 +647,12 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
             [],
-                                                                    [Verbal_Group(['be'], [], 'present simple',
+                                                                    [VerbalGroup(['be'], [], 'present simple',
                                                                         [],
-                                                                                  [Indirect_Complement(['on'], [
-                                                                                      Nominal_Group(['the'], ['shelf'],
+                                                                                  [IndirectComplement(['on'], [
+                                                                                      NominalGroup(['the'], ['shelf'],
                                                                                           [], [], [])])],
                                                                         [], [], 'affirmative', [])])])
 
@@ -670,12 +670,12 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
             [],
-                                                                            [Verbal_Group(['be'], [], 'present simple',
+                                                                            [VerbalGroup(['be'], [], 'present simple',
                                                                                 [],
-                                                                                          [Indirect_Complement(['on'], [
-                                                                                              Nominal_Group(['the'],
+                                                                                          [IndirectComplement(['on'], [
+                                                                                              NominalGroup(['the'],
                                                                                                             ['table'],
                                                                                                   [], [], [])])],
                                                                                 [], [], 'affirmative', [])])])
@@ -686,12 +686,12 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
             [],
-                                                                    [Verbal_Group(['be'], [], 'present simple',
+                                                                    [VerbalGroup(['be'], [], 'present simple',
                                                                         [],
-                                                                                  [Indirect_Complement(['on'], [
-                                                                                      Nominal_Group(['the'], ['shelf'],
+                                                                                  [IndirectComplement(['on'], [
+                                                                                      NominalGroup(['the'], ['shelf'],
                                                                                           [], [], [])])],
                                                                         [], [], 'affirmative', [])])])
 
@@ -709,7 +709,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -717,7 +717,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [['red', []]], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [['red', []]], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -733,7 +733,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -741,7 +741,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [Nominal_Group(['my'], ['brother'], [], [], [])], [])
+        rslt = NominalGroup(['the'], ['bottle'], [], [NominalGroup(['my'], ['brother'], [], [], [])], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -757,7 +757,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [Nominal_Group(['my'], ['uncle'], [], [], [])], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [NominalGroup(['my'], ['uncle'], [], [], [])], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -765,7 +765,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [Nominal_Group(['my'], ['brother'], [], [], [])], [])
+        rslt = NominalGroup(['the'], ['bottle'], [], [NominalGroup(['my'], ['brother'], [], [], [])], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -781,7 +781,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [])
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -789,12 +789,12 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
             [],
-                                                                    [Verbal_Group(['be'], [], 'present simple',
+                                                                    [VerbalGroup(['be'], [], 'present simple',
                                                                         [],
-                                                                                  [Indirect_Complement(['on'], [
-                                                                                      Nominal_Group(['the'], ['shelf'],
+                                                                                  [IndirectComplement(['on'], [
+                                                                                      NominalGroup(['the'], ['shelf'],
                                                                                           [], [], [])])],
                                                                         [], [], 'affirmative', [])])])
 
@@ -812,12 +812,12 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+        nom_gr_struc = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
             [],
-                                                                            [Verbal_Group(['be'], [], 'present simple',
+                                                                            [VerbalGroup(['be'], [], 'present simple',
                                                                                 [],
-                                                                                          [Indirect_Complement(['on'], [
-                                                                                              Nominal_Group(['the'],
+                                                                                          [IndirectComplement(['on'], [
+                                                                                              NominalGroup(['the'],
                                                                                                             ['table'],
                                                                                                   [], [], [])])],
                                                                                 [], [], 'affirmative', [])])])
@@ -828,12 +828,12 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [Sentence('relative', 'which',
             [],
-                                                                    [Verbal_Group(['be'], [], 'present simple',
+                                                                    [VerbalGroup(['be'], [], 'present simple',
                                                                         [],
-                                                                                  [Indirect_Complement(['on'], [
-                                                                                      Nominal_Group(['the'], ['shelf'],
+                                                                                  [IndirectComplement(['on'], [
+                                                                                      NominalGroup(['the'], ['shelf'],
                                                                                           [], [], [])])],
                                                                         [], [], 'affirmative', [])])])
 
@@ -851,7 +851,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'SUCCESS'
 
-        nom_gr_struc = Nominal_Group([], ['it'], [], [], [])
+        nom_gr_struc = NominalGroup([], ['it'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -859,7 +859,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['bottle'], [], [], [])
+        rslt = NominalGroup(['the'], ['bottle'], [], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 
@@ -875,7 +875,7 @@ class TestRemerge(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         flag = 'FAILURE'
 
-        nom_gr_struc = Nominal_Group([], ['it'], [], [], [])
+        nom_gr_struc = NominalGroup([], ['it'], [], [], [])
         logger.info('the nominal group of the last out put')
         logger.info(str(nom_gr_struc))
 
@@ -883,7 +883,7 @@ class TestRemerge(unittest.TestCase):
         logger.info('the nominal group after processing')
         logger.info(str(nom_gr_struc))
 
-        rslt = Nominal_Group(['the'], ['shelf'], [], [], [])
+        rslt = NominalGroup(['the'], ['shelf'], [], [], [])
 
         self.assertTrue(is_equal(nom_gr_struc, rslt))
 

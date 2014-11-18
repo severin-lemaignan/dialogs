@@ -17,7 +17,7 @@ DETERMINER = "DETERMINER"
 QUANTIFIER = "QUANTIFIER"
 SENTENCE_TYPE = "SENTENCE_TYPE"
 
-# says if a verbal group is "affirmative" or "negative" (Verbal_Group.[affirmative|negative])
+# says if a verbal group is "affirmative" or "negative" (VerbalGroup.[affirmative|negative])
 NEGATIVE = "NEGATIVE"
 AFFIRMATIVE = "AFFIRMATIVE"
 

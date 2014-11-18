@@ -32,15 +32,15 @@ print(utterance)
 print('#################################################################')
 print('')
 sentences=[Sentence('statement', '', 
-        [Nominal_Group(['the'],['bottle'],['blue'],[Nominal_Group([],['Jido'],[],[],[])],[])], 
-        [Verbal_Group(['be'], [],'present simple', 
+        [NominalGroup(['the'],['bottle'],['blue'],[NominalGroup([],['Jido'],[],[],[])],[])],
+        [VerbalGroup(['be'], [],'present simple',
             [], 
-            [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+            [IndirectComplement(['on'],[NominalGroup(['the'],['table'],[],[],[])])],
             [], [] ,'affirmative',[])]),
     Sentence('statement', '', 
-        [Nominal_Group([],['I'],[],[],[])], 
-        [Verbal_Group(['play'], [],'future simple', 
-            [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+        [NominalGroup([],['I'],[],[],[])],
+        [VerbalGroup(['play'], [],'future simple',
+            [NominalGroup(['a'],['guitar'],[],[],[]),NominalGroup(['a'],['piano'],[],[],[]),NominalGroup(['a'],['violon'],[],[],[])],
             [],
             [], [] ,'affirmative',[])])]
     
@@ -63,15 +63,15 @@ print(utterance)
 print('#################################################################')
 print('')
 sentences=[Sentence('statement', '', 
-        [Nominal_Group(['the'],['bottle'],['blue'],[Nominal_Group([],['Jido'],[],[],[])],[])], 
-        [Verbal_Group(['be'], [],'present simple', 
+        [NominalGroup(['the'],['bottle'],['blue'],[NominalGroup([],['Jido'],[],[],[])],[])],
+        [VerbalGroup(['be'], [],'present simple',
             [], 
-            [Indirect_Complement(['on'],[Nominal_Group(['the'],['table'],[],[],[])])],
+            [IndirectComplement(['on'],[NominalGroup(['the'],['table'],[],[],[])])],
             [], [] ,'affirmative',[])]),
     Sentence('statement', '', 
-        [Nominal_Group([],['I'],[],[],[])], 
-        [Verbal_Group(['play'], [],'future simple', 
-            [Nominal_Group(['a'],['guitar'],[],[],[]),Nominal_Group(['a'],['piano'],[],[],[]),Nominal_Group(['a'],['violon'],[],[],[])], 
+        [NominalGroup([],['I'],[],[],[])],
+        [VerbalGroup(['play'], [],'future simple',
+            [NominalGroup(['a'],['guitar'],[],[],[]),NominalGroup(['a'],['piano'],[],[],[]),NominalGroup(['a'],['violon'],[],[],[])],
             [],
             [], [] ,'affirmative',[])])]
 
@@ -95,22 +95,22 @@ print('###############################################################')
 print('')
 
 sentences = [Sentence('statement', '',
-                      [Nominal_Group([], ['it'], [], [], [])],
-                      [Verbal_Group(['be'], [], 'present simple',
+                      [NominalGroup([], ['it'], [], [], [])],
+                      [VerbalGroup(['be'], [], 'present simple',
                           [],
-                                    [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], [])])],
+                                    [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], [])])],
                           [], [], 'affirmative', [])]),
              Sentence('imperative', '',
                  [],
-                      [Verbal_Group(['give'], [], 'present simple',
-                                    [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                                    [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
+                      [VerbalGroup(['give'], [], 'present simple',
+                                    [NominalGroup(['the'], ['bottle'], [], [], [])],
+                                    [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
                           [], [], 'affirmative', [])]),
              Sentence('statement', '',
-                      [Nominal_Group([], ['I'], [], [], [])],
-                      [Verbal_Group(['give'], [], 'present simple',
-                                    [Nominal_Group(['the'], ['shelf'], [], [], [])],
-                                    [Indirect_Complement(['to'], [Nominal_Group([], ['you'], [], [], [])])],
+                      [NominalGroup([], ['I'], [], [], [])],
+                      [VerbalGroup(['give'], [], 'present simple',
+                                    [NominalGroup(['the'], ['shelf'], [], [], [])],
+                                    [IndirectComplement(['to'], [NominalGroup([], ['you'], [], [], [])])],
                           [], [], 'negative', [])])]
 
 sentences[0].sn[0].id = 'azeaz'
@@ -143,7 +143,7 @@ class TestAnaphora(unittest.TestCase):
         print('#####################################')
         print('')
         print('the nominal group that we have to change')
-        nominal_group_struc = Nominal_Group([], ['it'], [], [], [])
+        nominal_group_struc = NominalGroup([], ['it'], [], [], [])
         print((str(nominal_group_struc)))
 
         print('#####################################')
@@ -153,7 +153,7 @@ class TestAnaphora(unittest.TestCase):
         print((str(gr)))
         print('')
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([gr], [result])
         self.assertEquals(result_test, 0)
 
@@ -172,7 +172,7 @@ class TestAnaphora(unittest.TestCase):
         print('the flag')
         print((str(nominal_group_struc[1])))
 
-        result = Nominal_Group(['the'], ['shelf'], [], [], [])
+        result = NominalGroup(['the'], ['shelf'], [], [], [])
         result_test = compare_nominal_group([nominal_group_struc[0]], [result])
         self.assertEquals(result_test, 0)
 
@@ -197,7 +197,7 @@ class TestAnaphora(unittest.TestCase):
         print('#####################################')
         print('')
         print('the nominal group that we have to change')
-        nominal_group_struc = Nominal_Group([], ['it'], [], [], [])
+        nominal_group_struc = NominalGroup([], ['it'], [], [], [])
         print((str(nominal_group_struc)))
 
         print('#####################################')
@@ -207,7 +207,7 @@ class TestAnaphora(unittest.TestCase):
         print((str(gr)))
         print('')
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([gr], [result])
         self.assertEquals(result_test, 0)
 
@@ -226,7 +226,7 @@ class TestAnaphora(unittest.TestCase):
         print('the flag')
         print((str(nominal_group_struc[1])))
 
-        result = Nominal_Group(['the'], ['bottle'], [], [], [])
+        result = NominalGroup(['the'], ['bottle'], [], [], [])
         result_test = compare_nominal_group([nominal_group_struc[0]], [result])
         self.assertEquals(result_test, 0)
 
@@ -251,7 +251,7 @@ class TestAnaphora(unittest.TestCase):
         print('#####################################')
         print('')
         print('the nominal group that we have to change')
-        nominal_group_struc = Nominal_Group([], ['it'], [], [], [])
+        nominal_group_struc = NominalGroup([], ['it'], [], [], [])
         print((str(nominal_group_struc)))
 
         print('#####################################')
@@ -261,7 +261,7 @@ class TestAnaphora(unittest.TestCase):
         print((str(gr)))
         print('')
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([gr], [result])
         self.assertEquals(result_test, 0)
 
@@ -280,7 +280,7 @@ class TestAnaphora(unittest.TestCase):
         print('the flag')
         print((str(nominal_group_struc[1])))
 
-        result = Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])
+        result = NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])
         result_test = compare_nominal_group([nominal_group_struc[0]], [result])
         self.assertEquals(result_test, 0)
 
@@ -305,7 +305,7 @@ class TestAnaphora(unittest.TestCase):
         print('#####################################')
         print('')
         print('the nominal group that we have to change')
-        nominal_group_struc = Nominal_Group([], ['it'], [], [], [])
+        nominal_group_struc = NominalGroup([], ['it'], [], [], [])
         print((str(nominal_group_struc)))
 
         print('#####################################')
@@ -315,7 +315,7 @@ class TestAnaphora(unittest.TestCase):
         print((str(gr)))
         print('')
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([gr], [result])
         self.assertEquals(result_test, 0)
 
@@ -334,7 +334,7 @@ class TestAnaphora(unittest.TestCase):
         print('the flag')
         print((str(nominal_group_struc[1])))
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([nominal_group_struc[0]], [result])
         self.assertEquals(result_test, 0)
 
@@ -359,7 +359,7 @@ class TestAnaphora(unittest.TestCase):
         print('#####################################')
         print('')
         print('the nominal group that we have to change')
-        nominal_group_struc = Nominal_Group(['this'], ['one'], [], [], [])
+        nominal_group_struc = NominalGroup(['this'], ['one'], [], [], [])
         print((str(nominal_group_struc)))
 
         print('#####################################')
@@ -369,7 +369,7 @@ class TestAnaphora(unittest.TestCase):
         print((str(gr)))
         print('')
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([gr], [result])
         self.assertEquals(result_test, 0)
 
@@ -388,7 +388,7 @@ class TestAnaphora(unittest.TestCase):
         print('the flag')
         print((str(nominal_group_struc[1])))
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([nominal_group_struc[0]], [result])
         self.assertEquals(result_test, 0)
 
@@ -413,7 +413,7 @@ class TestAnaphora(unittest.TestCase):
         print('#####################################')
         print('')
         print('the nominal group that we have to change')
-        nominal_group_struc = Nominal_Group(['this'], ['one'], [], [], [])
+        nominal_group_struc = NominalGroup(['this'], ['one'], [], [], [])
         print((str(nominal_group_struc)))
 
         print('#####################################')
@@ -423,7 +423,7 @@ class TestAnaphora(unittest.TestCase):
         print((str(gr)))
         print('')
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([gr], [result])
         self.assertEquals(result_test, 0)
 
@@ -442,7 +442,7 @@ class TestAnaphora(unittest.TestCase):
         print('the flag')
         print((str(nominal_group_struc[1])))
 
-        result = Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])
+        result = NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])
         result_test = compare_nominal_group([nominal_group_struc[0]], [result])
         self.assertEquals(result_test, 0)
 
@@ -467,7 +467,7 @@ class TestAnaphora(unittest.TestCase):
         print('#####################################')
         print('')
         print('the nominal group that we have to change')
-        nominal_group_struc = Nominal_Group(['this'], [], [], [], [])
+        nominal_group_struc = NominalGroup(['this'], [], [], [], [])
         print((str(nominal_group_struc)))
 
         print('#####################################')
@@ -477,7 +477,7 @@ class TestAnaphora(unittest.TestCase):
         print((str(gr)))
         print('')
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([gr], [result])
         self.assertEquals(result_test, 0)
 
@@ -496,7 +496,7 @@ class TestAnaphora(unittest.TestCase):
         print('the flag')
         print((str(nominal_group_struc[1])))
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([nominal_group_struc[0]], [result])
         self.assertEquals(result_test, 0)
 
@@ -521,7 +521,7 @@ class TestAnaphora(unittest.TestCase):
         print('#####################################')
         print('')
         print('the nominal group that we have to change')
-        nominal_group_struc = Nominal_Group(['this'], [], [], [], [])
+        nominal_group_struc = NominalGroup(['this'], [], [], [], [])
         print((str(nominal_group_struc)))
 
         print('#####################################')
@@ -531,7 +531,7 @@ class TestAnaphora(unittest.TestCase):
         print((str(gr)))
         print('')
 
-        result = Nominal_Group(['the'], ['table'], [], [], [])
+        result = NominalGroup(['the'], ['table'], [], [], [])
         result_test = compare_nominal_group([gr], [result])
         self.assertEquals(result_test, 0)
 
@@ -550,7 +550,7 @@ class TestAnaphora(unittest.TestCase):
         print('the flag')
         print((str(nominal_group_struc[1])))
 
-        result = Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])
+        result = NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])
         result_test = compare_nominal_group([nominal_group_struc[0]], [result])
         self.assertEquals(result_test, 0)
 

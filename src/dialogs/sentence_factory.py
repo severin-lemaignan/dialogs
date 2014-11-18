@@ -18,22 +18,22 @@ class SentenceFactory(object):
         # Store the list of subproperties of 'hasFeature'
         # used in create_nominal_group_with_object()
         try:
-            self.featuresProperties = self.kb["* rdfs:subPropertyOf hasFeature"]
+            self.features_properties = self.kb["* rdfs:subPropertyOf hasFeature"]
         except TypeError:
             # No ontology server?
-            self.featuresProperties = []
+            self.features_properties = []
 
     def create_w_question_choice(self, obj_name, feature, values):
         """ Creates sentences of type: 
             Which color is the bottle? Blue or yellow.
         """
-        nominal_groupL = [Nominal_Group([], [], [[val.lower(), []]], [], []) for val in values]
+        nominal_groupL = [NominalGroup([], [], [[val.lower(), []]], [], []) for val in values]
 
         sentence = [Sentence(W_QUESTION, 'choice',
-                             [Nominal_Group([], [feature], [], [], [])],
-                             [Verbal_Group(['be'], [], 'present simple',
-                                           [Nominal_Group(['the'], [obj_name.lower()], [], [], [])],
-                                 [], [], [], Verbal_Group.affirmative, [])]),
+                             [NominalGroup([], [feature], [], [], [])],
+                             [VerbalGroup(['be'], [], 'present simple',
+                                           [NominalGroup(['the'], [obj_name.lower()], [], [], [])],
+                                 [], [], [], VerbalGroup.affirmative, [])]),
                     Sentence(STATEMENT, '', nominal_groupL, [])]
 
         for i in range(len(values) - 1):
@@ -50,12 +50,12 @@ class SentenceFactory(object):
 
             This works only if the descriptor is at 3rd person.
         """
-        nominal_groupL = [Nominal_Group([], [], [[val.lower(), []]], [], []) for val in values]
+        nominal_groupL = [NominalGroup([], [], [[val.lower(), []]], [], []) for val in values]
 
         sentence = [Sentence(W_QUESTION, 'description',
-                             [Nominal_Group(['the'], [obj_name.lower()], [], [], [])],
-                             [Verbal_Group([feature[:-1]], [], 'present simple',
-                                 [], [], [], [], Verbal_Group.affirmative, [])]),
+                             [NominalGroup(['the'], [obj_name.lower()], [], [], [])],
+                             [VerbalGroup([feature[:-1]], [], 'present simple',
+                                 [], [], [], [], VerbalGroup.affirmative, [])]),
                     Sentence(STATEMENT, '', nominal_groupL, [])]
 
         for i in range(len(values) - 1):
@@ -67,16 +67,16 @@ class SentenceFactory(object):
         """ Creates sentences of type: 
                 "Where is the box? On the table or on the shelf?"
         """
-        indirect_complL = [Indirect_Complement([feature], [Nominal_Group(['the'], [val], [], [], [])]) \
+        indirect_complL = [IndirectComplement([feature], [NominalGroup(['the'], [val], [], [], [])]) \
                            for val in values]
 
         sentence = [Sentence(W_QUESTION, 'place',
-                             [Nominal_Group(['the'], [obj_name], [], [], [])],
-                             [Verbal_Group(['be'], [], 'present simple',
-                                 [], [], [], [], Verbal_Group.affirmative, [])]),
+                             [NominalGroup(['the'], [obj_name], [], [], [])],
+                             [VerbalGroup(['be'], [], 'present simple',
+                                 [], [], [], [], VerbalGroup.affirmative, [])]),
                     Sentence(YES_NO_QUESTION, '', [],
-                             [Verbal_Group([], [], '',
-                                 [], indirect_complL, [], [], Verbal_Group.affirmative, [])])]
+                             [VerbalGroup([], [], '',
+                                 [], indirect_complL, [], [], VerbalGroup.affirmative, [])])]
 
         for i in range(len(values) - 1):
             sentence[1].sv[0].i_cmpl[i + 1].gn[0]._conjunction = 'OR'
@@ -97,7 +97,7 @@ class SentenceFactory(object):
                     det = 'my'
                 else:
                     det = 'your'
-                indirect_complements.append(Indirect_Complement(['on'], [Nominal_Group([det], [val], [], [], [])]))
+                indirect_complements.append(IndirectComplement(['on'], [NominalGroup([det], [val], [], [], [])]))
             else:
                 if agent == 'myself':
                     det = 'me'
@@ -111,12 +111,12 @@ class SentenceFactory(object):
                 else:
                     prep = None
 
-                indirect_complements.append(Indirect_Complement([prep], [Nominal_Group([], [det], [], [], [])]))
+                indirect_complements.append(IndirectComplement([prep], [NominalGroup([], [det], [], [], [])]))
 
         sentence = [Sentence(YES_NO_QUESTION, '',
-                             [Nominal_Group([], ['it'], [], [], [])],
-                             [Verbal_Group(['be'], [], 'present simple',
-                                 [], indirect_complements, [], [], Verbal_Group.affirmative, [])])]
+                             [NominalGroup([], ['it'], [], [], [])],
+                             [VerbalGroup(['be'], [], 'present simple',
+                                 [], indirect_complements, [], [], VerbalGroup.affirmative, [])])]
 
         for i in range(len(values) - 1):
             sentence[0].sv[0].i_cmpl[i + 1].gn[0]._conjunction = 'OR'
@@ -130,8 +130,8 @@ class SentenceFactory(object):
 
         sentence = [Sentence(YES_NO_QUESTION, '', [object], []),
                     Sentence(W_QUESTION, 'thing',
-                             [Nominal_Group([], ['you'], [], [], [])],
-                             [Verbal_Group(['mean'], [], 'present simple', [], [], [], [], Verbal_Group.affirmative,
+                             [NominalGroup([], ['you'], [], [], [])],
+                             [VerbalGroup(['mean'], [], 'present simple', [], [], [], [], VerbalGroup.affirmative,
                                  [])])]
         return sentence
 
@@ -143,8 +143,8 @@ class SentenceFactory(object):
         any_object = object
         any_object.det = ['any']
         sentence = [Sentence(STATEMENT, 'thing',
-                             [Nominal_Group([], ['I'], [], [], [])],
-                             [Verbal_Group(['know'], [], 'present simple', [object], [], [], [], Verbal_Group.negative,
+                             [NominalGroup([], ['I'], [], [], [])],
+                             [VerbalGroup(['know'], [], 'present simple', [object], [], [], [], VerbalGroup.negative,
                                  [])])]
         return sentence
 
@@ -161,8 +161,8 @@ class SentenceFactory(object):
             object.relative = []
 
         return [Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['mean'], [], 'present simple', [object], [], [], [], Verbal_Group.affirmative,
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['mean'], [], 'present simple', [object], [], [], [], VerbalGroup.affirmative,
                              [])])]
 
 
@@ -171,10 +171,10 @@ class SentenceFactory(object):
             "bottles are objects? What is a bottle?"
         """
         sentence = [object, Sentence(W_QUESTION, 'thing',
-            [], [Verbal_Group(['be'], [], 'present simple', [], [], [], [], Verbal_Group.affirmative, [])])]
+            [], [VerbalGroup(['be'], [], 'present simple', [], [], [], [], VerbalGroup.affirmative, [])])]
 
         for obj in objectL:
-            sentence[1].sn.append(Nominal_Group(['an' if obj[0].lower() in 'aeiou' else 'a'],
+            sentence[1].sn.append(NominalGroup(['an' if obj[0].lower() in 'aeiou' else 'a'],
                                                 [obj], [], [], []))
 
         return sentence
@@ -199,19 +199,19 @@ class SentenceFactory(object):
         #Return. I am sorry. I don't know
         if not w_answer:
             return [Sentence(STATEMENT, "",
-                             [Nominal_Group([], ['I'], [], [], [])],
-                             [Verbal_Group(['be'], [], "present simple",
-                                           [Nominal_Group([], [], [['sorry', []]], [], [])], [], [], [], "affirmative",
+                             [NominalGroup([], ['I'], [], [], [])],
+                             [VerbalGroup(['be'], [], "present simple",
+                                           [NominalGroup([], [], [['sorry', []]], [], [])], [], [], [], "affirmative",
                                  [])]),
                     Sentence(STATEMENT, "",
-                             [Nominal_Group([], ['I'], [], [], [])],
-                             [Verbal_Group(['know'], [], "present simple",
+                             [NominalGroup([], ['I'], [], [], [])],
+                             [VerbalGroup(['know'], [], "present simple",
                                  [], [], [], [], "negative", [])])]
 
 
         # Case of adjectives only
         if w_question.aim in ResourcePool().adjectives_ontology_classes:
-            ng = Nominal_Group([], [], [[w_answer[0][1][0], []]], [], [])
+            ng = NominalGroup([], [], [[w_answer[0][1][0], []]], [], [])
             preposition = w_answer[0][0]
             ng._resolved = True
             nominal_groupL = [[preposition, [ng]]]
@@ -249,15 +249,15 @@ class SentenceFactory(object):
                         # Here we try to output something similar to My left, or Your left or at the left of ACHILLE
                         # Case of "my and your"
                         if myself and yourself:
-                            ngL = [Nominal_Group(["our"], preposition, [], [], [])]
+                            ngL = [NominalGroup(["our"], preposition, [], [], [])]
                         #
                         elif myself:
-                            ngL = [Nominal_Group(["my"], preposition, [], [], [])]
+                            ngL = [NominalGroup(["my"], preposition, [], [], [])]
                         elif yourself:
-                            ngL = [Nominal_Group(["your"], preposition, [], [], [])]
+                            ngL = [NominalGroup(["your"], preposition, [], [], [])]
 
                         else:
-                            ngL = [Nominal_Group(["the"], preposition, [], ngL, [])]
+                            ngL = [NominalGroup(["the"], preposition, [], ngL, [])]
 
                         preposition = ["at"]
 
@@ -284,7 +284,7 @@ class SentenceFactory(object):
 
 
         elif query_on_field == 'QUERY_ON_INDIRECT_OBJ':
-            sentence.sv[0].i_cmpl = [Indirect_Complement(ng[0], ng[1]) for ng in nominal_groupL]
+            sentence.sv[0].i_cmpl = [IndirectComplement(ng[0], ng[1]) for ng in nominal_groupL]
 
         sentence.aim = ""
 
@@ -346,14 +346,14 @@ class SentenceFactory(object):
         #Creating object components : Det, Noun, noun-cmpl, etc.
         # reference to myself, current speaker, ...
         if object == "myself":
-            return Nominal_Group([], ["me"], [], [], []) # No need to go further as we know "myself" ID
+            return NominalGroup([], ["me"], [], [], []) # No need to go further as we know "myself" ID
 
         if object == current_speaker:
-            return Nominal_Group([], ["you"], [], [], []) # No need to go further as we know the current speaker's ID
+            return NominalGroup([], ["you"], [], [], []) # No need to go further as we know the current speaker's ID
 
         label = self.kb.getLabel(object)
         if not label == object: #We really have a label for this concept
-            return Nominal_Group([], [label], [], [], [])
+            return NominalGroup([], [label], [], [], [])
 
         # Else, we proceed with full discrimination to generate a
         # unique description of our object.
@@ -390,7 +390,7 @@ class SentenceFactory(object):
 
         for feature in other_features:
             p, o = feature
-            if p in self.featuresProperties:
+            if p in self.features_properties:
                 object_features.append([self.kb.getLabel(o), []]) # Cf Adjectives format: list[main, list[quatifiers]]
                 #TODO
                 #else:
@@ -398,7 +398,7 @@ class SentenceFactory(object):
                 # -> create relative like "that sees tata"
 
         # Nominal Group to return
-        return Nominal_Group(object_determiner,
+        return NominalGroup(object_determiner,
                              object_noun,
                              object_features,
             [],
@@ -421,24 +421,24 @@ class SentenceFactory(object):
             sentence.aim = "if"
             return [Sentence(STATEMENT,
                              "",
-                             [Nominal_Group([], ['I'], [], [], [])],
-                             [Verbal_Group(['know'], [], "present simple", [], [], [], [], "negative", [sentence])])]
+                             [NominalGroup([], ['I'], [], [], [])],
+                             [VerbalGroup(['know'], [], "present simple", [], [], [], [], "negative", [sentence])])]
 
 
     def create_i_dont_understand(self):
         return [Sentence(STATEMENT,
                          "",
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['understand'], [], "present simple", [], [], [], [], "negative", [])])]
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['understand'], [], "present simple", [], [], [], [], "negative", [])])]
 
     def create_gratulation_reply(self):
         """ Create a reply to gratualtion
             E.g: You are welcome.
         """
         return [Sentence(STATEMENT, "",
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['be'], [], "present simple",
-                                       [Nominal_Group([], [], [['welcome', []]], [], [])], [], [], [], "affirmative",
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['be'], [], "present simple",
+                                       [NominalGroup([], [], [['welcome', []]], [], [])], [], [], [], "affirmative",
                              [])])]
 
     def create_agree_reply(self):

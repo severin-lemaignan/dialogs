@@ -8,7 +8,7 @@
  Functions:
     recover_quantifier : to recover the quantifier and put the noun in singular form if it's in plural
     put_rela_from_nncompl_noun : to put the relative of the complement in the main noun 
-    fill_nom_gr : to fulfill a structure Nominal_Group
+    fill_nom_gr : to fulfill a structure NominalGroup
     recover_ns : to recovers the nominal structure of the sentence
 """
 from dialogs.resources_manager import ResourcePool
@@ -90,7 +90,7 @@ def recover_quantifier(nom_gr):
 def put_rela_from_nncompl_noun(gn):
     """Puts the relative of the complement in the main noun
 
-    :param Nominal_Group gn: nominal group class
+    :param NominalGroup gn: nominal group class
 
     :return: nominal group class
     """
@@ -108,7 +108,7 @@ def put_rela_from_nncompl_noun(gn):
 
 
 def fill_nom_gr(phrase, nom_gr, pos_nom_gr, conjunction):
-    """Fills a structure Nominal_Group with given information
+    """Fills a structure NominalGroup with given information
 
     param: list phrase: the raw sentence
     param: nom_gr: the nominal group
@@ -146,11 +146,11 @@ def fill_nom_gr(phrase, nom_gr, pos_nom_gr, conjunction):
 
     #If there is a nom_gr_compl, we must make a recursive process for embedded complement
     if nom_gr_compl:
-        gn = Nominal_Group(det, noun, adj, [fill_nom_gr(phrase, nom_gr_compl, pos_nom_gr + len(nom_gr) + 1, 'AND')],
+        gn = NominalGroup(det, noun, adj, [fill_nom_gr(phrase, nom_gr_compl, pos_nom_gr + len(nom_gr) + 1, 'AND')],
                            relative)
 
     else:
-        gn = Nominal_Group(det, noun, adj, [], relative)
+        gn = NominalGroup(det, noun, adj, [], relative)
 
     #We recover the conjunction
     gn._conjunction = conjunction

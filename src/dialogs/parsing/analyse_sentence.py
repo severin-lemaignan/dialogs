@@ -238,7 +238,7 @@ def w_quest_class(sentence):
     if analysis.sn:
         #The direct object must be empty
         if analysis.sv[0].d_obj:
-            analysis.sv[0].i_cmpl = analysis.sv[0].i_cmpl + [Indirect_Complement([], analysis.sv[0].d_obj)]
+            analysis.sv[0].i_cmpl = analysis.sv[0].i_cmpl + [IndirectComplement([], analysis.sv[0].d_obj)]
             analysis.sv[0].d_obj = []
     return analysis
 
@@ -302,11 +302,11 @@ def w_quest_quant(type, request, sentence):
 
     #There is not sn in the sentence
     if not analysis.sn:
-        analysis.sn = [Nominal_Group(['a'], [sentence[2]], [], [], [])]
+        analysis.sn = [NominalGroup(['a'], [sentence[2]], [], [], [])]
 
     else:
         #There is not direct object in the sentence
-        analysis.sv[0].d_obj = [Nominal_Group(['a'], [sentence[2]], [], [], [])]
+        analysis.sv[0].d_obj = [NominalGroup(['a'], [sentence[2]], [], [], [])]
 
     return analysis
 
@@ -383,7 +383,7 @@ def stc_start_subsentence(sentence):
             if sentence.index(i) != len(sentence) - 1:
                 analysis = other_sentence(STATEMENT, '', sentence[sentence.index(i) + 1:])
             else:
-                vg = Verbal_Group([], [], '', [], [], [], [], Verbal_Group.affirmative, [])
+                vg = VerbalGroup([], [], '', [], [], [], [], VerbalGroup.affirmative, [])
                 analysis = Sentence('', '', [], [vg])
             break
 
@@ -411,7 +411,7 @@ def w_quest_whose(type, request, sentence):
     """
 
     #init
-    vg = Verbal_Group(['be'], [], '', [], [], [], [], Verbal_Group.affirmative, [])
+    vg = VerbalGroup(['be'], [], '', [], [], [], [], VerbalGroup.affirmative, [])
     analysis = Sentence(type, request, [], [])
 
 
@@ -452,7 +452,7 @@ def y_n_ques(type, request, sentence):
     """
 
     #init
-    vg = Verbal_Group([], [], '', [], [], [], [], Verbal_Group.affirmative, [])
+    vg = VerbalGroup([], [], '', [], [], [], [], VerbalGroup.affirmative, [])
     analysis = Sentence(type, request, [], [])
     modal = []
     stc = sentence
@@ -477,19 +477,19 @@ def y_n_ques(type, request, sentence):
 
     #If we have a negative form
     if sentence[1] == 'not':
-        vg.state = Verbal_Group.negative
+        vg.state = VerbalGroup.negative
         #We remove 'not'
         sentence = sentence[:1] + sentence[2:]
 
     #Wrong is a noun but not followed by the determinant
     if sentence[1] == 'wrong' and request == 'thing':
-        analysis.sn = [Nominal_Group([], [], ['wrong'], [], [])]
+        analysis.sn = [NominalGroup([], [], ['wrong'], [], [])]
         sentence = [sentence[0]] + sentence[2:]
 
     #In this case we have an imperative sentence
     elif analyse_nominal_group.find_sn_pos(sentence, 1) == [] and type != W_QUESTION:
         #We have to reput the 'not'
-        if vg.state == Verbal_Group.negative:
+        if vg.state == VerbalGroup.negative:
             sentence = sentence[:1] + ['not'] + sentence[1:]
         return other_sentence(type, request, sentence)
 
@@ -502,7 +502,7 @@ def y_n_ques(type, request, sentence):
         if sentence[0].endswith('ed') or sentence[0].endswith('ing') or sentence[0].endswith('ly') or sentence[
             0] in ResourcePool().adverbs:
             #We recover this information and remove it
-            analysis.sn = [Nominal_Group([sentence[0]], [], [], [], [])]
+            analysis.sn = [NominalGroup([sentence[0]], [], [], [], [])]
             if sentence[0] == 'there' and aux == 'are':
                 analysis.sn[0]._quantifier = 'SOME'
             sentence = sentence[1:]
@@ -618,7 +618,7 @@ def other_sentence(type, request, sentence):
     """
 
     #init
-    vg = Verbal_Group([], [], '', [], [], [], [], Verbal_Group.affirmative, [])
+    vg = VerbalGroup([], [], '', [], [], [], [], VerbalGroup.affirmative, [])
     analysis = Sentence(type, request, [], [])
     modal = []
 
@@ -645,7 +645,7 @@ def other_sentence(type, request, sentence):
         if sentence[0] in ResourcePool().demonstrative_det and analyse_verb.infinitive([sentence[1]],
                                                                                        'present simple') == ['be']:
             #We recover this information and remove it
-            analysis.sn = [Nominal_Group([sentence[0]], [], [], [], [])]
+            analysis.sn = [NominalGroup([sentence[0]], [], [], [], [])]
             if sentence[0] == 'there' and sentence[1] == 'are':
                 analysis.sn[0]._quantifier = 'SOME'
             sentence = sentence[1:]
@@ -667,7 +667,7 @@ def other_sentence(type, request, sentence):
 
         #We must take into account all possible cases to recover the sentence's tense
         if len(sentence) > 1 and sentence[1] == 'not':
-            vg.state = Verbal_Group.negative
+            vg.state = VerbalGroup.negative
 
             #Before the negative form we have an auxiliary for the negation
             if sentence[0] == 'do' or sentence[0] == 'does' or sentence[0] == 'did':
@@ -693,7 +693,7 @@ def other_sentence(type, request, sentence):
         #For the affirmative processing
         else:
             if sentence[0] == 'not':
-                vg.state = Verbal_Group.negative
+                vg.state = VerbalGroup.negative
                 sentence = sentence[1:]
 
             sentence = analyse_verbal_structure.delete_unusable_word(sentence)
@@ -725,7 +725,7 @@ def other_sentence(type, request, sentence):
             sentence = sentence[sentence.index('not') + 1:]
             sentence = analyse_verbal_structure.delete_unusable_word(sentence)
             sentence = analyse_verbal_structure.find_vrb_adv(sentence, vg)
-            vg.state = Verbal_Group.negative
+            vg.state = VerbalGroup.negative
         else:
             sentence = analyse_verbal_structure.delete_unusable_word(sentence)
             sentence = analyse_verbal_structure.find_vrb_adv(sentence, vg)

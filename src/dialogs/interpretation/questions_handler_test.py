@@ -100,19 +100,19 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_1_where_question ******************")
         logger.info("Where is the blue cube?")
         sentence = Sentence(W_QUESTION, "place",
-                            [Nominal_Group(['the'],
+                            [NominalGroup(['the'],
                                            ['cube'],
                                            [['blue', []]],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present_simple',
                                 [],
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'table1'
         self.process(sentence, expected_result)
@@ -121,19 +121,19 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_2_where_question ******************")
         logger.info("Where is the small cube?")
         sentence = Sentence(W_QUESTION, "place",
-                            [Nominal_Group(['the'],
+                            [NominalGroup(['the'],
                                            ['cube'],
                                            [['small', []]],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present_simple',
                                 [],
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'shelf1'
 
@@ -144,19 +144,19 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_3_what_question ******************")
         logger.info("What do you see?")
         sentence = Sentence(W_QUESTION, "thing",
-                            [Nominal_Group([],
+                            [NominalGroup([],
                                 ['you'],
                                 [],
                                 [],
                                 [])],
-                            [Verbal_Group(['see'],
+                            [VerbalGroup(['see'],
                                 [],
                                           'present_simple',
                                 [],
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'shelf1'
 
@@ -167,10 +167,10 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("what is blue?")
         sentence = Sentence(W_QUESTION, "thing",
             [],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
-                                          [Nominal_Group([],
+                                          [NominalGroup([],
                                               [],
                                               [['blue', []]],
                                               [],
@@ -178,7 +178,7 @@ class TestQuestionHandler(unittest.TestCase):
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'blue_cube'
         self.process(sentence, expected_result)
@@ -187,19 +187,19 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_9_what_question_this ******************")
         logger.info("what is this?")
         sentence = Sentence(W_QUESTION, "thing",
-                            [Nominal_Group(['this'],
+                            [NominalGroup(['this'],
                                 [],
                                 [],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
                                 [],
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'another_cube'
         self.process(sentence, expected_result)
@@ -209,10 +209,10 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("what object is blue?")
         sentence = Sentence(W_QUESTION, "object",
             [],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
-                                          [Nominal_Group([],
+                                          [NominalGroup([],
                                               [],
                                               [['blue', []]],
                                               [],
@@ -220,7 +220,7 @@ class TestQuestionHandler(unittest.TestCase):
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'blue_cube'
         self.process(sentence, expected_result)
@@ -229,19 +229,19 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_11_w_question ******************")
         logger.info("what size is this?")
         sentence = Sentence(W_QUESTION, "size",
-                            [Nominal_Group(['this'],
+                            [NominalGroup(['this'],
                                 [],
                                 [],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
                                 [],
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'small'
         self.process(sentence, expected_result)
@@ -250,19 +250,19 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_12_what_question ******************")
         logger.info("what color is the blue_cube?")
         sentence = Sentence(W_QUESTION, "color",
-                            [Nominal_Group(['the'],
+                            [NominalGroup(['the'],
                                            ['blue_cube'],
                                 [],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
                                 [],
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'blue'
         self.process(sentence, expected_result)
@@ -271,19 +271,19 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_13_who_question ******************")
         logger.info("who is the SPEAKER?")
         sentence = Sentence(W_QUESTION, "people",
-                            [Nominal_Group(['the'],
+                            [NominalGroup(['the'],
                                            ['SPEAKER'],
                                 [],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
                                 [],
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'SPEAKER'
         self.process(sentence, expected_result)
@@ -293,10 +293,10 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("who sees Patrick?")
         sentence = Sentence(W_QUESTION, "people",
             [],
-                            [Verbal_Group(['see'],
+                            [VerbalGroup(['see'],
                                 [],
                                           'present simple',
-                                          [Nominal_Group([],
+                                          [NominalGroup([],
                                               ['Patrick'],
                                               [],
                                               [],
@@ -304,7 +304,7 @@ class TestQuestionHandler(unittest.TestCase):
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'id_danny'
 
@@ -315,15 +315,15 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_15_who_question ******************")
         logger.info("who does Danny give the small cube?")
         sentence = Sentence(W_QUESTION, "people",
-                            [Nominal_Group([],
+                            [NominalGroup([],
                                 ['Danny'],
                                 [],
                                 [],
                                 [])],
-                            [Verbal_Group(['give'],
+                            [VerbalGroup(['give'],
                                 [],
                                           'present simple',
-                                          [Nominal_Group(['the'],
+                                          [NominalGroup(['the'],
                                                          ['cube'],
                                                          [['small', []]],
                                               [],
@@ -331,7 +331,7 @@ class TestQuestionHandler(unittest.TestCase):
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = 'SPEAKER'
         self.process(sentence, expected_result)
@@ -341,15 +341,15 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_4_y_n_question action verb******************")
         logger.info("Did you get the blue cube?")
         sentence = Sentence(YES_NO_QUESTION, "",
-                            [Nominal_Group([],
+                            [NominalGroup([],
                                 ['you'],
                                 [''],
                                 [],
                                 [])],
-                            [Verbal_Group(['get'],
+                            [VerbalGroup(['get'],
                                 [],
                                           'past simple',
-                                          [Nominal_Group(['the'],
+                                          [NominalGroup(['the'],
                                                          ['cube'],
                                                          [['blue', []]],
                                               [],
@@ -357,7 +357,7 @@ class TestQuestionHandler(unittest.TestCase):
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = True
         self.process(sentence, expected_result)
@@ -367,24 +367,24 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_5_y_n_question verb to be followed by complement******************")
         logger.info("Is the blue cube on the table1?")
         sentence = Sentence(YES_NO_QUESTION, "",
-                            [Nominal_Group(['the'],
+                            [NominalGroup(['the'],
                                            ['cube'],
                                            [['blue', []]],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
                                 [],
-                                          [Indirect_Complement(['on'],
-                                                               [Nominal_Group(['the'],
+                                          [IndirectComplement(['on'],
+                                                               [NominalGroup(['the'],
                                                                               ['table1'],
                                                                    [],
                                                                    [],
                                                                    [])])],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = True
         self.process(sentence, expected_result)
@@ -394,15 +394,15 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_6_y_n_question ******************")
         logger.info("Is the small cube blue?")
         sentence = Sentence(YES_NO_QUESTION, "",
-                            [Nominal_Group(['the'],
+                            [NominalGroup(['the'],
                                            ['cube'],
                                            [['small', []]],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
-                                          [Nominal_Group([],
+                                          [NominalGroup([],
                                               [],
                                               [['blue', []]],
                                               [],
@@ -410,7 +410,7 @@ class TestQuestionHandler(unittest.TestCase):
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = False
         self.process(sentence, expected_result)
@@ -420,24 +420,24 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_7_y_n_question verb to be ******************")
         logger.info("Is my cube on the table1?")
         sentence = Sentence(YES_NO_QUESTION, "",
-                            [Nominal_Group(['my'],
+                            [NominalGroup(['my'],
                                            ['cube'],
                                 [],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
                                 [],
-                                          [Indirect_Complement(['on'],
-                                                               [Nominal_Group(['the'],
+                                          [IndirectComplement(['on'],
+                                                               [NominalGroup(['the'],
                                                                               ['table1'],
                                                                    [],
                                                                    [],
                                                                    [])])],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = False
         self.process(sentence, expected_result)
@@ -446,19 +446,19 @@ class TestQuestionHandler(unittest.TestCase):
         logger.info("\n*************  test_9_how_question ******************")
         logger.info("How is my car?")
         sentence = Sentence(W_QUESTION, "manner",
-                            [Nominal_Group(['my'],
+                            [NominalGroup(['my'],
                                            ['cube'],
                                 [],
                                 [],
                                 [])],
-                            [Verbal_Group(['be'],
+                            [VerbalGroup(['be'],
                                 [],
                                           'present simple',
                                 [],
                                 [],
                                 [],
                                 [],
-                                          Verbal_Group.affirmative,
+                                          VerbalGroup.affirmative,
                                 [])])
         expected_result = [['blue', []]]
         self.process(sentence, expected_result)

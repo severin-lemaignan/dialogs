@@ -30,7 +30,7 @@ def compare_nominal_group(ng, rslt_ng):
     Function to compare 2 nominal groups
     """
 
-    #init
+    # init
     i = 0
     j = 0
 
@@ -41,11 +41,11 @@ def compare_nominal_group(ng, rslt_ng):
             if rslt_ng[i].det != ng[i].det or rslt_ng[i].adj != ng[i].adj or rslt_ng[i].noun != ng[i].noun:
                 return 1
 
-            #We compare the noun complement
+            # We compare the noun complement
             if compare_nominal_group(rslt_ng[i].noun_cmpl, ng[i].noun_cmpl) == 1:
                 return 1
 
-            #We compare the relative
+            # We compare the relative
             if len(rslt_ng[i].relative) != len(ng[i].relative):
                 return 1
             else:
@@ -54,10 +54,10 @@ def compare_nominal_group(ng, rslt_ng):
                         return 1
                     j += 1
 
-                #reinit
+                # reinit
                 j = 0
 
-            #We compare the flag (if there is an 'or' or an 'and')
+            # We compare the flag (if there is an 'or' or an 'and')
             if rslt_ng[i]._conjunction != ng[i]._conjunction:
                 return 1
             if rslt_ng[i]._quantifier != ng[i]._quantifier:
@@ -71,7 +71,7 @@ def compare_icompl(icompl, rslt_icompl):
     Function to compare 2 indirect complements
     """
 
-    #init
+    # init
     i = 0
 
     if len(icompl) != len(rslt_icompl):
@@ -91,7 +91,7 @@ def compare_vs(vs, rslt_vs):
     Function to compare 2 verbal structures
     """
 
-    #init
+    # init
     i = 0
     j = 0
 
@@ -107,17 +107,17 @@ def compare_vs(vs, rslt_vs):
             if vs[i].advrb != rslt_vs[i].advrb or vs[i].vrb_adv != rslt_vs[i].vrb_adv:
                 return 1
 
-            #We compare the d_obj
+            # We compare the d_obj
             if compare_nominal_group(vs[i].d_obj, rslt_vs[i].d_obj) == 1:
                 return 1
 
-            #We compare the i_cmpl
+            # We compare the i_cmpl
             if compare_icompl(vs[i].i_cmpl, rslt_vs[i].i_cmpl) == 1:
                 return 1
             if compare_vs(vs[i].sv_sec, rslt_vs[i].sv_sec) == 1:
                 return 1
 
-            #We compare the vrb_sub_sentence
+            # We compare the vrb_sub_sentence
             if len(rslt_vs[i].vrb_sub_sentence) != len(vs[i].vrb_sub_sentence):
                 return 1
             else:
@@ -150,7 +150,7 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
     Function to compare 2 replies
     """
 
-    #init
+    # init
     i = 0
 
     if len(utterance) != len(rslt_utterance):
@@ -162,27 +162,27 @@ def compare_utterance(utterance, rslt_utterance, sentence_list):
             if i < len(sentence_list):
                 print(sentence_list[i])
 
-            print((str(utterance[i])))
+            print(str(utterance[i]))
 
             for a in utterance[i].sv:
                 for z in a.comparator:
                     print("The comparison in the sentence is : ")
                     print(z['object'])
-                    print((str(z['nom_gr'][0])))
+                    print(str(z['nom_gr'][0]))
 
-            #ok = compare_sentence(utterance[i], rslt_utterance[i])
+            # ok = compare_sentence(utterance[i], rslt_utterance[i])
             ok = (str(utterance[i]) == str(rslt_utterance[i]))
             if not ok:
                 print("Parsing result for this sentence is not what was expected.")
                 print("Expected result:")
                 print(str(rslt_utterance[i]))
                 print("Diff:")
-                diff = unified_diff(str(utterance[i]).splitlines(1),
-                                    str(rslt_utterance[i]).splitlines(1),
+                diff = unified_diff(str(utterance[i]).splitlines(),
+                                    str(rslt_utterance[i]).splitlines(),
                                     fromfile="what I got",
                                     tofile="what I expected",
                                     n=1)
-                print(''.join(diff) + "\033[0m") #reset the ANSI colors, if any
+                print(''.join(diff) + "\033[0m")  # reset the ANSI colors, if any
                 return 1
             else:
                 print("############### Parsing is OK ###############")
@@ -209,23 +209,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['blue', []]], [], [])],
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['blue', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], ['Blue'], [], [], [])],
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], ['Blue'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -242,20 +242,20 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [['blue', []]], [Nominal_Group([], ['Jido'], [], [], [])],
+                         [NominalGroup(['the'], ['bottle'], [['blue', []]], [NominalGroup([], ['Jido'], [], [], [])],
                              [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
-                                       [Nominal_Group(['a'], ['guitar'], [], [], []),
-                                        Nominal_Group(['a'], ['piano'], [], [], []),
-                                        Nominal_Group(['a'], ['violon'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
+                                       [NominalGroup(['a'], ['guitar'], [], [], []),
+                                        NominalGroup(['a'], ['piano'], [], [], []),
+                                        NominalGroup(['a'], ['violon'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[1].sv[0].d_obj[0]._quantifier = "SOME"
         rslt[1].sv[0].d_obj[1]._quantifier = "SOME"
@@ -277,29 +277,29 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group([], ['it'], [], [], [])],
-                                       [Indirect_Complement(['to'], [Nominal_Group([], ['you'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup([], ['it'], [], [], [])],
+                                       [IndirectComplement(['to'], [NominalGroup([], ['you'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
                     [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                                       [Indirect_Complement(['to'], [Nominal_Group([], ['you'], [], [], [])])],
-                             [], [], Verbal_Group.negative, [])])]
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [])],
+                                       [IndirectComplement(['to'], [NominalGroup([], ['you'], [], [], [])])],
+                             [], [], VerbalGroup.negative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -316,20 +316,20 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['prepare'], [], 'present progressive',
-                                       [Nominal_Group(['the'], ['car'], [], [], []),
-                                        Nominal_Group(['the'], ['moto'], [],
-                                                      [Nominal_Group(['my'], ['father'], [], [], [])], [])],
-                                       [Indirect_Complement(['at'], [
-                                           Nominal_Group(['the'], ['time'], [['same', []]], [], [])])],
-                             [], [], Verbal_Group.negative, [])]),
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['prepare'], [], 'present progressive',
+                                       [NominalGroup(['the'], ['car'], [], [], []),
+                                        NominalGroup(['the'], ['moto'], [],
+                                                      [NominalGroup(['my'], ['father'], [], [], [])], [])],
+                                       [IndirectComplement(['at'], [
+                                           NominalGroup(['the'], ['time'], [['same', []]], [], [])])],
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [Nominal_Group(['my'], ['brother'], [], [], [])], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['bottle'], [], [NominalGroup(['my'], ['brother'], [], [], [])], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['in'], [Nominal_Group(['your'], ['right'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['in'], [NominalGroup(['your'], ['right'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -346,27 +346,27 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['should+drive'], [], 'present conditional',
-                                       [Nominal_Group(['the'], ['car'], [['big', []], ['new', []]],
-                                                      [Nominal_Group(['the'], ['wife'], [],
-                                                                     [Nominal_Group(['his'], ['uncle'],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['should+drive'], [], 'present conditional',
+                                       [NominalGroup(['the'], ['car'], [['big', []], ['new', []]],
+                                                      [NominalGroup(['the'], ['wife'], [],
+                                                                     [NominalGroup(['his'], ['uncle'],
                                                                                     [['poorest', []]], [], [])], [])],
                                            [])],
                              [],
-                             [], [], Verbal_Group.negative, [])]),
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['should+give'], [], 'present conditional',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['you'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['should+give'], [], 'present conditional',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['you'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['shall+go'], [], 'present simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['shall+go'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -383,18 +383,18 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['he'], [], [], [])],
-                         [Verbal_Group(['do'], [], 'present progressive',
-                                       [Nominal_Group(['his'], ['homework'], [], [], []),
-                                        Nominal_Group(['his'], ['game'], [], [], [])],
+                         [NominalGroup([], ['he'], [], [], [])],
+                         [VerbalGroup(['do'], [], 'present progressive',
+                                       [NominalGroup(['his'], ['homework'], [], [], []),
+                                        NominalGroup(['his'], ['game'], [], [], [])],
                              [],
-                             [], ['now'], Verbal_Group.negative, [])]),
+                             [], ['now'], VerbalGroup.negative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['he'], [], [], [])],
-                         [Verbal_Group(['can+take'], [], 'present simple',
-                                       [Nominal_Group(['this'], ['bottle'], [], [], [])],
+                         [NominalGroup([], ['he'], [], [], [])],
+                         [VerbalGroup(['can+take'], [], 'present simple',
+                                       [NominalGroup(['this'], ['bottle'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.negative, [])]),
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(START, 'good afternoon.', [], [])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
@@ -413,34 +413,34 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                                       ['quickly'], [], Verbal_Group.negative, [])]),
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                                       ['quickly'], [], VerbalGroup.negative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['want'], [Verbal_Group(['play'],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['want'], [VerbalGroup(['play'],
                              [], '',
                              [],
-                                                               [Indirect_Complement(['with'], [
-                                                                   Nominal_Group(['my'], ['guitar'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])],
+                                                               [IndirectComplement(['with'], [
+                                                                   NominalGroup(['my'], ['guitar'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])],
                                        'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['like'], [Verbal_Group(['go'],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['like'], [VerbalGroup(['go'],
                              [], '',
                              [],
-                                                               [Indirect_Complement(['to'], [
-                                                                   Nominal_Group(['the'], ['cinema'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])],
+                                                               [IndirectComplement(['to'], [
+                                                                   NominalGroup(['the'], ['cinema'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])],
                                        'present conditional',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -458,28 +458,28 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
         print(sentence_list)
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['man'], [], [], [Sentence(RELATIVE, 'who',
+                         [NominalGroup(['the'], ['man'], [], [], [Sentence(RELATIVE, 'who',
                              [],
-                                                                            [Verbal_Group(['talk'], [],
+                                                                            [VerbalGroup(['talk'], [],
                                                                                           'present simple',
                                                                                 [],
                                                                                 [],
-                                                                                [], [], Verbal_Group.affirmative,
+                                                                                [], [], VerbalGroup.affirmative,
                                                                                 [])])])],
-                         [Verbal_Group(['have'], [], 'present simple',
-                                       [Nominal_Group(['a'], ['car'], [['new', []]], [], [])],
+                         [VerbalGroup(['have'], [], 'present simple',
+                                       [NominalGroup(['a'], ['car'], [['new', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['guitar'], [], [], [Sentence(RELATIVE, 'that',
-                                                                                             [Nominal_Group([], ['I'],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'present simple',
+                                       [NominalGroup(['the'], ['guitar'], [], [], [Sentence(RELATIVE, 'that',
+                                                                                             [NominalGroup([], ['I'],
                                                                                                  [], [], [])],
-                                                                                             [Verbal_Group(['buy'], [],
+                                                                                             [VerbalGroup(['buy'], [],
                                                                                                            'past simple',
                                                                                                            [
-                                                                                                               Nominal_Group(
+                                                                                                               NominalGroup(
                                                                                                                    [
                                                                                                                        'the'],
                                                                                                                    [
@@ -489,10 +489,10 @@ class TestParsing(unittest.TestCase):
                                                                                                                    [])],
                                                                                                  [],
                                                                                                  [], ['yesterday'],
-                                                                                                           Verbal_Group.affirmative,
+                                                                                                           VerbalGroup.affirmative,
                                                                                                  [])])])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[0]._quantifier = "SOME"
 
@@ -513,18 +513,18 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'which',
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'which',
                                            [],
-                                                                                             [Verbal_Group(['be'], [],
+                                                                                             [VerbalGroup(['be'], [],
                                                                                                            'present simple',
                                                                                                  [],
                                                                                                            [
-                                                                                                               Indirect_Complement(
+                                                                                                               IndirectComplement(
                                                                                                                    [
                                                                                                                        'on'],
                                                                                                                    [
-                                                                                                                       Nominal_Group(
+                                                                                                                       NominalGroup(
                                                                                                                            [
                                                                                                                                'the'],
                                                                                                                            [
@@ -533,15 +533,15 @@ class TestParsing(unittest.TestCase):
                                                                                                                            [],
                                                                                                                            [])])],
                                                                                                  [], [],
-                                                                                                           Verbal_Group.affirmative,
+                                                                                                           VerbalGroup.affirmative,
                                                                                                  [])])]),
-                                        Nominal_Group(['the'], ['glass'], [], [], [Sentence(RELATIVE, 'which',
-                                                                                            [Nominal_Group([], ['I'],
+                                        NominalGroup(['the'], ['glass'], [], [], [Sentence(RELATIVE, 'which',
+                                                                                            [NominalGroup([], ['I'],
                                                                                                 [], [], [])],
-                                                                                            [Verbal_Group(['clean'], [],
+                                                                                            [VerbalGroup(['clean'], [],
                                                                                                           'past simple',
                                                                                                           [
-                                                                                                              Nominal_Group(
+                                                                                                              NominalGroup(
                                                                                                                   [
                                                                                                                       'the'],
                                                                                                                   [
@@ -551,11 +551,11 @@ class TestParsing(unittest.TestCase):
                                                                                                                   [])],
                                                                                                 [],
                                                                                                 [], ['yesterday'],
-                                                                                                          Verbal_Group.affirmative,
+                                                                                                          VerbalGroup.affirmative,
                                                                                                 [])])])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])]),
-                                        Indirect_Complement(['at'], [Nominal_Group(['my'], ['left'], [], [], [])])],
-                                       ['quickly'], [], Verbal_Group.negative, [])])]
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])]),
+                                        IndirectComplement(['at'], [NominalGroup(['my'], ['left'], [], [], [])])],
+                                       ['quickly'], [], VerbalGroup.negative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -573,15 +573,15 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'that',
-                                                                               [Nominal_Group([], ['I'], [], [], [])],
-                                                                               [Verbal_Group(['buy'], [], 'past simple',
-                                                                                             [Nominal_Group(['the'],
+                         [NominalGroup(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'that',
+                                                                               [NominalGroup([], ['I'], [], [], [])],
+                                                                               [VerbalGroup(['buy'], [], 'past simple',
+                                                                                             [NominalGroup(['the'],
                                                                                                             ['bottle'],
                                                                                                  [], [], [])],
-                                                                                             [Indirect_Complement(
+                                                                                             [IndirectComplement(
                                                                                                  ['from'], [
-                                                                                                     Nominal_Group(
+                                                                                                     NominalGroup(
                                                                                                          ['the'],
                                                                                                          ['store'], [],
                                                                                                          [], [Sentence(
@@ -589,18 +589,18 @@ class TestParsing(unittest.TestCase):
                                                                                                              'which',
                                                                                                              [],
                                                                                                              [
-                                                                                                                 Verbal_Group(
+                                                                                                                 VerbalGroup(
                                                                                                                      [
                                                                                                                          'be'],
                                                                                                                      [],
                                                                                                                      'present simple',
                                                                                                                      [],
                                                                                                                      [
-                                                                                                                         Indirect_Complement(
+                                                                                                                         IndirectComplement(
                                                                                                                              [
                                                                                                                                  'in'],
                                                                                                                              [
-                                                                                                                                 Nominal_Group(
+                                                                                                                                 NominalGroup(
                                                                                                                                      [
                                                                                                                                          'the'],
                                                                                                                                      [
@@ -613,14 +613,14 @@ class TestParsing(unittest.TestCase):
                                                                                                                                      [])])],
                                                                                                                      [],
                                                                                                                      [],
-                                                                                                                     Verbal_Group.affirmative,
+                                                                                                                     VerbalGroup.affirmative,
                                                                                                                      [])])])])],
-                                                                                   [], [], Verbal_Group.affirmative,
+                                                                                   [], [], VerbalGroup.affirmative,
                                                                                    [])])])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], ['yours'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], ['yours'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -637,17 +637,17 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'date',
-                         [Nominal_Group(['the'], ['session'], [['planning', []]], [], [])],
-                         [Verbal_Group(['take+place'], [], 'future simple',
+                         [NominalGroup(['the'], ['session'], [['planning', []]], [], [])],
+                         [VerbalGroup(['take+place'], [], 'future simple',
                              [],
                              [],
-                             [], [], Verbal_Group.negative, [])]),
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(W_QUESTION, 'date',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['must+take'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bus'], [], [], [])],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['must+take'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bus'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -664,23 +664,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'place',
-                         [Nominal_Group([], ['Broyen'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup([], ['Broyen'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'place',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['go'], [], 'present progressive',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['go'], [], 'present progressive',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'origin',
-                         [Nominal_Group([], ['Jido'], [], [], []), Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['must+be'], [], 'present simple',
+                         [NominalGroup([], ['Jido'], [], [], []), NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['must+be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -697,29 +697,29 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'time',
-                         [Nominal_Group(['the'], ['news'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['news'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group([], ['TV'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup([], ['TV'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'size',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['wear'], [], 'present simple',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['wear'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['code'], [], [], [])],
-                         [Verbal_Group(['write'], [], 'present passive',
+                         [NominalGroup(['the'], ['code'], [], [], [])],
+                         [VerbalGroup(['write'], [], 'present passive',
                              [],
-                                       [Indirect_Complement(['by'], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['by'], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['Mahdi'], [], [], [])],
-                         [Verbal_Group(['go'], [], 'present progressive',
+                         [NominalGroup([], ['Mahdi'], [], [], [])],
+                         [VerbalGroup(['go'], [], 'present progressive',
                              [],
-                                       [Indirect_Complement(['to'], [Nominal_Group(['the'], ['Laas'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['to'], [NominalGroup(['the'], ['Laas'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -736,28 +736,28 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'description',
-                         [Nominal_Group(['the'], ['weather'], [], [], [])],
-                         [Verbal_Group(['like'], [], 'present simple',
+                         [NominalGroup(['the'], ['weather'], [], [], [])],
+                         [VerbalGroup(['like'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['in'], [Nominal_Group(['the'], ['winter'], [], [], [])])],
-                             [], ['here'], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['in'], [NominalGroup(['the'], ['winter'], [], [], [])])],
+                             [], ['here'], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'thing',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['do'], [], 'past progressive',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['do'], [], 'past progressive',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'thing',
-                         [Nominal_Group([], ['Jido'], [], [], [])],
-                         [Verbal_Group(['go'], [Verbal_Group(['do'],
+                         [NominalGroup([], ['Jido'], [], [], [])],
+                         [VerbalGroup(['go'], [VerbalGroup(['do'],
                              [], '',
                              [],
                              [],
-                             [], ['tomorrow'], Verbal_Group.affirmative, [])],
+                             [], ['tomorrow'], VerbalGroup.affirmative, [])],
                                        'present progressive',
                              [],
                              [],
-                             [], [], Verbal_Group.negative, [])])]
+                             [], [], VerbalGroup.negative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -775,22 +775,22 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(W_QUESTION, 'situation',
             [],
-                         [Verbal_Group(['happen'], [], 'present progressive',
+                         [VerbalGroup(['happen'], [], 'present progressive',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'situation',
                     [],
-                         [Verbal_Group(['must+happen'], [], 'present simple',
+                         [VerbalGroup(['must+happen'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['in'], [Nominal_Group(['the'], ['company'], [], [], [])])],
-                             [], ['today'], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['in'], [NominalGroup(['the'], ['company'], [], [], [])])],
+                             [], ['today'], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'situation',
                     [],
-                         [Verbal_Group(['happen'], [], 'past simple',
+                         [VerbalGroup(['happen'], [], 'past simple',
                              [],
                              [],
-                             [], ['here'], Verbal_Group.negative, [])]),
+                             [], ['here'], VerbalGroup.negative, [])]),
                 Sentence('disagree', 'no.', [], []),
                 Sentence('disagree', 'sorry.', [], [])]
 
@@ -809,19 +809,19 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'thing',
-                         [Nominal_Group(['the'], ['color'], [],
-                                        [Nominal_Group(['the'], ['bottle'], [['biggest', []]], [], [])], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['color'], [],
+                                        [NominalGroup(['the'], ['bottle'], [['biggest', []]], [], [])], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['your'], ['left'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['your'], ['left'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'explication',
-                         [Nominal_Group(['your'], ['brother'], [], [], [])],
-                         [Verbal_Group(['do'], [], 'present simple',
+                         [NominalGroup(['your'], ['brother'], [], [], [])],
+                         [VerbalGroup(['do'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['for'],
-                                                            [Nominal_Group(['a'], [], [['living', []]], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['for'],
+                                                            [NominalGroup(['a'], [], [['living', []]], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier = "SOME"
 
@@ -842,16 +842,16 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(W_QUESTION, 'classification+people',
             [],
-                         [Verbal_Group(['read'], [], 'present simple',
-                                       [Nominal_Group(['this'], ['magazine'], [], [], [])],
+                         [VerbalGroup(['read'], [], 'present simple',
+                                       [NominalGroup(['this'], ['magazine'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.negative, [])]),
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(W_QUESTION, 'classification+music',
-                         [Nominal_Group([], ['he'], [], [], [])],
-                         [Verbal_Group(['must+listen+to'], [], 'present simple',
+                         [NominalGroup([], ['he'], [], [], [])],
+                         [VerbalGroup(['must+listen+to'], [], 'present simple',
                              [],
-                                       [Indirect_Complement([], [Nominal_Group([], ['everyday'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement([], [NominalGroup([], ['everyday'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -868,24 +868,24 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'classification+sport',
-                         [Nominal_Group(['your'], [], [['favorite', []]], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['your'], [], [['favorite', []]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'thing',
-                         [Nominal_Group(['the'], ['problem'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['problem'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['with'], [Nominal_Group([], ['him'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['with'], [NominalGroup([], ['him'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'thing',
-                         [Nominal_Group(['the'], ['matter'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['matter'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['with'],
-                                                            [Nominal_Group(['this'], ['person'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['with'],
+                                                            [NominalGroup(['this'], ['person'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -902,23 +902,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'old',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'long',
-                         [Nominal_Group(['the'], ['store'], [], [Nominal_Group(['your'], ['uncle'], [], [], [])], [])],
-                         [Verbal_Group(['open'], [], 'present passive',
+                         [NominalGroup(['the'], ['store'], [], [NominalGroup(['your'], ['uncle'], [], [], [])], [])],
+                         [VerbalGroup(['open'], [], 'present passive',
                              [],
                              [],
-                             [], ['tonight'], Verbal_Group.affirmative, [])]),
+                             [], ['tonight'], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'long',
-                         [Nominal_Group(['the'], ['store'], [], [Nominal_Group(['your'], ['uncle'], [], [], [])], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['open', []]], [], [])],
+                         [NominalGroup(['the'], ['store'], [], [NominalGroup(['your'], ['uncle'], [], [], [])], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['open', []]], [], [])],
                              [],
-                             [], ['tonight'], Verbal_Group.affirmative, [])])]
+                             [], ['tonight'], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -935,25 +935,25 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'far',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['from'], [Nominal_Group(['the'], ['hotel'], [], [], [])]),
-                                        Indirect_Complement(['to'],
-                                                            [Nominal_Group(['the'], ['restaurant'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['from'], [NominalGroup(['the'], ['hotel'], [], [], [])]),
+                                        IndirectComplement(['to'],
+                                                            [NominalGroup(['the'], ['restaurant'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'soon',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['can+be'], [], 'present simple',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['can+be'], [], 'present simple',
                              [],
                              [],
-                             [], ['here'], Verbal_Group.affirmative, [])]),
+                             [], ['here'], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'often',
-                         [Nominal_Group([], ['Jido'], [], [], [])],
-                         [Verbal_Group(['go+skiing'], [], 'present simple',
+                         [NominalGroup([], ['Jido'], [], [], [])],
+                         [VerbalGroup(['go+skiing'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -970,23 +970,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'quantity',
-                         [Nominal_Group([], ['they'], [], [], [])],
-                         [Verbal_Group(['should+transport'], [], 'present conditional',
-                                       [Nominal_Group(['a'], ['water'], [], [], [])],
+                         [NominalGroup([], ['they'], [], [], [])],
+                         [VerbalGroup(['should+transport'], [], 'present conditional',
+                                       [NominalGroup(['a'], ['water'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'quantity',
-                         [Nominal_Group(['a'], ['guests'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'past simple',
+                         [NominalGroup(['a'], ['guests'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'past simple',
                              [],
-                                       [Indirect_Complement(['at'], [Nominal_Group(['the'], ['party'], [], [], [])])],
-                             [], [], Verbal_Group.negative, [])]),
+                                       [IndirectComplement(['at'], [NominalGroup(['the'], ['party'], [], [], [])])],
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(W_QUESTION, 'quantity',
-                         [Nominal_Group(['the'], ['motocycle'], [], [], [])],
-                         [Verbal_Group(['cost'], [], 'present simple',
+                         [NominalGroup(['the'], ['motocycle'], [], [], [])],
+                         [VerbalGroup(['cost'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1004,17 +1004,17 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(W_QUESTION, 'invitation',
             [],
-                         [Verbal_Group(['go'], [], 'present progressive',
+                         [VerbalGroup(['go'], [], 'present progressive',
                              [],
-                                       [Indirect_Complement(['to'], [Nominal_Group(['the'], ['cinema'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['to'], [NominalGroup(['the'], ['cinema'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'manner',
-                         [Nominal_Group([], ['they'], [], [], [])],
-                         [Verbal_Group(['get'], [], 'present perfect',
-                                       [Nominal_Group(['a'], ['loan'], [], [], [])],
-                                       [Indirect_Complement(['for'],
-                                                            [Nominal_Group(['their'], ['business'], [], [], [])])],
-                             [], [], Verbal_Group.negative, [])]),
+                         [NominalGroup([], ['they'], [], [], [])],
+                         [VerbalGroup(['get'], [], 'present perfect',
+                                       [NominalGroup(['a'], ['loan'], [], [], [])],
+                                       [IndirectComplement(['for'],
+                                                            [NominalGroup(['their'], ['business'], [], [], [])])],
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence('agree', 'OK.', [], [])]
 
         rslt[1].sv[0].d_obj[0]._quantifier = "SOME"
@@ -1034,18 +1034,18 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'opinion',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['like'], [], 'past simple',
-                                       [Nominal_Group(['the'], ['movie'], [['new', []]],
-                                                      [Nominal_Group([], ['Steven Spilburg'], [], [], [])], [])],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['like'], [], 'past simple',
+                                       [NominalGroup(['the'], ['movie'], [['new', []]],
+                                                      [NominalGroup([], ['Steven Spilburg'], [], [], [])], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'manner',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['could+get+to'], [], 'present conditional',
-                                       [Nominal_Group(['the'], ['restaurant'], [], [], [])],
-                                       [Indirect_Complement(['from'], [Nominal_Group([], ['here'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['could+get+to'], [], 'present conditional',
+                                       [NominalGroup(['the'], ['restaurant'], [], [], [])],
+                                       [IndirectComplement(['from'], [NominalGroup([], ['here'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1062,25 +1062,25 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'reason',
-                         [Nominal_Group([], ['she'], [], [], [])],
-                         [Verbal_Group(['should+go'], [], 'present conditional',
+                         [NominalGroup([], ['she'], [], [], [])],
+                         [VerbalGroup(['should+go'], [], 'present conditional',
                              [],
-                                       [Indirect_Complement(['to'], [Nominal_Group([], ['Toulouse'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['to'], [NominalGroup([], ['Toulouse'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'people',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['could+talk'], [], 'present conditional',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['could+talk'], [], 'present conditional',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['phone'], [], [], [])]),
-                                        Indirect_Complement(['to'], [Nominal_Group([], ['it'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['phone'], [], [], [])]),
+                                        IndirectComplement(['to'], [NominalGroup([], ['it'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'owner',
-                         [Nominal_Group(['that'], ['bottle'], [['blue', []]], [], []),
-                          Nominal_Group(['that'], ['glass'], [['red', []]], [], [])],
-                         [Verbal_Group(['be'], [], '',
+                         [NominalGroup(['that'], ['bottle'], [['blue', []]], [], []),
+                          NominalGroup(['that'], ['glass'], [['red', []]], [], [])],
+                         [VerbalGroup(['be'], [], '',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1098,47 +1098,47 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'opinion',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['think+about'], [], 'present progressive',
-                                       [Nominal_Group(['the'], ['idea'], [], [], [Sentence(RELATIVE, 'that',
-                                                                                           [Nominal_Group([], ['I'], [],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['think+about'], [], 'present progressive',
+                                       [NominalGroup(['the'], ['idea'], [], [], [Sentence(RELATIVE, 'that',
+                                                                                           [NominalGroup([], ['I'], [],
                                                                                                [], [])],
-                                                                                           [Verbal_Group(['present'],
+                                                                                           [VerbalGroup(['present'],
                                                                                                [], 'present simple',
-                                                                                                         [Nominal_Group(
+                                                                                                         [NominalGroup(
                                                                                                              ['the'],
                                                                                                              ['idea'],
                                                                                                              [], [],
                                                                                                              [])],
                                                                                                          [
-                                                                                                             Indirect_Complement(
+                                                                                                             IndirectComplement(
                                                                                                                  [], [
-                                                                                                                         Nominal_Group(
-                                                                                                                             [],
-                                                                                                                             [
-                                                                                                                                 'you'],
-                                                                                                                             [],
-                                                                                                                             [],
-                                                                                                                             [])])],
+                                                                                                                     NominalGroup(
+                                                                                                                         [],
+                                                                                                                           [
+                                                                                                                               'you'],
+                                                                                                                         [],
+                                                                                                                         [],
+                                                                                                                         [])])],
                                                                                                [], [],
-                                                                                                         Verbal_Group.affirmative,
+                                                                                                         VerbalGroup.affirmative,
                                                                                                [])])])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'color',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'that',
-                                                                               [Nominal_Group([], ['you'], [], [], [])],
-                                                                               [Verbal_Group(['buy'], [], 'past simple',
-                                                                                             [Nominal_Group(['the'],
+                         [NominalGroup(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'that',
+                                                                               [NominalGroup([], ['you'], [], [], [])],
+                                                                               [VerbalGroup(['buy'], [], 'past simple',
+                                                                                             [NominalGroup(['the'],
                                                                                                             ['bottle'],
                                                                                                  [], [], [])],
                                                                                    [],
-                                                                                   [], [], Verbal_Group.affirmative,
+                                                                                   [], [], VerbalGroup.affirmative,
                                                                                    [])])])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1155,16 +1155,16 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'choice',
-                         [Nominal_Group(['the'], ['competition'], [],
-                                        [Nominal_Group(['the'], ['salesperson'], [], [], [])], [])],
-                         [Verbal_Group(['win'], [], 'past simple',
-                                       [Nominal_Group(['the'], ['award'], [], [], [Sentence(RELATIVE, 'which',
-                                                                                            [Nominal_Group([], ['we'],
+                         [NominalGroup(['the'], ['competition'], [],
+                                        [NominalGroup(['the'], ['salesperson'], [], [], [])], [])],
+                         [VerbalGroup(['win'], [], 'past simple',
+                                       [NominalGroup(['the'], ['award'], [], [], [Sentence(RELATIVE, 'which',
+                                                                                            [NominalGroup([], ['we'],
                                                                                                 [], [], [])],
-                                                                                            [Verbal_Group(['win'], [],
+                                                                                            [VerbalGroup(['win'], [],
                                                                                                           'past simple',
                                                                                                           [
-                                                                                                              Nominal_Group(
+                                                                                                              NominalGroup(
                                                                                                                   [
                                                                                                                       'the'],
                                                                                                                   [
@@ -1173,11 +1173,11 @@ class TestParsing(unittest.TestCase):
                                                                                                                   [],
                                                                                                                   [])],
                                                                                                           [
-                                                                                                              Indirect_Complement(
+                                                                                                              IndirectComplement(
                                                                                                                   [
                                                                                                                       'in'],
                                                                                                                   [
-                                                                                                                      Nominal_Group(
+                                                                                                                      NominalGroup(
                                                                                                                           [
                                                                                                                               'the'],
                                                                                                                           [
@@ -1189,10 +1189,10 @@ class TestParsing(unittest.TestCase):
                                                                                                                           [],
                                                                                                                           [])])],
                                                                                                 [], [],
-                                                                                                          Verbal_Group.affirmative,
+                                                                                                          VerbalGroup.affirmative,
                                                                                                 [])])])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[0].relative[0].sv[0].i_cmpl[0].gn[0]._quantifier = "ALL"
 
@@ -1211,24 +1211,24 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'description',
-                         [Nominal_Group(['your'], ['house'], [], [], [])],
-                         [Verbal_Group(['look+like'], [], 'future simple',
+                         [NominalGroup(['your'], ['house'], [], [], [])],
+                         [VerbalGroup(['look+like'], [], 'future simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'opinion',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['think+of'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['novel'], [['latest', []]], [],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['think+of'], [], 'present simple',
+                                       [NominalGroup(['the'], ['novel'], [['latest', []]], [],
                                                       [Sentence(RELATIVE, 'which',
-                                                                [Nominal_Group([], ['Jido'], [], [], [])],
-                                                                [Verbal_Group(['write'], [], 'past simple',
-                                                                              [Nominal_Group(['the'], ['novel'],
+                                                                [NominalGroup([], ['Jido'], [], [], [])],
+                                                                [VerbalGroup(['write'], [], 'past simple',
+                                                                              [NominalGroup(['the'], ['novel'],
                                                                                              [['latest', []]], [], [])],
                                                                     [],
-                                                                    [], [], Verbal_Group.affirmative, [])])])],
+                                                                    [], [], VerbalGroup.affirmative, [])])])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1246,48 +1246,48 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['learn'], [], 'present simple',
+                         [VerbalGroup(['learn'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'that',
-                                                                         [Nominal_Group([], ['I'], [], [], [])],
-                                                                         [Verbal_Group(['want'],
-                                                                                       [Verbal_Group(['give'], [], '',
-                                                                                                     [Nominal_Group(
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'that',
+                                                                         [NominalGroup([], ['I'], [], [], [])],
+                                                                         [VerbalGroup(['want'],
+                                                                                       [VerbalGroup(['give'], [], '',
+                                                                                                     [NominalGroup(
                                                                                                          ['the'],
                                                                                                          ['bottle'],
                                                                                                          [['blue', []]],
                                                                                                          [], [])],
                                                                                                      [
-                                                                                                         Indirect_Complement(
+                                                                                                         IndirectComplement(
                                                                                                              [], [
-                                                                                                                     Nominal_Group(
-                                                                                                                         [],
-                                                                                                                         [
-                                                                                                                             'me'],
-                                                                                                                         [],
-                                                                                                                         [],
-                                                                                                                         [])])],
+                                                                                                                 NominalGroup(
+                                                                                                                     [],
+                                                                                                                       [
+                                                                                                                           'me'],
+                                                                                                                     [],
+                                                                                                                     [],
+                                                                                                                     [])])],
                                                                                            [], [],
-                                                                                                     Verbal_Group.affirmative,
+                                                                                                     VerbalGroup.affirmative,
                                                                                            [])], 'present simple',
-                                                                                       [Nominal_Group([], ['you'], [],
+                                                                                       [NominalGroup([], ['you'], [],
                                                                                            [], [])],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'future simple',
-                                       [Nominal_Group([], [], [['happy', []]], [], [])],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'future simple',
+                                       [NominalGroup([], [], [['happy', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'if',
-                                                                         [Nominal_Group([], ['you'], [], [], [])],
-                                                                         [Verbal_Group(['do'], [], 'present simple',
-                                                                                       [Nominal_Group(['your'], ['job'],
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'if',
+                                                                         [NominalGroup([], ['you'], [], [], [])],
+                                                                         [VerbalGroup(['do'], [], 'present simple',
+                                                                                       [NominalGroup(['your'], ['job'],
                                                                                            [], [], [])],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
@@ -1298,7 +1298,7 @@ class TestParsing(unittest.TestCase):
         print('######################## test 4.5 ##############################')
         utterance = "what is wrong with him? I'll play a guitar or a piano and a violon. I played a guitar a year ago."
         print(
-        "Object of this test : Using wrong in the what questions, using the 'or' and moving preposition like 'ago'")
+            "Object of this test : Using wrong in the what questions, using the 'or' and moving preposition like 'ago'")
         print(utterance)
         print('#################################################################')
         print('')
@@ -1306,25 +1306,25 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'thing',
-                         [Nominal_Group([], [], ['wrong'], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup([], [], ['wrong'], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['with'], [Nominal_Group([], ['him'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['with'], [NominalGroup([], ['him'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
-                                       [Nominal_Group(['a'], ['guitar'], [], [], []),
-                                        Nominal_Group(['a'], ['piano'], [], [], []),
-                                        Nominal_Group(['a'], ['violon'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
+                                       [NominalGroup(['a'], ['guitar'], [], [], []),
+                                        NominalGroup(['a'], ['piano'], [], [], []),
+                                        NominalGroup(['a'], ['violon'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'past simple',
-                                       [Nominal_Group(['a'], ['guitar'], [], [], [])],
-                                       [Indirect_Complement(['ago'], [Nominal_Group(['a'], ['year'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'past simple',
+                                       [NominalGroup(['a'], ['guitar'], [], [], [])],
+                                       [IndirectComplement(['ago'], [NominalGroup(['a'], ['year'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[1].sv[0].d_obj[1]._conjunction = "OR"
         rslt[1].sv[0].d_obj[0]._quantifier = "SOME"
@@ -1348,17 +1348,17 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['this'], [], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group(['a'], ['bottle'], [], [], [])],
+                         [NominalGroup(['this'], [], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup(['a'], ['bottle'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['a'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['a'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[0]._quantifier = "SOME"
         rslt[1].sn[0]._quantifier = "SOME"
@@ -1379,21 +1379,21 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'explication',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['do'], [], 'present simple',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['do'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['for'],
-                                                            [Nominal_Group(['a'], [], [['living', []]], [], [])]),
-                                        Indirect_Complement(['in'],
-                                                            [Nominal_Group(['this'], ['building'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['for'],
+                                                            [NominalGroup(['a'], [], [['living', []]], [], [])]),
+                                        IndirectComplement(['in'],
+                                                            [NominalGroup(['this'], ['building'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'explication',
-                         [Nominal_Group(['your'], ['brother'], [], [], [])],
-                         [Verbal_Group(['do'], [], 'present simple',
+                         [NominalGroup(['your'], ['brother'], [], [], [])],
+                         [VerbalGroup(['do'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['for'],
-                                                            [Nominal_Group(['a'], [], [['living', []]], [], [])])],
-                             [], ['here'], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['for'],
+                                                            [NominalGroup(['a'], [], [['living', []]], [], [])])],
+                             [], ['here'], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier = "SOME"
         rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier = "SOME"
@@ -1413,29 +1413,29 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'people',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['talk+to'], [], 'present progressive',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['talk+to'], [], 'present progressive',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['should+have'], [], 'present conditional',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [])],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['should+have'], [], 'present conditional',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'past conditional',
-                                       [Nominal_Group(['a'], ['guitar'], [], [], [])],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'past conditional',
+                                       [NominalGroup(['a'], ['guitar'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'past conditional',
-                                       [Nominal_Group(['a'], ['guitar'], [], [], [])],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'past conditional',
+                                       [NominalGroup(['a'], ['guitar'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[2].sv[0].d_obj[0]._quantifier = "SOME"
         rslt[3].sv[0].d_obj[0]._quantifier = "SOME"
@@ -1456,26 +1456,26 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['like'], [], 'present conditional',
-                                       [Nominal_Group(['the'], ['bottle'], [['blue', []]], [], []),
-                                        Nominal_Group(['the'], ['glass'], [], [], [])],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['like'], [], 'present conditional',
+                                       [NominalGroup(['the'], ['bottle'], [['blue', []]], [], []),
+                                        NominalGroup(['the'], ['glass'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [['green', []]], [], []),
-                          Nominal_Group(['the'], ['bottle'], [['blue', []]], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['bottle'], [['green', []]], [], []),
+                          NominalGroup(['the'], ['bottle'], [['blue', []]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group(['the'], ['glass'], [['green', []]], [], []),
-                          Nominal_Group(['the'], ['glass'], [['blue', []]], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], ['mine'], [], [], [])],
+                         [NominalGroup(['the'], ['glass'], [['green', []]], [], []),
+                          NominalGroup(['the'], ['glass'], [['blue', []]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], ['mine'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[1]._conjunction = "OR"
         rslt[1].sn[1]._conjunction = "OR"
@@ -1498,14 +1498,14 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['learn'], [], 'present simple',
+                         [VerbalGroup(['learn'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'that',
-                                                                         [Nominal_Group([], ['I'], [], [], [])],
-                                                                         [Verbal_Group(['want'],
-                                                                                       [Verbal_Group(['give'], [], '',
-                                                                                                     [Nominal_Group(
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'that',
+                                                                         [NominalGroup([], ['I'], [], [], [])],
+                                                                         [VerbalGroup(['want'],
+                                                                                       [VerbalGroup(['give'], [], '',
+                                                                                                     [NominalGroup(
                                                                                                          ['the'],
                                                                                                          ['bottle'],
                                                                                                          [['blue', []]],
@@ -1514,43 +1514,43 @@ class TestParsing(unittest.TestCase):
                                                                                                              'that',
                                                                                                              [],
                                                                                                              [
-                                                                                                                 Verbal_Group(
+                                                                                                                 VerbalGroup(
                                                                                                                      [
                                                                                                                          'be'],
                                                                                                                      [],
                                                                                                                      'present simple',
                                                                                                                      [
-                                                                                                                         Nominal_Group(
+                                                                                                                         NominalGroup(
                                                                                                                              [],
                                                                                                                              [],
-                                                                                                                             [
-                                                                                                                                 [
-                                                                                                                                     'blue',
-                                                                                                                                     []]],
+                                                                                                                               [
+                                                                                                                                   [
+                                                                                                                                       'blue',
+                                                                                                                                       []]],
                                                                                                                              [],
                                                                                                                              [])],
                                                                                                                      [],
                                                                                                                      [],
                                                                                                                      [],
-                                                                                                                     Verbal_Group.affirmative,
+                                                                                                                     VerbalGroup.affirmative,
                                                                                                                      [])])])],
                                                                                                      [
-                                                                                                         Indirect_Complement(
+                                                                                                         IndirectComplement(
                                                                                                              [], [
-                                                                                                                     Nominal_Group(
-                                                                                                                         [],
-                                                                                                                         [
-                                                                                                                             'me'],
-                                                                                                                         [],
-                                                                                                                         [],
-                                                                                                                         [])])],
+                                                                                                                 NominalGroup(
+                                                                                                                     [],
+                                                                                                                       [
+                                                                                                                           'me'],
+                                                                                                                     [],
+                                                                                                                     [],
+                                                                                                                     [])])],
                                                                                            [], [],
-                                                                                                     Verbal_Group.affirmative,
+                                                                                                     VerbalGroup.affirmative,
                                                                                            [])], 'present simple',
-                                                                                       [Nominal_Group([], ['you'], [],
+                                                                                       [NominalGroup([], ['you'], [],
                                                                                            [], [])],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
@@ -1568,20 +1568,20 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['behind+to'], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['behind+to'], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['next+to'],
-                                                            [Nominal_Group(['the'], ['table'], [], [], [])]),
-                                        Indirect_Complement(['in+front+of'],
-                                                            [Nominal_Group(['the'], ['kitchen'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['next+to'],
+                                                            [NominalGroup(['the'], ['table'], [], [], [])]),
+                                        IndirectComplement(['in+front+of'],
+                                                            [NominalGroup(['the'], ['kitchen'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1599,25 +1599,25 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['take'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['take'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [])],
                              [],
-                                       ['carefully'], [], Verbal_Group.affirmative, [])]),
+                                       ['carefully'], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['take'], [], 'present simple',
-                                       [Nominal_Group(['that'], ['bottle'], [], [], [Sentence(RELATIVE, 'that',
-                                                                                              [Nominal_Group([], ['I'],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['take'], [], 'present simple',
+                                       [NominalGroup(['that'], ['bottle'], [], [], [Sentence(RELATIVE, 'that',
+                                                                                              [NominalGroup([], ['I'],
                                                                                                   [], [], [])],
-                                                                                              [Verbal_Group(['drink'],
+                                                                                              [VerbalGroup(['drink'],
                                                                                                   [], 'present simple',
                                                                                                   [],
                                                                                                             [
-                                                                                                                Indirect_Complement(
+                                                                                                                IndirectComplement(
                                                                                                                     [
                                                                                                                         'in'],
                                                                                                                     [
-                                                                                                                        Nominal_Group(
+                                                                                                                        NominalGroup(
                                                                                                                             [
                                                                                                                                 'that'],
                                                                                                                             [
@@ -1626,16 +1626,16 @@ class TestParsing(unittest.TestCase):
                                                                                                                             [],
                                                                                                                             [])])],
                                                                                                   [], [],
-                                                                                                            Verbal_Group.affirmative,
+                                                                                                            VerbalGroup.affirmative,
                                                                                                   [])])])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['take'], [], 'present simple',
-                                       [Nominal_Group(['22'], ['bottle'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['take'], [], 'present simple',
+                                       [NominalGroup(['22'], ['bottle'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[2].sv[0].d_obj[0]._quantifier = "DIGIT"
 
@@ -1654,17 +1654,17 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
-                                       [Nominal_Group(['the'], ['guitar'], [],
-                                                      [Nominal_Group([], ['Jido'], [], [], [])], []),
-                                        Nominal_Group(['a'], ['saxophone'], [], [], []),
-                                        Nominal_Group(['a'], ['piano'], [], [Nominal_Group(['the'], ['wife'], [], [
-                                            Nominal_Group(['my'], ['oncle'], [], [], [])], [])], []),
-                                        Nominal_Group(['the'], ['violon'], [],
-                                                      [Nominal_Group([], ['Patrick'], [], [], [])], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
+                                       [NominalGroup(['the'], ['guitar'], [],
+                                                      [NominalGroup([], ['Jido'], [], [], [])], []),
+                                        NominalGroup(['a'], ['saxophone'], [], [], []),
+                                        NominalGroup(['a'], ['piano'], [], [NominalGroup(['the'], ['wife'], [], [
+                                            NominalGroup(['my'], ['oncle'], [], [], [])], [])], []),
+                                        NominalGroup(['the'], ['violon'], [],
+                                                      [NominalGroup([], ['Patrick'], [], [], [])], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[1]._quantifier = "SOME"
         rslt[0].sv[0].d_obj[2]._quantifier = "SOME"
@@ -1685,31 +1685,31 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['2'], ['bottle'], [], [], []),
-                                        Nominal_Group(['3'], ['bottle'], [], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['2'], ['bottle'], [], [], []),
+                                        NominalGroup(['3'], ['bottle'], [], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['blue', []], ['big', []], ['fanny', []]], [], [])],
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['blue', []], ['big', []], ['fanny', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
                     [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'which',
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'which',
                                            [],
-                                                                                             [Verbal_Group(['be'], [],
+                                                                                             [VerbalGroup(['be'], [],
                                                                                                            'present simple',
                                                                                                  [],
                                                                                                            [
-                                                                                                               Indirect_Complement(
+                                                                                                               IndirectComplement(
                                                                                                                    [
                                                                                                                        'on'],
                                                                                                                    [
-                                                                                                                       Nominal_Group(
+                                                                                                                       NominalGroup(
                                                                                                                            [
                                                                                                                                'the'],
                                                                                                                            [
@@ -1718,10 +1718,10 @@ class TestParsing(unittest.TestCase):
                                                                                                                            [],
                                                                                                                            [])])],
                                                                                                  [], [],
-                                                                                                           Verbal_Group.affirmative,
+                                                                                                           VerbalGroup.affirmative,
                                                                                                  [])])])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[1]._conjunction = "OR"
         rslt[0].sv[0].d_obj[0]._quantifier = "DIGIT"
@@ -1742,27 +1742,27 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['ball'], [], [Nominal_Group(['the'], ['boy'], [], [], [])], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['blue', []]], [], [])],
+                         [NominalGroup(['the'], ['ball'], [], [NominalGroup(['the'], ['boy'], [], [], [])], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['blue', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['he'], [], [], [])],
-                         [Verbal_Group(['ask'], [Verbal_Group(['do'], [], '',
-                                                              [Nominal_Group([], ['something'], [], [], [])],
+                         [NominalGroup([], ['he'], [], [], [])],
+                         [VerbalGroup(['ask'], [VerbalGroup(['do'], [], '',
+                                                              [NominalGroup([], ['something'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])], 'present simple',
-                                       [Nominal_Group([], ['me'], [], [], [])],
+                             [], [], VerbalGroup.affirmative, [])], 'present simple',
+                                       [NominalGroup([], ['me'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group(['any'], ['person'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['courageous', []]], [], [])],
-                                       [Indirect_Complement(['on'],
-                                                            [Nominal_Group(['the'], ['laboratory'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [NominalGroup(['any'], ['person'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['courageous', []]], [], [])],
+                                       [IndirectComplement(['on'],
+                                                            [NominalGroup(['the'], ['laboratory'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sn[0].noun_cmpl[0]._quantifier = "ALL"
         rslt[2].sn[0]._quantifier = "ANY"
@@ -1783,22 +1783,22 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(W_QUESTION, 'situation',
             [],
-                         [Verbal_Group(['must+happen'], [], 'present passive',
+                         [VerbalGroup(['must+happen'], [], 'present passive',
                              [],
-                                       [Indirect_Complement(['in'], [Nominal_Group(['the'], ['company'], [], [], [])])],
-                             [], ['today'], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['in'], [NominalGroup(['the'], ['company'], [], [], [])])],
+                             [], ['today'], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['building'], [], [], [])],
-                         [Verbal_Group(['should+build'], [], 'passive conditional',
+                         [NominalGroup(['the'], ['building'], [], [], [])],
+                         [VerbalGroup(['should+build'], [], 'passive conditional',
                              [],
                              [],
-                                       ['fastly'], [], Verbal_Group.negative, [])]),
+                                       ['fastly'], [], VerbalGroup.negative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['can+be'], [], 'present simple',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['can+be'], [], 'present simple',
                              [],
                              [],
-                             [], ['here'], Verbal_Group.affirmative, [])])]
+                             [], ['here'], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1816,23 +1816,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(W_QUESTION, 'size',
-                         [Nominal_Group(['the'], ['one'], [['best', []]], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['one'], [['best', []]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'object',
                     [],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['blue', []]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['blue', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'good',
-                         [Nominal_Group(['this'], [], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['this'], [], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1849,20 +1849,20 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence('interjection', '',
-                         [Nominal_Group([], ['Patrick'], [], [], [])],
+                         [NominalGroup([], ['Patrick'], [], [], [])],
             []),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
-                         [Nominal_Group([], ['Patrick'], [], [], [])],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group([], ['it'], [], [], [])],
-                                       [Indirect_Complement(['to'], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [NominalGroup([], ['Patrick'], [], [], [])],
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup([], ['it'], [], [], [])],
+                                       [IndirectComplement(['to'], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1879,38 +1879,38 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence('interjection', '',
-                         [Nominal_Group([], ['Jido'], [], [], [])],
-                         [Verbal_Group([], [], 'present simple',
+                         [NominalGroup([], ['Jido'], [], [], [])],
+                         [VerbalGroup([], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
-                         [Nominal_Group([], ['Jido'], [], [], [])],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                         [NominalGroup([], ['Jido'], [], [], [])],
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['Jido'], [], [], []), Nominal_Group([], ['Patrick'], [], [], []),
-                          Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['go'], [], 'future simple',
+                         [NominalGroup([], ['Jido'], [], [], []), NominalGroup([], ['Patrick'], [], [], []),
+                          NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['go'], [], 'future simple',
                              [],
-                                       [Indirect_Complement(['to'], [Nominal_Group(['the'], ['cinema'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['to'], [NominalGroup(['the'], ['cinema'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence('interjection', '',
-                         [Nominal_Group([], ['Jido'], [], [], []), Nominal_Group([], ['Patrick'], [], [], []),
-                          Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group([], [], 'present simple',
+                         [NominalGroup([], ['Jido'], [], [], []), NominalGroup([], ['Patrick'], [], [], []),
+                          NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup([], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
-                         [Nominal_Group([], ['Jido'], [], [], []), Nominal_Group([], ['Patrick'], [], [], []),
-                          Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [NominalGroup([], ['Jido'], [], [], []), NominalGroup([], ['Patrick'], [], [], []),
+                          NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -1928,31 +1928,32 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['blue', []]], [], [])],
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['blue', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.negative, [Sentence('subsentence+statement', 'but',
-                                                                      [Nominal_Group([], ['it'], [], [], [])],
-                                                                      [Verbal_Group(['be'], [], 'present simple',
-                                                                                    [Nominal_Group([], [],
-                                                                                        [['red', []]], [], [])],
+                             [], [], VerbalGroup.negative, [Sentence('subsentence+statement', 'but',
+                                                                      [NominalGroup([], ['it'], [], [], [])],
+                                                                      [VerbalGroup(['be'], [], 'present simple',
+                                                                                    [NominalGroup([], [],
+                                                                                                     [['red', []]], [],
+                                                                                        [])],
                                                                           [],
-                                                                          [], [], Verbal_Group.affirmative, [])])])]),
+                                                                          [], [], VerbalGroup.affirmative, [])])])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['glass'], [], [], []),
-                                        Nominal_Group(['the'], ['bottle'], [], [], [])],
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup(['the'], ['glass'], [], [], []),
+                                        NominalGroup(['the'], ['bottle'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.negative, [])]),
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['blue', []]], [], []),
-                                        Nominal_Group([], [], [['red', []]], [], [])],
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['blue', []]], [], []),
+                                        NominalGroup([], [], [['red', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[1].sv[0].d_obj[1]._conjunction = "BUT"
         rslt[2].sv[0].d_obj[1]._conjunction = "OR"
@@ -1973,24 +1974,24 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['red', []]], [], []),
-                                        Nominal_Group([], [], [['blue', []]], [], [])],
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['red', []]], [], []),
+                                        NominalGroup([], [], [['blue', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.negative, [])]),
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['this'], [], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group(['my'], ['banana'], [], [], [])],
+                         [NominalGroup(['this'], [], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup(['my'], ['banana'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['banana'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], ['fruit'], [], [], [])],
+                         [NominalGroup([], ['banana'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], ['fruit'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[1]._conjunction = "BUT"
         rslt[2].sn[0]._quantifier = "ALL"
@@ -2011,32 +2012,32 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['no'], ['banana'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['no'], ['banana'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['all'], ['banana'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['all'], ['banana'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], ['here'], Verbal_Group.affirmative, [])]),
+                             [], ['here'], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
                     [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['more'], ['information'], [], [], [Sentence(RELATIVE, 'which',
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['more'], ['information'], [], [], [Sentence(RELATIVE, 'which',
                                            [],
-                                                                                                   [Verbal_Group(['be'],
+                                                                                                   [VerbalGroup(['be'],
                                                                                                        [],
                                                                                                                  'present simple',
                                                                                                        [],
                                                                                                                  [
-                                                                                                                     Indirect_Complement(
+                                                                                                                     IndirectComplement(
                                                                                                                          [
                                                                                                                              'about'],
                                                                                                                          [
-                                                                                                                             Nominal_Group(
+                                                                                                                             NominalGroup(
                                                                                                                                  [
                                                                                                                                      'the'],
                                                                                                                                  [
@@ -2045,10 +2046,10 @@ class TestParsing(unittest.TestCase):
                                                                                                                                  [],
                                                                                                                                  [])])],
                                                                                                        [], [],
-                                                                                                                 Verbal_Group.affirmative,
+                                                                                                                 VerbalGroup.affirmative,
                                                                                                        [])])])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sn[0]._quantifier = "SOME"
         rslt[0].sn[0]._quantifier = "ANY"
@@ -2070,44 +2071,45 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence('interjection', '',
-                         [Nominal_Group([], ['Jido'], [], [], [])],
-                         [Verbal_Group([], [], 'present simple',
+                         [NominalGroup([], ['Jido'], [], [], [])],
+                         [VerbalGroup([], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
-                         [Nominal_Group([], ['Jido'], [], [], [])],
-                         [Verbal_Group(['tell'], [], 'present simple',
+                         [NominalGroup([], ['Jido'], [], [], [])],
+                         [VerbalGroup(['tell'], [], 'present simple',
                              [],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])]),
-                                        Indirect_Complement([],
-                                            [Nominal_Group(['the'], ['location'], [], [], [Sentence(RELATIVE, 'where',
-                                                                                                    [Nominal_Group([],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])]),
+                                        IndirectComplement([],
+                                                              [NominalGroup(['the'], ['location'], [], [],
+                                                                             [Sentence(RELATIVE, 'where',
+                                                                                       [NominalGroup([],
                                                                                                         ['you'], [], [],
-                                                                                                        [])],
-                                                                                                    [Verbal_Group(
-                                                                                                        ['go'], [],
-                                                                                                        'present simple',
-                                                                                                        [],
-                                                                                                        [],
-                                                                                                        [], [],
-                                                                                                        Verbal_Group.affirmative,
-                                                                                                        [])])])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                                                                           [])],
+                                                                                       [VerbalGroup(
+                                                                                           ['go'], [],
+                                                                                           'present simple',
+                                                                                           [],
+                                                                                           [],
+                                                                                           [], [],
+                                                                                           VerbalGroup.affirmative,
+                                                                                           [])])])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(END, '', [], []),
                 Sentence(END, '', [], []),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['nothing'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup([], ['nothing'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group(['another'], ['one'], [], [], [])],
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup(['another'], ['one'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[4].sn[0]._quantifier = "NONE"
         rslt[5].sv[0].d_obj[0]._quantifier = "SOME"
@@ -2127,23 +2129,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [])],
-                         [Verbal_Group(['become'], [], 'present simple',
-                                       [Nominal_Group([], [], [['blue', []]], [], [])],
+                         [NominalGroup(['the'], ['bottle'], [], [], [])],
+                         [VerbalGroup(['become'], [], 'present simple',
+                                       [NominalGroup([], [], [['blue', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['1'], ['piece'], [], [], [])],
-                         [Verbal_Group(['could+become'], [], 'present conditional',
-                                       [Nominal_Group(['2'], [], [], [], [])],
+                         [NominalGroup(['1'], ['piece'], [], [], [])],
+                         [VerbalGroup(['could+become'], [], 'present conditional',
+                                       [NominalGroup(['2'], [], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'if',
-                                                                         [Nominal_Group([], ['you'], [], [], [])],
-                                                                         [Verbal_Group(['smolder'], [], 'past simple',
-                                                                                       [Nominal_Group([], ['it'], [],
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'if',
+                                                                         [NominalGroup([], ['you'], [], [], [])],
+                                                                         [VerbalGroup(['smolder'], [], 'past simple',
+                                                                                       [NominalGroup([], ['it'], [],
                                                                                            [], [])],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])])]
 
         rslt[1].sn[0]._quantifier = "DIGIT"
@@ -2165,27 +2167,27 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['this'], ['one'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [],
-                                                      [Nominal_Group(['my'], ['uncle'], [], [], [])], [])],
+                         [NominalGroup(['this'], ['one'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [],
+                                                      [NominalGroup(['my'], ['uncle'], [], [], [])], [])],
                              [],
-                             [], [], Verbal_Group.negative, [Sentence('subsentence+statement', 'but',
-                                                                      [Nominal_Group([], ['it'], [], [], [])],
-                                                                      [Verbal_Group(['be'], [], 'present simple',
-                                                                                    [Nominal_Group(['the'], ['bottle'],
-                                                                                        [], [Nominal_Group(['my'],
+                             [], [], VerbalGroup.negative, [Sentence('subsentence+statement', 'but',
+                                                                      [NominalGroup([], ['it'], [], [], [])],
+                                                                      [VerbalGroup(['be'], [], 'present simple',
+                                                                                    [NominalGroup(['the'], ['bottle'],
+                                                                                        [], [NominalGroup(['my'],
                                                                                                            ['brother'],
                                                                                             [], [], [])], [])],
                                                                           [],
-                                                                          [], [], Verbal_Group.affirmative, [])])])]),
+                                                                          [], [], VerbalGroup.affirmative, [])])])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], []),
-                                                                     Nominal_Group(['the'], ['shelf'], [], [], [])])],
-                             [], [], Verbal_Group.negative, [])])]
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], []),
+                                                                     NominalGroup(['the'], ['shelf'], [], [], [])])],
+                             [], [], VerbalGroup.negative, [])])]
 
         rslt[1].sv[0].i_cmpl[0].gn[1]._conjunction = "BUT"
 
@@ -2205,18 +2207,18 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [['4th', []]], [], []),
-                                        Nominal_Group(['the'], ['bottle'], [['7th', []]], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [['4th', []]], [], []),
+                                        NominalGroup(['the'], ['bottle'], [['7th', []]], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
                     [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['bottle'], [['1009th', []]], [], []),
-                                        Nominal_Group(['the'], ['bottle'], [['30028th', []]], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['bottle'], [['1009th', []]], [], []),
+                                        NominalGroup(['the'], ['bottle'], [['30028th', []]], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -2233,22 +2235,22 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['tyrant'], [['evil', []]], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['tyrant'], [['evil', []]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['in'],
-                                                            [Nominal_Group(['the'], ['laboratory'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['in'],
+                                                            [NominalGroup(['the'], ['laboratory'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['know'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['thing'], [], [], [Sentence(RELATIVE, 'that',
-                                                                                            [Nominal_Group([], ['you'],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['know'], [], 'present simple',
+                                       [NominalGroup(['the'], ['thing'], [], [], [Sentence(RELATIVE, 'that',
+                                                                                            [NominalGroup([], ['you'],
                                                                                                 [], [], [])],
-                                                                                            [Verbal_Group(['talk'], [],
+                                                                                            [VerbalGroup(['talk'], [],
                                                                                                           'present progressive',
                                                                                                           [
-                                                                                                              Nominal_Group(
+                                                                                                              NominalGroup(
                                                                                                                   [
                                                                                                                       'the'],
                                                                                                                   [
@@ -2257,22 +2259,22 @@ class TestParsing(unittest.TestCase):
                                                                                                                   [],
                                                                                                                   [])],
                                                                                                           [
-                                                                                                              Indirect_Complement(
+                                                                                                              IndirectComplement(
                                                                                                                   [
                                                                                                                       'about'],
                                                                                                                   [
-                                                                                                                      Nominal_Group(
+                                                                                                                      NominalGroup(
                                                                                                                           [],
-                                                                                                                          [
-                                                                                                                              'it'],
+                                                                                                                            [
+                                                                                                                                'it'],
                                                                                                                           [],
                                                                                                                           [],
                                                                                                                           [])])],
                                                                                                 [], [],
-                                                                                                          Verbal_Group.affirmative,
+                                                                                                          VerbalGroup.affirmative,
                                                                                                 [])])])],
                              [],
-                             [], [], Verbal_Group.negative, [])])]
+                             [], [], VerbalGroup.negative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -2290,81 +2292,86 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['go'], [], 'present simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['go'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['to'], [
-                                           Nominal_Group(['the'], ['place'], [], [], [Sentence(RELATIVE, 'where',
-                                                                                               [Nominal_Group([], ['I'],
+                                       [IndirectComplement(['to'], [
+                                           NominalGroup(['the'], ['place'], [], [], [Sentence(RELATIVE, 'where',
+                                                                                               [NominalGroup([], ['I'],
                                                                                                    [], [], [])],
-                                                                                               [Verbal_Group(['be'], [],
+                                                                                               [VerbalGroup(['be'], [],
                                                                                                              'past simple',
                                                                                                              [
-                                                                                                                 Nominal_Group(
+                                                                                                                 NominalGroup(
                                                                                                                      [],
                                                                                                                      [],
-                                                                                                                     [[
-                                                                                                                          'born',
-                                                                                                                          []]],
+                                                                                                                       [
+                                                                                                                           [
+                                                                                                                               'born',
+                                                                                                                               []]],
                                                                                                                      [],
                                                                                                                      [])],
                                                                                                    [],
                                                                                                    [], [],
-                                                                                                             Verbal_Group.affirmative,
+                                                                                                             VerbalGroup.affirmative,
                                                                                                    [])])])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['study'], [], 'present simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['study'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['in'], [
-                                           Nominal_Group(['the'], ['location'], [], [], [Sentence(RELATIVE, 'where',
-                                                                                                  [Nominal_Group([],
-                                                                                                      ['you'], [], [],
+                                       [IndirectComplement(['in'], [
+                                           NominalGroup(['the'], ['location'], [], [], [Sentence(RELATIVE, 'where',
+                                                                                                  [NominalGroup([],
+                                                                                                                   [
+                                                                                                                       'you'],
+                                                                                                      [], [],
                                                                                                       [])],
-                                                                                                  [Verbal_Group(
+                                                                                                  [VerbalGroup(
                                                                                                       ['study'], [],
                                                                                                       'past simple',
                                                                                                       [],
                                                                                                       [],
                                                                                                       [], [],
-                                                                                                      Verbal_Group.affirmative,
+                                                                                                      VerbalGroup.affirmative,
                                                                                                       [])])])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['study'], [], 'present simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['study'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['in'], [
-                                           Nominal_Group(['the'], ['location'], [], [], [Sentence(RELATIVE, 'where',
-                                                                                                  [Nominal_Group([],
-                                                                                                      ['you'], [], [],
+                                       [IndirectComplement(['in'], [
+                                           NominalGroup(['the'], ['location'], [], [], [Sentence(RELATIVE, 'where',
+                                                                                                  [NominalGroup([],
+                                                                                                                   [
+                                                                                                                       'you'],
+                                                                                                      [], [],
                                                                                                       [])],
-                                                                                                  [Verbal_Group(
+                                                                                                  [VerbalGroup(
                                                                                                       ['build'], [],
                                                                                                       'present simple',
-                                                                                                      [Nominal_Group(
+                                                                                                      [NominalGroup(
                                                                                                           ['your'],
                                                                                                           ['house'], [],
                                                                                                           [], [Sentence(
                                                                                                               RELATIVE,
                                                                                                               'where',
                                                                                                               [
-                                                                                                                  Nominal_Group(
+                                                                                                                  NominalGroup(
                                                                                                                       [],
-                                                                                                                      [
-                                                                                                                          'you'],
+                                                                                                                        [
+                                                                                                                            'you'],
                                                                                                                       [],
                                                                                                                       [],
                                                                                                                       [])],
                                                                                                               [
-                                                                                                                  Verbal_Group(
+                                                                                                                  VerbalGroup(
                                                                                                                       [
                                                                                                                           'put'],
                                                                                                                       [],
                                                                                                                       'present simple',
                                                                                                                       [
-                                                                                                                          Nominal_Group(
+                                                                                                                          NominalGroup(
                                                                                                                               [
                                                                                                                                   'the'],
                                                                                                                               [
@@ -2375,13 +2382,13 @@ class TestParsing(unittest.TestCase):
                                                                                                                       [],
                                                                                                                       [],
                                                                                                                       [],
-                                                                                                                      Verbal_Group.affirmative,
+                                                                                                                      VerbalGroup.affirmative,
                                                                                                                       [])])])],
                                                                                                       [],
                                                                                                       [], [],
-                                                                                                      Verbal_Group.affirmative,
+                                                                                                      VerbalGroup.affirmative,
                                                                                                       [])])])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -2398,18 +2405,18 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['apple'], [], [], [])],
-                         [Verbal_Group(['grow'], [], 'present simple',
+                         [NominalGroup([], ['apple'], [], [], [])],
+                         [VerbalGroup(['grow'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group([], ['tree'], [], [], []),
-                                                                     Nominal_Group([], ['plant'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup([], ['tree'], [], [], []),
+                                                                     NominalGroup([], ['plant'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
                     [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['3'], ['apple'], [], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['3'], ['apple'], [], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sn[0]._quantifier = "ALL"
         rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier = "ALL"
@@ -2431,48 +2438,48 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['we'], [], [], [])],
-                         [Verbal_Group(['prepare'], [], 'past progressive',
-                                       [Nominal_Group(['the'], ['dinner'], [], [], [])],
+                         [NominalGroup([], ['we'], [], [], [])],
+                         [VerbalGroup(['prepare'], [], 'past progressive',
+                                       [NominalGroup(['the'], ['dinner'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'when',
-                                                                         [Nominal_Group(['your'], ['father'], [], [],
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'when',
+                                                                         [NominalGroup(['your'], ['father'], [], [],
                                                                              [])],
-                                                                         [Verbal_Group(['come'], [], 'past simple',
+                                                                         [VerbalGroup(['come'], [], 'past simple',
                                                                              [],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['he'], [], [], [])],
-                         [Verbal_Group(['make'], [], 'past simple',
-                                       [Nominal_Group(['a'], ['sandwich'], [], [], [Sentence(RELATIVE, 'which',
+                         [NominalGroup([], ['he'], [], [], [])],
+                         [VerbalGroup(['make'], [], 'past simple',
+                                       [NominalGroup(['a'], ['sandwich'], [], [], [Sentence(RELATIVE, 'which',
                                            [],
-                                                                                             [Verbal_Group(['be'], [],
+                                                                                             [VerbalGroup(['be'], [],
                                                                                                            'present simple',
                                                                                                  [],
                                                                                                            [
-                                                                                                               Indirect_Complement(
+                                                                                                               IndirectComplement(
                                                                                                                    [
                                                                                                                        'with'],
                                                                                                                    [
-                                                                                                                       Nominal_Group(
+                                                                                                                       NominalGroup(
                                                                                                                            [],
-                                                                                                                           [
-                                                                                                                               'bacon'],
+                                                                                                                             [
+                                                                                                                                 'bacon'],
                                                                                                                            [],
                                                                                                                            [],
                                                                                                                            [])])],
                                                                                                  [], [],
-                                                                                                           Verbal_Group.affirmative,
+                                                                                                           VerbalGroup.affirmative,
                                                                                                  [])])])],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'while',
-                                                                         [Nominal_Group([], ['I'], [], [], [])],
-                                                                         [Verbal_Group(['phone'], [], 'past simple',
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'while',
+                                                                         [NominalGroup([], ['I'], [], [], [])],
+                                                                         [VerbalGroup(['phone'], [], 'past simple',
                                                                              [],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])])]
 
         rslt[1].sv[0].d_obj[0]._quantifier = "SOME"
@@ -2493,17 +2500,17 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['man'], [['big', []], ['strong', ['very']]], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['man'], [['big', []], ['strong', ['very']]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['corner'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['corner'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['man'], [['big', ['too']], ['strong', ['very']]], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['man'], [['big', ['too']], ['strong', ['very']]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['corner'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['corner'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -2520,23 +2527,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['apple'], [['red', []]], [], [])],
-                         [Verbal_Group(['grow'], [], 'present simple',
+                         [NominalGroup([], ['apple'], [['red', []]], [], [])],
+                         [VerbalGroup(['grow'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'],
-                                                            [Nominal_Group([], ['tree'], [['green', []]], [], []),
-                                                             Nominal_Group([], ['plant'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'],
+                                                            [NominalGroup([], ['tree'], [['green', []]], [], []),
+                                                             NominalGroup([], ['plant'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['a'], ['kind'], [], [Nominal_Group(['a'], ['thing'], [], [], [])], [])],
+                         [NominalGroup(['a'], ['kind'], [], [NominalGroup(['a'], ['thing'], [], [], [])], [])],
                     []),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['can+play'], [], 'present passive',
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['can+play'], [], 'present passive',
                              [],
-                                       [Indirect_Complement(['by'],
-                                                            [Nominal_Group(['30028'], ['player'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['by'],
+                                                            [NominalGroup(['30028'], ['player'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sn[0]._quantifier = "ALL"
         rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier = "ALL"
@@ -2562,35 +2569,35 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['let'], [Verbal_Group(['go'],
+                         [VerbalGroup(['let'], [VerbalGroup(['go'],
                              [], '',
                              [],
-                                                              [Indirect_Complement(['to'], [
-                                                                  Nominal_Group(['the'], ['cinema'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])], 'present simple',
-                                       [Nominal_Group(['the'], ['man'], [], [], [])],
+                                                              [IndirectComplement(['to'], [
+                                                                  NominalGroup(['the'], ['cinema'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])], 'present simple',
+                                       [NominalGroup(['the'], ['man'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [Verbal_Group(['let'],
-                                                             [Verbal_Group(['go'],
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [VerbalGroup(['let'],
+                                                             [VerbalGroup(['go'],
                                                                  [], '',
                                                                  [],
                                                                  [],
-                                                                 [], [], Verbal_Group.affirmative, [])], '',
-                                                             [Nominal_Group([], ['you'], [], [], [])],
+                                                                 [], [], VerbalGroup.affirmative, [])], '',
+                                                             [NominalGroup([], ['you'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])], 'present simple',
-                                       [Nominal_Group(['the'], ['time'], [], [], [])],
+                             [], [], VerbalGroup.affirmative, [])], 'present simple',
+                                       [NominalGroup(['the'], ['time'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'place',
-                         [Nominal_Group(['the'], ['tape'], [['other', []]], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['tape'], [['other', []]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -2607,29 +2614,29 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(YES_NO_QUESTION, '',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['can+reach'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['tape'], [], [], [])],
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['can+reach'], [], 'present simple',
+                                       [NominalGroup(['the'], ['tape'], [], [], [])],
                              [],
-                             [], ['now'], Verbal_Group.affirmative, [])]),
+                             [], ['now'], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['could+be'], [], 'passive conditional',
-                                       [Nominal_Group([], ['them'], [], [], [])],
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['could+be'], [], 'passive conditional',
+                                       [NominalGroup([], ['them'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['it'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], ['me'], [], [], [])],
-                                       [Indirect_Complement(['at'], [Nominal_Group(['the'], ['door'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                         [NominalGroup([], ['it'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], ['me'], [], [], [])],
+                                       [IndirectComplement(['at'], [NominalGroup(['the'], ['door'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['a'], ['clause'], [['strong', []]], [], [])],
-                         [Verbal_Group(['can+stand'], [], 'present simple',
+                         [NominalGroup(['a'], ['clause'], [['strong', []]], [], [])],
+                         [VerbalGroup(['can+stand'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['its'], ['own'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['on'], [NominalGroup(['its'], ['own'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[3].sn[0]._quantifier = "SOME"
 
@@ -2649,34 +2656,35 @@ class TestParsing(unittest.TestCase):
 
         rslt = [Sentence(IMPERATIVE, '',
             [],
-                         [Verbal_Group(['tell'], [], 'present simple',
+                         [VerbalGroup(['tell'], [], 'present simple',
                              [],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])]),
-                                        Indirect_Complement([],
-                                            [Nominal_Group(['the'], ['thing'], [], [], [Sentence(RELATIVE, 'that',
-                                                [],
-                                                                                                 [Verbal_Group(['be'], [
-                                                                                                     Verbal_Group(
-                                                                                                         ['do'], [], '',
-                                                                                                         [],
-                                                                                                         [],
-                                                                                                         [], [],
-                                                                                                         Verbal_Group.affirmative,
-                                                                                                         [])],
-                                                                                                               'present simple',
-                                                                                                     [],
-                                                                                                     [],
-                                                                                                     [], [],
-                                                                                                               Verbal_Group.affirmative,
-                                                                                                     [])])])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])]),
+                                        IndirectComplement([],
+                                                              [NominalGroup(['the'], ['thing'], [], [],
+                                                                             [Sentence(RELATIVE, 'that',
+                                                                                 [],
+                                                                                       [VerbalGroup(['be'], [
+                                                                                           VerbalGroup(
+                                                                                               ['do'], [], '',
+                                                                                               [],
+                                                                                               [],
+                                                                                               [], [],
+                                                                                               VerbalGroup.affirmative,
+                                                                                               [])],
+                                                                                                     'present simple',
+                                                                                           [],
+                                                                                           [],
+                                                                                           [], [],
+                                                                                                     VerbalGroup.affirmative,
+                                                                                           [])])])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence('disagree', 'no.', [], []),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['can+reach'], [], 'present simple',
-                                       [Nominal_Group([], ['it'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['can+reach'], [], 'present simple',
+                                       [NominalGroup([], ['it'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.negative, [])])]
+                             [], [], VerbalGroup.negative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -2694,23 +2702,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['come+back'], [], 'future simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['come+back'], [], 'future simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group([], ['Monday'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup([], ['Monday'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
                              [],
-                                       [Indirect_Complement(['with'], [Nominal_Group(['a'], ['guitar'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['with'], [NominalGroup(['a'], ['guitar'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
-                                       [Nominal_Group(['a'], ['football'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
+                                       [NominalGroup(['a'], ['football'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier = "SOME"
         rslt[2].sv[0].d_obj[0]._quantifier = "SOME"
@@ -2730,27 +2738,27 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
-                                       [Nominal_Group(['a'], ['guitar'], [], [], []),
-                                        Nominal_Group(['a'], ['piano'], [], [], []),
-                                        Nominal_Group(['a'], ['violon'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
+                                       [NominalGroup(['a'], ['guitar'], [], [], []),
+                                        NominalGroup(['a'], ['piano'], [], [], []),
+                                        NominalGroup(['a'], ['violon'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
                              [],
-                                       [Indirect_Complement(['with'], [Nominal_Group(['a'], ['guitar'], [], [], []),
-                                                                       Nominal_Group(['a'], ['piano'], [], [], []),
-                                                                       Nominal_Group(['a'], ['violon'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['with'], [NominalGroup(['a'], ['guitar'], [], [], []),
+                                                                       NominalGroup(['a'], ['piano'], [], [], []),
+                                                                       NominalGroup(['a'], ['violon'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
                     [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group([], ['everything'], [], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup([], ['everything'], [], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[0]._quantifier = "SOME"
         rslt[0].sv[0].d_obj[1]._quantifier = "SOME"
@@ -2774,18 +2782,18 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['come+back'], [], 'future simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['come+back'], [], 'future simple',
                              [],
-                                       [Indirect_Complement(['at'], [Nominal_Group(['7'], ["o'clock"], [], [], [])])],
-                             [], ['tomorrow'], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['at'], [NominalGroup(['7'], ["o'clock"], [], [], [])])],
+                             [], ['tomorrow'], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['he'], [], [], [])],
-                         [Verbal_Group(['finish'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['project'], [], [], [])],
-                                       [Indirect_Complement(['before'],
-                                                            [Nominal_Group(['10'], ['minute'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [NominalGroup([], ['he'], [], [], [])],
+                         [VerbalGroup(['finish'], [], 'present simple',
+                                       [NominalGroup(['the'], ['project'], [], [], [])],
+                                       [IndirectComplement(['before'],
+                                                            [NominalGroup(['10'], ['minute'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier = "DIGIT"
         rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier = "DIGIT"
@@ -2805,28 +2813,28 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
-                                       [Nominal_Group(['a'], ['guitar'], [], [], []),
-                                        Nominal_Group(['a'], ['piano'], [], [], []),
-                                        Nominal_Group(['a'], ['violon'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
+                                       [NominalGroup(['a'], ['guitar'], [], [], []),
+                                        NominalGroup(['a'], ['piano'], [], [], []),
+                                        NominalGroup(['a'], ['violon'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'future simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'future simple',
                              [],
-                                       [Indirect_Complement(['with'], [Nominal_Group(['a'], ['guitar'], [], [], []),
-                                                                       Nominal_Group(['a'], ['piano'], [], [], []),
-                                                                       Nominal_Group(['a'], ['violon'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['with'], [NominalGroup(['a'], ['guitar'], [], [], []),
+                                                                       NominalGroup(['a'], ['piano'], [], [], []),
+                                                                       NominalGroup(['a'], ['violon'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['boss'], [], [], []), Nominal_Group([], ['you'], [], [], []),
-                          Nominal_Group([], ['me'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['the'], ['boss'], [], [], []), NominalGroup([], ['you'], [], [], []),
+                          NominalGroup([], ['me'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], ['here'], Verbal_Group.affirmative, [])])]
+                             [], ['here'], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[0]._quantifier = "SOME"
         rslt[0].sv[0].d_obj[1]._quantifier = "SOME"
@@ -2851,24 +2859,24 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['time'], [],
-                                        [Nominal_Group(['a'], ['sentence'], [['speaking', []]], [], [])], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group(['the'], [], [['best', []]], [], [])],
+                         [NominalGroup(['the'], ['time'], [],
+                                        [NominalGroup(['a'], ['sentence'], [['speaking', []]], [], [])], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup(['the'], [], [['best', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['come'], [], 'present simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['come'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['at'], [Nominal_Group(['10'], ['pm'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['at'], [NominalGroup(['10'], ['pm'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['come'], [], 'future simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['come'], [], 'future simple',
                              [],
-                                       [Indirect_Complement([], [Nominal_Group(['a'], ['evening'], [], [], [])])],
-                             [], ['tomorrow'], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement([], [NominalGroup(['a'], ['evening'], [], [], [])])],
+                             [], ['tomorrow'], VerbalGroup.affirmative, [])])]
 
         rslt[0].sn[0].noun_cmpl[0]._quantifier = 'SOME'
         rslt[1].sv[0].i_cmpl[0].gn[0]._quantifier = "DIGIT"
@@ -2876,7 +2884,6 @@ class TestParsing(unittest.TestCase):
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
-
 
     def test_81(self):
         print('')
@@ -2890,47 +2897,47 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['think'], [], 'present simple',
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['think'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'that',
-                                                                         [Nominal_Group([], ['I'], [], [], [])],
-                                                                         [Verbal_Group(['know'], [], 'present simple',
-                                                                                       [Nominal_Group([], ['he'], [],
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'that',
+                                                                         [NominalGroup([], ['I'], [], [], [])],
+                                                                         [VerbalGroup(['know'], [], 'present simple',
+                                                                                       [NominalGroup([], ['he'], [],
                                                                                            [], [Sentence(RELATIVE,
                                                                                                          'who',
                                                                                                [],
-                                                                                                         [Verbal_Group(
+                                                                                                         [VerbalGroup(
                                                                                                              ['be'], [],
                                                                                                              'present simple',
                                                                                                              [
-                                                                                                                 Nominal_Group(
+                                                                                                                 NominalGroup(
                                                                                                                      [],
-                                                                                                                     [
-                                                                                                                         'he'],
+                                                                                                                       [
+                                                                                                                           'he'],
                                                                                                                      [],
                                                                                                                      [],
                                                                                                                      [])],
                                                                                                              [],
                                                                                                              [], [],
-                                                                                                             Verbal_Group.affirmative,
+                                                                                                             VerbalGroup.affirmative,
                                                                                                              [])])])],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])]),
                 Sentence(END, '', [], []),
                 Sentence('', '', [],
-                         [Verbal_Group([], [], '', [], [], [], [], Verbal_Group.affirmative,
-                                               [Sentence('subsentence+statement', 'so',
-                                                         [Nominal_Group([], ['I'], [], [], [])],
-                                                         [Verbal_Group(['want'], [Verbal_Group(['go'], [], '',
-                                                             [],
-                                                             [],
-                                                             [], [], Verbal_Group.affirmative, [])], 'present simple',
-                                                             [],
-                                                             [],
-                                                             [], [], Verbal_Group.affirmative, [])])])])]
+                         [VerbalGroup([], [], '', [], [], [], [], VerbalGroup.affirmative,
+                                         [Sentence('subsentence+statement', 'so',
+                                                   [NominalGroup([], ['I'], [], [], [])],
+                                                   [VerbalGroup(['want'], [VerbalGroup(['go'], [], '',
+                                                       [],
+                                                       [],
+                                                       [], [], VerbalGroup.affirmative, [])], 'present simple',
+                                                       [],
+                                                       [],
+                                                       [], [], VerbalGroup.affirmative, [])])])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -2947,23 +2954,23 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['interpretation'], [], [], [])],
-                         [Verbal_Group(['be'], [Verbal_Group(['find'], [], '',
-                                                             [Nominal_Group(['a'], ['defenition'], [], [], []),
-                                                              Nominal_Group(['a'], ['rule'], [], [], [])],
-                                                             [Indirect_Complement(['for'], [
-                                                                 Nominal_Group([], ['something'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])], 'present simple',
+                         [NominalGroup(['the'], ['interpretation'], [], [], [])],
+                         [VerbalGroup(['be'], [VerbalGroup(['find'], [], '',
+                                                             [NominalGroup(['a'], ['defenition'], [], [], []),
+                                                              NominalGroup(['a'], ['rule'], [], [], [])],
+                                                             [IndirectComplement(['for'], [
+                                                                 NominalGroup([], ['something'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group(['an'], ['interaction'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['an'], ['interaction'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['between'], [Nominal_Group([], ['them'], [], [], [])]),
-                                        Indirect_Complement(['in'], [Nominal_Group(['a'], ['dialog'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                                       [IndirectComplement(['between'], [NominalGroup([], ['them'], [], [], [])]),
+                                        IndirectComplement(['in'], [NominalGroup(['a'], ['dialog'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].sv_sec[0].d_obj[0]._quantifier = "SOME"
         rslt[0].sv[0].sv_sec[0].d_obj[1]._quantifier = "SOME"
@@ -2979,7 +2986,7 @@ class TestParsing(unittest.TestCase):
         print('######################## test 9.3 ##############################')
         utterance = "To have a dialog, we need more than 1 protagonist. I finish the dialog, and I check many problems"
         print(
-        "Object of this test : Having indirect complement before the sentence and to have more one sentence in utterance")
+            "Object of this test : Having indirect complement before the sentence and to have more one sentence in utterance")
         print(utterance)
         print('#################################################################')
         print('')
@@ -2987,26 +2994,26 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['we'], [], [], [])],
-                         [Verbal_Group(['need'], [Verbal_Group(['have'], [], '',
-                                                               [Nominal_Group(['a'], ['dialog'], [], [], [])],
+                         [NominalGroup([], ['we'], [], [], [])],
+                         [VerbalGroup(['need'], [VerbalGroup(['have'], [], '',
+                                                               [NominalGroup(['a'], ['dialog'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])], 'present simple',
+                             [], [], VerbalGroup.affirmative, [])], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['finish'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['dialog'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['finish'], [], 'present simple',
+                                       [NominalGroup(['the'], ['dialog'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['check'], [], 'present simple',
-                                       [Nominal_Group([], ['problem'], [['many', []]], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['check'], [], 'present simple',
+                                       [NominalGroup([], ['problem'], [['many', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].sv_sec[0].d_obj[0]._quantifier = "SOME"
         rslt[2].sv[0].d_obj[0]._quantifier = "ALL"
@@ -3026,29 +3033,29 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['left'], [], [Nominal_Group(['a'], ['what'], [], [], [])], [])],
-                         [Verbal_Group([], [], 'present simple',
+                         [NominalGroup(['the'], ['left'], [], [NominalGroup(['a'], ['what'], [], [], [])], [])],
+                         [VerbalGroup([], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence('interjection', '',
-                         [Nominal_Group([], ['Jido'], [], [], [])],
-                         [Verbal_Group([], [], 'present simple',
+                         [NominalGroup([], ['Jido'], [], [], [])],
+                         [VerbalGroup([], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'thing',
-                         [Nominal_Group([], ['you'], [], [], [])],
-                         [Verbal_Group(['do'], [], 'present simple',
+                         [NominalGroup([], ['you'], [], [], [])],
+                         [VerbalGroup(['do'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(IMPERATIVE, '',
-                         [Nominal_Group([], ['Jido'], [], [], [])],
-                         [Verbal_Group(['throw'], [], 'present simple',
-                                       [Nominal_Group(['1'], [], [], [Nominal_Group([], ['them'], [], [], [])], [])],
+                         [NominalGroup([], ['Jido'], [], [], [])],
+                         [VerbalGroup(['throw'], [], 'present simple',
+                                       [NominalGroup(['1'], [], [], [NominalGroup([], ['them'], [], [], [])], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence('agree', 'good.', [], [])]
 
         rslt[0].sn[0].noun_cmpl[0]._quantifier = "SOME"
@@ -3069,27 +3076,27 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'which',
+                         [NominalGroup(['the'], ['bottle'], [], [], [Sentence(RELATIVE, 'which',
                              [],
-                                                                               [Verbal_Group(['be'], [],
+                                                                               [VerbalGroup(['be'], [],
                                                                                              'present simple',
                                                                                    [],
-                                                                                             [Indirect_Complement(
-                                                                                                 ['on'], [Nominal_Group(
+                                                                                             [IndirectComplement(
+                                                                                                 ['on'], [NominalGroup(
                                                                                                      ['the'], ['table'],
                                                                                                      [], [], [])])],
-                                                                                   [], [], Verbal_Group.affirmative,
+                                                                                   [], [], VerbalGroup.affirmative,
                                                                                    [])])])],
-                         [Verbal_Group(['be'], [], 'present simple',
-                                       [Nominal_Group([], [], [['blue', []]], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
+                                       [NominalGroup([], [], [['blue', []]], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [])]),
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(W_QUESTION, 'place',
-                         [Nominal_Group(['this'], ['tape'], [], [], [])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                         [NominalGroup(['this'], ['tape'], [], [], [])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
                              [],
-                             [], [], Verbal_Group.affirmative, [])])]
+                             [], [], VerbalGroup.affirmative, [])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
         self.assertEquals(result_test, 0)
@@ -3106,28 +3113,28 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group(['the'], ['bottle'], [], [Nominal_Group([], ['Jido'], [], [], [])],
+                         [NominalGroup(['the'], ['bottle'], [], [NominalGroup([], ['Jido'], [], [], [])],
                                         [Sentence(RELATIVE, 'which',
                                             [],
-                                                  [Verbal_Group(['be'], [], 'present simple',
-                                                                [Nominal_Group([], [], [['blue', []]], [], [])],
+                                                  [VerbalGroup(['be'], [], 'present simple',
+                                                                [NominalGroup([], [], [['blue', []]], [], [])],
                                                       [],
-                                                      [], [], Verbal_Group.affirmative, [])])])],
-                         [Verbal_Group(['be'], [], 'present simple',
+                                                      [], [], VerbalGroup.affirmative, [])])])],
+                         [VerbalGroup(['be'], [], 'present simple',
                              [],
-                                       [Indirect_Complement(['on'], [Nominal_Group(['the'], ['table'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])]),
+                                       [IndirectComplement(['on'], [NominalGroup(['the'], ['table'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['do'], [], 'present simple',
-                                       [Nominal_Group(['my'], ['homework'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['do'], [], 'present simple',
+                                       [NominalGroup(['my'], ['homework'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'before',
-                                                                         [Nominal_Group([], ['he'], [], [], [])],
-                                                                         [Verbal_Group(['come'], [], 'present simple',
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'before',
+                                                                         [NominalGroup([], ['he'], [], [], [])],
+                                                                         [VerbalGroup(['come'], [], 'present simple',
                                                                              [],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])])]
 
         result_test = compare_utterance(class_list, rslt, sentence_list)
@@ -3145,30 +3152,30 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['do'], [], 'present simple',
-                                       [Nominal_Group(['my'], ['homework'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['do'], [], 'present simple',
+                                       [NominalGroup(['my'], ['homework'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'before',
-                                                                         [Nominal_Group([], ['he'], [], [], [])],
-                                                                         [Verbal_Group(['come'], [], 'present simple',
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'before',
+                                                                         [NominalGroup([], ['he'], [], [], [])],
+                                                                         [VerbalGroup(['come'], [], 'present simple',
                                                                              [],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])]),
                 Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['I'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'present perfect',
-                                       [Nominal_Group(['a'], ['foot'], [], [], [])],
+                         [NominalGroup([], ['I'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'present perfect',
+                                       [NominalGroup(['a'], ['foot'], [], [], [])],
                              [],
-                             [], [], Verbal_Group.affirmative, [Sentence('subsentence+statement', 'since',
-                                                                         [Nominal_Group([], ['I'], [], [], [])],
-                                                                         [Verbal_Group(['be'], [], 'past simple',
-                                                                                       [Nominal_Group(['a'], ['boy'],
+                             [], [], VerbalGroup.affirmative, [Sentence('subsentence+statement', 'since',
+                                                                         [NominalGroup([], ['I'], [], [], [])],
+                                                                         [VerbalGroup(['be'], [], 'past simple',
+                                                                                       [NominalGroup(['a'], ['boy'],
                                                                                                       [['young', []]],
                                                                                            [], [])],
                                                                              [],
-                                                                             [], [], Verbal_Group.affirmative,
+                                                                             [], [], VerbalGroup.affirmative,
                                                                              [])])])])]
 
         rslt[1].sv[0].d_obj[0]._quantifier = "SOME"
@@ -3189,19 +3196,19 @@ class TestParsing(unittest.TestCase):
         class_list = analyse_sentence.sentences_analyzer(sentence_list)
 
         rslt = [Sentence(STATEMENT, '',
-                         [Nominal_Group([], ['they'], [], [], [])],
-                         [Verbal_Group(['play'], [], 'present perfect',
-                                       [Nominal_Group(['a'], ['tennis'], [], [], [])],
-                                       [Indirect_Complement(['since'], [Nominal_Group(['1987'], [], [], [], [])])],
-                             [], [], Verbal_Group.negative, [])]),
+                         [NominalGroup([], ['they'], [], [], [])],
+                         [VerbalGroup(['play'], [], 'present perfect',
+                                       [NominalGroup(['a'], ['tennis'], [], [], [])],
+                                       [IndirectComplement(['since'], [NominalGroup(['1987'], [], [], [], [])])],
+                             [], [], VerbalGroup.negative, [])]),
                 Sentence(IMPERATIVE, '',
                     [],
-                         [Verbal_Group(['give'], [], 'present simple',
-                                       [Nominal_Group(['the'], ['glass'], [], [], []),
-                                        Nominal_Group(['the'], ['paper'], [], [], []),
-                                        Nominal_Group(['the'], ['bottle'], [], [], [])],
-                                       [Indirect_Complement([], [Nominal_Group([], ['me'], [], [], [])])],
-                             [], [], Verbal_Group.affirmative, [])])]
+                         [VerbalGroup(['give'], [], 'present simple',
+                                       [NominalGroup(['the'], ['glass'], [], [], []),
+                                        NominalGroup(['the'], ['paper'], [], [], []),
+                                        NominalGroup(['the'], ['bottle'], [], [], [])],
+                                       [IndirectComplement([], [NominalGroup([], ['me'], [], [], [])])],
+                             [], [], VerbalGroup.affirmative, [])])]
 
         rslt[0].sv[0].d_obj[0]._quantifier = "SOME"
         rslt[0].sv[0].i_cmpl[0].gn[0]._quantifier = "DIGIT"

@@ -110,7 +110,7 @@ def find_adv(phrase, vg):
         if phrase[i] in ResourcePool().adverbs:
             if i > 0 and phrase[i - 1] in ResourcePool().proposals:
                 vg.i_cmpl = vg.i_cmpl + [
-                    Indirect_Complement([phrase[i - 1]], [Nominal_Group([], [phrase[i]], [], [], [])])]
+                    IndirectComplement([phrase[i - 1]], [NominalGroup([], [phrase[i]], [], [], [])])]
                 phrase = phrase[:i - 1] + phrase[i + 1:]
             else:
                 vg.advrb = vg.advrb + [phrase[i]]
@@ -213,7 +213,7 @@ def recover_obj_iobj(phrase, vg):
                 else:
                     object = []
 
-            vg.i_cmpl = vg.i_cmpl + [Indirect_Complement(proposal, gr_nom_list)]
+            vg.i_cmpl = vg.i_cmpl + [IndirectComplement(proposal, gr_nom_list)]
 
         else:
             #It is a direct complement
@@ -264,7 +264,7 @@ def recover_obj_iobj(phrase, vg):
                 vg.d_obj = gr_nom_list
             else:
                 #Else the first nominal group found is indirect and this one is direct complement
-                vg.i_cmpl = vg.i_cmpl + [Indirect_Complement([], vg.d_obj)]
+                vg.i_cmpl = vg.i_cmpl + [IndirectComplement([], vg.d_obj)]
                 vg.d_obj = gr_nom_list
 
         #If the last nominal group is followed by another one in plural form 
@@ -287,7 +287,7 @@ def state_adjective(sentence, vg):
             #Here we have juist to process adjectives, nominal groups are processed
             pos = analyse_nominal_group.adjective_pos(sentence, 0)
             adj_list = analyse_nominal_group.process_adj_quantifier(sentence[:pos - 1])
-            vg.d_obj = [Nominal_Group([], [], adj_list, [], [])]
+            vg.d_obj = [NominalGroup([], [], adj_list, [], [])]
             sentence = sentence[pos - 1:]
 
             #Same as nominal groups but with adjectives
@@ -302,7 +302,7 @@ def state_adjective(sentence, vg):
                 pos = analyse_nominal_group.adjective_pos(sentence, 0)
                 adj_list = analyse_nominal_group.process_adj_quantifier(sentence[:pos - 1])
                 #We put all adjectives in the direct complement
-                vg.d_obj = vg.d_obj + [Nominal_Group([], [], adj_list, [], [])]
+                vg.d_obj = vg.d_obj + [NominalGroup([], [], adj_list, [], [])]
                 vg.d_obj[len(vg.d_obj) - 1]._conjunction = conjunction
                 sentence = sentence[pos - 1:]
     return sentence
@@ -341,12 +341,12 @@ def process_scd_sentence(phrase, vg, sec_vrb):
     #We process the verb
     if scd_sentence[0] == 'not':
         scd_verb = [other_functions.convert_to_string(analyse_verb.return_verb(scd_sentence, [scd_sentence[1]], ''))]
-        vg.sv_sec = vg.sv_sec + [Verbal_Group(scd_verb, [], '', [], [], [], [], Verbal_Group.negative, [])]
+        vg.sv_sec = vg.sv_sec + [VerbalGroup(scd_verb, [], '', [], [], [], [], VerbalGroup.negative, [])]
         #We delete the verb
         scd_sentence = scd_sentence[phrase.index(scd_sentence[1]) + 1:]
     else:
         scd_verb = [other_functions.convert_to_string(analyse_verb.return_verb(scd_sentence, [scd_sentence[0]], ''))]
-        vg.sv_sec = vg.sv_sec + [Verbal_Group(scd_verb, [], '', [], [], [], [], Verbal_Group.affirmative, [])]
+        vg.sv_sec = vg.sv_sec + [VerbalGroup(scd_verb, [], '', [], [], [], [], VerbalGroup.affirmative, [])]
         #We delete the verb
         scd_sentence = scd_sentence[scd_sentence.index(scd_sentence[0]) + 1:]
 
@@ -537,7 +537,7 @@ def DOC_to_IOC(vg):
         if vg.vrb_main != [] and (vg.vrb_main[0] == x or vg.vrb_main[0].endswith('+' + x)):
             #In this case we have just one direct complement
             if vg.d_obj:
-                vg.i_cmpl = vg.i_cmpl + [Indirect_Complement([], vg.d_obj)]
+                vg.i_cmpl = vg.i_cmpl + [IndirectComplement([], vg.d_obj)]
                 vg.d_obj = []
                 return vg
     return vg
@@ -649,9 +649,9 @@ def refine_subsentence(vg):
             vg.vrb_sub_sentence[i].data_type = RELATIVE
             #We add nominal group in relative as direct object
             vg.vrb_sub_sentence[i].sv[0].d_obj = vg.vrb_sub_sentence[i].sv[0].d_obj + [
-                Nominal_Group(['the'], ['thing'], [], [], [])]
+                NominalGroup(['the'], ['thing'], [], [], [])]
             #We create a nominal group
-            gn = Nominal_Group(['the'], ['thing'], [], [], [vg.vrb_sub_sentence[i]])
+            gn = NominalGroup(['the'], ['thing'], [], [], [vg.vrb_sub_sentence[i]])
             vg.d_obj = vg.d_obj + [gn]
             #We delete the subsentence
             vg.vrb_sub_sentence = vg.vrb_sub_sentence[:i] + vg.vrb_sub_sentence[i + 1:]
@@ -661,9 +661,9 @@ def refine_subsentence(vg):
             #We have to make some changers
             vg.vrb_sub_sentence[i].data_type = RELATIVE
             #We create a nominal group
-            gn = Nominal_Group(['the'], ['location'], [], [], [vg.vrb_sub_sentence[i]])
+            gn = NominalGroup(['the'], ['location'], [], [], [vg.vrb_sub_sentence[i]])
             #We add the relative and the nominal group into the sentence
-            vg.i_cmpl = vg.i_cmpl + [Indirect_Complement(['in'], [gn])]
+            vg.i_cmpl = vg.i_cmpl + [IndirectComplement(['in'], [gn])]
 
             for l in ResourcePool().indirect_transitive:
                 if l == vg.vrb_main[0]:

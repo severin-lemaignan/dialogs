@@ -15,7 +15,7 @@ class Sentence(object):
     A sentence is formed from:
     data_type: the type of a sentence whether it is a question, an imperative, ...
     sn : a nominal structure typed into a Nominal_group
-    sv : a verbal structure typed into a Verbal_Group
+    sv : a verbal structure typed into a VerbalGroup
     aim : is used for retrieveing the aim of a question
     """
 
@@ -117,7 +117,7 @@ class Sentence(object):
         self.sv[0].vrb_sub_sentence.append(sub_sentence)
 
 
-class Nominal_Group(object):
+class NominalGroup(object):
     """
     Nominal group class declaration
     det : determinant
@@ -218,8 +218,8 @@ class Nominal_Group(object):
     def adjectives_only(self):
         """This method returns True when this nominal group holds only a set of adjectives.
         E.g: the banana is yellow. The parser provides an object sentence with two nominal groups:
-        - Nominal_Group(['the'], ['banana'], [], [],[]) and adjectives_only returns False
-        - Nominal_Group([], [], ['yellow'], [],[]) and adjectives_only returns True
+        - NominalGroup(['the'], ['banana'], [], [],[]) and adjectives_only returns False
+        - NominalGroup([], [], ['yellow'], [],[]) and adjectives_only returns True
         """
         if self.adj and \
                 not self.noun and \
@@ -230,7 +230,7 @@ class Nominal_Group(object):
             return False
 
 
-class Indirect_Complement(object):
+class IndirectComplement(object):
     """
     Indirect complement class declaration
     gn : nominal group
@@ -273,7 +273,7 @@ class Indirect_Complement(object):
                 map(lambda x: x.flatten(), self.gn)]
 
 
-class Verbal_Group(object):
+class VerbalGroup(object):
     """
     Verbal_group class declaration
     vrb_main: the main verb of a sentence
@@ -371,7 +371,7 @@ class Verbal_Group(object):
             for vrb_sec_s in self.sv_sec:
                 res += '\t' + pprint(str(vrb_sec_s).replace("\n", "\n\t"), SECONDARY_VERBAL_GROUP) + "\n"
 
-        res = pprint(res, AFFIRMATIVE if self.state == Verbal_Group.affirmative else NEGATIVE)
+        res = pprint(res, AFFIRMATIVE if self.state == VerbalGroup.affirmative else NEGATIVE)
         res = pprint(res, RESOLVED) if self.resolved() else pprint(res, NOT_RESOLVED)
 
         return pprint(res, VERBAL_GROUP)
@@ -579,7 +579,7 @@ def i_cmpl(indirect_complement):
             list_nominal_group = indirect_complement[i].gn[1:]
             indirect_complement[i].gn = [indirect_complement[i].gn[1]]
             for k in list_nominal_group:
-                indirect_complement = indirect_complement + [Indirect_Complement(indirect_complement[i].prep, [k])]
+                indirect_complement = indirect_complement + [IndirectComplement(indirect_complement[i].prep, [k])]
         i += 1
     return indirect_complement
 
@@ -593,10 +593,10 @@ def nominal_group_remerge(utterance, flag, nominal_group_structure):
     for i in utterance:
         if i.data_type == IMPERATIVE:
             i.data_type = STATEMENT
-            i.sn = [Nominal_Group(['the'], i.sv[0].vrb_main, [], [], [])]
+            i.sn = [NominalGroup(['the'], i.sv[0].vrb_main, [], [], [])]
 
         if i.data_type == STATEMENT or i.data_type.startswith(SUBSENTENCE):
-            if not i.sv or i.sv[0].state == Verbal_Group.affirmative:
+            if not i.sv or i.sv[0].state == VerbalGroup.affirmative:
 
                 #We can have just the subject
                 if not i.sv:
@@ -613,7 +613,7 @@ def nominal_group_remerge(utterance, flag, nominal_group_structure):
                     for v in i.sv:
                         nominal_group_structure = process_verbal_group_part(v, nominal_group_structure, flag)
 
-            elif i.sv[0].state == Verbal_Group.negative:
+            elif i.sv[0].state == VerbalGroup.negative:
                 #For all other sentences flag will be FAILURE
                 flag = 'FAILURE'
 
