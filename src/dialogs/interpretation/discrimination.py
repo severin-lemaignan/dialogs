@@ -49,7 +49,7 @@ class Discrimination(object):
             obj_tmp = []
 
             try:
-                obj_tmp = self.oro.findForAgent(agent_desc[0], agent_desc[1], agent_desc[2])
+                obj_tmp = self.oro.findForAgent(ResourcePool().get_model_mapping(agent_desc[0]), agent_desc[1], agent_desc[2])
             except AttributeError: # No ontology server
                 pass
             except KbError: #The agent does not exist in the ontology
@@ -81,7 +81,7 @@ class Discrimination(object):
     #   The new discriminant should be different from the ones already known or ignored
     # -----------------------------------------------------------------------------#
     def get_discriminant(self, agent, obj_list, ignore_descriptors, include_partial):
-        discriminants = self.oro.discriminateForAgent(agent, obj_list)
+        discriminants = self.oro.discriminateForAgent(ResourcePool().get_model_mapping(agent), obj_list)
         logger.debug(colored_print('Possible discriminants: ', 'magenta') + \
                      str(colored_print(discriminants[1], 'blue')) + \
                      colored_print(" (complete discriminants: ", 'magenta') + \
@@ -166,7 +166,7 @@ class Discrimination(object):
             if descriptor == 'rdf:type':
                 val = self.oro.getDirectClassesOf(obj).keys()
             else:
-                val = self.oro.findForAgent(agent, '?val', [obj + ' ' + descriptor + ' ?val'])
+                val = self.oro.findForAgent(ResourcePool().get_model_mapping(agent), '?val', [obj + ' ' + descriptor + ' ?val'])
 
             if val:
                 #TODO: we only consider the first result item!
@@ -318,7 +318,7 @@ class Discrimination(object):
         """ Returns the list of visible objects for an agent from a list of objects.
         """
 
-        visible_objects = self.oro.findForAgent(agent, "?o", [agent + " sees ?o"])
+        visible_objects = self.oro.findForAgent(ResourcePool().get_model_mapping(agent), "?o", [agent + " sees ?o"])
 
         return list(set(id_list) & set(visible_objects))
 
@@ -389,7 +389,7 @@ class Discrimination(object):
             if not descriptor:
                 break
 
-            val = self.oro.findForAgent(agent, '?val', [objectID + ' ' + descriptor + ' ?val'])
+            val = self.oro.findForAgent(ResourcePool().get_model_mapping(agent), '?val', [objectID + ' ' + descriptor + ' ?val'])
 
             if not val:
                 break

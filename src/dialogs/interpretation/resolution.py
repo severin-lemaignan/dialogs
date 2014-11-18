@@ -110,7 +110,7 @@ class Resolver(object):
         noun = ""
         try:
             noun = nominal_group.noun[0].replace('+', ' ')
-            onto_res = ResourcePool().ontology_server.lookupForAgent(current_speaker, noun)
+            onto_res = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(current_speaker), noun)
         except IndexError:
             raise DialogError("We should not have to resolve nominal " + \
                               "groups with indefinite determiner and only adjectives")
@@ -153,7 +153,7 @@ class Resolver(object):
                     current_speaker + ' focusesOn ?concept, ?concept rdf:type ' + class_name, None, "magenta"))
                 try:
                     onto_focus = ResourcePool().ontology_server.findForAgent(
-                        current_speaker,
+                        ResourcePool().get_model_mapping(current_speaker),
                         '?concept',
                         [current_speaker + ' focusesOn ?concept', '?concept rdf:type ' + class_name])
                 except AttributeError:
@@ -167,7 +167,7 @@ class Resolver(object):
                                                                                None, "magenta"))
                 try:
                     onto_focus = ResourcePool().ontology_server.findForAgent(
-                        current_speaker,
+                        ResourcePool().get_model_mapping(current_speaker),
                         '?concept',
                         [current_speaker + ' focusesOn ?concept'])
                 except AttributeError:
@@ -218,7 +218,7 @@ class Resolver(object):
         # Case of an existing ID in the Ontology
         onto = []
         try:
-            onto = ResourcePool().ontology_server.lookupForAgent(current_speaker, nominal_group.noun[0])
+            onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(current_speaker), nominal_group.noun[0])
         except AttributeError: #the ontology server is not started or doesn't know the method
             pass
         except KbError: #The agent does not exist in the ontology
@@ -287,7 +287,7 @@ class Resolver(object):
                     onto_id = []
                     try:
                         # TODO: anything -> all Artifact: is that right?
-                        onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',
+                        onto_id = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept',
                                                                               ['?concept rdf:type Artifact'])
                     except KbError: # The agent does not exist in the ontology
                         pass
@@ -305,7 +305,7 @@ class Resolver(object):
 
                     onto_id = []
                     try:
-                        onto_id = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept',
+                        onto_id = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept',
                                                                               ['?concept rdf:type ' + class_name])
                     except KbError: # The agent does not exist in the ontology
                         pass
@@ -460,7 +460,7 @@ class Resolver(object):
                          '[' + colored_print(', '.join(stmtsAndVisibility), None, 'magenta') + ']')
             concepts = []
             try:
-                concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmtsAndVisibility)
+                concepts = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept', stmtsAndVisibility)
             except AttributeError: # No ontology server
                 pass
             except KbError: #The agent does not exist in the ontology
@@ -470,7 +470,7 @@ class Resolver(object):
                 # no acceptable concepts that are visible. Look for concepts that are not visible."
                 logger.debug(colored_print("No visible concepts found. Removing the visibility constraint"))
                 try:
-                    concepts = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', stmts)
+                    concepts = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept', stmts)
                 except AttributeError: # No ontology server
                     pass
                 except KbError: #The agent does not exist in the ontology
@@ -592,7 +592,7 @@ class Resolver(object):
             colored_print("\tFound '(an)other'. Looking for a different concept from dialog history.", "magenta"))
         obj_list = []
         try:
-            obj_list = ResourcePool().ontology_server.findForAgent(current_speaker, '?concept', current_stmts)
+            obj_list = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker), '?concept', current_stmts)
         except AttributeError:
             pass
 
@@ -811,7 +811,7 @@ class Resolver(object):
         logger.debug(colored_print("Learning this new concept in " + current_speaker + "'s model: \n",
                                    "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
         try:
-            ResourcePool().ontology_server.revise(stmts, {"method": "add", "models": [current_speaker]})
+            ResourcePool().ontology_server.revise(stmts, {"method": "add", "models": [ResourcePool().get_model_mapping(current_speaker)]})
         except AttributeError:
             pass
 

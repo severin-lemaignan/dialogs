@@ -50,7 +50,7 @@ class TestDiscrimination(unittest.TestCase):
                                                 'SPACENAVBOX isOn ACCESSKIT'
             ])
 
-            ResourcePool().ontology_server.addForAgent("raquel",
+            ResourcePool().ontology_server.addForAgent(ResourcePool().get_model_mapping("raquel"),
                                                        ["BLUE_BOTTLE isVisible true",
                                                         "ORANGE_BOTTLE isVisible true"
                                                        ])

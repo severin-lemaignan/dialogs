@@ -177,7 +177,7 @@ class NominalGroupStatementBuilder(object):
 
         onto = ''
         try:
-            onto = ResourcePool().ontology_server.lookupForAgent(self._current_speaker, ng.noun[0])
+            onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(self._current_speaker), ng.noun[0])
         except AttributeError: #the ontology server is not started of doesn't know the method
             pass
 
@@ -226,7 +226,7 @@ class NominalGroupStatementBuilder(object):
             for noun in nom_grp.noun:
                 onto = ''
                 try:
-                    onto = ResourcePool().ontology_server.lookupForAgent(self._current_speaker, noun)
+                    onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(self._current_speaker), noun)
                 except AttributeError:
                     pass
 
@@ -339,7 +339,7 @@ class NominalGroupStatementBuilder(object):
             # Case : existing ID
             onto_id = ''
             try:
-                onto_id = ResourcePool().ontology_server.lookupForAgent(self._current_speaker, noun)
+                onto_id = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(self._current_speaker), noun)
             except AttributeError: #the ontology server is not started of doesn't know the method
                 pass
             except KbError: #The agent does not exist in the ontology

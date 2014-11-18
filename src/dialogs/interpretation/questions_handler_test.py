@@ -56,8 +56,8 @@ class TestQuestionHandler(unittest.TestCase):
 
                                             'id_danny sees SPEAKER',
         ])
-        ResourcePool().ontology_server.addForAgent('SPEAKER',
-                                                   [
+        ResourcePool().ontology_server.addForAgent(ResourcePool().get_model_mapping('SPEAKER'),
+                                                   [   'SPEAKER rdf:type Human',
                                                        'SPEAKER rdfs:label "Patrick"',
                                                        'blue_cube rdf:type Cube',
                                                        'blue_cube hasColor blue',
@@ -776,7 +776,7 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
 
         try:
 
-            self.oro.addForAgent('ACHILLE',
+            self.oro.addForAgent(ResourcePool().get_model_mapping('ACHILLE'),
                                  ['ACHILLE rdf:type Human',
                                   'ACHILLE rdfs:label Achille',
                                   'JULIE rdf:type Human',
@@ -805,8 +805,8 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
     def test1(self):
 
         self.oro.add(['TAPE1 isIn CARDBOARD_BOX'])
-        self.oro.removeForAgent('ACHILLE', ['ACHILLE focusesOn TAPE2'])
-        self.oro.addForAgent('ACHILLE', ['ACHILLE focusesOn CARDBOARD_BOX'])
+        self.oro.removeForAgent(ResourcePool().get_model_mapping('ACHILLE'), ['ACHILLE focusesOn TAPE2'])
+        self.oro.addForAgent(ResourcePool().get_model_mapping('ACHILLE'), ['ACHILLE focusesOn CARDBOARD_BOX'])
 
         stmt = "Jido, what is in the box?"
         answer = "this box"
@@ -865,8 +865,8 @@ class TestQuestionHandlerScenarioMovingToLondon(unittest.TestCase):
     def test_6(self):
 
         ###
-        self.oro.removeForAgent('ACHILLE', ['ACHILLE focusesOn CARDBOARD_BOX'])
-        self.oro.addForAgent('ACHILLE', ['ACHILLE focusesOn TAPE2'])
+        self.oro.removeForAgent(ResourcePool().get_model_mapping('ACHILLE'), ['ACHILLE focusesOn CARDBOARD_BOX'])
+        self.oro.addForAgent(ResourcePool().get_model_mapping('ACHILLE'), ['ACHILLE focusesOn TAPE2'])
         stmt = "Jido, can you reach this tape?"
         ####
         ## expected to check['myself reaches TAPE2']

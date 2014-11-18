@@ -422,6 +422,14 @@ class ResourcePool(object):
                 adj_s.append(k)
         self.adjectives_ontology_classes = adj_s
 
+    def get_model_mapping(self, agent):
+        """ Returns the name of the knowledge model associated to a given agent.
+        """
+        if agent == "myself":
+            return ResourcePool().default_model
+        else:
+            return agent + "_model"
+
     def mark_active(self, ids):
         if not self.ontology_server:
             return

@@ -83,7 +83,7 @@ class StatementSafeAdder(object):
 
         models = [ResourcePool().default_model]
         if self._current_speaker:
-            models.append(self._current_speaker)
+            models.append(ResourcePool().get_model_mapping(self._current_speaker))
 
         policy = {"method": "safe_add", "models": models}
 

@@ -26,7 +26,8 @@ class TestStatementBuilder(unittest.TestCase):
         ResourcePool().ontology_server.add(['SPEAKER rdf:type Human',
                                             'SPEAKER rdfs:label "Patrick"'])
 
-        ResourcePool().ontology_server.addForAgent('SPEAKER', ['id_danny rdfs:label "Danny"',
+        ResourcePool().ontology_server.addForAgent(ResourcePool().get_model_mapping('SPEAKER'), 
+                                                              ['id_danny rdfs:label "Danny"',
                                                                'id_danny rdf:type Human',
 
                                                                'volvo hasColor blue',
