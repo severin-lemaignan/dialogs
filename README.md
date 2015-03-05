@@ -1,7 +1,7 @@
 Dialogs: A Naive Natural Language Processing
 ============================================
 
-(c) LAAS-CNRS 2010-2013, EPFL 2013, 2014
+(c) LAAS-CNRS 2010-2013, EPFL 2013-2015
 
 This module, licensed under the permissive BSD 3-clause, reads on stdin user
 input in natural language, parse it, call resolution routines when ambiguous
