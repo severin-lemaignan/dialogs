@@ -357,13 +357,9 @@ class Dialog(Thread):
                     self._logger.debug(
                         colored_print("Answer: <%s>: Sent to knowledge base." % self.last_sentence[1], 'magenta'))
                     self._logger.debug("Up to the robot controller now!")
-                    try:
-                        ResourcePool().ontology_server.revise(['%s verbalisesTo "%s"' % (self.current_situation_id,
-                                                                                         self.last_sentence[1])],
-                                                              {"method": "add", "models": [ResourcePool.default_model]})
-                    except AttributeError:
-                        #No knowledge base
-                        pass
+                    ResourcePool().ontology_server.revise(['%s verbalisesTo "%s"' % (self.current_situation_id,
+                                                                                        self.last_sentence[1])],
+                                                            {"method": "add", "models": [ResourcePool().default_model]})
                 else:
                     self._sentence_output_queue.put(self.last_sentence[0])
 

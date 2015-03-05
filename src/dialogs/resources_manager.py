@@ -8,7 +8,7 @@ logger = logging.getLogger("dialogs")
 import os.path
 
 from dialog_exceptions import UnknownVerb
-
+from dialogs.helpers.helpers import colored_print
 
 def singleton(cls):
     instances = {}
@@ -19,6 +19,29 @@ def singleton(cls):
         return instances[cls]
 
     return getinstance
+
+class DummyKnowledgeBase:
+    """ This class replace a real knowledge base by simply logging
+    all the "would-have-been" interactions with the knowledge base.
+    """
+    def __init__(self):
+        self.log = logging.getLogger("dialogs.dummykb")
+
+    def revise(self, stmts, options):
+        self.log.info(colored_print("REVISE (%s): %s" % (options,stmts), 'cyan'))
+
+    def findForAgent(self, model, var, query):
+        self.log.info(colored_print("QUERY (in model <%s>): %s" % (model, query), 'cyan'))
+
+    def lookupForAgent(self, model, query):
+        self.log.info(colored_print("LOOKUP (in model <%s>): %s" % (model, query), 'cyan'))
+
+    def __getitem__(self, query):
+        self.log.info(colored_print("QUERY: %s" % query, 'cyan' ))
+
+    def close(self):
+        pass
+
 
 
 class ThematicRole(object):
@@ -284,6 +307,7 @@ class ResourcePool(object):
         except KbError:
             logger.error("Error while trying to connect to the knowledge base on %s:%s" % (kb_host, kb_port) + \
                          ". Continuing without knowledge base. Amongst others, resolution won't work.")
+            self.ontology_server = DummyKnowledgeBase()
 
         for line in open(os.path.join(data_path, "adjectives")):
             if line.startswith("#") or not line.strip():
@@ -437,12 +461,8 @@ class ResourcePool(object):
         if isinstance(ids, basestring):
             ids = [ids]
 
-        try:
-            self.ontology_server.revise([id + " rdf:type ActiveConcept" for id in ids],
-                                        {"method": "add", "models": [ResourcePool().default_model], "lifespan": 10})
-        except AttributeError:
-            # No ontology server
-            pass
+        self.ontology_server.revise([id + " rdf:type ActiveConcept" for id in ids],
+                                    {"method": "add", "models": [ResourcePool().default_model], "lifespan": 10})
 
     def __del__(self):
         self.close()

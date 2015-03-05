@@ -18,14 +18,9 @@ def _send_state(state):
     state_id = generate_id(False)
     statements = [state_id + " rdf:type " + state,
                   "myself experiences " + state_id]
-    try:
-        logger.info(colored_print("Setting my mood to " + state, "magenta"))
-        #logger.warning(colored_print("Not setting my mood due to Pellet bugs!", "magenta"))
-        ResourcePool().ontology_server.revise(statements, policy)
-
-    except AttributeError: #the ontology server is not started of doesn't know the method
-        pass
-
+    logger.info(colored_print("Setting my mood to " + state, "magenta"))
+    #logger.warning(colored_print("Not setting my mood due to Pellet bugs!", "magenta"))
+    ResourcePool().ontology_server.revise(statements, policy)
 
 def confused():
     _send_state("ConfusedState")

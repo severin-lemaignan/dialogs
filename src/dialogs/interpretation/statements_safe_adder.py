@@ -58,11 +58,7 @@ class StatementSafeAdder(object):
             stmts = []
 
             #Attempt to find the unidentified IDs
-            onto = ''
-            try:
-                onto = ResourcePool().ontology_server.find([id], current_s)
-            except AttributeError:
-                pass
+            onto = ResourcePool().ontology_server.find([id], current_s)
 
             #Replace Matching IDs
             if onto:
@@ -87,19 +83,13 @@ class StatementSafeAdder(object):
 
         policy = {"method": "safe_add", "models": models}
 
-        try:
-            if not ResourcePool().ontology_server.revise(statements, policy):
-                logger.debug(colored_print("At least one statement hasn't been " + \
-                                           "pushed to the ontology server because it would lead to inconsistencies."))
+        if not ResourcePool().ontology_server.revise(statements, policy):
+            logger.debug(colored_print("At least one statement hasn't been " + \
+                                        "pushed to the ontology server because it would lead to inconsistencies."))
 
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            pass
 
     def remove(self, statements):
-        try:
-            ResourcePool().ontology_server.remove(statements)
-        except AttributeError: #the ontology server is not started of doesn't know the method
-            pass
+        ResourcePool().ontology_server.remove(statements)
 
 
 def unit_tests():
@@ -109,4 +99,4 @@ def unit_tests():
 
 if __name__ == '__main__':
     unit_tests()
-    
+

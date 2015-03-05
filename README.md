@@ -35,11 +35,27 @@ Simply run:
 Usage
 -----
 
+You can start to use `dialogs` immediately. For instance, try:
+
 ```
-> dialogs --help
+> dialogs -d -p"What are you doing?"
+> dialogs -d -p"I'm playing with you"
 ```
 
-should help you to start.
+The `-d` flags activates the debug mode, and gives you a complete picture of the
+different steps: pre-processing, parsing, semantic resolution of the atoms of
+the sentence, interpretation and verbalization ([read the
+paper](http://academia.skadge.org/publis/lemaignan2011grounding.pdf) to know
+more about these steps).
+
+Lines displayed in cyan log the interactions of the dialogue module with
+the knowledge base (queries and knowledge revisions). If no knowledge base is
+running, most of the semantic resolution attempts will fail, so when asked "what
+are you doing?", the system answers "I don't know".
+
+If you start `dialogs` with no options, it will simply read on stdin.
+
+Check ``dialogs --help`` for other options.
 
 Common invokation is:
 

@@ -116,8 +116,6 @@ class Resolver(object):
         except IndexError:
             raise DialogError("We should not have to resolve nominal " + \
                               "groups with indefinite determiner and only adjectives")
-        except AttributeError:
-            pass
         except KbError:  # The agent does not exist in the ontology
             pass
 
@@ -158,8 +156,6 @@ class Resolver(object):
                         ResourcePool().get_model_mapping(current_speaker),
                         '?concept',
                         [current_speaker + ' focusesOn ?concept', '?concept rdf:type ' + class_name])
-                except AttributeError:
-                    pass
                 except KbError:  #Agent not found in the ontology
                     pass
 
@@ -172,8 +168,6 @@ class Resolver(object):
                         ResourcePool().get_model_mapping(current_speaker),
                         '?concept',
                         [current_speaker + ' focusesOn ?concept'])
-                except AttributeError:
-                    pass
                 except KbError:  #Agent not found in the ontology
                     pass
 
@@ -222,8 +216,6 @@ class Resolver(object):
         try:
             onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(current_speaker),
                                                                  nominal_group.noun[0])
-        except AttributeError:  #the ontology server is not started or doesn't know the method
-            pass
         except KbError:  #The agent does not exist in the ontology
             pass
 
@@ -467,8 +459,6 @@ class Resolver(object):
             try:
                 concepts = ResourcePool().ontology_server.findForAgent(
                     ResourcePool().get_model_mapping(current_speaker), '?concept', stmtsAndVisibility)
-            except AttributeError:  # No ontology server
-                pass
             except KbError:  #The agent does not exist in the ontology
                 pass
 
@@ -478,8 +468,6 @@ class Resolver(object):
                 try:
                     concepts = ResourcePool().ontology_server.findForAgent(
                         ResourcePool().get_model_mapping(current_speaker), '?concept', stmts)
-                except AttributeError:  # No ontology server
-                    pass
                 except KbError:  #The agent does not exist in the ontology
                     pass
 
@@ -598,11 +586,8 @@ class Resolver(object):
         logger.debug(
             colored_print("\tFound '(an)other'. Looking for a different concept from dialog history.", "magenta"))
         obj_list = []
-        try:
-            obj_list = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker),
-                                                                   '?concept', current_stmts)
-        except AttributeError:
-            pass
+        obj_list = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(current_speaker),
+                                                              '?concept', current_stmts)
 
         if obj_list:
             if len(obj_list) == 1:
@@ -818,21 +803,15 @@ class Resolver(object):
         #Commiting the ontology now, in case of a research on this concept on the remaining unresolved concepts of the sentence
         logger.debug(colored_print("Learning this new concept in " + current_speaker + "'s model: \n",
                                    "magenta") + '[' + colored_print(', '.join(stmts), None, 'magenta') + ']')
-        try:
-            ResourcePool().ontology_server.revise(stmts, {"method": "add", "models": [
-                ResourcePool().get_model_mapping(current_speaker)]})
-        except AttributeError:
-            pass
+        ResourcePool().ontology_server.revise(stmts, {"method": "add", "models": [
+            ResourcePool().get_model_mapping(current_speaker)]})
 
         if current_speaker != ResourcePool().default_model:
             logger.debug(
                 colored_print("Learning this new concept in robot's model: \n", "magenta") + '[' + colored_print(
                     ', '.join(stmts), None, 'magenta') + ']')
-            try:
-                ResourcePool().ontology_server.revise(stmts,
-                                                      {"method": "add", "models": [ResourcePool().default_model]})
-            except AttributeError:
-                pass
+            ResourcePool().ontology_server.revise(stmts,
+                                                    {"method": "add", "models": [ResourcePool().default_model]})
 
         return id
 

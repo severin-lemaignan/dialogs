@@ -50,8 +50,6 @@ class Discrimination(object):
 
             try:
                 obj_tmp = self.oro.findForAgent(ResourcePool().get_model_mapping(agent_desc[0]), agent_desc[1], agent_desc[2])
-            except AttributeError: # No ontology server
-                pass
             except KbError: #The agent does not exist in the ontology
                 pass
 

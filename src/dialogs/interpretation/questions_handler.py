@@ -79,23 +79,17 @@ class QuestionHandler(object):
                         [agent, object] = s.split(" knows ")
 
                         onto_lookup = []
-                        try:
-                            logger.debug(level_marker(level=2,
-                                                      color="yellow") + "Looking up for " + object + " in " + agent + "'s model")
-                            onto_lookup = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(agent), object)
-                        except AttributeError:
-                            pass
+                        logger.debug(level_marker(level=2,
+                                                    color="yellow") + "Looking up for " + object + " in " + agent + "'s model")
+                        onto_lookup = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(agent), object)
 
                         self._answer = self._answer and (True if onto_lookup else False)
 
                 self.process_on_knowing_concept = False
             else:
-                try:
-                    logger.debug(level_marker(level=2, color="yellow") + "Checking in the ontology: " + colored_print(
-                        str(self._statements), None, "magenta"))
-                    self._answer = ResourcePool().ontology_server.check(self._statements)
-                except AttributeError: #the ontology server is not started of doesn't know the method
-                    pass
+                logger.debug(level_marker(level=2, color="yellow") + "Checking in the ontology: " + colored_print(
+                    str(self._statements), None, "magenta"))
+                self._answer = ResourcePool().ontology_server.check(self._statements)
 
         #Case the question is a w_question : find the concept the concept that answers the question
         if sentence.data_type == W_QUESTION:
@@ -149,13 +143,11 @@ class QuestionHandler(object):
                                 continue
 
                             stmts = [s.replace('objectFoundInLocation', roles[role]) for s in statements]
-                            try:
-                                logger.debug(level_marker(level=2,
-                                                          color="yellow") + "Searching in " + agent + " model: " + colored_print(
-                                    str(stmts), None, "magenta"))
-                                answers = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(agent), '?concept', stmts)
-                            except AttributeError: #the ontology server is not started of doesn't know the method
-                                pass
+
+                            logger.debug(level_marker(level=2,
+                                                        color="yellow") + "Searching in " + agent + " model: " + colored_print(
+                                str(stmts), None, "magenta"))
+                            answers = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(agent), '?concept', stmts)
 
                             prepositions_already_used.append(roles[role])
 
@@ -166,28 +158,22 @@ class QuestionHandler(object):
                         #Case of object found in location + direction
                         stmts = [s.replace('objectFoundInLocation', 'isAt') for s in statements]
                         for role in ResourcePool().direction_words:
-                            try:
-                                logger.debug(level_marker(level=2,
-                                                          color="yellow") + "Searching in " + agent + " model: " + colored_print(
-                                    str(stmts + ['?concept is' + role.capitalize() + 'Of ?obj',
-                                                 '?concept rdf:type Location']), None, "magenta"))
-                                answers = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(agent), '?obj', stmts + [
-                                    '?concept is' + role.capitalize() + 'Of ?obj', '?concept rdf:type Location'])
-                            except AttributeError: #the ontology server is not started of doesn't know the method
-                                pass
+                            logger.debug(level_marker(level=2,
+                                                        color="yellow") + "Searching in " + agent + " model: " + colored_print(
+                                str(stmts + ['?concept is' + role.capitalize() + 'Of ?obj',
+                                                '?concept rdf:type Location']), None, "magenta"))
+                            answers = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(agent), '?obj', stmts + [
+                                '?concept is' + role.capitalize() + 'Of ?obj', '?concept rdf:type Location'])
 
                             if answers:
                                 ResourcePool().mark_active(answers)
                                 self._answer.append([[role], answers])
 
                     else:
-                        try:
-                            logger.debug(level_marker(level=2,
-                                                      color="yellow") + "Searching in " + agent + " model: " + colored_print(
-                                str(statements), None, "magenta"))
-                            answers = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(agent), '?concept', statements)
-                        except AttributeError: #the ontology server is not started of doesn't know the method
-                            pass
+                        logger.debug(level_marker(level=2,
+                                                    color="yellow") + "Searching in " + agent + " model: " + colored_print(
+                            str(statements), None, "magenta"))
+                        answers = ResourcePool().ontology_server.findForAgent(ResourcePool().get_model_mapping(agent), '?concept', statements)
 
                         if answers:
                             ResourcePool().mark_active(answers)
@@ -226,10 +212,7 @@ class QuestionHandler(object):
                 break
 
         if find_id:
-            try:
-                sit_id = ResourcePool().ontology_server.find(['?event'], statements)
-            except AttributeError: #the ontology server is not started of doesn't know the method
-                pass
+            sit_id = ResourcePool().ontology_server.find(['?event'], statements)
 
             if sit_id:
                 logger.debug(
@@ -362,10 +345,7 @@ class QuestionHandler(object):
         #Concept's Type
         elif not self._sentence.aim in QuestionAimDict().dic_aim.keys():
             logger.debug("\tFound the aim: " + aim + ".Extending statements with [?concept rdf:type aim]")
-            try:
-                onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(agent), aim)
-            except AttributeError:
-                onto = None
+            onto = ResourcePool().ontology_server.lookupForAgent(ResourcePool().get_model_mapping(agent), aim)
 
             concept_descriptor = ["?concept rdf:type " + get_class_name(aim, onto)]
             self._sentence.aim = "thing"

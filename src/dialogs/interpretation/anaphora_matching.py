@@ -80,10 +80,7 @@ def delete_unuse_nominal_group(nominal_group_list):
         #if a nominal group is an agent's proper noun, we remove it 
         onto_class = {}
         if nominal_group_list[i].id:
-            try:
-                onto_class = ResourcePool().ontology_server.getDirectClassesOf(nominal_group_list[i].id)
-            except AttributeError:
-                pass
+            onto_class = ResourcePool().ontology_server.getDirectClassesOf(nominal_group_list[i].id)
         else:
             # Nominal group with no ID? pass.
             pass

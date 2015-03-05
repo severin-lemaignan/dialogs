@@ -175,12 +175,8 @@ class NominalGroupStatementBuilder(object):
         if ng.id:
             return ng.id
 
-        onto = ''
-        try:
-            onto = ResourcePool().ontology_server.lookupForAgent(
-                ResourcePool().get_model_mapping(self._current_speaker), ng.noun[0])
-        except AttributeError:  # the ontology server is not started of doesn't know the method
-            pass
+        onto = ResourcePool().ontology_server.lookupForAgent(
+            ResourcePool().get_model_mapping(self._current_speaker), ng.noun[0])
 
         if onto:
             for c in onto:
@@ -225,12 +221,8 @@ class NominalGroupStatementBuilder(object):
             learn_more = []
 
             for noun in nom_grp.noun:
-                onto = ''
-                try:
-                    onto = ResourcePool().ontology_server.lookupForAgent(
-                        ResourcePool().get_model_mapping(self._current_speaker), noun)
-                except AttributeError:
-                    pass
+                onto = ResourcePool().ontology_server.lookupForAgent(
+                    ResourcePool().get_model_mapping(self._current_speaker), noun)
 
                 if not onto:
                     learn_more.append(noun)
@@ -343,8 +335,6 @@ class NominalGroupStatementBuilder(object):
             try:
                 onto_id = ResourcePool().ontology_server.lookupForAgent(
                     ResourcePool().get_model_mapping(self._current_speaker), noun)
-            except AttributeError:  # the ontology server is not started of doesn't know the method
-                pass
             except KbError:  # The agent does not exist in the ontology
                 pass
 
@@ -420,12 +410,9 @@ class NominalGroupStatementBuilder(object):
                     # Case of an indefinite concept
                     else:
                         #Committing ComplementOf class
-                        try:
-                            ResourcePool.ontology_server.safeAdd(
-                                ["ComplementOf" + class_name + " owl:complementOf " + class_name,
-                                 "ComplementOf" + class_name + " rdfs:subClassOf ComplementClasses"])
-                        except AttributeError:
-                            pass
+                        ResourcePool.ontology_server.safeAdd(
+                            ["ComplementOf" + class_name + " owl:complementOf " + class_name,
+                                "ComplementOf" + class_name + " rdfs:subClassOf ComplementClasses"])
 
                         self._statements.append(ng_id + object_property + "ComplementOf" + class_name)
 
@@ -701,9 +688,9 @@ class VerbalGroupStatementBuilder(object):
                 else:
                     subjects_id = subject_id
 
-                try:
-                    agentslist = ResourcePool().ontology_server.listAgents()
-                except AttributeError:
+                agentslist = ResourcePool().ontology_server.listAgents()
+
+                if agentslist is None:
                     agentslist = [ResourcePool().default_model, self._current_speaker]
 
                 for subject_id in subjects_id:
