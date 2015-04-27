@@ -1,6 +1,8 @@
 Dialogs: A Naive Natural Language Processing
 ============================================
 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.17186.svg)](http://dx.doi.org/10.5281/zenodo.17186)
+
 (c) LAAS-CNRS 2010-2013, EPFL 2013-2015
 
 This module, licensed under the permissive BSD 3-clause, reads on stdin user
@@ -31,6 +33,9 @@ Simply run:
 ```
 > pip install dialogs
 ```
+
+You can also grab the source code of the latest release
+[here](https://github.com/severin-lemaignan/dialogs/releases/latest).
 
 Usage
 -----
