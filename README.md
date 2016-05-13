@@ -1,5 +1,5 @@
-Dialogs: A Naive Natural Language Processing
-============================================
+Dialogs: A Naive Natural Language Processor
+===========================================
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.17186.svg)](http://dx.doi.org/10.5281/zenodo.17186)
 
