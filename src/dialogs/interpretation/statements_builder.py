@@ -410,7 +410,7 @@ class NominalGroupStatementBuilder(object):
                     # Case of an indefinite concept
                     else:
                         #Committing ComplementOf class
-                        ResourcePool.ontology_server.safeAdd(
+                        ResourcePool().ontology_server.safeAdd(
                             ["ComplementOf" + class_name + " owl:complementOf " + class_name,
                                 "ComplementOf" + class_name + " rdfs:subClassOf ComplementClasses"])
 
